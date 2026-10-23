@@ -1,0 +1,2533 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+@use "WaterPump"
+
+var
+		/* Sprite-képek (bináris grafikai adatok) */
+		/* A sprite- és hangadatok az U3-ban ($C000..$DCxx), 256 byte-os rekeszekben (a meteor 512): a játék MEM_48K_VID lapozással fut (ProgramInit) */
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin", $D100);
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin", $D200);
+		Talaj2_Data						:	incbin("resources\tvc_sprites\talaj2.bin", $D300);
+		Talaj3_Data						:	incbin("resources\tvc_sprites\talaj3.bin", $D400);	/* 8x8, NEM maszkolt (talaj3.bmp) */
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin", $D500);
+		Keret2_Data						:	incbin("resources\tvc_sprites\keret2.bin", $D600);	/* 2. játékos Kerete (2 player teszt) */
+		Enemy_Data						:	incbin("resources\tvc_sprites\enemy.bin", $D700);
+		Fal_Data						:	incbin("resources\tvc_sprites\fal.bin", $D800);
+		Meteor_Data						:	incbin("resources\tvc_sprites\meteor.bin", $D900);
+		Bomba_Data						:	incbin("resources\tvc_sprites\bomba.bin", $DB00);
+ExplosionSFX				:	incbin("resources\sfx\explosion.bin", $C000);	/* robbanás digi hang (2x4 bit, 4 kHz) */
+TickSFX						:	incbin("resources\sfx\tick.bin", $D000);	/* pumpa-lerakás: rövid tick (2x4 bit, 4 kHz) */
+BombaIkon_Data				:	incbin("resources\tvc_sprites\bombaikon.bin", $DC00);
+		Pumpa2_Data						:	incbin("resources\tvc_sprites\Pumpa2.bin", $E000);	/* a 2. játékos pumpája (Pump1b..8b.bmp), 8 fázis, nem maszkolt */
+		/* A sprite-objektumok: Pumpa (animált szivattyú), Talaj1 (üres talaj mező), Keret */
+		Pumpa							:	GE::Sprite;
+		Talaj1						 	:	GE::Sprite;
+		Talaj2							:	GE::Sprite;
+		Talaj3						:	GE::Sprite;	/* 3. talajtípus (blokkoló), nem maszkolt */
+		Keret							:	GE::Sprite;
+		Keret2							:	GE::Sprite;	/* 2. játékos Kerete: mindig a Keret FÖLÖTT (z-sorrend) */
+		Jelol1, Jelol2					:	GE::Sprite;	/* versus: a kiválasztott eszköz ikonja körüli keret (a játékos Keret-grafikája, álló) */
+		Eszkoz1, Eszkoz2				:	byte = 0;	/* versus: mit rak le a tűz - 0 = pumpa, 1 = fal, 2 = bomba */
+		Tuz1_Volt, Tuz2_Volt			:	byte = 0;	/* a tűz az előző képkockán (ikonválasztás és bomba: egy lenyomás = egy művelet) */
+		Tuz1_Most, Tuz2_Most			:	byte = 0;	/* a tűz ebben a képkockában */
+		P2_Kep							:	byte = 8;	/* a 2. játékos pumpáinak képindex-eltolása: versus 8 (saját grafika), co-op 0 (az 1. játékos képe; a Map-ben külön marad a számoláshoz) */
+		Joy_Bal, Joy_Jobb, Joy_Fel, Joy_Le	:	byte = 0;	/* a Jatekos_Mozog bemenete (az épp mozgatott játékos iránya) */
+		const IKON_Y					:	byte = 30;	/* versus: a választó-ikonok sora = a pálya 0. sora (a Keret ide is feljöhet) */
+		Enemy							:	GE::Sprite;
+		Fal								:	GE::Sprite;
+		Meteor							:	GE::Sprite;
+		/* Bomba: a B gombos Bomba_Ledob() zuhanás-animációjához */
+		Bomba							:	GE::Sprite;
+BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
+		/* Meteor mozgás: MINDEN képkockán METEOR_LE_PX px LE */
+		const METEOR_LE_PX				:	byte = 3;	/* ennyi pixelt megy LEFELÉ képkockánként */
+		const METEOR_ANIM_UTEM			:	byte = 3;	/* ennyi képkockánként lép a szikla animációs fázisa (0..3 körbe) */
+		const METEOR_START_Y			:	byte = 26;	/* belépő px-Y (fent) - fix */
+		const METEOR_X_MIN				:	byte = 2;	/* belépő byte-X: 2..59 (a 12 px = 3 byte széles szikla a pálya teljes szélességében) */
+		const METEOR_X_RND				:	byte = 58;
+		const METEOR_Y_MIN				:	byte = 70;	/* leállási px-Y minimum */
+		const METEOR_Y_RND				:	byte = 130;	/* út-hossz szórása -> leáll Y = 70..199 */
+		const METEOR_FAZ_DB				:	byte = 4;
+		const METEOR_FAZIS_MERET		:	byte = 96;	/* maszkolt fázis: 3 byte x 16 sor x 2 (maszk+adat) */
+
+		Font_Data						:	incbin("resources\tvc_sprites\font.bin", $E100);	/* betűkészlet (U3): 1 byte magasság + 91 byte szélesség (ASCII 32..122) + kép; a charset_szerkeszto.html készíti */
+		CashStr 							: 	string = ("CASH$:");
+		PumpStr							:	string = ("PUMP:");
+		LevelStr					:	string = ("LEVEL:");
+		SlashStr					:	string = ("/");
+		LivesStr					:	string = ("LIVES:");
+		PumpsStr					:	string = ("PUMPS:");	/* versus: a játékosok pumpái */
+		Gyoztes						:	byte = 0;	/* versus: ki érte el a célt (1/2) */
+		ColonStr					:	string = (":");
+
+		/* A Keret aktuális képernyő-pozíciója pixelben/byte-ban */
+		Keret_X_ScreenPOS				: 	byte = 29;
+		Keret_Y_ScreenPOS				:	byte = 128;
+		/* A Keret aktuális rács (mező) pozíciója */
+		Keret_X_Pos						:	byte = 15;
+		Keret_Y_Pos						:	byte = 9;
+		/* A Keret ELŐZŐ (legutóbb ténylegesen frissített) rács-pozíciója */
+		Keret_Elozo_X_Pos				:	byte = 15;
+		Keret_Elozo_Y_Pos				:	byte = 9;
+		/* 2. játékos Kerete (WASD): rács-pozíció és az utoljára kirajzolt pozíció */
+		Keret2_X_Pos					:	byte = 30;
+		Keret2_Y_Pos					:	byte = 9;
+		Keret2_Elozo_X_Pos				:	byte = 30;
+		Keret2_Elozo_Y_Pos				:	byte = 9;
+		/* A Keret (kurzor) mozgásának lassítása */
+		Keret_Mozog_Utem				:	byte = 5;
+		Keret_Mozog_Frame				:	byte = 0;
+
+		/* A játéktér 30x18 mezős rácsa */
+		const TERKEP_MERET				:	integer = 18*30;	/* a Map[] mérete (540) */
+		Map								:	array	[TERKEP_MERET] of byte at $0BF0;	/* 3056..3595: a GE szerint szabad (nincs fájlművelet) -> nem foglal helyet a programban */
+		/* PÁLYÁK: a térképek és a pályánkénti értékek (a terkep_szerkeszto.html adja ki, a teljes blokk cserélhető) */
+		const PALYA_DB		:	byte = 10;	/* a pályák száma */
+		const INDULO_PALYA	:	byte = 10;	/* induló pálya sorszáma 1-től (próbához; élesben 1) */
+		/* Terkepek: pályánként 30x18 = 540 érték egymás után (index: palya*540 + x-1 + (y-1)*30); 10 = Talaj1, 13 = Talaj3 (blokkolt) */
+		Terkepek	:	array[10*540] of byte = (
+			/* 1. Pálya Pálya 1 */
+			13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,
+			/* 2. Pálya Pálya 2 */
+			13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,13,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,
+			10,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			10,10,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,10,13,13,13,13,13,
+			13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,
+			/* 3. Pálya Pálya 3 */
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			13,13,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,10,10,
+			13,13,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,13,13,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			/* 4. Pálya Pálya 4 */
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,13,13,13,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,13,13,13,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,13,13,13,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,13,13,13,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			/* 5. Pálya Pálya 5 */
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,10,10,10,13,13,10,10,10,13,13,13,13,13,13,13,13,10,10,10,13,13,10,10,10,13,13,13,
+			13,13,10,10,10,13,13,13,13,10,10,10,13,13,13,13,13,13,10,10,10,13,13,13,13,10,10,10,13,13,
+			13,13,10,10,10,10,13,13,10,10,10,10,10,13,13,13,13,10,10,10,10,10,13,13,10,10,10,10,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,
+			13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,10,10,10,10,13,13,10,10,10,10,10,13,13,13,13,10,10,10,10,10,13,13,10,10,10,10,13,13,
+			13,13,10,10,10,13,13,13,13,10,10,10,13,13,13,13,13,13,10,10,10,13,13,13,13,10,10,10,13,13,
+			13,13,13,10,10,10,13,13,10,10,10,13,13,13,13,13,13,13,13,10,10,10,13,13,10,10,10,13,13,13,
+			13,13,13,13,10,10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,10,13,13,13,13,
+			13,13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,13,13,13,13,13,
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			/* 6. Pálya Pálya 6 */
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,13,13,13,13,13,13,13,13,13,
+			13,13,13,13,10,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,
+			13,13,10,10,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,10,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,10,13,
+			10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,
+			10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,10,13,13,10,10,10,10,
+			10,10,10,10,13,13,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,13,10,13,13,13,10,10,
+			10,10,10,10,13,13,13,10,10,10,10,10,10,10,13,13,13,13,10,10,10,13,13,10,13,13,13,10,10,10,
+			10,10,10,10,10,13,13,13,10,10,10,10,10,13,13,13,13,10,10,10,10,13,13,13,13,10,10,10,10,10,
+			10,10,10,10,10,13,13,13,13,13,13,13,13,13,13,13,10,10,10,10,10,13,13,13,13,10,10,10,10,10,
+			10,10,10,10,10,10,13,13,13,13,13,13,13,13,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,10,10,10,10,10,10,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,13,13,13,10,10,10,10,10,10,13,13,13,
+			13,13,13,13,13,13,10,10,10,10,10,10,10,10,13,13,13,13,13,13,10,10,10,10,10,10,13,13,13,13,
+			/* 7. Pálya Pálya 7 */
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,10,13,10,13,10,13,10,13,10,
+			13,13,13,13,10,10,10,10,13,13,13,13,13,13,13,13,10,10,10,10,10,13,10,13,10,13,10,13,10,13,
+			13,13,13,10,10,10,10,10,10,10,10,13,13,13,10,10,10,10,10,10,10,10,13,10,13,10,13,10,13,10,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,13,10,13,10,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,13,10,13,10,
+			13,13,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,13,10,13,
+			13,13,10,10,13,10,13,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,13,10,13,10,
+			13,13,10,13,10,13,10,13,10,10,10,10,10,13,10,13,10,10,10,10,10,10,10,10,10,13,10,13,10,10,
+			13,13,13,10,13,10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,
+			13,13,10,13,10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,10,
+			13,13,13,10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,10,10,
+			13,13,10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,10,10,10,
+			13,10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,10,10,10,10,
+			10,13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,10,10,10,10,10,10,10,
+			13,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,13,10,13,10,13,10,10,10,10,10,10,10,
+			13,10,10,10,10,13,10,13,10,13,10,13,10,10,10,10,10,13,10,13,10,13,10,13,10,10,10,10,10,13,
+			13,10,10,10,13,10,13,10,13,10,13,13,13,13,13,13,13,13,13,13,13,13,13,10,13,10,10,10,10,13,
+			13,13,13,10,10,13,10,13,10,13,10,13,13,13,13,13,13,13,13,13,13,13,13,13,10,13,10,13,13,13,
+			/* 8. Pálya Pálya 8 */
+			13,13,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,13,13,
+			13,13,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,13,13,
+			10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,13,13,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,13,13,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,13,13,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,13,13,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,
+			13,13,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,13,13,
+			13,13,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,10,13,13,10,10,10,10,10,10,10,13,13,
+			/* 9. Pálya Pálya 9 */
+			13,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			10,13,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,13,10,
+			10,10,13,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,13,10,10,
+			10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,10,
+			10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,
+			10,10,13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,13,10,10,
+			10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,
+			13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+			13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,
+			10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,13,
+			10,10,13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,13,10,
+			10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,
+			10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,10,13,10,10,10,10,10,13,10,10,10,10,
+			10,10,13,10,10,10,10,10,10,10,10,13,10,10,10,10,10,10,13,10,10,10,10,10,10,10,13,10,10,10,
+			10,13,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,13,10,10,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,13,10,
+			/* 10. Pálya Pálya 10 */
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,13,
+			13,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,13,
+			13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,
+			13,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,
+			13,10,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,10,13,
+			13,10,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,10,13,
+			13,10,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,10,13,
+			13,10,10,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,10,10,13,
+			13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,
+			13,13,13,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,13,13,13,
+			13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+		);
+		Palya_Cel	:	array[10] of byte = (50,100,150,100,50,100,110,200,200,250);	/* cél: ennyi pumpa kell a pálya teljesítéséhez */
+		Palya_CelCoop	:	array[10] of byte = (75,150,225,150,75,150,165,255,255,255);	/* co-op cél: a két játékos pumpáinak ÖSSZEGE (ideiglenesen a cél 3/2-e, max 255) */
+		Palya_PumpaAr	:	array[10] of integer = (50,50,50,100,100,125,100,75,150,175);	/* pumpa ára */
+		Palya_FalAr	:	array[10] of integer = (0,0,0,0,200,50,60,0,100,100);	/* fal ára */
+		Palya_BombaAr	:	array[10] of integer = (1000,0,10,0,10,10,1000,1500,2500,3000);	/* bomba ára */
+		Palya_Penz	:	array[10] of integer = (200,200,200,500,1000,500,1000,500,2000,3000);	/* kezdő pénz */
+		Palya_Termel	:	array[10] of integer = (5,5,5,5,3,4,2,2,5,3);	/* egy pumpa termelése ütemenként */
+		Palya_Meteor	:	array[10] of byte = (0,0,0,1,1,1,1,1,0,1);	/* 1 = lesz meteor */
+		Palya_Virus	:	array[10] of byte = (0,0,1,1,1,1,1,1,1,1);	/* 1 = lesz vírus */
+		Palya_Fal	:	array[10] of byte = (0,0,0,0,1,0,1,0,1,1);	/* 1 = építhető fal */
+		Palya_Bomba	:	array[10] of byte = (0,0,0,0,0,1,0,1,1,1);	/* 1 = használható a bomba */
+		/* KÉT JÁTÉKOS PÁLYÁK (a kijelzőn LEVEL 20-tól): külön tábla; a térképek az U3-ban (pályánként 540 byte, 10 = Talaj1, 13 = Talaj3) */
+		const PALYA2_DB		:	byte = 1;
+		Terkep2P_Data	:	incbin("resources\palyak\terkep2p.bin", $DD00);	/* 20. pálya: üres */
+		Terkepek2		:	array[540] of byte at $DD00;		/* ugyanez tömbként olvasva (PALYA2_DB*540) */
+		Palya2_Cel		:	array[1] of byte = (255);	/* versus: aki eléri, NYERT (max 255) */
+		Palya2_PumpaAr	:	array[1] of integer = (50);
+		Palya2_FalAr	:	array[1] of integer = (50);
+		Palya2_BombaAr	:	array[1] of integer = (1000);
+		Palya2_Penz		:	array[1] of integer = (500);
+		Palya2_Termel	:	array[1] of integer = (5);
+		Palya2_Meteor	:	array[1] of byte = (0);
+		Palya2_Virus	:	array[1] of byte = (0);
+		Palya2_Fal		:	array[1] of byte = (1);
+		Palya2_Bomba	:	array[1] of byte = (1);
+		Palya						:	byte = 0;				/* az aktuális pálya sorszáma (0-tól) */
+		Cel_Akt					:	byte = 250;			/* az aktuális pálya célja: ennyi pumpa kell */
+		Meteor_Engedve			:	byte = 1;				/* az aktuális pályán lesz-e meteor */
+		Virus_Engedve			:	byte = 1;				/* lesz-e vírus */
+		Fal_Engedve				:	byte = 1;				/* építhető-e fal */
+		Bomba_Engedve			:	byte = 1;				/* használható-e a bomba */
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		Drill_Cash						:	integer = 1000;	/* összegyűjtött pénz (kijelzéshez, max 4 jegy) */
+		Drill_Cash2						:	integer = 0;	/* a 2. játékos pénze (TWO PLAYER versus; MÉG NINCS kiírva) */
+		Pumpa_price						:	integer = 100;	/* egy pumpa ára */
+		Tegla_price						:	integer = 50;	/* egy fal-tégla ára (F gomb) */
+		Bomba_price						:	integer = 10;	/* egy bomba ára (B gomb) */
+		/* Bomba border-sáv (raszter-időzítés, Bomba_Sav eljárás) */
+		Bomba_SavMagas					:	byte = 28;		/* a sáv magassága (~2 cm) */
+		Bomba_SavY						:	byte = 0;
+		Pumpa_termel					:	integer = 2;
+		Pumpa_db						:	byte = 0;
+		Pumpa_db2						:	byte = 0;	/* a 2. játékos pumpáinak száma (versus; MÉG NINCS kiírva) */
+		Pumpa_Ossz						:	integer = 0;	/* co-op: a két játékos pumpáinak összege (a cél-vizsgálathoz) */
+		Cel_Int							:	integer = 0;
+		Termel_Frame					:	integer = 0;
+		Termel_Utem						:	integer = 40;
+
+		/* PUMPA-ANIMÁCIÓ: lépésközös (strided) Map[]-scan, EGYETLEN, folyamatosan haladó mutatóval (PumpaScanPos) */
+		const PUMPA_STEP				:	integer = 7;
+		const PUMPAK_CHUNK				:	byte = 15;
+		PumpaScanPos					:	integer = 0;
+
+		const PUMPA_FAZISOK				:	byte = 8;	/* a Pumpa sprite animációs fázisainak száma */
+		const PUMPA_FAZIS_MERET			:	byte = 16;
+		const ENEMY_FAZ_DB				:	byte = 5;	/* enemy.bin fázisainak száma (0..4) */
+
+		/* Körbeforgó induló-fázis számláló pumpa-lerakáskor */
+		Pumpa_Uj_Faz					:	byte = 0;
+
+		/* KÖZÖS POZÍCIÓ-TÁBLÁK a Talaj1/Fal/Enemy-hez */
+		const MEZO_BX_DB				:	byte = 31;
+		const MEZO_SY_DB				:	byte = 19;
+		Mezo_ByteX_Tab					:	array	[MEZO_BX_DB] of byte;	/* rács-X 1..30 -> képernyő byte-X (x*2) */
+		Mezo_SorCim_Tab					:	array	[MEZO_SY_DB] of integer;
+
+		/* Vírus-fázis -> kész bitmap-pointer tábla (a Pumpa mintájára, de az Enemy sprite-hoz) */
+		Enemy_FazPtr_Tab				:	array	[ENEMY_FAZ_DB] of integer;
+		Meteor_FazPtr_Tab				:	array	[METEOR_FAZ_DB] of integer;
+
+		/* ENEMY / VÍRUS - a C64-es aqualiquex (units.tru / raster.tru) viselkedésének 1:1 lemodellezése */
+		const ENEMY_MAX_FAZIS			:	byte = 4;
+		/* C64 raster.tru: "for i:=0 to 15" -> képkockánként 16 véletlen minta */
+		const ENEMY_PROBA_DB			:	byte = 6;
+		/* C64 units.tru: maxColonies=10 */
+		const ENEMY_MAX_KOLONIA			:	byte = 10;
+
+		Rnd_Porgeto						:	byte = 0;
+		Eletek					:	byte = 5;	/* életek száma (a program indulásakor 5) */
+		Jatek_Fut				:	byte = 1;	/* 0 = GAME OVER volt, vissza a főmenübe */
+		R_Volt					:	byte = 0;	/* az R gomb él-detektálása (egy lenyomás = egy élet) */
+		Digi_Aktiv				:	byte = 0;	/* 1 = a bomba robbanás-hangja épp szól a háttérben (digi mód) */
+		Keret_Sereles				:	byte = 0;	/* 1 = a Keret 3x3-ában vírus-rajz történt: a Keretet újra kell rajzolni */
+		Keret_Pumpa_Valt			:	byte = 0;	/* 1 = a Keret alatti vagy vízszintes szomszéd pumpa ebben a képkockában új fázist kap (PumpakSzamol jelzi) */
+		Keret2_Pumpa_Valt			:	byte = 0;	/* ugyanez a 2. Keretre */
+		Keret2_Sereles				:	byte = 0;	/* vírus-rajz a 2. Keret 3x3-ában */
+		Ket_Jatekos					:	byte = 0;	/* 1 = TWO PLAYER GAME (a 2. Keret látszik és WASD-vel mozog), 0 = ONE PLAYER GAME */
+		Coop						:	byte = 0;	/* 1 = TWO PLAYER CO-OP: a normál pályákon, külön pénz/bevétel, KÖZÖS cél (Palya_CelCoop) és közös élet */
+		Versus						:	byte = 0;	/* 1 = TWO PLAYER GAME (versus): a 2P pályákon (LEVEL 20-tól) */
+		Rnd_X						:	byte = 0;	/* Rnd_Mezo / Rnd_Harom kimenete (asm írja) */
+		Rnd_Y						:	byte = 0;
+		Rnd_DX						:	byte = 0;
+		Rnd_DY						:	byte = 0;
+		Rnd_Mp						:	integer = 0;
+		Start_Wait						:	byte = 1;
+
+		/* Kolónia-vetés ütemezése */
+		Enemy_Sec_Frame					:	integer = 0;	/* frame-számláló a "másodperchez" */
+		Enemy_Kolonia_db				:	byte = 0;
+		Enemy_Terjedhet					:	byte = 0;
+		Enemy_Coin						:	byte = 0;
+
+		/* A vírus MŰKÖDÉSE (Enemyk_Mukodnek) --- lásd az ENEMY_Szekcio-t */
+		/* HANGOLHATÓ: ennyi frame-enként fut Enemyk_Mukodnek */
+		Enemy_Utem						:	byte = 1;
+		Enemy_Frame						:	byte = 0;	/* frame-számláló hozzá */
+
+		/* METEOR (nem blokkoló, a főciklusból random időnként) */
+		Meteor_Aktiv					:	byte = 0;	/* 1 = éppen zuhan */
+		Meteor_Faz						:	byte = 0;
+		Meteor_UtemFrame				:	byte = 0;
+		Meteor_Y_Cel					:	byte = 110;
+		Meteor_TriggerFrame				:	integer = 60;	/* visszaszámláló a következő zuhanásig */
+
+
+
+/* MAP értékadások jelentései Pumpa (a fázis is IDE van kódolva, lásd fent) */
+
+		PumpaMap						:	byte=1;
+		Pumpa2Map						:	byte=31;	/* a 2. játékos pumpái (versus): 31..38 = fázis 0..7 */
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+		FalMap							:	byte=11;
+		Talaj2Map						:	byte=12;
+		Talaj3Map						:	byte=13;	/* 3. talajtípus: BLOKKOLÓ, törhetetlen (a térképszerkesztő x mezője) */
+				VirusMap						:	byte=20;		/* vírusos mező alapértéke (Map[]=20+faz) */
+		/* SAJÁT SZÖVEGKIÍRÓ (Ir) változói - a Font_Data az U3-ban (font.bin: 1 byte magasság + 91 byte szélesség + kép) */
+		Ir_X							:	byte = 0;		/* be: x (byte); ki: a következő szabad byte-oszlop */
+		Ir_Y							:	byte = 0;
+		Ir_Szoveg						:	^byte;
+		Ir_Cim							:	integer = 0;
+		Ir_Szel							:	byte = 0;
+		Ir_Hossz						:	byte = 0;		/* az Ir_Hossza eredménye (byte) */
+		JegyStr							:	array[2] of byte = (48, 0);	/* egy számjegy kiírásához */
+		Jegy_Sz							:	byte = 2;		/* a számjegyek szélessége (a "0" szélessége) */
+		Cash_X, Cash2_X, Pump_X, Pump2_X, Lives_X	:	byte;		/* a HUD-számok helye (a feliratok után, láncolva) */
+
+/* SAJÁT SZÖVEGKIÍRÓ, VÁLTOZÓ SZÉLESSÉGŰ BETŰKKEL (a GE::WriteText helyett): Font_Data = 1 byte magasság + 91 byte szélesség (ASCII 32..122, 1 vagy 2 byte) + kép (91*2 = 182 byte széles, soronként); x byte-ban, y sorban; utána Ir_X = a következő szabad byte-oszlop */
+Procedure Ir(Ir_X, Ir_Y : global byte; Ir_Szoveg : global ^byte);
+	begin
+		asm("
+			ld a,[Ir_Y]
+			ld l,a
+			ld h,0
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			ld de,[GE_ScreenAddr]
+			add hl,de
+			ld a,[Ir_X]
+			ld e,a
+			ld d,0
+			add hl,de
+			ld [Ir_Cim],hl
+Ir_Kov:
+			ld hl,[Ir_Szoveg]
+			ld a,(hl)
+			or a
+			jp z,Ir_Vege
+			inc hl
+			ld [Ir_Szoveg],hl
+			cp 32
+			jr c,Ir_Kov
+			cp 123
+			jr nc,Ir_Kov
+			sub 32
+			ld e,a
+			ld d,0
+			ld hl,Font_Data+1
+			add hl,de
+			ld a,(hl)
+			or a
+			jr nz,Ir_SzelOk
+			inc a
+Ir_SzelOk:
+			ld [Ir_Szel],a
+			ld hl,Font_Data+92
+			add hl,de
+			add hl,de
+			ld de,[Ir_Cim]
+			ld a,[Font_Data]
+			ld b,a
+Ir_Sor:
+			push bc
+			push hl
+			push de
+			ld a,[Ir_Szel]
+			ld c,a
+			ld b,0
+			ldir
+			pop de
+			pop hl
+			ld bc,182
+			add hl,bc
+			ex de,hl
+			ld bc,64
+			add hl,bc
+			ex de,hl
+			pop bc
+			djnz Ir_Sor
+			ld a,[Ir_Szel]
+			ld e,a
+			ld d,0
+			ld hl,[Ir_Cim]
+			add hl,de
+			ld [Ir_Cim],hl
+			ld a,[Ir_X]
+			add a,e
+			ld [Ir_X],a
+			jp Ir_Kov
+Ir_Vege:
+		");
+	end;
+
+/* Egy szöveg szélessége byte-ban (a betűk szélességének összege) -> Ir_Hossz */
+Procedure Ir_Hossza(Ir_Szoveg : global ^byte);
+	begin
+		asm("
+			ld hl,[Ir_Szoveg]
+			ld c,0
+Ir_HKov:
+			ld a,(hl)
+			or a
+			jr z,Ir_HVege
+			inc hl
+			cp 32
+			jr c,Ir_HKov
+			cp 123
+			jr nc,Ir_HKov
+			sub 32
+			push hl
+			ld e,a
+			ld d,0
+			ld hl,Font_Data+1
+			add hl,de
+			ld a,(hl)
+			or a
+			jr nz,Ir_HOk
+			inc a
+Ir_HOk:
+			add a,c
+			ld c,a
+			pop hl
+			jr Ir_HKov
+Ir_HVege:
+			ld a,c
+			ld [Ir_Hossz],a
+		");
+	end;
+
+/* Szöveg vízszintesen középre az y sorba */
+Procedure Ir_Kozep(Ir_Y : global byte; Ir_Szoveg : global ^byte);
+	var x, y : byte;
+		p : ^byte;
+	begin
+		y:=Ir_Y;
+		p:=Ir_Szoveg;
+		Ir_Hossza(p);
+		x:=64-Ir_Hossz;
+		x:=x/2;
+		Ir(x, y, p);
+	end;
+
+/* Egy számjegy (0..9) kiírása az Ir_X helyre */
+Procedure Ir_Jegy(d : byte; sor : byte);
+	begin
+		JegyStr[0]:=48+d;
+		Ir(Ir_X, sor, #JegyStr);
+	end;
+
+/* Játék indításakor egyszer lefutó beállítások */
+
+Procedure ProgramInit();
+	var f, xx, yy						:	byte;	/* tábla-feltöltés ciklusváltozói */
+		p, a							:	integer;
+	begin
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::SetBorder(GE::BORDER_Gray);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_48K_VID);	/* U0,U1,VID,U3: a játék VÉGIG így fut - a sprite- és hangadatok az U3-ban ($C000..) vannak; a GE nem hív ROM-ot */
+		Ir_Hossza("0");				/* a számjegyek szélessége (a HUD-számok igazításához) */
+		Jegy_Sz:=Ir_Hossz;
+      	GE::SetRasterInterruptPos(239);
+		GE::ClearScreen(0);
+
+		/* Pumpa: EGY megosztott "bélyegző", nincs háttérpuffere (False) */
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Pumpa.AnimSet:=	#Pumpa_Data+3;
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+		Talaj2.Init(#Talaj2_Data,0,0,False);
+		Talaj3.Init(#Talaj3_Data,0,0,False);	/* mint a Talaj2: nem maszkolt, bélyegző */
+		Fal.Init(#Fal_Data,0,0,False);		/* mint a Talaj1: 1 fázis, bélyegzőként Put */
+		Enemy.Init(#Enemy_Data,0,0,False);
+		Enemy.AnimSet:=	#Enemy_Data+3;		/* 5 növekvő fázis; +3: header átugrása */
+		/* Meteor: MASZKOLT (áttetsző) -> Draw-val rajzoljuk -> KELL a háttérpuffer (True), különben a Draw a */
+		Meteor.Init(#Meteor_Data,30,95,True);
+		Meteor.AnimSet:=	#Meteor_Data+3;		/* 4 fázis; +3: header átugrása */
+		/* Bomba: MASZKOLT, 1 fázis (nincs AnimSet-re szükség) */
+		Bomba.Init(#Bomba_Data,0,0,True);
+	BombaIkon.Init(#BombaIkon_Data,0,0,False);	/* 8x8 bombaikon, nem maszkolt, bélyegző */
+
+		/* POZÍCIÓ-TÁBLÁK Talaj1/Fal/Enemy-hez (a fő .ras oldalán, Bery/GE::Sprite Put úton maradnak) */
+		/* rács-X (1..30) -> képernyő byte-X = x*2 */
+		xx:=1;
+		while (xx<=30) do
+			begin;
+				Mezo_ByteX_Tab[xx]:=xx*2;
+				xx:=xx+1;
+			end;
+		/* rács-Y (1..18) -> a képsor kezdő címe */
+		yy:=1;
+		while (yy<=18) do
+			begin;
+				Pumpa.X:=0;
+				Pumpa.Y:=30+yy*10;
+				Pumpa.SetPosition;
+				p:=Pumpa.Position;
+				Mezo_SorCim_Tab[yy]:=p;
+				yy:=yy+1;
+			end;
+
+		/* A WaterPump unit saját tábláinak felépítése (EGYSZER) --- BuildScreenAddrTab */
+		WaterPump::BuildScreenAddrTab();
+		a:=Pumpa.AnimSet;
+		WaterPump::BuildPumpaFazTab(a, 0);		/* 1. játékos pumpája: fázis 0..7 */
+		a:=#Pumpa2_Data+3;
+		WaterPump::BuildPumpaFazTab(a, 8);		/* 2. játékos pumpája: fázis 8..15 (ugyanaz a kirakó) */
+
+		/* Vírus fázis-pointerek: Enemy.AnimSet + faz*16 */
+		a:=Enemy.AnimSet;
+		f:=0;
+		while (f<ENEMY_FAZ_DB) do
+			begin;
+				p:=f;
+				p:=p*PUMPA_FAZIS_MERET;
+				p:=p+a;
+				Enemy_FazPtr_Tab[f]:=p;
+				f:=f+1;
+			end;
+		/* meteor fázis-pointerek: AnimSet + faz*160 (MASZKOLT -> W*H*2 / fázis) */
+		a:=Meteor.AnimSet;
+		f:=0;
+		while (f<METEOR_FAZ_DB) do
+			begin;
+				p:=f;
+				p:=p*METEOR_FAZIS_MERET;
+				p:=p+a;
+				Meteor_FazPtr_Tab[f]:=p;
+				f:=f+1;
+			end;
+
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		/* A Keret VAN háttérpufferrel (True), mert maszkolt (átlátszó) sprite */
+		Keret.Init(#Keret_Data,Keret_X_ScreenPOS,Keret_Y_ScreenPOS,True);
+		Keret.SaveBackground();
+		Keret2.Init(#Keret2_Data,59,118,True);	/* maszkolt, háttérpufferrel; a pozíciót a Keret2_Kirak állítja */
+		Jelol1.Init(#Keret_Data,1,28,True);		/* versus eszköz-jelölők (maszkolt Draw: puffer kell) */
+		Jelol2.Init(#Keret2_Data,59,28,True);
+
+		/* A pumpának/vírusnak nincs poolja (a Map hordozza az állapotot), így itt nincs mit üríteni */
+
+	end;
+
+
+
+/* A Map tömb feltöltése az aktuális (Palya) pálya térképéből */
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+		base, ti					:	integer;
+	begin;
+	base:=Palya;
+	base:=base*540;				/* a pálya térképének kezdete a Terkepek tömbben */
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			ti:=base+data;
+			if (Versus=1) then
+				Map[data]:=Terkepek2[ti]	/* két játékos pálya (U3) */
+			else
+				Map[data]:=Terkepek[ti];		/* a szerkesztőből átemelt térkép (10 = Talaj1, 13 = Talaj3 blokkoló) */
+			data:=data+1;
+			end;
+	end;
+
+/* Egy byte kiírása a HUD-ra MINDIG 2 számjeggyel, vezető nullával (pl. 9 -> "09"), az x helytől; utána Ir_X a következő szabad oszlop */
+Procedure HUD_Num2(ertek: byte; x: byte; sor: byte);
+	var t : byte;
+	begin
+		Ir_X:=x;
+		t:=ertek/10;
+		Ir_Jegy(t, sor);
+		t:=ertek-t*10;
+		Ir_Jegy(t, sor);
+	end;
+
+/* A pálya sorszámának kijelzése (két játékos: a pálya alatt középen; egyébként az 1. HUD-sor elején) */
+Procedure Level_OSD();
+	var x : byte;
+	begin;
+		if (Ket_Jatekos=1) then
+			begin;
+			Ir_Hossza(#LevelStr);
+			x:=Ir_Hossz+Jegy_Sz+Jegy_Sz;
+			x:=64-x;
+			x:=x/2;
+			Ir(x, 224, #LevelStr);
+			if (Versus=1) then
+				HUD_Num2(Palya+20, Ir_X, 224)		/* versus pályák: LEVEL 20-tól */
+			else
+				HUD_Num2(Palya+1, Ir_X, 224);
+			end
+		else
+			begin;
+			Ir(4, 4, #LevelStr);
+			HUD_Num2(Palya+1, Ir_X, 4);
+			end;
+	end;
+
+/* Egy integer kiírása a HUD-ra MINDIG 4 számjeggyel, vezető nullákkal (pl. 5 -> "0005"), az x helytől */
+Procedure HUD_Num4(ertek: integer; x: byte; sor: byte);
+	var maradek, d : integer;
+		b : byte;
+	begin
+		Ir_X:=x;
+		maradek := ertek;
+		d := maradek / 1000;
+		b := d;
+		Ir_Jegy(b, sor);
+		maradek := maradek - d * 1000;
+		d := maradek / 100;
+		b := d;
+		Ir_Jegy(b, sor);
+		maradek := maradek - d * 100;
+		d := maradek / 10;
+		b := d;
+		Ir_Jegy(b, sor);
+		d := maradek - d * 10;
+		b := d;
+		Ir_Jegy(b, sor);
+	end;
+
+/* Mint a HUD_Num4, de 3 számjeggyel (000-255) */
+Procedure HUD_Num3(ertek: byte; x: byte; sor: byte);
+	var maradek, d : byte;
+	begin
+		Ir_X:=x;
+		maradek := ertek;
+		d := maradek / 100;
+		Ir_Jegy(d, sor);
+		maradek := maradek - d * 100;
+		d := maradek / 10;
+		Ir_Jegy(d, sor);
+		d := maradek - d * 10;
+		Ir_Jegy(d, sor);
+	end;
+
+/* Életek: "LIVES:" felirat a Lives_X helyen (a MapToScreen számolja), mellette annyi pumpa ikon (0. fázis), ahány élet van */
+Procedure Elet_OSD();
+	var i, ly, ix : byte;
+	begin;
+		ly:=4;
+		if (Coop=1) then ly:=14;		/* co-op: a 2. sor második fele */
+		Ir(Lives_X, ly, #LivesStr);
+		ix:=Ir_X;
+		Pumpa.Data:=Pumpa.AnimSet;
+		Pumpa.Y:=ly;
+		i:=0;
+		while (i < Eletek) do
+			begin;
+			Pumpa.X:=ix;
+			Pumpa.SetPosition;
+			Pumpa.Put;
+			ix:=ix+2;
+			i:=i+1;
+			end;
+	end;
+
+/* Versus: a j. játékos e. eszköz-ikonjának oszlopa a 0. sorban (e: 0 = pumpa, 1 = fal, 2 = bomba) - bal: 1, 3, 5; jobb: 30, 28, 26 */
+Function Ikon_Oszlop(j, e : byte) : byte;
+	var r : byte;
+	begin;
+		r:=e+e+1;
+		if (j=2) then r:=31-r;
+		returnvalue(r);
+	end;
+
+/* Versus: egy eszköz-ikon kirakása (nem maszkolt bélyegző) a 0. sorba; a 2. játékos pumpája a saját grafikájával */
+Procedure Ikon_Rajz(j, e : byte);
+	var x : byte;
+	begin;
+		x:=Ikon_Oszlop(j, e);
+		x:=x*2;
+		if (e=0) then
+			begin;
+			if (j=2) then Pumpa.Data:=#Pumpa2_Data+3 else Pumpa.Data:=Pumpa.AnimSet;
+			Pumpa.X:=x;
+			Pumpa.Y:=IKON_Y;
+			Pumpa.SetPosition;
+			Pumpa.Put;
+			end;
+		if (e=1) then
+			begin;
+			Fal.X:=x;
+			Fal.Y:=IKON_Y;
+			Fal.SetPosition;
+			Fal.Put;
+			end;
+		if (e=2) then
+			begin;
+			BombaIkon.X:=x;
+			BombaIkon.Y:=IKON_Y;
+			BombaIkon.SetPosition;
+			BombaIkon.Put;
+			end;
+	end;
+
+/* Versus: a j. játékos jelölője (a Keret-grafikája, álló) a kiválasztott eszköz-ikon köré */
+Procedure Jelolo_Rajz(j : byte);
+	var x : byte;
+	begin;
+		if (j=1) then
+			begin;
+			x:=Ikon_Oszlop(1, Eszkoz1);
+			Jelol1.X:=x*2-1;
+			Jelol1.Y:=IKON_Y-2;
+			Jelol1.SetPosition();
+			Jelol1.SaveBackground();
+			Jelol1.Draw;
+			Jelol1.UpdateLastPos;
+			end
+		else
+			begin;
+			x:=Ikon_Oszlop(2, Eszkoz2);
+			Jelol2.X:=x*2-1;
+			Jelol2.Y:=IKON_Y-2;
+			Jelol2.SetPosition();
+			Jelol2.SaveBackground();
+			Jelol2.Draw;
+			Jelol2.UpdateLastPos;
+			end;
+	end;
+
+/* Árak sora a kék vonal alatt: pumpa (0. fázis) : ár / bevétel, [fal : ár], [bomba : ár] - csak pályabetöltéskor; láncolva (Ir_X) */
+Procedure Arak_OSD();
+	var ax, py, w, kx, bx : byte;
+	begin;
+		ax:=4;
+		py:=28;
+		kx:=2;
+		if (Versus=1) then		/* versus: középen egymás alatt pumpa (y=4), fal (y=14), bomba (y=24) - ikon : ár, a pumpánál / bevétel */
+			begin;
+			Ir_Hossza(#ColonStr);
+			w:=Ir_Hossz;
+			Ir_Hossza(#SlashStr);
+			w:=w+Ir_Hossz+3+Jegy_Sz*7;		/* ikon + hézag (3) + ":" + 4 jegy + "/" + 3 jegy */
+			ax:=64-w;
+			ax:=ax/2;
+			py:=4;
+			kx:=3;							/* a kettőspont minden sorban ugyanott (a fal-ikon tömör, 1 byte hézag kell) */
+			end;
+		bx:=ax;
+		Pumpa.Data:=Pumpa.AnimSet;
+		Pumpa.X:=ax;
+		Pumpa.Y:=py;
+		Pumpa.SetPosition;
+		Pumpa.Put;
+		Ir(ax+kx, py, #ColonStr);
+		HUD_Num4(Pumpa_price, Ir_X, py);
+		Ir(Ir_X, py, #SlashStr);		/* / a pumpa ára után, mögötte a bevétel (termelés/pumpa) */
+		HUD_Num3(Pumpa_termel, Ir_X, py);
+		ax:=Ir_X+2;
+		if (Versus=1) then		/* versus: a 0. sor (a pálya fölött) - mindkét oldalon PUMPA/FAL/BOMBA választó-ikon + jelölő; a fal és a bomba ára középen, a pumpa alatt */
+			begin;
+			Ikon_Rajz(1, 0);
+			Ikon_Rajz(1, 1);
+			Ikon_Rajz(1, 2);
+			Ikon_Rajz(2, 0);
+			Ikon_Rajz(2, 1);
+			Ikon_Rajz(2, 2);
+			Jelolo_Rajz(1);
+			Jelolo_Rajz(2);
+			Fal.X:=bx;
+			Fal.Y:=14;
+			Fal.SetPosition;
+			Fal.Put;
+			Ir(bx+kx, 14, #ColonStr);
+			HUD_Num4(Tegla_price, Ir_X, 14);
+			BombaIkon.X:=bx;
+			BombaIkon.Y:=24;
+			BombaIkon.SetPosition;
+			BombaIkon.Put;
+			Ir(bx+kx, 24, #ColonStr);
+			HUD_Num4(Bomba_price, Ir_X, 24);
+			end
+		else
+		begin;
+		if (Fal_Engedve=1) then
+			begin;
+			Fal.X:=ax;
+			Fal.Y:=28;
+			Fal.SetPosition;
+			Fal.Put;
+			Ir(ax+3, 28, #ColonStr);
+			HUD_Num4(Tegla_price, Ir_X, 28);
+			ax:=Ir_X+2;
+			end;
+		if (Bomba_Engedve=1) then
+			begin;
+			BombaIkon.X:=ax;
+			BombaIkon.Y:=28;
+			BombaIkon.SetPosition;
+			BombaIkon.Put;
+			Ir(ax+2, 28, #ColonStr);
+			HUD_Num4(Bomba_price, Ir_X, 28);
+			end;
+		end;
+	end;
+
+/* A pénz (Drill_Cash) kiírása a HUD-ra, 4 jegyen (co-op: 1. sor bal oldalt, egyébként 2. sor) */
+Procedure Cash_OSD();
+	begin
+		if (Ket_Jatekos=1) then
+			HUD_Num4(Drill_Cash, Cash_X, 4)
+		else
+			HUD_Num4(Drill_Cash, Cash_X, 14);
+	end;
+
+/* A 2. játékos pénze (két játékos: jobb felső sarok) */
+Procedure Cash2_OSD();
+	begin
+		if (Ket_Jatekos=1) then HUD_Num4(Drill_Cash2, Cash2_X, 4);
+	end;
+
+/* A lerakott pumpák száma a HUD-ra, 3 jegyen (co-op: a két játékos ÖSSZEGE, max 255) */
+Procedure Pump_OSD();
+	var s : integer;
+		b : byte;
+	begin
+		if (Coop=1) then
+			begin;
+			s:=Pumpa_db;
+			s:=s+Pumpa_db2;
+			if (s>255) then s:=255;
+			b:=s;
+			HUD_Num3(b, Pump_X, 14);
+			end
+		else
+			begin;
+			HUD_Num3(Pumpa_db, Pump_X, 14);
+			if (Versus=1) then HUD_Num3(Pumpa_db2, Pump2_X, 14);	/* versus: a 2. játékos pumpái */
+			end;
+	end;
+
+/* A teljes térkép egyszeri kirajzolása induláskor */
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;
+					Talaj1.Put;
+				end;
+			if Map[data]=Talaj3Map then
+				begin;
+					Talaj3.X:=mapx*2;
+					Talaj3.Y:=30+mapy*10;
+					Talaj3.SetPosition;
+					Talaj3.Put;
+				end;
+			data:=data+1;
+			end;
+	/* HUD háttérsáv és feliratok kirajzolása a képernyő tetején */
+	if (Versus=0) then GE::FillRect(1, 22, 62, 2, 255);	/* kék vonal (versusban nincs) */
+	Level_OSD();					/* 1. sor: LEVEL: n (a többi kijelző a 2. sorban) */
+	/* a feliratok és számok helye láncolva (Ir_X), így a betűszélességhez igazodik */
+	if (Coop=1) then				/* co-op: 1. sor "P1$:0990 ... P2$:0450", 2. sor "PUMP:023/225  LIVES:", LEVEL a pálya alatt */
+		begin;
+		Ir(2, 4, "P1$:");
+		Cash_X:=Ir_X;
+		Ir_Hossza("P2$:");				/* jobbra igazítva: a sor vége 62 */
+		Cash2_X:=62-Ir_Hossz-Jegy_Sz*4;
+		Ir(Cash2_X, 4, "P2$:");
+		Cash2_X:=Ir_X;
+		Ir(2, 14, #PumpStr);
+		Pump_X:=Ir_X;
+		Ir(Pump_X+Jegy_Sz*3, 14, #SlashStr);
+		HUD_Num3(Cel_Akt, Ir_X, 14);				/* a közös cél */
+		Lives_X:=Ir_X+2;
+		Cash2_OSD();
+		end
+	else
+		begin;
+		if (Versus=1) then			/* versus: 1. sor "P1$:0990 ... P2$:0450", 2. sor "PUMPS:023 ... PUMPS:017", LEVEL a pálya alatt, nincs LIVES */
+			begin;
+			Ir(2, 4, "P1$:");
+			Cash_X:=Ir_X;
+			Ir_Hossza("P2$:");				/* jobbra igazítva: a sor vége 62 */
+			Cash2_X:=62-Ir_Hossz-Jegy_Sz*4;
+			Ir(Cash2_X, 4, "P2$:");
+			Cash2_X:=Ir_X;
+			Ir(2, 14, #PumpsStr);
+			Pump_X:=Ir_X;
+			Ir_Hossza(#PumpsStr);			/* jobbra igazítva, 3 számjegynek hely */
+			Pump2_X:=62-Ir_Hossz-Jegy_Sz*3;
+			Ir(Pump2_X, 14, #PumpsStr);
+			Pump2_X:=Ir_X;
+			Cash2_OSD();
+			end
+		else
+			begin;
+			Ir(4, 14, #CashStr);
+			Cash_X:=Ir_X;
+			Lives_X:=Cash_X+Jegy_Sz*4+4;			/* a 2. oszlop (PUMP: és LIVES:) a pénz után */
+			Ir(Lives_X, 14, #PumpStr);			/* "PUMP:" a CASH mellett, egy sorban */
+			Pump_X:=Ir_X;
+			Ir(Pump_X+Jegy_Sz*3, 14, #SlashStr);			/* / a szám mögött */
+			HUD_Num3(Cel_Akt, Ir_X, 14);				/* a pálya célja: csak pályabetöltéskor kerül ki */
+			end;
+		end;
+	Cash_OSD();
+	Pump_OSD();
+	Arak_OSD();					/* pumpa/fal/bomba ikon + ár a kék vonal alatt */
+	if (Versus=0) then Elet_OSD();	/* LIVES: + életek (versusban nincs kiírva) */
+	end;
+
+/* Egy enemy ("zöld paca" ellenség) kirajzolása a megadott rács-mezőre */
+Procedure Enemy_Kirak(x, y, faz : byte);
+	var p : integer;
+	begin;
+		p:=Mezo_SorCim_Tab[y];
+		p:=p+Mezo_ByteX_Tab[x];			/* kész képernyőcím, nulla szorzás/SetPosition */
+		Enemy.Position:=p;
+		Enemy.Data:=Enemy_FazPtr_Tab[faz];	/* kész fázis-pointer táblából */
+		Enemy.Put;
+	end;
+
+/* Egy fal-tégla kirajzolása a megadott rács-mezőre */
+Procedure Fal_Kirak(x, y : byte);
+	var p : integer;
+	begin;
+		p:=Mezo_SorCim_Tab[y];
+		p:=p+Mezo_ByteX_Tab[x];
+		Fal.Position:=p;
+		Fal.Put;
+	end;
+
+/* 2. talajtípus kirajzolása egy rács-mezőre */
+Procedure Talaj2_Kirak(x, y : byte);
+	var p : integer;
+	begin;
+		p:=Mezo_SorCim_Tab[y];
+		p:=p+Mezo_ByteX_Tab[x];
+		Talaj2.Position:=p;
+		Talaj2.Put;
+	end;
+
+/* A Keret 3x3 rács-környezetében lévő vírusos mezők újrarajzolása a SAJÁT fázisukban */
+Procedure Enemyk_Ujrarajzol(kx, ky : byte);
+	var dx, dy, cx, cy, f : byte;
+		mi : integer;
+	begin;
+		dy:=0;
+		while (dy<3) do
+			begin;
+				dx:=0;
+				while (dx<3) do
+					begin;
+						cx:=kx-1+dx;		/* kx-1 .. kx+1 */
+						cy:=ky-1+dy;
+						if ((cx>=1) and (cx<=30)) then
+						if ((cy>=1) and (cy<=18)) then
+							begin;
+								mi:=cx-1+(cy-1)*30;
+								if ((Map[mi]>=VirusMap) and (Map[mi]<=VirusMap+ENEMY_MAX_FAZIS)) then	/* csak vírus (20..24), a 2. játékos pumpái (31..) nem */
+									begin;
+										f:=Map[mi]-VirusMap;
+										Enemy_Kirak(cx, cy, f);
+									end;
+							end;
+						dx:=dx+1;
+					end;
+				dy:=dy+1;
+			end;
+	end;
+
+/* 1, ha az (x,y) mező a Keret 3x3-ában van: ekkor a vírus-bélyegzőt NEM rajzoljuk közvetlenül (beleírna a Keretbe), hanem jelezzük a Keret_Frissit-nek, ami a helyes sorrendben (Restore, vírusok újrarajzolása, Save, Draw) elvégzi */
+Function Keret_Erint(x, y : byte) : byte;
+	var cx, cy, r : byte;
+	begin;
+		r:=0;
+		cx:=x+1;
+		cy:=y+1;
+		if ((cx>=Keret_X_Pos) and (cx<=Keret_X_Pos+2)) then
+		if ((cy>=Keret_Y_Pos) and (cy<=Keret_Y_Pos+2)) then
+			begin;
+			Keret_Sereles:=1;
+			r:=1;
+			end;
+		if (Ket_Jatekos=1) then
+		if ((cx>=Keret2_X_Pos) and (cx<=Keret2_X_Pos+2)) then
+		if ((cy>=Keret2_Y_Pos) and (cy<=Keret2_Y_Pos+2)) then
+			begin;
+			Keret2_Sereles:=1;
+			r:=1;
+			end;
+		returnvalue(r);
+	end;
+
+
+/* A rács-koordinátákból (Keret_X_Pos/Keret_Y_Pos) kiszámolja a Keret sprite képernyő-pozícióját */
+Procedure Keret_XY_Calc();
+	begin;
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		Keret.X:=Keret_X_ScreenPOS;
+		Keret.Y:=Keret_Y_ScreenPOS;
+	end;
+
+/* A Keret sprite tényleges kirajzolása az aktuális (Keret.X/Y-ban beállított) pozícióra */
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+/* 2. Keret: pozíció a rácsból + mentés + rajz (mindig a Keret UTÁN = fölötte) */
+Procedure Keret2_Kirak();
+	begin;
+		if (Ket_Jatekos=1) then		/* ONE PLAYER GAME: nincs 2. Keret */
+			begin;
+			Keret2.X:=(Keret2_X_Pos*2)-1;
+			Keret2.Y:=28+(Keret2_Y_Pos*10);
+			Keret2.SetPosition();
+			Keret2.SaveBackground();
+			Keret2.Draw;
+			Keret2.UpdateLastPos;
+			end;
+		Keret2_Elozo_X_Pos:=Keret2_X_Pos;
+		Keret2_Elozo_Y_Pos:=Keret2_Y_Pos;
+	end;
+
+/* 2. Keret levétele (háttér vissza) - csak TWO PLAYER GAME-ben */
+Procedure Keret2_Le();
+	begin;
+		if (Ket_Jatekos=1) then Keret2.RestoreBackground();
+	end;
+
+/* Versus: a j. játékos eszközt vált (e: 0 = pumpa, 1 = fal, 2 = bomba); a jelölő a régi ikonról az újra kerül. Z-sorrend: Keret2 le, Keret le, jelölő le/fel, Keret fel, Keret2 fel */
+Procedure Eszkoz_Valt(j, e : byte);
+	var regi : byte;
+	begin;
+		regi:=Eszkoz1;
+		if (j=2) then regi:=Eszkoz2;
+		if (e<>regi) then
+			begin;
+			Keret2_Le();
+			Keret.RestoreBackground();
+			if (j=1) then
+				begin;
+				Jelol1.RestoreBackground();		/* a régi jelölő le (alatta az ikon) */
+				Eszkoz1:=e;
+				end
+			else
+				begin;
+				Jelol2.RestoreBackground();
+				Eszkoz2:=e;
+				end;
+			Jelolo_Rajz(j);
+			Keret_SpriteKirak();
+			Keret2_Kirak();
+			end;
+	end;
+
+/* Egy pumpa kivétele - a vírus/meteor/bomba "megette": ha a mezőn pumpa van, a gazdája pumpaszáma csökken (a Map-et a hívó írja át) */
+Procedure Pumpa_Torol(x, y : byte);
+	var mp								:	integer;
+	begin;
+		mp:=x-1+(y-1)*30;
+		if ((Map[mp]>=PumpaMap) and (Map[mp]<PumpaMap+PUMPA_FAZISOK)) then
+			begin;
+				if (Pumpa_db>0) then Pumpa_db:=Pumpa_db-1;
+				Pump_OSD();				/* pumpaszám-kijelző frissítése */
+			end;
+		if ((Map[mp]>=Pumpa2Map) and (Map[mp]<Pumpa2Map+PUMPA_FAZISOK)) then
+			begin;
+				if (Pumpa_db2>0) then Pumpa_db2:=Pumpa_db2-1;	/* a 2. játékos pumpája */
+				Pump_OSD();
+			end;
+	end;
+
+/* SZÁMOLÁSI fázis (vsync ELŐTT) */
+Procedure PumpakSzamol();
+	var idx, ki, kv, ki2, kv2		:	integer;
+		i							:	byte;
+		faz, m, b					:	byte;
+	begin;
+		ki:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;	/* a Keret mezője: ha itt vagy a két vízszintes szomszédján vált fázist pumpa, a Keretet újra kell rajzolni */
+		kv:=ki+1;
+		ki2:=Keret2_X_Pos-1+(Keret2_Y_Pos-1)*30;	/* ugyanez a 2. Keretre */
+		kv2:=ki2+1;
+		idx:=PumpaScanPos;
+		i:=0;
+		while (i<PUMPAK_CHUNK) do
+			begin;
+				m:=Map[idx];
+				b:=0;										/* a pumpa-tartomány alapja: 1. (PumpaMap) vagy 2. játékos (Pumpa2Map) */
+				if ((m>=PumpaMap) and (m<PumpaMap+PUMPA_FAZISOK)) then b:=PumpaMap;
+				if ((m>=Pumpa2Map) and (m<Pumpa2Map+PUMPA_FAZISOK)) then b:=Pumpa2Map;
+				if (b<>0) then
+					begin;
+						faz:=m-b;
+						faz:=faz+1;
+						if (faz>=PUMPA_FAZISOK) then faz:=0;
+						Map[idx]:=b+faz;
+						if ((idx+1>=ki) and (idx<=kv)) then Keret_Pumpa_Valt:=1;
+						if ((idx+1>=ki2) and (idx<=kv2)) then Keret2_Pumpa_Valt:=1;
+					end;
+				idx:=idx+PUMPA_STEP;
+				if (idx>=TERKEP_MERET) then idx:=idx-TERKEP_MERET;
+				i:=i+1;
+			end;
+	end;
+
+/* KIRAKÁSI fázis (vsync UTÁN, a rajzolási fázisban hívandó) */
+Procedure PumpakKirak();
+	var idx							:	integer;
+		i							:	byte;
+		faz, m						:	byte;
+	begin;
+		GE::SetBorder(GE::BORDER_GREEN);	/* RASZTER-MÉRÉS: pumpa-rajz = zöld */
+		idx:=PumpaScanPos;
+		i:=0;
+		while (i<PUMPAK_CHUNK) do
+			begin;
+				m:=Map[idx];
+				faz:=255;									/* képindex a WaterPump fázistáblájában: 0..7 = 1. játékos, 8..15 = 2. játékos */
+				if ((m>=PumpaMap) and (m<PumpaMap+PUMPA_FAZISOK)) then faz:=m-PumpaMap;
+				if ((m>=Pumpa2Map) and (m<Pumpa2Map+PUMPA_FAZISOK)) then faz:=m-Pumpa2Map+P2_Kep;	/* co-op: P2_Kep = 0 (az 1. játékos képe), versus: 8 */
+				if (faz<>255) then WaterPump::PutAt(idx,faz);	/* EGY kirakó mindkét játékos pumpájára */
+				idx:=idx+PUMPA_STEP;
+				if (idx>=TERKEP_MERET) then idx:=idx-TERKEP_MERET;
+				i:=i+1;
+			end;
+
+		PumpaScanPos:=idx;
+		GE::SetBorder(GE::BORDER_GRAY);	/* RASZTER-MÉRÉS vége */
+	end;
+
+/* Mindent egy eljárásban végez el a Keret körül, a helyes sorrendben (a vírus-bélyegző okozta sérülést is javítja, ha a Keret 3x3-ában változott vírus) */
+Procedure Keret_Frissit();
+	var mozgott						:	boolean;
+		pumpavan						:	boolean;
+		kell, vir, vv, kell2, vv2	:	byte;
+	begin;
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		mozgott:=false;
+		if (Keret_X_Pos<>Keret_Elozo_X_Pos) then mozgott:=true;
+		if (Keret_Y_Pos<>Keret_Elozo_Y_Pos) then mozgott:=true;
+		pumpavan:=false;
+		if (Keret_Pumpa_Valt=1) then pumpavan:=true;	/* csak ha a Keret alatti/melletti pumpa ebben a képkockában új fázist kap */
+		Keret_Pumpa_Valt:=0;
+		vir:=Keret_Sereles;		/* volt-e vírus-rajz a Keret 3x3-ában az utolsó Keret-frissítés óta */
+		Keret_Sereles:=0;
+		kell:=0;
+		vv:=0;
+		if (mozgott) then kell:=1;
+		if (mozgott) then vv:=1;
+		if (pumpavan) then kell:=1;
+		if (vir=1) then kell:=1;
+		if (vir=1) then vv:=1;
+		/* 2. Keret: ugyanezek a feltételek; ha az (alatta lévő) Keret újrarajzolódik, a 2. Keret is (z-sorrend) */
+		kell2:=kell;
+		vv2:=0;
+		if (Keret2_X_Pos<>Keret2_Elozo_X_Pos) then vv2:=1;
+		if (Keret2_Y_Pos<>Keret2_Elozo_Y_Pos) then vv2:=1;
+		if (Keret2_Sereles=1) then vv2:=1;
+		Keret2_Sereles:=0;
+		if (vv2=1) then kell2:=1;
+		if (Keret2_Pumpa_Valt=1) then kell2:=1;
+		Keret2_Pumpa_Valt:=0;
+
+		GE::SetBorder(GE::BORDER_YELLOW);	/* RASZTER-MÉRÉS: Keret = sárga */
+		if (kell2=1) then Keret2_Le();	/* felső réteg le */
+		if (kell=1) then Keret.RestoreBackground();
+		GE::SetBorder(GE::BORDER_GRAY);
+
+		PumpakKirak();
+
+		/* A RestoreBackground által elkent vírus-mezők helyreállítása a valós fázisukra */
+		GE::SetBorder(GE::BORDER_RED);	/* RASZTER-MÉRÉS: vírus = piros */
+		if (kell=1) then if (vv=1) then Enemyk_Ujrarajzol(Keret_X_Pos, Keret_Y_Pos);
+		if (vv2=1) then Enemyk_Ujrarajzol(Keret2_X_Pos, Keret2_Y_Pos);
+		GE::SetBorder(GE::BORDER_YELLOW);	/* RASZTER-MÉRÉS: Keret = sárga */
+		if (kell=1) then
+			begin;
+			Keret_XY_Calc();
+			Keret_SpriteKirak();
+			Keret_Elozo_X_Pos:=Keret_X_Pos;
+			Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+			end;
+		if (kell2=1) then Keret2_Kirak();	/* felső réteg fel */
+		GE::SetBorder(GE::BORDER_GRAY);	/* RASZTER-MÉRÉS vége */
+	end;
+
+/* A Keret_MoveXXX eljárások CSAK a rács-koordinátát (Keret_X_Pos/Y_Pos) módosítják */
+Procedure Keret_MoveLeft();
+	begin
+		Keret_X_Pos:=Keret_X_Pos-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		Keret_X_Pos:=Keret_X_Pos+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos+1;
+	end;
+
+/* Rövid "tick" digi hang a pumpa lerakásakor (ha épp nem szól a bomba hangja); a hang végét a Frame_Sync állítja le */
+Procedure Tick_Hang();
+	begin;
+		if (Digi_Aktiv=0) then
+			begin;
+			GE::DigiSoundOn(GE::DIGI_FREQ_4_KHZ, GE::DIGI_TYPE_2x4BIT);
+			GE::PlayDigiSound(#TickSFX);
+			Digi_Aktiv:=1;
+			end;
+	end;
+
+/* Pumpa lerakása a Keret alatti mezőre (Space lenyomásakor hívódik) */
+Procedure DrillLerak(px, py, j : byte);	/* pumpa lerakása a (px,py) mezőre; j = 1: az 1. játékos pénzéből/pumpája, j = 2: a 2. játékosé (versus) */
+	var penz : integer;
+	begin
+		MapPos:=px-1+(py-1)*30;
+		penz:=Drill_Cash;
+		if (j=2) then penz:=Drill_Cash2;
+		if ((Map[MapPos]=Talaj1Map) or (Map[MapPos]=Talaj2Map)) then
+		if (penz>=Pumpa_price) then
+			begin;
+				Keret2_Le();	/* a 2. Keret (felül) is le */
+				Keret.RestoreBackground();
+				if (j=2) then
+					begin;
+					Map[MapPos]:=Pumpa2Map+Pumpa_Uj_Faz;	/* a 2. játékos pumpája */
+					Drill_Cash2:=Drill_Cash2-Pumpa_price;	/* (még nincs kiírva) */
+					Pumpa_db2:=Pumpa_db2+1;
+					Cash2_OSD();						/* co-op: a 2. játékos pénze */
+					Pump_OSD();							/* co-op: a közös pumpaszám */
+					end
+				else
+					begin;
+					Map[MapPos]:=PumpaMap+Pumpa_Uj_Faz;
+					Drill_Cash:=Drill_Cash-Pumpa_price;	/* a pumpa ára levonva a pénzből */
+					Pumpa_db:=Pumpa_db+1;					/* termeléshez: hány pumpa van összesen */
+					Cash_OSD();							/* pénz-kijelző frissítése */
+					Pump_OSD();							/* pumpaszám-kijelző frissítése */
+					end;
+				if (j=2) then
+					WaterPump::PutAt(MapPos,Pumpa_Uj_Faz+P2_Kep)	/* a 2. játékos képe (versus: 8..15, co-op: az 1. játékosé) */
+				else
+					WaterPump::PutAt(MapPos,Pumpa_Uj_Faz);
+				Pumpa_Uj_Faz:=Pumpa_Uj_Faz+1;
+				if (Pumpa_Uj_Faz>=PUMPA_FAZISOK) then Pumpa_Uj_Faz:=0;
+				Keret_SpriteKirak();
+				Keret2_Kirak();		/* a 2. Keret fölé */
+					Tick_Hang();						/* hang: a rajz után (a DigiSoundOn szinkronra vár) */
+			end;
+	end;
+
+/* Fal-tégla lerakása a Keret alatti mezőre (F gomb) */
+Procedure TeglaLerak(px, py, j : byte);	/* fal a (px,py) mezőre; j = 1/2: kinek a pénzéből */
+	var penz : integer;
+	begin
+		MapPos:=px-1+(py-1)*30;
+		penz:=Drill_Cash;
+		if (j=2) then penz:=Drill_Cash2;
+		if ((Map[MapPos]=Talaj1Map) or (Map[MapPos]=Talaj2Map)) then
+		if (penz>=Tegla_price) then
+			begin;
+				Keret2_Le();	/* a 2. Keret (felül) is le */
+				Keret.RestoreBackground();
+				Map[MapPos]:=FalMap;
+				Fal_Kirak(px, py);
+				if (j=2) then
+					begin;
+					Drill_Cash2:=Drill_Cash2-Tegla_price;
+					Cash2_OSD();
+					end
+				else
+					begin;
+					Drill_Cash:=Drill_Cash-Tegla_price;
+					Cash_OSD();
+					end;
+				Keret_SpriteKirak();
+				Keret2_Kirak();		/* a 2. Keret fölé */
+			end;
+	end;
+
+/* BOMBA (B gomb, ha van rá Bomba_price fedezet) */
+/* Fehér border-sáv a képkockában (közvetlenül GE::WaitForSync() UTÁN hívandó!) */
+Procedure Bomba_Sav();
+	begin
+		asm("
+			di
+			ld a,[Bomba_SavY]
+			call Bomba_SavVar
+			ld a,170
+			out ($0),a
+			ld a,85
+			out ($60),a
+			ld a,[Bomba_SavMagas]
+			call Bomba_SavVar
+			ld a,21
+			out ($60),a
+			ld a,42
+			out ($0),a
+			ei
+			jp Bomba_SavVege
+Bomba_SavVar:
+			or a
+			ret z
+			ld c,a
+Bomba_SavSor:
+			ld b,14
+Bomba_SavIn:
+			djnz Bomba_SavIn
+			dec c
+			jr nz,Bomba_SavSor
+			ret
+Bomba_SavVege:
+		");
+	end;
+
+/* A háttérben szóló digi hang leállítása (ha szól): a szokásos megszakítás-kezelő + raszter-IT vissza */
+Procedure Digi_Le();
+	begin;
+		if (Digi_Aktiv=1) then
+			begin;
+			GE::DigiSoundOff();
+			GE::SetRasterInterruptPos(239);
+			Digi_Aktiv:=0;
+			end;
+	end;
+
+/* Képkocka-szinkron a főciklusban: digi hang alatt WaitForDigiSoundSync (+ a hang végén leállítás), egyébként WaitForSync */
+Procedure Frame_Sync();
+	var v : byte;
+	begin;
+		if (Digi_Aktiv=1) then
+			begin;
+			GE::WaitForDigiSoundSync();
+			v:=0;
+			if (GE::Is2x4bitDigiSoundPlaying()) then v:=1;
+			if (v=0) then Digi_Le();
+			end
+		else GE::WaitForSync();
+	end;
+
+Procedure Bomba_Ledob(px, py, j : byte);	/* bomba a (px,py) mezőre; j = 1/2: kinek a pénzéből (mindent rombol, bárkié) */
+	var dx, dy, gx, gy, tavx, tavy, tav		:	byte;
+		celY, noseY, vil						:	byte;
+		mp, penz								:	integer;
+	begin
+		penz:=Drill_Cash;
+		if (j=2) then penz:=Drill_Cash2;
+		if (penz>=Bomba_price) then
+			begin;
+					Digi_Le();	/* egy korábbi, még szóló hang leállítása */
+					/* 1) Zuhanás-animáció */
+				Bomba.X:=(px*2)-2;
+				Bomba.Y:=0;						/* a képernyő tetejéről indul */
+				Bomba.SetPosition();
+				Bomba.SaveBackground();
+				Bomba.Draw();
+				Bomba.UpdateLastPos();
+				celY:=28+(py*10)+6;
+				noseY:=Bomba.Y+16;				/* a bomba orra = a sprite alja */
+				GE::SetRasterInterruptPos(0);
+					while (noseY<celY) do
+					begin;
+							Frame_Sync();
+						Bomba_SavY:=Bomba.Y;
+						Bomba_Sav();				/* fehér border-/paletta-sáv a bomba magasságában */
+							Bomba.RestoreBackground();
+						Bomba.MoveDownBy4();
+						Bomba.SaveBackground();
+						Bomba.Draw();
+						Bomba.UpdateLastPos();
+						/* (a border-sáv már a sync után azonnal lefutott, lásd fent) */
+						noseY:=Bomba.Y+16;
+					end;
+					GE::SetRasterInterruptPos(239);
+					Bomba.RestoreBackground();		/* a bomba eltűnik, mielőtt a talaj törlődik */
+
+					/* becsapódás-villanás: 3x fehér/fekete (háttér-paletta + border), utána vissza az eredeti színekre */
+					Frame_Sync();
+					vil:=0;
+					while (vil<3) do
+						begin;
+							Frame_Sync();
+							GE::SetPalette(0,GE::PALETTE_White);
+							GE::SetBorder(GE::BORDER_White);
+							Frame_Sync();
+							GE::SetPalette(0,GE::PALETTE_Black);
+							GE::SetBorder(GE::BORDER_Black);
+							vil:=vil+1;
+						end;
+
+				/* a robbanás előtt az eredeti színek vissza (a felhő már a normál palettával látszik) */
+					GE::SetPalette(0,GE::PALETTE_Gray);
+					GE::SetPalette(2,GE::PALETTE_Green);
+					GE::SetBorder(GE::BORDER_Gray);
+
+					/* robbanás hang: a zuhanás és a villanás UTÁN (nincs többé border-sáv), még a talaj cseréje ELŐTT; NEM blokkoló */
+					GE::DigiSoundOn(GE::DIGI_FREQ_4_KHZ, GE::DIGI_TYPE_2x4BIT);	/* a sáv és a digi mód nem fér össze, ezért csak itt */
+					GE::PlayDigiSound(#ExplosionSFX);
+					Digi_Aktiv:=1;
+
+
+					/* 2) Rombusz alakú roncsolás (változatlan) */
+				Keret2_Le();	/* a 2. Keret (felül) is le */
+				Keret.RestoreBackground();
+				dy:=0;
+				while (dy<7) do
+					begin;
+						if (dy<3) then tavy:=3-dy else tavy:=dy-3;	/* |dy-3| = távolság a Kerettől függőlegesen */
+						gy:=py-3+dy;
+						if (gy>=1) then
+						if (gy<=18) then
+							begin;
+								dx:=0;
+								while (dx<7) do
+									begin;
+										if (dx<3) then tavx:=3-dx else tavx:=dx-3;	/* |dx-3| = távolság vízszintesen */
+										tav:=tavx+tavy;
+										if (tav<=3) then
+											begin;
+												gx:=px-3+dx;
+												if (gx>=1) then
+												if (gx<=30) then
+													begin;
+														mp:=gx-1+(gy-1)*30;
+															Pumpa_Torol(gx, gy);
+if (Map[mp]<>Talaj3Map) then
+	begin;
+		Map[mp]:=Talaj2Map;
+		Talaj2_Kirak(gx, gy);
+	end;
+													end;
+											end;
+										dx:=dx+1;
+									end;
+							end;
+						dy:=dy+1;
+					end;
+					if (j=2) then Drill_Cash2:=Drill_Cash2-Bomba_price else Drill_Cash:=Drill_Cash-Bomba_price;
+				Cash_OSD();
+				Cash2_OSD();
+				Keret_XY_Calc();
+				Keret_SpriteKirak();
+				Keret2_Kirak();		/* a 2. Keret fölé */
+			end;
+	end;
+
+/* A j. játékos Keretének léptetése (Joy_Bal/Jobb/Fel/Le). Versusban az 1. sorból felfelé az ikon-menübe lép (a kiválasztott ikonra); ott bal/jobb csak a saját 3 ikonja közt lépked, le = vissza a pálya 1. sorába, az ikon alá (pumpa: 1., fal: 3., bomba: 5. oszlop; P2: 30., 28., 26.) */
+Procedure Jatekos_Mozog(j : byte);
+	var x, y, xmin, xmax, e : byte;
+	begin;
+		if (j=1) then
+			begin;
+			x:=Keret_X_Pos; y:=Keret_Y_Pos; e:=Eszkoz1; xmin:=1; xmax:=5;
+			end
+		else
+			begin;
+			x:=Keret2_X_Pos; y:=Keret2_Y_Pos; e:=Eszkoz2; xmin:=26; xmax:=30;
+			end;
+		if (y=0) then		/* ikon-menü */
+			begin;
+			if (Joy_Bal=1) then if (x>xmin) then x:=x-2;
+			if (Joy_Jobb=1) then if (x<xmax) then x:=x+2;
+			if (Joy_Le=1) then
+				begin;
+				y:=1;
+				end;
+			end
+		else				/* pálya */
+			begin;
+			if (Joy_Bal=1) then if (x>1) then x:=x-1;
+			if (Joy_Jobb=1) then if (x<30) then x:=x+1;
+			if (Joy_Le=1) then if (y<18) then y:=y+1;
+			if (Joy_Fel=1) then
+				begin;
+				if (y>1) then
+					y:=y-1
+				else
+					if (Versus=1) then		/* ki a pályáról: az ikon-menübe, a kiválasztott eszközre */
+						begin;
+						y:=0;
+						x:=Ikon_Oszlop(j, e);
+						end;
+				end;
+			end;
+		if (j=1) then
+			begin;
+			Keret_X_Pos:=x; Keret_Y_Pos:=y;
+			end
+		else
+			begin;
+			Keret2_X_Pos:=x; Keret2_Y_Pos:=y;
+			end;
+	end;
+
+/* Versus: a j. játékos tüzelt a (px,py) mezőn. A 0. sorban a saját ikonjai közül választ (ha az eszköz engedélyezett), lent a kiválasztott eszközt rakja le. Választás és bomba: csak új lenyomásra (volt = 0) */
+Procedure Jatekos_Tuz(j, px, py, volt : byte);
+	var e, i, k : byte;
+	begin;
+		if (py=0) then
+			begin;
+			if (volt=0) then
+				begin;
+				e:=255;
+				i:=0;
+				while (i<3) do
+					begin;
+					k:=Ikon_Oszlop(j, i);		/* előbb változóba: a "fv(...)=px" feltételnél a fordító a B-ben tartott px-et a hívás alatt elrontja */
+					if (k=px) then e:=i;
+					i:=i+1;
+					end;
+				if (e=1) then if (Fal_Engedve=0) then e:=255;
+				if (e=2) then if (Bomba_Engedve=0) then e:=255;
+				if (e<>255) then Eszkoz_Valt(j, e);
+				end;
+			end
+		else
+			begin;
+			e:=Eszkoz1;
+			if (j=2) then e:=Eszkoz2;
+			if (e=0) then DrillLerak(px, py, j);
+			if (e=1) then TeglaLerak(px, py, j);
+			if (e=2) then if (volt=0) then Bomba_Ledob(px, py, j);
+			end;
+	end;
+
+/* A lerakott pumpák termelése */
+Procedure Pumpak_Termelnek();
+	var termeny : integer;
+	begin
+		if (Pumpa_db > 0) then
+			begin
+				termeny:=Pumpa_db;
+				termeny:=termeny*Pumpa_termel;
+				Drill_Cash:=Drill_Cash+termeny;
+				if (Drill_Cash > 9999) then Drill_Cash:=9999;
+				Cash_OSD();
+			end;
+		if (Pumpa_db2 > 0) then			/* a 2. játékos (versus) saját termelése, saját pénzbe (még nincs kiírva) */
+			begin
+				termeny:=Pumpa_db2;
+				termeny:=termeny*Pumpa_termel;
+				Drill_Cash2:=Drill_Cash2+termeny;
+				if (Drill_Cash2 > 9999) then Drill_Cash2:=9999;
+				Cash2_OSD();			/* co-op: kiírva */
+			end;
+	end;
+
+/* ENEMY_Szekcio - a terjedő "vírus" */
+
+/* C64 units::makeVirus(x,y) 1:1 mása */
+Procedure Enemy_Terjed_Ide(x, y : byte);
+	var mp								:	integer;
+	begin;
+		mp:=x-1+(y-1)*30;
+		if ((Map[mp]<>FalMap) and (Map[mp]<>Talaj3Map)) then						/* FAL blokkol */
+			begin;
+					Pumpa_Torol(x, y);					/* pumpát megeszi, bármely fázisban */
+				Map[mp]:=VirusMap;							/* 0. fázisú vírus */
+					if (Keret_Erint(x, y)=0) then Enemy_Kirak(x, y, 0);
+			end;
+	end;
+
+/* Véletlen rács-mező OSZTÁS NÉLKÜL (a mod 30/18 + *30 szoftveres osztás/szorzás helyett): Rnd_X 1..30, Rnd_Y 1..18, Rnd_Mp = Map-index; (rnd*N)>>8, shiftekkel */
+Procedure Rnd_Mezo();
+	begin
+		asm("
+			call Random_Random1
+			push hl
+			ld l,h
+			ld h,0
+			add hl,hl
+			ld b,h
+			ld c,l
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			or a
+			sbc hl,bc
+			ld a,h
+			ld [Rnd_X],a
+			pop hl
+			ld h,0
+			add hl,hl
+			ld b,h
+			ld c,l
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,bc
+			ld a,h
+			ld [Rnd_Y],a
+			ld l,a
+			ld h,0
+			add hl,hl
+			ld b,h
+			ld c,l
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			add hl,hl
+			or a
+			sbc hl,bc
+			ld a,[Rnd_X]
+			ld e,a
+			ld d,0
+			add hl,de
+			ld [Rnd_Mp],hl
+			ld a,[Rnd_X]
+			inc a
+			ld [Rnd_X],a
+			ld a,[Rnd_Y]
+			inc a
+			ld [Rnd_Y],a
+		");
+	end;
+
+/* Két véletlen 0..2 érték (a 3x3 terjedéshez) osztás nélkül: Rnd_DX, Rnd_DY = (rnd*3)>>8 */
+Procedure Rnd_Harom();
+	begin
+		asm("
+			call Random_Random1
+			push hl
+			ld l,h
+			ld h,0
+			ld b,h
+			ld c,l
+			add hl,hl
+			add hl,bc
+			ld a,h
+			ld [Rnd_DX],a
+			pop hl
+			ld h,0
+			ld b,h
+			ld c,l
+			add hl,hl
+			add hl,bc
+			ld a,h
+			ld [Rnd_DY],a
+		");
+	end;
+
+/* Kolónia-vetés: egy véletlen rács-mezőre vírus */
+Procedure Enemy_Random_Lerak();
+	begin;
+		Rnd_Mezo();
+		Enemy_Terjed_Ide(Rnd_X, Rnd_Y);
+	end;
+
+/* A vírus NÖVEKEDÉSE + TERJEDÉSE */
+Procedure Enemyk_Mukodnek();
+	var faz, nx, ny, dx, dy, rx, ry, p : byte;
+		mp : integer;
+	begin;
+		p:=0;
+		while (p<ENEMY_PROBA_DB) do
+			begin;
+				Rnd_Mezo();
+				rx:=Rnd_X;
+				ry:=Rnd_Y;
+				mp:=Rnd_Mp;
+				if ((Map[mp]>=VirusMap) and (Map[mp]<=VirusMap+ENEMY_MAX_FAZIS)) then	/* csak vírus (20..24), a 2. játékos pumpái (31..) nem */
+					begin;
+						faz:=Map[mp]-VirusMap;
+						if (faz < ENEMY_MAX_FAZIS) then
+							begin;
+								/* NÖVEKVŐ: egy lépcső előre */
+								faz:=faz+1;
+								Map[mp]:=VirusMap+faz;
+						if (Keret_Erint(rx, ry)=0) then Enemy_Kirak(rx, ry, faz);
+							end
+						else
+							begin;
+								/* KIFEJLETT: nem nő; terjed, ha engedélyezve */
+								if (Enemy_Terjedhet=1) then
+									begin;
+										/* 3x3 környezet: dx,dy fuggetlenul -1/0/+1 */
+										Rnd_Harom();
+										dx:=Rnd_DX;
+										dy:=Rnd_DY;
+										nx:=rx-1+dx;			/* rx-1 .. rx+1 */
+										ny:=ry-1+dy;
+										/* clamp a rácsra (C64: 0..39 / 1..24) */
+										if (nx<1)  then nx:=1;
+										if (nx>30) then nx:=30;
+										if (ny<1)  then ny:=1;
+										if (ny>18) then ny:=18;
+										Enemy_Terjed_Ide(nx, ny);
+									end;
+							end;
+					end;
+				p:=p+1;
+			end;
+	end;
+
+/* Tűzgomb: 1, ha SPACE VAGY a joystick tűzgombja le van nyomva (előtte GetKeyboard + GetJoysticks kell) */
+Function Tuz() : byte;
+	var r : byte;
+	begin;
+		r:=0;
+		if (GE::Pressed(GE::KEY_SPACE)) then r:=1;
+		if (GE::Joystick(1, GE::JOY_FIRE)) then r:=1;
+		returnvalue(r);
+	end;
+
+/* JELMAGYARÁZAT-képernyő (a főmenüben a 2-es billentyű): a játékelemek leírása, SPACE-re vissza a főmenübe */
+Procedure Jelmagyarazat_Kepernyo();
+	begin;
+		GE::ClearScreen(0);
+		/* jelmagyarázat: sprite + 5 pont + leírás; a hosszú szövegek a 32 karakteres sor miatt tördelve, a folytatás a szöveg alá igazítva */
+		Pumpa.Data:=Pumpa.AnimSet;
+		Pumpa.X:=2;
+		Pumpa.Y:=10;
+		Pumpa.SetPosition;
+		Pumpa.Put;
+		Ir(6, 10, ".....");
+		Ir(16, 10, "PUMP - VIZNYERO PUMPA");
+		Talaj1.X:=2;
+		Talaj1.Y:=21;
+		Talaj1.SetPosition;
+		Talaj1.Put;
+		Ir(6, 21, ".....");
+		Ir(16, 21, "TALAJ - ERRE LEHET");
+		Ir(16, 31, "EPITENI");
+		Talaj3.X:=2;
+		Talaj3.Y:=42;
+		Talaj3.SetPosition;
+		Talaj3.Put;
+		Ir(6, 42, ".....");
+		Ir(16, 42, "SZIKLA - NEM EPITHETO,");
+		Ir(16, 52, "NEM BONTHATO");
+		Fal.X:=2;
+		Fal.Y:=63;
+		Fal.SetPosition;
+		Fal.Put;
+		Ir(6, 63, ".....");
+		Ir(16, 63, "FAL - EZZEL LEHET");
+		Ir(16, 73, "BLOKKOLNI A VIRUST");
+		Keret.X:=1;
+		Keret.Y:=84;
+		Keret.SetPosition;
+		Keret.SaveBackground;
+		Keret.Draw;
+		Ir(6, 84, ".....");
+		Ir(16, 84, "KERET - MEZO KIJELOLO");
+		Ir(16, 94, "KERET");
+		Enemy.Data:=Enemy_FazPtr_Tab[4];
+		Enemy.X:=2;
+		Enemy.Y:=105;
+		Enemy.SetPosition;
+		Enemy.Put;
+		Ir(6, 105, ".....");
+		Ir(16, 105, "VIRUS - FERTOZI A");
+		Ir(16, 115, "TALAJT, NEM EPITHETO,");
+		Ir(16, 125, "BOMBAZHATO");
+		BombaIkon.X:=2;
+		BombaIkon.Y:=136;
+		BombaIkon.SetPosition;
+		BombaIkon.Put;
+		Ir(6, 136, ".....");
+		Ir(16, 136, "BOMBA - ROMBUSZ ALAKU");
+		Ir(16, 146, "TERULETET EPITHETOVE");
+		Ir(16, 156, "TESZI");
+		Ir(2, 167, "R");
+		Ir(6, 167, ".....");
+		Ir(16, 167, "RESET - UJRAINDITJA");
+		Ir(16, 177, "A PALYAT, EGY ELETET");
+		Ir(16, 187, "ELVESZ");
+		Ir(2, 198, "F");
+		Ir(6, 198, ".....");
+		Ir(16, 198, "FAL EPITES");
+		Ir(2, 209, "B");
+		Ir(6, 209, ".....");
+		Ir(16, 209, "BOMBA DOBAS");
+		Ir(10, 224, "PRESS SPACE TO GO BACK");
+		Start_Wait:=1;
+		while (Start_Wait = 1) do
+			begin;
+			GE::GetKeyboard();
+			GE::GetJoysticks();
+			if (Tuz()=1) then Start_Wait:=0;
+			GE::WaitForSync();
+			end;
+	end;
+
+/* A főmenü kirajzolása: a menü-blokk a képernyő közepén (vízszintesen a leghosszabb sor alapján, a sorok balra igazítva; függőlegesen 76..163) */
+Procedure Fomenu_Rajz();
+	var mx : byte;
+	begin;
+		GE::ClearScreen(0);
+		Ir_Hossza("3....TWO PLAYER VERSUS MODE");
+		mx:=64-Ir_Hossz;
+		mx:=mx/2;
+		Ir(mx, 76, "1....ONE PLAYER GAME");
+		Ir(mx, 92, "2....TWO PLAYER CO-OP");
+		Ir(mx, 108, "3....TWO PLAYER VERSUS MODE");
+		Ir(mx, 124, "4....HOW TO USE");
+		Ir(mx, 140, "5....HISCORE");
+		Ir(mx, 156, "6....LEVEL CODE");
+	end;
+
+/* FŐMENÜ / RND-beállítás: 1 = egy játékos, 2 = két játékos co-op (közös cél), 3 = két játékos versus (külön pénz/pumpák), 4 = jelmagyarázat, 5 = hiscore (még nincs), 6 = pályakód (még nincs). Közben pörög a véletlenszám-generátor (entrópia) */
+Procedure Start_Kepernyo();
+	begin;
+		Fomenu_Rajz();
+		Start_Wait:=1;
+		while (Start_Wait = 1) do
+			begin;
+			GE::GetKeyboard();
+			Rnd_Porgeto:=Random::RandomByte();
+			if (GE::Pressed(GE::KEY_1)) then
+				begin;
+				Ket_Jatekos:=0;
+				Coop:=0;
+				Versus:=0;
+				Start_Wait:=0;
+				end;
+			if (GE::Pressed(GE::KEY_2)) then
+				begin;
+				Ket_Jatekos:=1;
+				Coop:=1;
+				Versus:=0;
+				Start_Wait:=0;
+				end;
+			if (GE::Pressed(GE::KEY_3)) then
+				begin;
+				Ket_Jatekos:=1;
+				Coop:=0;
+				Versus:=1;
+				Start_Wait:=0;
+				end;
+			if (GE::Pressed(GE::KEY_4)) then
+				begin;
+				Jelmagyarazat_Kepernyo();
+				Fomenu_Rajz();
+				Start_Wait:=1;
+				end;
+			GE::WaitForSync();
+			end;
+		GE::ClearScreen(0);
+	end;
+
+/* METEOR - NEM BLOKKOLÓ. A főciklusból random időnként elindul egy zuhanás (Meteor_Indit), és amíg tart, a */
+/* A TELJES fal-réteg újrarajzolása a Map-ból (minden FalMap mező) */
+Procedure Fal_Mind_Kirak();
+	var gx, gy : byte;
+		mp : integer;
+	begin;
+		mp:=0;
+		fori gy:=1 to 18 do
+			fori gx:=1 to 30 do
+				begin;
+					if (Map[mp]=FalMap) then Fal_Kirak(gx, gy);
+					mp:=mp+1;
+				end;
+	end;
+
+/* METEOR BECSAPÓDÁS - a ciklus végén (a meteor eltűnésekor) fut le */
+Procedure Meteor_Becsapodas();
+	var gx, gy, gx0, gy0, tx, ty, mx, my : byte;
+		mp : integer;
+	begin;
+		mx:=Meteor.X;
+		my:=Meteor.Y;
+		gx0:=(mx + 1) / 2;						/* mint a működő 2x2-ben, csak 3x3-ra bővítve */
+		gy0:=(my - 22) / 10;
+		ty:=0;
+		while (ty<3) do
+			begin;
+				gy:=gy0+ty;
+				if (gy>=1) then
+				if (gy<=18) then
+					begin;
+						tx:=0;
+						while (tx<3) do
+							begin;
+								gx:=gx0-1+tx;
+								if (gx>=1) then
+								if (gx<=30) then
+									begin;
+										mp:=gx-1+(gy-1)*30;
+											Pumpa_Torol(gx, gy);
+if (Map[mp]<>Talaj3Map) then
+	begin;
+		Map[mp]:=Talaj2Map;
+		Talaj2_Kirak(gx, gy);
+	end;
+									end;
+								tx:=tx+1;
+							end;
+					end;
+				ty:=ty+1;
+			end;
+	end;
+
+Procedure Meteor_Indit();
+	var r : byte;
+	begin;
+		/* a meteor közeledtének JELZÉSE */
+		GE::SetPalette(3,GE::PALETTE_DarkBlue);
+		Meteor_Faz:=0;
+		Meteor.Data:=Meteor_FazPtr_Tab[0];	/* 0. fázis (szikla1) */
+		/* RANDOM belépő X */
+		r:=Random::RandomByte();
+		r:=r - (r/METEOR_X_RND)*METEOR_X_RND;
+		Meteor.X:=METEOR_X_MIN + r;
+		Meteor.Y:=METEOR_START_Y;			/* belépő Y fix, fent */
+		/* RANDOM út-hossz: ennél az Y-nál áll meg (becsapódási pont) */
+		r:=Random::RandomByte();
+		r:=r - (r/METEOR_Y_RND)*METEOR_Y_RND;
+		Meteor_Y_Cel:=METEOR_Y_MIN + r;
+		/* z-sorrend induláskor is: Keret le -> meteor mentés+rajz -> Keret fel (különben a meteor háttere a Keret darabját menti el, pl. ha a Keret az 1. sorban áll) */
+		Keret2_Le();
+		Keret.RestoreBackground();
+		Meteor.SetPosition();
+		Meteor.SaveBackground();
+		Meteor.Draw;
+		Meteor.UpdateLastPos;
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+		Keret2_Kirak();
+		Meteor_Aktiv:=1;
+		Meteor_UtemFrame:=0;
+	end;
+
+/* Meteor AKTÍV állapotban EZ fut a Keret_Frissit HELYETT. A villogás ellen: (1) a Keretet CSAK akkor töröljük/rajzoljuk újra, ha mozgott / pumpa van alatta / vírus-esemény volt a 3x3-ában / a meteor átfedi; (2) a raszter-megszakítást a meteor (és ha kell, a Keret) ALJA alá tesszük, hogy a törlés+rajz a sugár mögött történjen */
+Procedure Meteor_Keret_Frissit();
+	var mozgott						:	boolean;
+		pumpavan						:	boolean;
+		kx, ky, mx, my, ov, vir, vv, ly, kb, ov2, vv2, k2x, k2y	:	byte;
+	begin;
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		mozgott:=false;
+		if (Keret_X_Pos<>Keret_Elozo_X_Pos) then mozgott:=true;
+		if (Keret_Y_Pos<>Keret_Elozo_Y_Pos) then mozgott:=true;
+		pumpavan:=false;
+		if (Keret_Pumpa_Valt=1) then pumpavan:=true;	/* csak ha a Keret alatti/melletti pumpa ebben a képkockában új fázist kap */
+		Keret_Pumpa_Valt:=0;
+		vir:=Keret_Sereles;		/* vírus-rajz volt a Keret 3x3-ában (a Keret_Erint jelzi) */
+		Keret_Sereles:=0;
+		/* kell-e a Keretet újra rajzolni? */
+		kx:=Keret_X_Pos*2-1;		/* a Keret bal széle (byte) */
+		ky:=28+Keret_Y_Pos*10;		/* a Keret teteje (sor) */
+		mx:=Meteor.X;
+		my:=Meteor.Y;
+		ov:=0;
+		if ((mx+2>=kx) and (mx<=kx+3)) then
+			if ((my+22>=ky) and (my<=ky+17)) then ov:=1;	/* a meteor (a mozgásával együtt) átfedi a Keretet */
+		if (mozgott) then ov:=1;
+		if (pumpavan) then ov:=1;
+		if (vir=1) then ov:=1;
+		vv:=0;
+		if (mozgott) then vv:=1;
+		if (vir=1) then vv:=1;
+		/* 2. Keret (a Keret fölött): újrarajzolandó, ha a Keret is, ha a meteor átfedi, ha mozgott / pumpa / vírus */
+		ov2:=ov;
+		k2x:=Keret2_X_Pos*2-1;
+		k2y:=28+Keret2_Y_Pos*10;
+		if ((mx+2>=k2x) and (mx<=k2x+3)) then
+			if ((my+22>=k2y) and (my<=k2y+17)) then ov2:=1;
+		vv2:=0;
+		if (Keret2_X_Pos<>Keret2_Elozo_X_Pos) then vv2:=1;
+		if (Keret2_Y_Pos<>Keret2_Elozo_Y_Pos) then vv2:=1;
+		if (Keret2_Sereles=1) then vv2:=1;
+		Keret2_Sereles:=0;
+		if (vv2=1) then ov2:=1;
+		if (Keret2_Pumpa_Valt=1) then ov2:=1;
+		Keret2_Pumpa_Valt:=0;
+
+		if (ov2=1) then Keret2_Le();	/* 1) legfelső réteg le (csak ha kell) */
+		if (ov=1) then Keret.RestoreBackground();
+		Meteor.RestoreBackground();			/* 1) középső réteg le (régi pozíción) */
+
+		PumpakKirak();						/* 2) alsó animált réteg */
+		if (vv=1) then Enemyk_Ujrarajzol(Keret_X_Pos, Keret_Y_Pos);
+		if (vv2=1) then Enemyk_Ujrarajzol(Keret2_X_Pos, Keret2_Y_Pos);
+
+		/* 3) meteor lépés: EGYENES zuhanás, MINDEN képkockán METEOR_LE_PX px LE; METEOR_ANIM_UTEM képkockánként a következő fázis (0..3 körbe) */
+		if (Meteor.Y < Meteor_Y_Cel) then
+			begin;
+				Meteor.Y:=Meteor.Y+METEOR_LE_PX;			/* LE, képkockánként */
+				Meteor_UtemFrame:=Meteor_UtemFrame+1;
+				if (Meteor_UtemFrame>=METEOR_ANIM_UTEM) then
+					begin;
+						Meteor_UtemFrame:=0;
+						Meteor_Faz:=Meteor_Faz+1;
+						if (Meteor_Faz>=METEOR_FAZ_DB) then Meteor_Faz:=0;
+						Meteor.Data:=Meteor_FazPtr_Tab[Meteor_Faz];
+					end;
+			end
+		else
+			begin;
+				Meteor_Aktiv:=0;
+				GE::SetPalette(3,GE::PALETTE_Blue);		/* meteor vége -> vissza világoskék */
+				Meteor_Becsapodas();
+				Fal_Mind_Kirak();
+			end;
+		if (Meteor_Aktiv=1) then
+			begin;
+				Meteor.SetPosition();
+				Meteor.SaveBackground();
+				Meteor.Draw;
+				Meteor.UpdateLastPos;
+			end;
+
+		/* 4) Keret LEGFELÜL (csak ha kellett törölni; a meteor rárajzolhatott) */
+		if (ov=1) then
+			begin;
+				Keret_XY_Calc();
+				Keret.SetPosition();
+				Keret.SaveBackground();
+				Keret.Draw;
+				Keret.UpdateLastPos;
+				Keret_Elozo_X_Pos:=Keret_X_Pos;
+				Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+			end;
+		if (ov2=1) then Keret2_Kirak();		/* 2. Keret a legfelső */
+
+		/* raszter-megszakítás a következő képkockára: a meteor (és a Keret, ha újrarajzoljuk) ALJA alá -> a törlés+rajz a sugár mögött történik, nincs villogás */
+		if (Meteor_Aktiv=1) then
+			begin;
+				ly:=Meteor.Y+22;
+				if (ov=1) then
+					begin;
+						kb:=ky+14;
+						if (kb>ly) then ly:=kb;
+					end;
+				if (ov2=1) then
+					begin;
+						kb:=k2y+14;
+						if (kb>ly) then ly:=kb;
+					end;
+				if (ly>239) then ly:=239;
+				GE::SetRasterInterruptPos(ly);
+			end
+		else
+			GE::SetRasterInterruptPos(239);
+	end;
+
+/* A Palya sorszámú pálya betöltése: árak, kezdőpénz, cél, tiltások, térkép; a játékállapot nullázása (nem rajzol) */
+Procedure Palya_Betolt();
+	begin
+		Pumpa_price:=Palya_PumpaAr[Palya];
+		Tegla_price:=Palya_FalAr[Palya];
+		Bomba_price:=Palya_BombaAr[Palya];
+		Drill_Cash:=Palya_Penz[Palya];
+		Pumpa_termel:=Palya_Termel[Palya];
+		Cel_Akt:=Palya_Cel[Palya];
+		if (Coop=1) then Cel_Akt:=Palya_CelCoop[Palya];	/* co-op: a közös cél (a két játékos pumpáinak összege) */
+		Meteor_Engedve:=Palya_Meteor[Palya];
+		Virus_Engedve:=Palya_Virus[Palya];
+		Fal_Engedve:=Palya_Fal[Palya];
+		Bomba_Engedve:=Palya_Bomba[Palya];
+		if (Versus=1) then		/* két játékos pálya: a saját táblájából */
+			begin;
+			Pumpa_price:=Palya2_PumpaAr[Palya];
+			Tegla_price:=Palya2_FalAr[Palya];
+			Bomba_price:=Palya2_BombaAr[Palya];
+			Drill_Cash:=Palya2_Penz[Palya];
+			Pumpa_termel:=Palya2_Termel[Palya];
+			Cel_Akt:=Palya2_Cel[Palya];
+			Meteor_Engedve:=Palya2_Meteor[Palya];
+			Virus_Engedve:=Palya2_Virus[Palya];
+			Fal_Engedve:=Palya2_Fal[Palya];
+			Bomba_Engedve:=Palya2_Bomba[Palya];
+			end;
+		GE::SetRasterInterruptPos(239);	/* a meteor a raszter-IT-t áthelyezhette */
+		MapReset();
+		Pumpa_db:=0;
+		Pumpa_db2:=0;
+		Drill_Cash2:=0;
+		if (Ket_Jatekos=1) then Drill_Cash2:=Drill_Cash;	/* két játékos (versus és co-op): a 2. játékos is a pálya kezdőpénzével indul, saját pénzzel */
+		Termel_Frame:=0;
+		PumpaScanPos:=0;
+		Pumpa_Uj_Faz:=0;
+		Enemy_Sec_Frame:=0;
+		Enemy_Kolonia_db:=0;
+		Enemy_Terjedhet:=0;
+		Enemy_Frame:=0;
+		Meteor_Aktiv:=0;
+		Meteor_TriggerFrame:=60;
+		GE::SetPalette(3,GE::PALETTE_Blue);		/* ha éppen zuhant meteor: a sötétkék jelzés vissza */
+		Keret_X_Pos:=1;		/* 1. Keret: a középső sor ELSŐ mezője */
+		Keret_Y_Pos:=9;
+		Keret2_X_Pos:=30;		/* 2. Keret: a középső sor UTOLSÓ mezője */
+		Keret2_Y_Pos:=9;
+		P2_Kep:=PUMPA_FAZISOK;		/* a 2. játékos pumpa-képe: versus saját, co-op az 1. játékosé */
+		if (Coop=1) then P2_Kep:=0;
+		Eszkoz1:=0;			/* versus: mindkét játékos pumpával indul */
+		Eszkoz2:=0;
+	end;
+
+/* Az aktuális pálya újrakezdése (R gomb): betöltés + teljes újrarajzolás */
+Procedure Palya_Ujra();
+	begin;
+		Palya_Betolt();
+		GE::ClearScreen(0);
+		MapToScreen();
+		Keret_XY_Calc();
+		Keret_SpriteKirak();
+		Keret2_Kirak();		/* a 2. Keret fölé */
+		Keret_Elozo_X_Pos:=Keret_X_Pos;
+		Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+	end;
+
+/* Várakozás egy SPACE lenyomásra (előbb a nyomva tartott SPACE felengedésére) */
+Procedure Space_Var();
+	begin;
+		Start_Wait:=1;
+		while (Start_Wait = 1) do
+			begin;
+			GE::GetKeyboard();
+			GE::GetJoysticks();
+			Rnd_Porgeto:=Random::RandomByte();
+			if (Tuz()=0) then Start_Wait:=2;
+			GE::WaitForSync();
+			end;
+		while (Start_Wait = 2) do
+			begin;
+			GE::GetKeyboard();
+			GE::GetJoysticks();
+			Rnd_Porgeto:=Random::RandomByte();
+			if (Tuz()=1) then Start_Wait:=0;
+			GE::WaitForSync();
+			end;
+	end;
+
+/* Pálya teljesítve: felirat a képernyő közepére, majd várakozás egy SPACE lenyomásra (előbb a nyomva tartott SPACE felengedésére) */
+Procedure Palya_Teljesitve();
+	begin;
+		Digi_Le();
+		GE::FillRect(7, 106, 50, 40, 0);
+		if (Ket_Jatekos=1) then				/* két játékos: ki hány pumpát rakott */
+			begin;
+			if (Versus=1) then
+				begin;
+				if (Gyoztes=2) then
+					Ir_Kozep(110, "PLAYER 2 WINS !")
+				else
+					Ir_Kozep(110, "PLAYER 1 WINS !");
+				end
+			else
+				Ir_Kozep(110, "LEVEL COMPLETED !");
+			Ir(18, 122, "P1:");
+			HUD_Num3(Pumpa_db, Ir_X, 122);
+			Ir(Ir_X+4, 122, "P2:");
+			HUD_Num3(Pumpa_db2, Ir_X, 122);
+			Ir_Kozep(134, "PRESS SPACE TO CONTINUE");
+			end
+		else
+			begin;
+			Ir_Kozep(114, "LEVEL COMPLETED !");
+			Ir_Kozep(130, "PRESS SPACE TO CONTINUE");
+			end;
+		Space_Var();
+	end;
+
+/* GAME OVER: felirat a képernyő közepére, SPACE/tűz után vissza a főmenübe (Jatek_Fut:=0, a főprogram kezeli) */
+Procedure Game_Over();
+	begin;
+		Digi_Le();
+		GE::FillRect(7, 106, 50, 40, 0);
+		Ir_Kozep(114, "GAME OVER !");
+		Ir_Kozep(130, "PRESS SPACE FOR MENU");
+		Space_Var();
+		Jatek_Fut:=0;
+	end;
+
+/* Pálya elbukva (nincs pumpa és nincs pénz egy újra, vagy R): egy élet levonva (versusban nem), a pálya újrakezdődik; 0 életnél GAME OVER */
+Procedure Palya_Bukas();
+	begin;
+		if (Jatek_Fut=1) then		/* GAME OVER után ugyanabban a körben ne vonjon le újra */
+		begin;
+		Digi_Le();
+		if (Versus=0) then Eletek:=Eletek-1;	/* versusban nincs élet: csak újrakezdés */
+		if (Eletek=0) then
+			Game_Over()
+		else
+			begin;
+			GE::FillRect(7, 106, 50, 40, 0);
+			Ir_Kozep(114, "LEVEL FAILED !");
+			Ir_Kozep(130, "PRESS SPACE TO RETRY");
+			Space_Var();
+			Palya_Ujra();
+			end;
+		end;
+	end;
+
+/* Következő pálya (az utolsó után egyelőre az elsőre ugrik; a győzelem-felirat később): betöltés + teljes újrarajzolás */
+Procedure Palya_Kovetkezo();
+	begin;
+		Palya_Teljesitve();
+		Palya:=Palya+1;
+		if (Versus=1) then
+			begin;
+			if (Palya>=PALYA2_DB) then Palya:=0;
+			end
+		else
+			if (Palya>=PALYA_DB) then Palya:=0;
+		Palya_Ujra();
+	end;
+
+/* FŐPROGRAM */
+begin
+	/* Egyszeri indítási beállítások */
+	ProgramInit;
+
+  while (true) do		/* külső ciklus: főmenü -> játék -> (GAME OVER) -> főmenü */
+  begin
+	/* Főmenü */
+	Start_Kepernyo();
+
+	/* Új játék: életek, idő, pálya alaphelyzetbe */
+	Jatek_Fut:=1;
+	Eletek:=5;
+	R_Volt:=0;
+
+	/* Térkép feltöltése és kirajzolása, a Keret kezdő kirajzolása */
+	Palya:=INDULO_PALYA-1;
+	if (Versus=1) then Palya:=0;		/* két játékos: az első 2P pálya (LEVEL 20) */
+	Palya_Betolt();
+	MapToScreen;
+
+
+	/* Kezdő kirajzolás FELTÉTEL NÉLKÜL */
+	Keret_XY_Calc();
+	Keret_SpriteKirak();
+	Keret2_Kirak();		/* a 2. Keret fölé */
+	Keret_Elozo_X_Pos:=Keret_X_Pos;
+	Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+
+	/* ENEMY_Szekcio: nincs külön kezdő-késleltetés (a C64 sem csinál ilyet) */
+
+    while (Jatek_Fut = 1) do
+	begin
+
+		/* 1. Bemenetkezelés: billentyűzet/joystick lekérdezése, és ez alapján a Keret rács-pozíciójának módosítása */
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+
+		/* A véletlenszám-generátort minden képkockán pörgetjük, hogy a későbbi vírus-terjedés iránya se legyen */
+		Rnd_Porgeto:=Random::RandomByte();
+
+		/* Keret-mozgás LASSÍTÁSA: csak minden Keret_Mozog_Utem */
+		Keret_Mozog_Frame:=Keret_Mozog_Frame+1;
+		if (Keret_Mozog_Frame >= Keret_Mozog_Utem) then
+			begin;
+				Keret_Mozog_Frame:=0;
+				/* 1. Keret: 1. joystick (vagy kurzorbillentyűk) */
+				Joy_Bal:=0; Joy_Jobb:=0; Joy_Fel:=0; Joy_Le:=0;
+				if (GE::Joystick(1, GE::JOY_LEFT)) then Joy_Bal:=1;
+				if (GE::Joystick(1, GE::JOY_RIGHT)) then Joy_Jobb:=1;
+				if (GE::Joystick(1, GE::JOY_UP)) then Joy_Fel:=1;
+				if (GE::Joystick(1, GE::JOY_DOWN)) then Joy_Le:=1;
+				Jatekos_Mozog(1);
+				/* 2. Keret: 2. joystick (vagy WASD) */
+				if (Ket_Jatekos=1) then
+					begin;
+					Joy_Bal:=0; Joy_Jobb:=0; Joy_Fel:=0; Joy_Le:=0;
+					if (GE::Joystick(2, GE::JOY_LEFT) or GE::Pressed(GE::KEY_A)) then Joy_Bal:=1;
+					if (GE::Joystick(2, GE::JOY_RIGHT) or GE::Pressed(GE::KEY_D)) then Joy_Jobb:=1;
+					if (GE::Joystick(2, GE::JOY_UP) or GE::Pressed(GE::KEY_W)) then Joy_Fel:=1;
+					if (GE::Joystick(2, GE::JOY_DOWN) or GE::Pressed(GE::KEY_S)) then Joy_Le:=1;
+					Jatekos_Mozog(2);
+					end;
+			end;
+		/* TŰZ: 1. játékos = SPACE / 1. joystick, 2. játékos = Q / 2. joystick */
+		Tuz1_Most:=Tuz();
+		Tuz2_Most:=0;
+		if (Ket_Jatekos=1) then
+			begin;
+			if (GE::Joystick(2, GE::JOY_FIRE)) then Tuz2_Most:=1;
+			if (GE::Pressed(GE::KEY_Q)) then Tuz2_Most:=1;
+			end;
+		if (Versus=1) then		/* versus: a 0. sorban a tűz eszközt választ, lent a kiválasztott eszközt rakja le */
+			begin;
+			if (Tuz1_Most=1) then Jatekos_Tuz(1, Keret_X_Pos, Keret_Y_Pos, Tuz1_Volt);
+			if (Tuz2_Most=1) then Jatekos_Tuz(2, Keret2_X_Pos, Keret2_Y_Pos, Tuz2_Volt);
+			end
+		else
+			begin;
+			if (Tuz1_Most=1) then DrillLerak(Keret_X_Pos, Keret_Y_Pos, 1);			/* SPACE vagy joystick tűz = pumpa az 1. Keret alá */
+			if (Tuz2_Most=1) then DrillLerak(Keret2_X_Pos, Keret2_Y_Pos, 2);		/* co-op: a 2. játékos saját pumpája, saját pénzből */
+			if (GE::Pressed(GE::KEY_F)) then if (Fal_Engedve=1) then TeglaLerak(Keret_X_Pos, Keret_Y_Pos, 1);		/* F = fal-tégla lerakás */
+			if (GE::Pressed(GE::KEY_B)) then if (Bomba_Engedve=1) then Bomba_Ledob(Keret_X_Pos, Keret_Y_Pos, 1);	/* B = bomba (rombusz alakú roncsolás) */
+			end;
+		Tuz1_Volt:=Tuz1_Most;
+		Tuz2_Volt:=Tuz2_Most;
+	if (GE::Pressed(GE::KEY_R)) then				/* R = újrakezdés, egy életbe kerül (egy lenyomás = egy élet) */
+		begin;
+		if (R_Volt=0) then Palya_Bukas();
+		R_Volt:=1;
+		end
+	else R_Volt:=0;
+
+		/* 1b. Pumpa-animáció SZÁMOLÁSI fázisa */
+		PumpakSzamol();
+
+		/* 2. Várakozás a képfrissítésre (raszter-megszakítás), hogy a rajzolás ne okozzon szakadást/villogást a */
+		Frame_Sync();
+
+		/* 3. Rajzolási fázis. Ha a meteor ÉPPEN zuhan, a Meteor_Keret_Frissit fut a Keret_Frissit HELYETT */
+		if (Meteor_Aktiv = 1) then
+			Meteor_Keret_Frissit()
+		else
+			Keret_Frissit();
+
+		/* 4. Pumpák termelése: Termel_Utem képkockánként egyszer */
+		Termel_Frame:=Termel_Frame+1;
+		if (Termel_Frame >= Termel_Utem) then
+			begin
+				Termel_Frame:=0;
+				Pumpak_Termelnek();
+			end;
+
+		/* 5-6. VÍRUS: csak ha az aktuális pályán engedélyezett */
+		if (Virus_Engedve=1) then
+			begin;
+		GE::SetBorder(GE::BORDER_RED);	/* RASZTER-MÉRÉS: vírus = piros */
+		/* 5. KOLÓNIA-VETÉS - C64: aqualiquex.ras "if raster::newSecond" */
+		Enemy_Sec_Frame:=Enemy_Sec_Frame+1;
+		if (Enemy_Sec_Frame >= 50) then
+			begin;
+				Enemy_Sec_Frame:=0;
+				/* 50% (C64: mod(rnd,2)=0). Rnd_Porgeto = ebben a frame-ben sorsolt RandomByte (lásd fentebb) */
+				Enemy_Coin:=Rnd_Porgeto - (Rnd_Porgeto/2)*2;
+				if (Enemy_Coin = 0) then
+					begin;
+						if (Enemy_Kolonia_db < ENEMY_MAX_KOLONIA) then
+							begin;
+								Enemy_Random_Lerak();
+								Enemy_Kolonia_db:=Enemy_Kolonia_db+1;
+							end
+						else
+							Enemy_Terjedhet:=1;
+					end;
+			end;
+
+		/* 6. NÖVEKEDÉS + TERJEDÉS - C64 */
+		Enemy_Frame:=Enemy_Frame+1;
+		if (Enemy_Frame >= Enemy_Utem) then
+			begin;
+				Enemy_Frame:=0;
+				Enemyk_Mukodnek();
+			end;
+		GE::SetBorder(GE::BORDER_GRAY);	/* RASZTER-MÉRÉS vége */
+
+		end;
+
+
+		/* 7. METEOR trigger: ha NEM zuhan épp, visszaszámlálás a következő random zuhanásig */
+		if ((Meteor_Aktiv = 0) and (Meteor_Engedve = 1)) then
+			begin;
+				Meteor_TriggerFrame:=Meteor_TriggerFrame-1;
+				if (Meteor_TriggerFrame <= 0) then
+					begin;
+						Meteor_Indit();
+						/* 0..199 (byte-aritmetika), majd integer-ben +100 -> 100..299 */
+						Meteor_TriggerFrame:=Rnd_Porgeto - (Rnd_Porgeto/200)*200;
+						Meteor_TriggerFrame:=Meteor_TriggerFrame + 100;
+					end;
+			end;
+
+		/* 8. CÉL: ha elértük az aktuális pálya célját (a pumpák száma), jön a következő pálya */
+		if (Coop=1) then				/* co-op: a két játékos pumpáinak ÖSSZEGE számít */
+			begin;
+			Pumpa_Ossz:=Pumpa_db;
+			Pumpa_Ossz:=Pumpa_Ossz+Pumpa_db2;
+			Cel_Int:=Cel_Akt;
+			if (Jatek_Fut=1) then if (Pumpa_Ossz >= Cel_Int) then Palya_Kovetkezo();
+			end
+		else
+			begin;
+			if (Jatek_Fut=1) then if (Pumpa_db >= Cel_Akt) then
+				begin;
+				Gyoztes:=1;
+				Palya_Kovetkezo();
+				end;
+			if (Jatek_Fut=1) then if (Pumpa_db2 >= Cel_Akt) then	/* versus: aki előbb eléri a célt (255), nyer */
+				begin;
+				Gyoztes:=2;
+				Palya_Kovetkezo();
+				end;
+			end;
+	if ((Pumpa_db=0) and (Drill_Cash<Pumpa_price)) then	/* nincs pumpa és nincs pénz egyre sem: vége a pályának - versus: ha MINDKÉT játékos így jár */
+		if ((Pumpa_db2=0) and (Drill_Cash2<Pumpa_price)) then Palya_Bukas();
+	if (Versus=1) then if (Jatek_Fut=1) then		/* versus: aki "elfogyott" (nincs pumpája és pénze sem egyre), veszít - a másik nyer */
+		begin;
+		if ((Pumpa_db=0) and (Drill_Cash<Pumpa_price)) then
+			begin;
+			Gyoztes:=2;
+			Palya_Kovetkezo();
+			end
+		else
+			if ((Pumpa_db2=0) and (Drill_Cash2<Pumpa_price)) then
+				begin;
+				Gyoztes:=1;
+				Palya_Kovetkezo();
+				end;
+		end;
+
+	end;
+  end;
+
+//	GE::SetBorder(GE::Border_DarkRed);
+end.

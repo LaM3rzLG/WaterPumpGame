@@ -1,0 +1,427 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+
+var
+		/* Sprite-képek (bináris grafikai adatok) */
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin");
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin");
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin");
+		/* A három sprite-objektum: Pumpa (animált szivattyú), Talaj1 (üres talaj mező),
+		   Keret (a játékos által mozgatott kurzor - "keretezi" az aktuális mezőt) */
+		Pumpa							:	GE::Sprite;
+		Talaj1						 	:	GE::Sprite;
+		Keret							:	GE::Sprite;
+
+		CharSet 							: 	incbin("resources\tvc_sprites\CharSetGR4.bin");
+		CashStr 							: 	string = ("CASH$:");
+		PosStr							:	string = ("POZ-X:   POZ-Y:");
+
+		/* A Keret aktuális képernyő-pozíciója pixelben/byte-ban */
+		Keret_X_ScreenPOS				: 	byte = 29;
+		Keret_Y_ScreenPOS				:	byte = 128;
+		/* A Keret aktuális rács (mező) pozíciója: X: 1-30, Y: 1-18 */
+		Keret_X_Pos						:	byte = 15;
+		Keret_Y_Pos						:	byte = 9;
+		/* A Keret ELŐZŐ (legutóbb ténylegesen frissített) rács-pozíciója - ebből
+		   tudja a Keret_Frissit, hogy mozgott-e a Keret (lásd ott). */
+		Keret_Elozo_X_Pos				:	byte = 15;
+		Keret_Elozo_Y_Pos				:	byte = 9;
+		/* A játéktér 30x18 mezős rácsa. Minden elem egy mező tartalmát jelöli
+		   (lásd lentebb a MAP értékadások jelentései kommentet). */
+		Map								:	array	[18*30] of byte;
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		Drill_Cash						:	byte;		/* összegyűjtött pénz (kijelzéshez) */
+
+		/* -----------------------------------------------------------------
+		   PUMPÁK NYILVÁNTARTÁSA - egy fix méretű "pool" (lásd lentebb a
+		   Pumpak tömböt), mert a gép (3 MHz Z80) nem bír el minden pumpát
+		   minden képkockán újrarajzolni - ez hullámzó, akadozó képet adna.
+		   Helyette képkockánként csak egy forgó, fix méretű RÉSZHALMAZ
+		   animálódik/rajzolódik újra (lásd PumpakFrissit), a tömbindex
+		   sorrendjében - ami NEM térbeli sorrend, ezért nem alakul ki
+		   látható "hullám" a képernyőn.
+		   Ugyanezt a mintát használja a saját SpaceWar.ras (Enemies tömb +
+		   EnemyMoveNr forgó index) is.
+		   PUMPAK_CHUNK a fő hangolható érték a teljesítményhez: ez szabja
+		   meg a KÉPKOCKÁNKÉNTI MAXIMÁLIS Put() hívások számát, függetlenül
+		   attól, hány pumpa van összesen lerakva - ha villog/akadozik a
+		   kép, csökkentsd; ha az animáció túl lassúnak tűnik, óvatosan
+		   növeld.
+		   ----------------------------------------------------------------- */
+		const MAX_PUMPAK				:	byte = 100;	/* egyszerre létező pumpák max. száma */
+		const PUMPAK_CHUNK				:	byte = 20;	/* ennyi pumpa animációja frissül képkockánként */
+		const PUMPA_FAZISOK			:	byte = 8;	/* a Pumpa sprite animációs fázisainak száma */
+
+		/* Egy lerakott pumpa állapota: rács-koordinátája és aktuális
+		   animációs fázisa. x=0 jelenti, hogy a hely szabad (nincs benne
+		   pumpa) - mivel a valós rács-X mindig 1-30 között van. */
+		Pumpa_type =	record
+					x,y,anim				: 	byte;
+					end;
+
+		Pumpak 							:	array	[MAX_PUMPAK] of Pumpa_type;
+		PumpakKezdo						:	byte = 0;	/* honnan folytatja a forgó frissítést a következő képkockán */
+
+
+
+/*		MAP értékadások jelentései
+		Pumpa animációs fázisok:	1-8
+		Talaj típusok:			10-19
+		Vírusos talaj:			20-29								*/
+
+		PumpaMap							:	byte=1;
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+
+		Pumpa_Penz						:	byte=0;
+
+/* ============================================================
+   Játék indításakor egyszer lefutó beállítások: grafikus mód,
+   paletta, karakterkészlet, Game Engine indítása, sprite-ok
+   inicializálása.
+   ============================================================ */
+Procedure ProgramInit();
+	var i								:	byte;
+	begin
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::InitCharSet(#CharSet, 118, 2, 7);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_VID_ON);
+      	GE::SetRasterInterruptPos(239);
+
+		/* Pumpa sprite: nincs saját háttérpuffere (False), mert "bélyegzőként"
+		   használjuk - mindig egy adott mezőre rajzoljuk ki felülírással (Put).
+		   Az animációs fázisokat MOST már saját kezűleg, a Pumpak tömb alapján
+		   választjuk ki (lásd PumpaFazisKirak) - ezért nincs szükség a beépített
+		   InitAnimation/Animation mechanizmusra, csak az AnimSet kezdőcímére. */
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Pumpa.AnimSet:=	#Pumpa_Data+3;		/* +3: átugorja a típus+szélesség+magasság header byte-jait */
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		/* A Keret VAN háttérpufferrel (True), mert maszkolt (átlátszó) sprite:
+		   mozgás előtt vissza kell tudni állítani az alatta lévő valós képet. */
+		Keret.Init(#Keret_Data,Keret_X_ScreenPOS,Keret_Y_ScreenPOS,True);
+		Keret.SaveBackground();
+
+		/* Pumpak pool ürítése: minden hely szabad (x=0) induláskor. */
+		i:=0;
+		while (i<MAX_PUMPAK) do
+		begin;
+			Pumpak[i].x:=0;
+			i:=i+1;
+		end;
+
+	end;
+
+
+
+/* Feltölti a teljes Map tömböt üres talajjal (induláskor mindenhol Talaj1 van). */
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			Map[data]:=Talaj1Map;				/* Talaj1 sprite értéke */
+			data:=data+1;
+			end;
+	end;
+
+/* A teljes térkép egyszeri kirajzolása induláskor (minden mező végigjárása),
+   valamint a felső HUD sáv (CASH, POZ-X, POZ-Y feliratok és értékek) kiírása. */
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;
+					Talaj1.Put;
+				end;
+			data:=data+1;
+			end;
+	/* HUD háttérsáv és feliratok kirajzolása a képernyő tetején */
+	GE::FillRect(1, 12, 62, 2, 255);
+	GE::WriteText(4, 4, #CashStr);
+	GE::WriteText(32, 4, #PosStr);
+
+	GE::IntToStr(Drill_Cash);
+	GE::WriteText(16, 4, #GE_NumStr);
+
+	GE::ByteToStr(Keret_X_Pos);
+	GE::WriteText(42, 4, #GE_NumStr);
+	GE::ByteToStr(Keret_Y_Pos);
+	GE::WriteText(58, 4, #GE_NumStr);
+
+	end;
+
+/* Csak a Keret X/Y koordinátáit írja ki a HUD-ra (a szöveges kijelzőt frissíti,
+   a sprite-okat nem érinti). */
+Procedure Keret_OSD();
+	begin
+		GE::ByteToStr(Keret_X_Pos);
+		GE::WriteText(42, 4, #GE_NumStr);
+		GE::ByteToStr(Keret_Y_Pos);
+		GE::WriteText(58, 4, #GE_NumStr);
+
+	end;
+
+/* A rács-koordinátákból (Keret_X_Pos/Keret_Y_Pos) kiszámolja a Keret sprite
+   képernyő-pozícióját (Keret.X / Keret.Y). Ezt még nem érvényesíti a sprite-on -
+   ahhoz a Keret.SetPosition() hívás is kell (lásd Keret_SpriteKirak). */
+Procedure Keret_XY_Calc();
+	begin;
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		Keret.X:=Keret_X_ScreenPOS;
+		Keret.Y:=Keret_Y_ScreenPOS;
+	end;
+
+/* A Keret sprite tényleges kirajzolása az aktuális (Keret.X/Y-ban beállított)
+   pozícióra. Sorrend: pozíció érvényesítése -> a Keret alatti terület
+   elmentése háttérként -> a keret grafika kirajzolása -> "utolsó pozíció"
+   frissítése (ez alapján tudja majd a RestoreBackground, honnan kell
+   visszaállítania a képet, ha a Keret elmozdul). */
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+/* A Pumpa sprite kirajzolása a pool "i". elemének saját pozíciójára és saját
+   animációs fázisára. A Pumpa.Data-t közvetlenül a megfelelő fázis címére
+   állítjuk (AnimSet + fázis * egy fázis mérete) - nem a beépített
+   Animation() eljárással, mert azzal nem lehetne tetszőleges (nem egymást
+   követő) fázisokat, pumpánként eltérő állapotban, ugrás nélkül beállítani. */
+Procedure PumpaFazisKirak(i : byte);
+	begin;
+		Pumpa.Data:=Pumpa.AnimSet+Pumpak[i].anim*Pumpa.Size;
+		Pumpa.X:=Pumpak[i].x*2;
+		Pumpa.Y:=30+Pumpak[i].y*10;
+		Pumpa.SetPosition;
+		Pumpa.Put;
+	end;
+
+/* Megkeresi a Pumpak pool első szabad (x=0) helyét. Ha nincs szabad hely,
+   MAX_PUMPAK-t adja vissza (ezt a hívónak ellenőriznie kell). */
+Function TalalSzabadPumpaHely() : byte;
+	var i								:	byte;
+	begin;
+		i:=0;
+		while ((i<MAX_PUMPAK) and (Pumpak[i].x<>0)) do
+			i:=i+1;
+		TalalSzabadPumpaHely:=i;
+	end;
+
+/* Új pumpa berakása a poolba a megadott rács-koordinátára, és azonnali
+   kirajzolása - nem kell várni a soron következő forgó frissítésre ahhoz,
+   hogy látszódjon.
+   Az induló animációs fázist NEM mindig 0-ra állítjuk, hanem a pool-index
+   (i) alapján szórjuk szét (i mod PUMPA_FAZISOK): ha gyors egymásutánban
+   több pumpát is lerakunk, azok szomszédos pool-indexekre kerülnek, tehát
+   örökre ugyanabban a forgó PumpakFrissitesLepes-chunkban frissülnek - ha
+   mindegyik 0-ról indulna, ez azt jelentené, hogy a fázisuk MINDIG azonos
+   marad, vagyis tökéletesen szinkronban "ugrálnának". A szétszórt induló
+   fázissal ugyanabban a képkockában lépnek ugyan, de a fázisuk különböző
+   marad, ezért nem tűnnek egyetlen összehangolt animációnak. */
+Procedure Pumpa_Uj(x,y : byte);
+	var i								:	byte;
+	begin;
+		i:=TalalSzabadPumpaHely();
+		if (i<MAX_PUMPAK) then
+			begin;
+				Pumpak[i].x:=x;
+				Pumpak[i].y:=y;
+				Pumpak[i].anim:=i-(i/PUMPA_FAZISOK)*PUMPA_FAZISOK;
+				PumpaFazisKirak(i);
+			end;
+	end;
+
+/* Egy adott index-tartomány ([honnan..meddig]) pumpáinak animációs fázisát
+   lépteti eggyel, és újrarajzolja őket. Ezt hívja a PumpakFrissitesLepes,
+   mindig csak egy kis, forgó résztartományra - így képkockánként legfeljebb
+   PUMPAK_CHUNK darab Put() történik, függetlenül attól, hány pumpa van
+   összesen a pályán. */
+Procedure PumpakFrissit(honnan, meddig : byte);
+	var i								:	byte;
+	begin;
+		i:=honnan;
+		while (i<=meddig) do
+			begin;
+				if (Pumpak[i].x<>0) then
+					begin;
+						Pumpak[i].anim:=Pumpak[i].anim+1;
+						if (Pumpak[i].anim>=PUMPA_FAZISOK) then Pumpak[i].anim:=0;
+						PumpaFazisKirak(i);
+					end;
+				i:=i+1;
+			end;
+	end;
+
+/* Képkockánként egyszer hívandó: kiszámolja a soron következő forgó
+   PUMPAK_CHUNK méretű tartományt, és azt frissíti. A tartomány a pool
+   elején kezdődik újra, ha a végére ért - így minden pumpa nagyjából
+   MAX_PUMPAK/PUMPAK_CHUNK képkockánként egyszer lép animációban (100/20
+   esetén: minden 5. képkockán), de mivel a tömbindex nem térbeli
+   elrendezést követ, ez nem okoz látható hullámzást a képernyőn. */
+Procedure PumpakFrissitesLepes();
+	var vege							:	byte;
+	begin;
+		vege:=PumpakKezdo+PUMPAK_CHUNK-1;
+		if (vege>=MAX_PUMPAK) then vege:=MAX_PUMPAK-1;
+		PumpakFrissit(PumpakKezdo, vege);
+		PumpakKezdo:=PumpakKezdo+PUMPAK_CHUNK;
+		if (PumpakKezdo>=MAX_PUMPAK) then PumpakKezdo:=0;
+	end;
+
+/* Mindent egy eljárásban végez el a Keret körül, a helyes sorrendben:
+     1) eldönti, kell-e frissíteni (mozgott VAGY pumpa van alatta - az
+        animálódhat), és ha igen, MÁR ITT elvégzi a RestoreBackground-ot;
+     2) lefuttatja a PumpakFrissitesLepes-t (pumpák animációjának forgó
+        frissítése) - ez azért van KÖZBEN, mert ha a Keret alatti pumpa
+        pont ekkor lép fázist, a friss képkockának a RestoreBackground UTÁN,
+        de a SaveBackground ELŐTT kell megjelennie a képernyőn, különben a
+        Keret alatti pumpa animációja "befagyna" (a Keret mindig egy régi,
+        elmentett fázist állítana vissza rá). Ez az eredeti (4.0-ás) sorrend:
+        RestoreBackground -> PumpakFrissitesLepes -> mentés+rajzolás;
+     3) ha kellett a frissítés, elmenti a (már friss pumpa-animációt is
+        tartalmazó) hátteret és ráteszi a Keret kerekét;
+     4) a HUD-ot mindig frissíti, függetlenül attól, hogy a sprite
+        frissült-e.
+   (Korábban ez két külön eljárásra volt bontva egy globális boolean
+   jelzővel közöttük - az ELÉG VOLT, hogy a TRSE fordító összeomoljon
+   [exit code 3221225477 / access violation] rajta. Ez az egy-eljárásos,
+   csak lokális boolean-okat használó forma bizonyítottan fordul. FONTOS:
+   ennek a PumpakFrissitesLepes UTÁN kell állnia a fájlban, mert a TRSE
+   deklaráció-előtti hívást nem enged - máskülönben ez a procedura a saját
+   testében még nem létező PumpakFrissitesLepes-t hívná.) */
+Procedure Keret_Frissit();
+	var mozgott						:	boolean;
+		pumpavan						:	boolean;
+	begin;
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		mozgott:=((Keret_X_Pos<>Keret_Elozo_X_Pos) or (Keret_Y_Pos<>Keret_Elozo_Y_Pos));
+		pumpavan:=(Map[MapPos]=PumpaMap);
+		if (mozgott or pumpavan) then Keret.RestoreBackground();
+
+		PumpakFrissitesLepes();
+
+		if (mozgott or pumpavan) then
+			begin;
+				Keret_XY_Calc();
+				Keret_SpriteKirak();
+				Keret_Elozo_X_Pos:=Keret_X_Pos;
+				Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+			end;
+		Keret_OSD();
+	end;
+
+/* A Keret_MoveXXX eljárások CSAK a rács-koordinátát (Keret_X_Pos/Y_Pos)
+   módosítják - a tényleges háttér-visszaállítást és újrarajzolást a
+   főciklus végi Keret_Frissit() végzi el (ami észleli a mozgást és emiatt
+   restore-ol+újrarajzol), egyszer képkockánként. Ez azért fontos, mert ha
+   itt is rajzolnánk, a Keret duplán rajzolódna ki minden mozgásnál. */
+Procedure Keret_MoveLeft();
+	begin
+		Keret_X_Pos:=Keret_X_Pos-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		Keret_X_Pos:=Keret_X_Pos+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos+1;
+	end;
+
+/* Pumpa lerakása a Keret alatti mezőre (Space lenyomásakor hívódik).
+   Saját, önálló restore->lerakás->mentés+rajzolás sorrendet használ, hogy a
+   pumpa AZONNAL látszódjon. Ellenőrzi, hogy a mezőn már van-e pumpa, hogy
+   ismételt Space lenyomásra ne fogyjon feleslegesen a Pumpak pool. */
+Procedure DrillLerak();
+	begin
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		if (Map[MapPos]<>PumpaMap) then
+			begin;
+				Keret.RestoreBackground();		/* a keret alatti valós talajt tesszük láthatóvá lerakás előtt */
+				Map[MapPos]:=PumpaMap;
+				Pumpa_Uj(Keret_X_Pos, Keret_Y_Pos);
+				Keret_SpriteKirak();			/* elmenti a friss (pumpát tartalmazó) hátteret, majd ráteszi a keretet */
+				Keret_OSD();
+			end;
+	end;
+
+/* ============================================================
+   FŐPROGRAM
+   ============================================================ */
+begin
+	/* Egyszeri indítási beállítások, térkép feltöltése és kirajzolása,
+	   a Keret kezdő kirajzolása. */
+	ProgramInit;
+	MapReset;
+	MapToScreen;
+	/* Kezdő kirajzolás FELTÉTEL NÉLKÜL (nem a Keret_Frissit-en keresztül, mert az
+	   mostantól csak mozgás/pumpa esetén frissít - induláskor viszont mindig
+	   látszódnia kell a Keretnek). RestoreBackground-ot itt szándékosan NEM
+	   hívunk: a ProgramInit-ben elmentett háttér még a MapToScreen előttről,
+	   "üres" állapotból származna, annak visszaállítása most elrontaná a már
+	   kirajzolt térképet. */
+	Keret_XY_Calc();
+	Keret_SpriteKirak();
+	Keret_Elozo_X_Pos:=Keret_X_Pos;
+	Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+	Keret_OSD();
+
+    while (true) do
+	begin
+
+		/* 1. Bemenetkezelés: billentyűzet/joystick lekérdezése, és ez alapján
+		   a Keret rács-pozíciójának módosítása vagy pumpa lerakása.
+		   Ezek a lépések itt még NEM rajzolnak semmit a képernyőre. */
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+		if (GE::Joystick(1, GE::JOY_LEFT) and (Keret_X_Pos > 1)) then Keret_MoveLeft();
+		if (GE::Joystick(1, GE::JOY_RIGHT) and (Keret_X_Pos < 30)) then Keret_MoveRight();
+		if (GE::Joystick(1, GE::JOY_UP) and (Keret_Y_Pos > 1)) then Keret_MoveUp();
+		if (GE::Joystick(1, GE::JOY_DOWN) and (Keret_Y_Pos < 18)) then Keret_MoveDown();
+		if (GE::Pressed(GE::KEY_SPACE)) then DrillLerak();
+
+		/* 2. Várakozás a képfrissítésre (raszter-megszakítás), hogy a
+		   rajzolás ne okozzon szakadást/villogást a képen. */
+		GE::WaitForSync();
+
+		/* 3. Rajzolási fázis: a Keret_Frissit() maga tartalmazza a helyes
+		      sorrendet (RestoreBackground -> PumpakFrissitesLepes -> mentés+
+		      rajzolás), lásd a fejléc-kommentjét a definíciójánál. */
+		Keret_Frissit();
+
+	end;
+
+//	GE::SetBorder(GE::Border_DarkRed);
+end.

@@ -1,0 +1,66 @@
+program U3Test;
+@use "GE"
+
+var
+	CharSet		:	incbin("resources\tvc_sprites\CharSetGR4.bin");
+	U3Data		:	incbin("resources\tvc_sprites\u3test.bin", $C000);
+	Vor			:	array[4] of byte;
+	Utan		:	array[4] of byte;
+	Cim			:	pointer;
+	i			:	byte;
+	T0			:	string = ("U3 TESZT - VART: 65 66 67 68");
+	T1			:	string = ("BETOLTES UTAN (BASIC):");
+	T2			:	string = ("VID_ON + 48K_VID (U3=RAM):");
+
+begin
+	Cim := $C000;
+	/* 1) A program legelso dolga: mit latunk $C000-on (a betoltes utani allapot) */
+	i := 0;
+	while (i < 4) do
+	begin
+		Vor[i] := Cim[i];
+		i := i + 1;
+	end;
+
+	GE::SetGraphics(GE::GRAPHICS4);
+	GE::SetPalette(0,GE::PALETTE_Gray);
+	GE::SetPalette(1,GE::PALETTE_Black);
+	GE::SetPalette(2,GE::PALETTE_Green);
+	GE::SetPalette(3,GE::PALETTE_Blue);
+	GE::SetBorder(GE::BORDER_Gray);
+	GE::InitCharSet(#CharSet, 118, 2, 7);
+	GE::Init(GE::DIRECT_TO_SCREEN);
+	GE::SetMemory(GE::MEM_VID_ON);
+
+	/* 2) Ugyanaz, U0,U1,VID,U3 lapozassal (a jatek MEM_VID_ON-ja SYS-t tesz az U3 helyere) */
+	asm(" di ");
+	GE::SetMemory(GE::MEM_48K_VID);
+	i := 0;
+	while (i < 4) do
+	begin
+		Utan[i] := Cim[i];
+		i := i + 1;
+	end;
+	GE::SetMemory(GE::MEM_VID_ON);
+	asm(" ei ");
+
+	GE::ClearScreen(0);
+	GE::WriteText(2, 20, #T0);
+	GE::WriteText(2, 50, #T1);
+	i := 0;
+	while (i < 4) do
+	begin
+		GE::ByteToStr(Vor[i]);
+		GE::WriteText(2 + i*8, 70, #GE_NumStr);
+		i := i + 1;
+	end;
+	GE::WriteText(2, 100, #T2);
+	i := 0;
+	while (i < 4) do
+	begin
+		GE::ByteToStr(Utan[i]);
+		GE::WriteText(2 + i*8, 120, #GE_NumStr);
+		i := i + 1;
+	end;
+	while (true) do begin end;
+end.

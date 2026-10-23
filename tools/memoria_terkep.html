@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WaterPump - memóriatérkép</title>
+<style>
+:root { --bg:#1e1e1e; --fg:#d4d4d4; --halk:#8a8a8a; --vonal:#3c3c3c; --sav:#2a2a2a; --szabad:#2f3a2f; --baj:#f14c4c; --gomb:#0e639c; }
+@media (prefers-color-scheme: light) {
+	:root { --bg:#ffffff; --fg:#1f1f1f; --halk:#6a6a6a; --vonal:#d0d0d0; --sav:#f0f0f0; --szabad:#e3f1e3; --gomb:#3b8eea; }
+}
+* { box-sizing:border-box; }
+body { margin:0; padding:12px 16px 24px; background:var(--bg); color:var(--fg); font:13px/1.4 Consolas, "Courier New", monospace; }
+h1 { font-size:15px; margin:0 0 2px; }
+h2 { font-size:13px; margin:0 0 8px; color:var(--halk); font-weight:normal; text-transform:uppercase; letter-spacing:.05em; }
+.alcim { color:var(--halk); margin-bottom:12px; }
+.osszeg { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.osszeg div { border:1px solid var(--vonal); border-radius:4px; padding:6px 10px; }
+.osszeg b { display:block; font-size:16px; }
+.ketto { display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start; }
+.bal { flex:0 0 370px; max-width:100%; }
+.jobb { flex:1 1 420px; min-width:0; }
+
+/* összesítő: a 4 lap egymás alatt, függőleges sávval */
+.olap { display:flex; height:178px; border-top:1px solid var(--vonal); }
+.olap:last-child { border-bottom:1px solid var(--vonal); }
+.ocim { flex:0 0 78px; padding-top:2px; }
+.ocim .szab { display:block; font-size:11px; margin-top:4px; }
+.olista .plusz { color:#6fbf73; }
+.ocim b { display:block; }
+.ocim small { color:var(--halk); font-size:11px; }
+.osav { flex:0 0 46px; position:relative; background:var(--sav); }
+.osav .resz { position:absolute; left:0; right:0; border-bottom:1px solid var(--bg); min-height:2px; }
+.olista { flex:1; min-width:0; padding:2px 0 0 10px; overflow:hidden; font-size:12px; line-height:15px; }
+.olista div { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.olista .cim { color:var(--halk); }
+.valto { display:inline-flex; margin-top:4px; border:1px solid var(--vonal); border-radius:3px; overflow:hidden; }
+.valto button { font:inherit; font-size:11px; padding:1px 5px; border:0; background:transparent; color:var(--fg); cursor:pointer; }
+.valto button.be { background:var(--gomb); color:#fff; }
+
+/* részletek: laponként vízszintes sáv */
+.lap { margin-bottom:18px; }
+.lapfej { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; gap:8px; }
+.lapfej span { color:var(--halk); }
+.sav { position:relative; height:34px; background:var(--sav); border:1px solid var(--vonal); border-radius:3px; overflow:hidden; }
+.sav .resz { position:absolute; top:0; bottom:0; border-right:1px solid var(--bg); }
+.resz.szabad { background:repeating-linear-gradient(45deg, var(--szabad) 0 5px, transparent 5px 10px); }
+.resz .ures { position:absolute; top:0; bottom:0; right:0; background:repeating-linear-gradient(45deg, rgba(0,0,0,.55) 0 3px, transparent 3px 6px); }
+.kiemel { outline:2px solid var(--fg); outline-offset:-2px; }
+.skala { display:flex; justify-content:space-between; color:var(--halk); font-size:11px; margin-top:1px; }
+table { width:100%; border-collapse:collapse; margin-top:4px; }
+td { padding:1px 6px 1px 0; white-space:nowrap; }
+td.nev { width:100%; white-space:normal; }
+td.szam { text-align:right; }
+.halk { color:var(--halk); }
+.pont { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+.pont.szabad { background:var(--szabad); border:1px dashed var(--halk); }
+.megj { color:var(--halk); border-top:1px solid var(--vonal); padding-top:8px; margin-top:8px; }
+
+/* a kód bontása */
+.kod { margin-top:20px; border-top:1px solid var(--vonal); padding-top:12px; }
+.kodossz { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+.kodossz button { font:inherit; text-align:left; color:var(--fg); background:transparent; border:1px solid var(--vonal); border-radius:4px; padding:5px 10px; cursor:pointer; }
+.kodossz button.be { border-color:var(--fg); background:var(--sav); }
+.kodossz b { display:block; font-size:15px; }
+.kodossz small { color:var(--halk); }
+.kodsav { position:relative; height:26px; background:var(--sav); border:1px solid var(--vonal); border-radius:3px; overflow:hidden; }
+.kodsav .resz { position:absolute; top:0; bottom:0; }
+.kodsav .resz.halvany { opacity:.18; }
+.kodvez { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:10px 0 4px; }
+.kodvez input, .kodvez select { font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--vonal); border-radius:3px; padding:2px 6px; }
+.kodtabla td.oszlop { width:30%; min-width:80px; }
+.kodtabla .rud { height:9px; border-radius:2px; min-width:1px; }
+.kodtabla th { text-align:left; font-weight:normal; color:var(--halk); padding:2px 6px 2px 0; cursor:pointer; white-space:nowrap; }
+.kodtabla th.szam { text-align:right; }
+.kodtabla tr:hover td { background:var(--sav); }
+</style>
+</head>
+<body>
+<h1>WaterPump - memóriatérkép <a href="memory_map_c64.html" style="font-size:12px;font-weight:normal;color:var(--halk)">[részletes nézet]</a></h1>
+<div class="alcim" id="alcim">Nincs adat: build után futtasd: powershell -File resources\memoria_terkep.ps1 (ez írja a tools\memoria_adat.js-t).</div>
+<div class="osszeg" id="osszeg"></div>
+<div class="ketto">
+	<div class="bal"><h2>Összesítő</h2><div id="ossz"></div></div>
+	<div class="jobb"><h2>Részletek</h2><div id="lapok"></div></div>
+</div>
+<div class="kod" id="kod">
+	<h2>Kód bontása</h2>
+	<div class="alcim" id="kodcim"></div>
+	<div class="kodossz" id="kodossz"></div>
+	<div class="kodsav" id="kodsav"></div>
+	<div class="skala" id="kodskala"></div>
+	<div class="kodvez">
+		<input id="kodkeres" type="search" placeholder="keresés névben" size="22">
+		<label>rendezés <select id="kodrend"><option value="m">méret</option><option value="c">cím</option><option value="n">név</option></select></label>
+		<span class="halk" id="kodszamol"></span>
+	</div>
+	<table class="kodtabla"><thead><tr><th data-r="n">eljárás / rész</th><th data-r="u">egység</th><th data-r="c">cím</th><th class="szam" data-r="m">byte</th><th class="szam">kód / adat</th><th class="szam">%</th><th></th></tr></thead><tbody id="kodsorok"></tbody></table>
+</div>
+<div class="megj">Tömör szín = foglalt | sötét csíkozás a színen = a rekesz még üres vége | zöld csíkozás = szabad terület.<br>
+A $8000-es lapnál VID / U2 között lehet váltani (a játék alatt a VID van belapozva). Egér egy téglalapon vagy soron: a párja kiemelődik.<br>
+Kód bontása: a felső gombok szűrnek egységre; a táblázat fejlécére kattintva rendez; a "cím" melletti +N = ennyi további darabban van szétszórva.</div>
+
+<!-- az adatok: resources\memoria_terkep.ps1 írja build után; frissítés = az oldal újratöltése (F5) -->
+<script src="memoria_adat.js"></script>
+<script>
+/* t (fajta): k = kód, r = rendszer, u = unit-tömbök, v = verem, vid = videó, a = adatfájl (rekesz), p = puffer, sz = szabad
+   h = foglalt byte a rekeszben (ha nincs: az egész) | o = csoport az összesítőben (az egymást követő azonosak összevonódnak)
+   l = csak ennél a $8000-es lapnál látszik ("vid" / "u2") */
+var SZIN = { r:"#6b6b6b", u:"#a074c4", v:"#b5835a", k:"#3b8eea", vid:"#2c7a7b", p:"#e0a030" };
+var ADAT_SZIN = ["#e06c75", "#56b6c2", "#d19a66", "#98c379", "#c678dd", "#e5c07b", "#61afef", "#be5046"];
+var RESZEK = (window.MEMORIA && MEMORIA.reszek) || [];
+var LAPOK = [
+	{ n:"U0", e:0x0000, m:"alsó RAM" },
+	{ n:"U1", e:0x4000, m:"RAM" },
+	{ n:"VID", e:0x8000, m:"videó-RAM (az U2 helyén)", valt:1 },
+	{ n:"U3", e:0xC000, m:"RAM - adatfájlok fix címen" }
+];
+var KOZEP = "vid";	/* mi látszik a $8000-es lapon: "vid" / "u2" */
+
+function hex(x) { return "$" + ("000" + x.toString(16).toUpperCase()).slice(-4); }
+function kb(x) { return (x / 1024).toFixed(1).replace(".", ",") + " KB"; }
+
+var adatSorszam = 0;
+RESZEK.forEach(function (r, i) {
+	r.id = i;
+	r.hossz = r.v - r.e + 1;
+	if (r.h === undefined) r.h = r.hossz;
+	if (r.o === undefined) r.o = r.n;
+	r.szin = r.t === "a" ? ADAT_SZIN[adatSorszam++ % ADAT_SZIN.length] : SZIN[r.t];
+});
+
+function latszik(r) { return !r.l || r.l === KOZEP; }
+/* a rész [e, v] darabjából mennyi a szabad: szabad terület és betöltő puffer egészben, adatrekeszből az üres vége */
+function szabadResz(r, e, v) {
+	if (r.t === "sz" || r.t === "p") return v - e + 1;
+	if (r.t !== "a") return 0;
+	return (v - e + 1) - Math.max(0, Math.min(r.e + r.h - 1, v) - e + 1);
+}
+function szabadLap(lap, kozep) {
+	var veg = lap.e + 0x3FFF, s = 0;
+	RESZEK.forEach(function (r) {
+		if ((r.l && r.l !== kozep) || r.v < lap.e || r.e > veg) return;
+		s += szabadResz(r, Math.max(r.e, lap.e), Math.min(r.v, veg));
+	});
+	return s;
+}
+function kiemel(kulcs, be) {
+	document.querySelectorAll('[data-k~="' + kulcs + '"]').forEach(function (el) { el.classList.toggle("kiemel", be); });
+}
+function figyel(el, kulcsok, mit) {
+	el.dataset.k = kulcsok;
+	el.addEventListener("mouseenter", function () { mit.split(" ").forEach(function (k) { kiemel(k, true); }); });
+	el.addEventListener("mouseleave", function () { mit.split(" ").forEach(function (k) { kiemel(k, false); }); });
+}
+function valtoGomb() {
+	var d = document.createElement("div");
+	d.className = "valto";
+	["vid", "u2"].forEach(function (m) {
+		var b = document.createElement("button");
+		b.textContent = m.toUpperCase();
+		if (m === KOZEP) b.className = "be";
+		b.onclick = function () { KOZEP = m; rajzol(); };
+		d.appendChild(b);
+	});
+	return d;
+}
+function lapNev(lap) { return lap.valt ? KOZEP.toUpperCase() : lap.n; }
+function lapMegj(lap) { return lap.valt && KOZEP === "u2" ? "RAM - a játék alatt NINCS belapozva" : lap.m; }
+
+/* ÖSSZESÍTŐ: laponként egy függőleges sáv, mellette a csoportok nevei */
+function rajzolOssz() {
+	var hely = document.getElementById("ossz");
+	hely.innerHTML = "";
+	LAPOK.forEach(function (lap) {
+		var veg = lap.e + 0x3FFF, csop = [];
+		RESZEK.forEach(function (r) {
+			if (!latszik(r) || r.v < lap.e || r.e > veg) return;
+			var e = Math.max(r.e, lap.e), v = Math.min(r.v, veg), u = csop[csop.length - 1];
+			if (u && u.o === r.o) { u.v = v; u.idk.push(r.id); u.sz += szabadResz(r, e, v); }
+			else csop.push({ sz:szabadResz(r, e, v), o:r.o, e:e, v:v, t:r.o === "Szabad" ? "sz" : r.t, szin:r.szin, idk:[r.id], g:"g" + lap.e + "_" + csop.length });
+		});
+		var sor = document.createElement("div"), cim = document.createElement("div"), sav = document.createElement("div"), lista = document.createElement("div");
+		sor.className = "olap"; cim.className = "ocim"; sav.className = "osav"; lista.className = "olista";
+		cim.innerHTML = "<b>" + lapNev(lap) + "</b><small>" + hex(lap.e) + "</small>" +
+			'<span class="szab">szabad:<br>' + szabadLap(lap, KOZEP) + " byte</span>";
+		if (lap.valt) cim.appendChild(valtoGomb());
+		csop.forEach(function (c) {
+			var kulcsok = c.g + " " + c.idk.map(function (i) { return "r" + i; }).join(" ");
+			var d = document.createElement("div");
+			d.className = "resz" + (c.t === "sz" ? " szabad" : "");
+			d.style.top = ((c.e - lap.e) / 16384 * 100) + "%";
+			d.style.height = ((c.v - c.e + 1) / 16384 * 100) + "%";
+			if (c.t !== "sz") d.style.background = c.szin;
+			d.title = c.o + "\n" + hex(c.e) + " - " + hex(c.v);
+			figyel(d, kulcsok, kulcsok);
+			sav.appendChild(d);
+			var t = document.createElement("div");
+			t.innerHTML = (c.t === "sz" ? '<span class="pont szabad"></span>' : '<span class="pont" style="background:' + c.szin + '"></span>') +
+				'<span class="cim">' + hex(c.e).slice(1) + "-" + hex(c.v).slice(1) + "</span> " + c.o +
+				(c.sz > 0 ? ' <span class="plusz">' + (c.t === "sz" ? c.sz + " byte" : "+" + c.sz) + "</span>" : "");
+			t.title = c.o;
+			figyel(t, kulcsok, kulcsok);
+			lista.appendChild(t);
+		});
+		sor.appendChild(cim); sor.appendChild(sav); sor.appendChild(lista);
+		hely.appendChild(sor);
+	});
+}
+
+/* RÉSZLETEK: laponként vízszintes sáv + lista */
+function rajzolLapok() {
+	var hely = document.getElementById("lapok");
+	hely.innerHTML = "";
+	LAPOK.forEach(function (lap) {
+		var veg = lap.e + 0x3FFF;
+		var doboz = document.createElement("div"), fej = document.createElement("div");
+		doboz.className = "lap"; fej.className = "lapfej";
+		fej.innerHTML = "<b>" + lapNev(lap) + "</b><span>" + hex(lap.e) + " - " + hex(veg) + " | " + lapMegj(lap) + "</span>";
+		if (lap.valt) fej.insertBefore(valtoGomb(), fej.lastChild);
+		doboz.appendChild(fej);
+		var sav = document.createElement("div"), tabla = document.createElement("table");
+		sav.className = "sav";
+		RESZEK.forEach(function (r) {
+			if (!latszik(r) || r.v < lap.e || r.e > veg) return;
+			/* a lapba eső darab (a kód két lapon is átnyúlik) */
+			var e = Math.max(r.e, lap.e), v = Math.min(r.v, veg), hossz = v - e + 1;
+			var foglalt = Math.max(0, Math.min(r.e + r.h - 1, v) - e + 1);
+			var d = document.createElement("div");
+			d.className = "resz" + (r.t === "sz" ? " szabad" : "");
+			d.style.left = ((e - lap.e) / 16384 * 100) + "%";
+			d.style.width = (hossz / 16384 * 100) + "%";
+			if (r.t !== "sz") d.style.background = r.szin;
+			d.title = r.n + "\n" + hex(e) + " - " + hex(v) + "\n" + foglalt + " / " + hossz + " byte";
+			if (foglalt < hossz) {
+				var u = document.createElement("div");
+				u.className = "ures";
+				u.style.width = ((hossz - foglalt) / hossz * 100) + "%";
+				d.appendChild(u);
+			}
+			if (r.baj) d.style.boxShadow = "inset 0 0 0 3px var(--baj)";
+			figyel(d, "r" + r.id, "r" + r.id);
+			sav.appendChild(d);
+
+			var szabad = hossz - foglalt, tr = document.createElement("tr");
+			var pont = r.t === "sz" ? '<span class="pont szabad"></span>' : '<span class="pont" style="background:' + r.szin + '"></span>';
+			var jobb = r.t === "sz" ? "<td class='szam'>" + hossz + "</td><td class='szam'>szabad</td>"
+				: "<td class='szam'>" + foglalt + " / " + hossz + "</td><td class='szam" + (szabad === 0 ? " halk" : "") + "'>" + (szabad === 0 ? "-" : "+" + szabad) + "</td>";
+			if (r.baj) tr.style.color = "var(--baj)";
+			tr.innerHTML = "<td class='nev'>" + pont + r.n + (r.baj ? " - ÁTFEDÉS / NEM FÉR BELE" : "") + "</td><td class='halk'>" + hex(e) + "-" + hex(v) + "</td>" + jobb;
+			figyel(tr, "r" + r.id, "r" + r.id);
+			tabla.appendChild(tr);
+		});
+		doboz.appendChild(sav);
+		var skala = document.createElement("div");
+		skala.className = "skala";
+		for (var i = 0; i <= 4; i++) skala.innerHTML += "<span>" + hex(Math.min(lap.e + i * 0x1000, 0xFFFF)) + "</span>";
+		doboz.appendChild(skala);
+		doboz.appendChild(tabla);
+		hely.appendChild(doboz);
+	});
+}
+
+/* a felső dobozok - a "Szabad összesen" a VID / U2 váltót követi */
+var M = window.MEMORIA || { kodVeg:0, baj:0 };
+if (window.MEMORIA) document.getElementById("alcim").textContent = M.nev + " - a fordítás ideje: " + M.datum + " | frissítés: build + resources\\memoria_terkep.ps1, utána F5";
+var kodVeg = M.kodVeg, szabadAlso = 0x8000 - kodVeg, u3Szabad = 0;
+RESZEK.forEach(function (r) { if (r.e >= 0xC000) u3Szabad += r.t === "sz" ? r.hossz : r.hossz - r.h; });
+function rajzolFent() {
+	var szU1 = szabadLap(LAPOK[1], KOZEP), szK = szabadLap(LAPOK[2], KOZEP), szU3 = szabadLap(LAPOK[3], KOZEP), k = KOZEP.toUpperCase();
+	document.getElementById("osszeg").innerHTML =
+		"<div>Kód vége<b>" + hex(kodVeg) + "</b></div>" +
+		"<div>Szabad $8000-ig<b>" + kb(szabadAlso) + "</b></div>" +
+		"<div>U3: rekeszekben szabad<b>" + u3Szabad + " byte</b></div>" +
+		"<div>Átfedés / túlcsordulás<b" + (M.baj ? " style='color:var(--baj)'>" + M.baj + " helyen" : ">nincs") + "</b></div>" +
+		"<div>Szabad összesen (U1 + " + k + " + U3)<b>" + (szU1 + szK + szU3) + " byte</b>U1 " + szU1 + " | " + k + " " + szK + " | U3 " + szU3 + "</div>";
+}
+function rajzol() { rajzolFent(); rajzolOssz(); rajzolLapok(); }
+rajzol();
+
+/* A KÓD BONTÁSA: MEMORIA.kod = [{ n név, u egység, k kódbyte, a adatbyte, r [[cím, hossz], ...] }]
+   u: ras = főprogram, unit = a saját unit, GE / TVC, trse = a TRSE saját rutinjai */
+var KOD = (window.MEMORIA && MEMORIA.kod) || [];
+var NEV = (window.MEMORIA && MEMORIA.nev) || "";
+var EGYSEG = {
+	ras:  { n:NEV + ".ras (főprogram)", szin:"#3b8eea" },
+	unit: { n:NEV + ".tru (saját unit)", szin:"#4ec9b0" },
+	GE:   { n:"GE unit (Bery)", szin:"#c586c0" },
+	TVC:  { n:"TVC unit", szin:"#d7ba7d" },
+	trse: { n:"TRSE + BASIC indító", szin:"#8a8a8a" }
+};
+var kodSzuro = "", kodRend = "m";
+var KOD_E = 0x19EF, KOD_V = (window.MEMORIA ? MEMORIA.kodVeg : 0x19EF), KOD_H = KOD_V - KOD_E;
+KOD.forEach(function (x, i) {
+	x.id = i; x.h = x.k + x.a; x.c = x.r[0][0];
+	if (!EGYSEG[x.u]) EGYSEG[x.u] = { n:x.u, szin:"#b0b0b0" };
+});
+var kodMax = Math.max.apply(null, KOD.map(function (x) { return x.h; }).concat([1]));
+
+function kodOssz() {
+	var hely = document.getElementById("kodossz"), ossz = {};
+	KOD.forEach(function (x) { var o = ossz[x.u] || (ossz[x.u] = { h:0, db:0 }); o.h += x.h; o.db++; });
+	hely.innerHTML = "";
+	[""].concat(Object.keys(EGYSEG).filter(function (u) { return ossz[u]; })).forEach(function (u) {
+		var b = document.createElement("button"), o = u ? ossz[u] : { h:KOD_H, db:KOD.length };
+		b.className = u === kodSzuro ? "be" : "";
+		b.innerHTML = (u ? '<span class="pont" style="background:' + EGYSEG[u].szin + '"></span>' + EGYSEG[u].n : "Mind") +
+			"<b>" + o.h + " byte</b><small>" + (o.h / KOD_H * 100).toFixed(1).replace(".", ",") + " % | " + o.db + " db</small>";
+		b.onclick = function () { kodSzuro = u; kodRajz(); };
+		hely.appendChild(b);
+	});
+}
+function kodSav() {
+	var sav = document.getElementById("kodsav"), skala = document.getElementById("kodskala");
+	sav.innerHTML = ""; skala.innerHTML = "";
+	KOD.forEach(function (x) {
+		x.r.forEach(function (d) {
+			var el = document.createElement("div");
+			el.className = "resz" + (kodSzuro && x.u !== kodSzuro ? " halvany" : "");
+			el.style.left = ((d[0] - KOD_E) / KOD_H * 100) + "%";
+			el.style.width = Math.max(d[1] / KOD_H * 100, 0.08) + "%";
+			el.style.background = EGYSEG[x.u].szin;
+			el.title = x.n + " (" + EGYSEG[x.u].n + ")\n" + hex(d[0]) + " - " + hex(d[0] + d[1] - 1) + " | " + d[1] + " byte";
+			figyel(el, "k" + x.id, "k" + x.id);
+			sav.appendChild(el);
+		});
+	});
+	for (var i = 0; i <= 4; i++) skala.innerHTML += "<span>" + hex(KOD_E + Math.round(KOD_H * i / 4)) + "</span>";
+}
+function kodSorok() {
+	var szo = document.getElementById("kodkeres").value.trim().toLowerCase();
+	var lista = KOD.filter(function (x) { return (!kodSzuro || x.u === kodSzuro) && (!szo || x.n.toLowerCase().indexOf(szo) >= 0); });
+	lista.sort(function (p, q) {
+		if (kodRend === "c") return p.c - q.c;
+		if (kodRend === "n") return p.n.localeCompare(q.n, "hu");
+		if (kodRend === "u") return p.u.localeCompare(q.u) || q.h - p.h;
+		return q.h - p.h;
+	});
+	var tb = document.getElementById("kodsorok"), sum = 0;
+	tb.innerHTML = "";
+	lista.forEach(function (x) {
+		sum += x.h;
+		var tr = document.createElement("tr"), sz = EGYSEG[x.u].szin;
+		tr.innerHTML = "<td class='nev'><span class='pont' style='background:" + sz + "'></span>" + x.n + "</td>" +
+			"<td class='halk'>" + x.u + "</td><td class='halk'>" + hex(x.c) + (x.r.length > 1 ? " +" + (x.r.length - 1) : "") + "</td>" +
+			"<td class='szam'>" + x.h + "</td><td class='szam halk'>" + x.k + " / " + x.a + "</td>" +
+			"<td class='szam halk'>" + (x.h / KOD_H * 100).toFixed(1).replace(".", ",") + "</td>" +
+			"<td class='oszlop'><div class='rud' style='width:" + (x.h / kodMax * 100) + "%;background:" + sz + "'></div></td>";
+		figyel(tr, "k" + x.id, "k" + x.id);
+		tb.appendChild(tr);
+	});
+	document.getElementById("kodszamol").textContent = lista.length + " sor, " + sum + " byte (" + (sum / KOD_H * 100).toFixed(1).replace(".", ",") + " %)";
+}
+function kodRajz() { kodOssz(); kodSav(); kodSorok(); }
+if (KOD.length) {
+	document.getElementById("kodcim").textContent = hex(KOD_E) + " - " + hex(KOD_V - 1) + ", " + KOD_H + " byte | " +
+		"minden .sym-címke mérete = a következő címke címe - a sajátja; gazdája az .asm \"Defining procedure\" ... \"end_procedure_\" határaiból";
+	document.getElementById("kodkeres").oninput = kodSorok;
+	document.getElementById("kodrend").onchange = function () { kodRend = this.value; kodSorok(); };
+	document.querySelectorAll(".kodtabla th[data-r]").forEach(function (th) {
+		th.onclick = function () { kodRend = th.dataset.r; document.getElementById("kodrend").value = kodRend === "u" ? "m" : kodRend; kodSorok(); };
+	});
+	kodRajz();
+} else document.getElementById("kod").style.display = "none";
+</script>
+</body>
+</html>

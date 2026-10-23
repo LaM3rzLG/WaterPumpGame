@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WaterPump pályaszerkesztő</title>
+<style>
+  :root { --bg:#14181c; --panel:#1d2329; --line:#2c353d; --ink:#d8e0e6; --dim:#8b98a3; --ok:#6ed26e; --blk:#0b0d0f; --acc:#3255c3; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 1240px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: var(--dim); margin: 0 0 12px; }
+  .wrap { display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  #boardbox { overflow:auto; max-width:100%; }
+  #board { display:grid; grid-template-columns: 22px repeat(30, 22px); grid-auto-rows: 22px; gap:1px; user-select:none; touch-action:none; }
+  .cell { display:flex; align-items:center; justify-content:center; font:700 13px ui-monospace, Consolas, monospace; cursor:crosshair; background:#26402a; color:#a9d9a9; border-radius:2px; }
+  .cell.b { background:var(--blk); color:#e0a040; box-shadow: inset 0 0 0 1px #4a3a1a; }
+  .rule { display:flex; align-items:center; justify-content:center; font:11px ui-monospace, Consolas, monospace; color:var(--dim); }
+  .rule.c5 { color:var(--ink); }
+  .side { flex:1 1 400px; min-width:330px; display:flex; flex-direction:column; gap:12px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  button { background:#2a333b; color:var(--ink); border:1px solid #3a4651; border-radius:6px; padding:6px 10px; font:inherit; cursor:pointer; }
+  button:hover { background:#34404a; }
+  button.on { background:var(--acc); border-color:#5b7ee0; color:#fff; }
+  button.pri { background:#2f5d31; border-color:#4a8a4d; }
+  button.tab { min-width:38px; padding:6px 8px; }
+  label { color:var(--dim); font-size:12px; }
+  input[type=text], input[type=number], select { background:#10151a; color:var(--ink); border:1px solid #3a4651; border-radius:6px; padding:5px 8px; font:inherit; }
+  input[type=number] { width:78px; }
+  textarea { width:100%; background:#10151a; color:var(--ink); border:1px solid #3a4651; border-radius:6px; padding:8px; font:12px/1.35 ui-monospace, Consolas, monospace; resize:vertical; white-space:pre; overflow:auto; }
+  .stat { color:var(--dim); font-size:12px; }
+  .msg { min-height:18px; font-size:12px; color:var(--ok); }
+  .msg.err { color:#ff8a8a; }
+  h2 { font-size:13px; margin:0 0 6px; color:var(--dim); font-weight:600; letter-spacing:.02em; text-transform:uppercase; }
+  .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px 14px; }
+  .grid2 label { display:flex; flex-direction:column; gap:3px; }
+  .chk { display:flex; flex-direction:row !important; align-items:center; gap:6px !important; color:var(--ink); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>WaterPump pályaszerkesztő</h1>
+  <p class="sub">Két pályakészlet: egy játékos / co-op (1-49) és két játékos versus (50-től, legfeljebb 49), a játékban mindkettő 01-től számozva. Minden pályának saját térképe, célja, árai és tiltásai vannak. Bal gomb = a kiválasztott eszköz, jobb gomb = a másik, húzással festhetsz. Minden módosítás automatikusan mentődik a böngészőbe.</p>
+
+  <div class="panel" style="margin-bottom:12px">
+    <div class="row" style="margin-bottom:8px">
+      <b style="margin-right:6px">Pályakészlet:</b>
+      <button id="set1" class="on">Egy játékos / co-op (1-49)</button>
+      <button id="set2">Két játékos versus (50-től)</button>
+    </div>
+    <div class="row" id="tabs"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="panel" id="boardbox"><div id="board"></div></div>
+
+    <div class="side">
+      <div class="panel">
+        <h2>Térkép eszközök</h2>
+        <div class="row">
+          <button id="toolFree" class="on" title="Gyorsbillentyű: .">.&nbsp; normál talaj</button>
+          <button id="toolBlock" title="Gyorsbillentyű: x">x&nbsp; blokkolt</button>
+          <span class="stat" id="stat"></span>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="bClear">Mind .</button>
+          <button id="bAll">Mind x</button>
+          <button id="bBorder">Szegély x</button>
+          <button id="bInvert">Invertálás</button>
+          <button id="bMirror">Tükrözés ↔</button>
+          <button id="bUndo" title="Ctrl+Z">Vissza</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>A pálya adatai</h2>
+        <div class="grid2">
+          <label>Név (a játékban: nagybetűvel, ékezet nélkül, max. 18 karakter) <input type="text" id="pName"><span id="nevMsg" class="stat"></span></label>
+          <label id="kodRow">Pályakód (pontosan 5 betű, A-Z; csak egy játékos / co-op) <input type="text" id="pKod" maxlength="5" style="text-transform:uppercase;letter-spacing:.25em;width:120px" spellcheck="false" autocomplete="off"><span id="kodMsg" class="stat"></span></label>
+          <label id="coopKodRow">Co-op pályakód (5 betű, A-Z; ezzel co-opban indul) <input type="text" id="pKodCoop" maxlength="5" style="text-transform:uppercase;letter-spacing:.25em;width:120px" spellcheck="false" autocomplete="off"><span id="kodCoopMsg" class="stat"></span></label>
+          <label><span id="celLbl">Cél: pumpák száma (legfeljebb 500)</span> <input type="number" id="pCel" min="1" max="500"></label>
+          <label id="coopRow">Co-op cél: a két játékos pumpáinak összege (0 = automatikus: a cél 3/2-e, max 500) <input type="number" id="pCelCoop" min="0" max="500"></label>
+          <label>Pumpa ára <input type="number" id="pPumpaAr" min="0" max="32000"></label>
+          <label>Fal ára <input type="number" id="pFalAr" min="0" max="32000"></label>
+          <label>Bomba ára <input type="number" id="pBombaAr" min="0" max="32000"></label>
+          <label>Akna ára <input type="number" id="pAknaAr" min="0" max="9999"></label>
+          <label>Kezdő pénz <input type="number" id="pPenz" min="0" max="9999"></label>
+          <label>Pumpa termelése (ütemenként) <input type="number" id="pTermel" min="0" max="1000"></label>
+          <span></span>
+          <label class="chk"><input type="checkbox" id="pMeteor"> Meteor lesz</label>
+          <label class="chk"><input type="checkbox" id="pMeteorTor"> Meteor a sziklát is rombolja</label>
+          <label class="chk"><input type="checkbox" id="pMeteorVir"> Meteor vírust hoz</label>
+          <label class="chk"><input type="checkbox" id="pVirus"> Vírus lesz</label>
+          <label class="chk"><input type="checkbox" id="pFal"> Falat lehet építeni</label>
+          <label class="chk"><input type="checkbox" id="pBomba"> Bombát lehet használni</label>
+          <label class="chk"><input type="checkbox" id="pAkna"> Aknát lehet lerakni (5 mp múlva robban, a sziklát is rombolja)</label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Mentés / betöltés (az összes pálya)</h2>
+        <div class="row">
+          <button id="bDownload">Projekt letöltése (.json)</button>
+          <button id="bOpen">Projekt megnyitása…</button>
+          <input type="file" id="file" accept=".json,application/json" hidden>
+        </div>
+        <div class="msg" id="msg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Az aktuális térkép szövegesen ( . és x ) — szerkeszthető, beilleszthető</h2>
+        <textarea id="ascii" rows="19" spellcheck="false"></textarea>
+        <div class="row" style="margin-top:8px"><button id="bCopyAscii">Másolás vágólapra</button></div>
+      </div>
+
+      <div class="panel">
+        <h2 id="rasTitle">.ras adat — az ÖSSZES pálya (a var blokkba illeszthető)</h2>
+        <div class="row">
+          <label id="induloRow">Induló pálya (próbához, élesben 1) <input type="number" id="vIndulo" value="1" min="1" max="49"></label>
+          <label class="chk"><input type="checkbox" id="cAscii"> ASCII rajz kommentként</label>
+        </div>
+        <textarea id="ras" rows="14" spellcheck="false" readonly></textarea>
+        <div class="row" style="margin-top:8px"><button id="bCopyRas" class="pri">Másolás vágólapra (.ras)</button></div>
+        <p class="stat" id="rasHelp1" style="margin:8px 0 0">A <code>.ras</code>-ban a <code>/* PÁLYÁK:</code> sortól a <code>Palya_Bomba</code> sorig cserélendő. A térkép tömörítve: pályánként <b>68 byte, 1 bit/mező</b> (mező i = x-1 + (y-1)*30; byte = palya*68 + i/8, bit = 7 - i mod 8, MSB elöl; 1 = blokkolt / <code>Talaj3Map</code>, 0 = normál / <code>Talaj1Map</code>) - a játék <code>MapReset</code>-je bontja ki. A pályakód 5 ASCII byte pályánként (<code>Palya_Kod</code>).</p>
+        <p class="stat" id="rasHelp2" style="margin:8px 0 0;display:none">A <code>.ras</code>-ban a <code>/* KÉT JÁTÉKOS PÁLYÁK</code> sortól a <code>Palya2_Bomba</code> sorig cserélendő. A térképek ugyanúgy tömörítve (pályánként 68 byte, 1 bit/mező) a <code>Terkepek2</code> tömbben. A versus cél: aki eléri, nyer (max 255).</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var W = 30, H = 18, N = W * H, MAXP = 49;
+  var KEY = 'waterpump_projekt_v2';
+  var $ = function (id) { return document.getElementById(id); };
+  var board = $('board'), cellEls = [];
+  var tool = 0, cur = 0, undoStack = [], msgTimer = null, saveTimer = null;
+
+  // az induló 1. pálya: a jelenlegi Terkep1 a játékból
+  var DEFAULT_MAP = [
+"xxxxxx..................xxxxxx",
+"xxxxx...................xxxxxx",
+"xxxxx....................xxxxx",
+"xxxx.......................xxx",
+"xxx...........................",
+"..............................",
+"..............................",
+"..............................",
+"..............................",
+"..............................",
+"..............................",
+"..............................",
+"..............................",
+"............xxxx..............",
+"...........xxxxxxxx...........",
+"..........xxxxxxxxxx..........",
+".........xxxxxxxxxxxx.........",
+".........xxxxxxxxxxxx........."].join('');
+
+  // két pályakészlet: sets[0] = egy játékos / co-op (1-49), sets[1] = két játékos versus (50-től); levels = az épp szerkesztett készlet
+  var sets = [null, null], set = 0, levels;
+  var ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function allKods(exL, exF) { var r = []; [sets[0]].forEach(function (s) { (s || []).forEach(function (l) { ['kod', 'kodCoop'].forEach(function (f) { if (!(l === exL && f === exF) && l[f]) r.push(l[f]); }); }); }); return r; }
+  function randKod() {
+    var used = allKods(null, null), k;
+    do { k = ''; for (var i = 0; i < 5; i++) k += ABC.charAt(Math.floor(Math.random() * 26)); } while (used.indexOf(k) >= 0);
+    return k;
+  }
+  function cleanKod(s) { return String(s || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5); }
+  function newLevel(name, ascii, vs) {
+    var cells = new Array(N).fill(0);
+    if (ascii) for (var i = 0; i < N; i++) cells[i] = ascii.charAt(i) === 'x' ? 1 : 0;
+    var l = { name: name, kod: '', kodCoop: '', cells: cells, cel: 250, celCoop: 0, pumpaAr: 100, falAr: 50, bombaAr: 10, penz: 1000, termel: 2, meteor: 1, meteorTor: 0, meteorVir: 0, virus: 1, fal: 1, bomba: 1, aknaAr: 300, akna: 0 };
+    if (vs) { l.cel = 255; l.pumpaAr = 50; l.falAr = 50; l.bombaAr = 1000; l.penz = 500; l.termel = 5; l.meteor = 0; l.virus = 0; }
+    return l;
+  }
+  function fixKods() { sets.forEach(function (s, si) { (s || []).forEach(function (l) { l.kod = cleanKod(l.kod); if (l.kod.length !== 5) l.kod = randKod(); l.kodCoop = cleanKod(l.kodCoop); if (si === 0 && l.kodCoop.length !== 5) l.kodCoop = randKod(); }); }); }
+  sets[0] = [newLevel('Pálya 1', DEFAULT_MAP)];
+  sets[1] = [newLevel('Versus 1', null, true)];
+  levels = sets[0];
+  function L() { return levels[cur]; }
+  function lvlNo(i) { return set === 1 ? 50 + i : i + 1; }
+
+  function msg(t, err) {
+    var m = $('msg'); m.textContent = t; m.className = 'msg' + (err ? ' err' : '');
+    clearTimeout(msgTimer); msgTimer = setTimeout(function () { m.textContent = ''; }, 4500);
+  }
+
+  // ---------- rács ----------
+  function build() {
+    var frag = document.createDocumentFragment();
+    var corner = document.createElement('div'); corner.className = 'rule'; frag.appendChild(corner);
+    for (var x = 1; x <= W; x++) { var r = document.createElement('div'); r.className = 'rule' + (x % 5 === 0 ? ' c5' : ''); r.textContent = x; frag.appendChild(r); }
+    for (var y = 0; y < H; y++) {
+      var l = document.createElement('div'); l.className = 'rule' + ((y + 1) % 5 === 0 ? ' c5' : ''); l.textContent = y + 1; frag.appendChild(l);
+      for (var xx = 0; xx < W; xx++) { var c = document.createElement('div'); c.className = 'cell'; c.dataset.i = y * W + xx; frag.appendChild(c); cellEls.push(c); }
+    }
+    board.appendChild(frag);
+  }
+  function paintCell(i) { var el = cellEls[i], b = L().cells[i] === 1; el.className = 'cell' + (b ? ' b' : ''); el.textContent = b ? 'x' : '.'; }
+  function paintAll() { for (var i = 0; i < N; i++) paintCell(i); }
+
+  function asciiOf(cells) { var out = []; for (var y = 0; y < H; y++) { var s = ''; for (var x = 0; x < W; x++) s += cells[y * W + x] ? 'x' : '.'; out.push(s); } return out.join('\n'); }
+  function parseAscii(text) {
+    var chars = text.split('').filter(function (c) { return c === '.' || c === 'x' || c === 'X'; });
+    return chars.length === N ? chars.map(function (c) { return c === '.' ? 0 : 1; }) : null;
+  }
+
+  // ---------- .ras kimenet (minden pálya) ----------
+  function kodBytes(lvs, f) { f = f || 'kod';
+    var r = []; lvs.forEach(function (lv) { var k = cleanKod(lv[f]); while (k.length < 5) k += 'A'; for (var i = 0; i < 5; i++) r.push(k.charCodeAt(i)); }); return r.join(',');
+  }
+  function kodCmt(lvs, f) { f = f || 'kod'; return lvs.map(function (lv) { return cleanKod(lv[f]); }).join(' '); }
+  // pályanév a játékba: a betűkészletben csak ASCII 32..90 (nagybetű, szám, írásjel) van -> nagybetű, ékezet nélkül, max NEVMAX karakter
+  var NEVMAX = 18, NEVSLOT = 19;
+  function nevJatek(s) {
+    var m = { 'á': 'A', 'é': 'E', 'í': 'I', 'ó': 'O', 'ö': 'O', 'ő': 'O', 'ú': 'U', 'ü': 'U', 'ű': 'U' };
+    var t = String(s || '').toLowerCase().replace(/[áéíóöőúüű]/g, function (c) { return m[c]; }).toUpperCase();
+    t = t.split('').filter(function (c) { var k = c.charCodeAt(0); return k >= 32 && k <= 90; }).join('').replace(/\s+/g, ' ').trim();
+    return t.slice(0, NEVMAX);
+  }
+  function nevBytes(lvs) {
+    var r = []; lvs.forEach(function (lv) { var t = nevJatek(lv.name); for (var i = 0; i < NEVSLOT; i++) r.push(i < t.length ? t.charCodeAt(i) : 0); }); return r.join(',');
+  }
+  function nevCmt(lvs) { return lvs.map(function (lv) { return nevJatek(lv.name); }).join(' / ').replace(/\*\//g, ''); }
+  // térkép tömörítve: pályánként 68 byte, 1 bit/mező (mező i: byte i>>3, bit 7-(i&7), MSB elöl; 1 = blokkolt)
+  var PB = Math.ceil(N / 8);
+  function packLines(lvs, first) {
+    var o = [];
+    lvs.forEach(function (lv, k) {
+      o.push('\t\t\t/* ' + (first + k) + '. ' + lv.name.replace(/\*\//g, '') + ' */');
+      if ($('cAscii').checked) asciiOf(lv.cells).split('\n').forEach(function (r) { o.push('\t\t\t/* ' + r + ' */'); });
+      var b = [];
+      for (var j = 0; j < PB; j++) { var v = 0; for (var bit = 0; bit < 8; bit++) { var i = j * 8 + bit; if (i < N && lv.cells[i]) v |= (0x80 >> bit); } b.push(v); }
+      o.push('\t\t\t' + b.join(',') + (k === lvs.length - 1 ? '' : ','));
+    });
+    return o;
+  }
+  // két játékos (versus) blokk
+  function rasText2() {
+    var lv2 = sets[1], n = lv2.length, o = [];
+    function arr(name, key, type, cmt) {
+      o.push('\t\t' + name + '\t:\tarray[' + n + '] of ' + type + ' = (' + lv2.map(function (lv) { return lv[key] | 0; }).join(',') + ');' + (cmt ? '\t/* ' + cmt + ' */' : ''));
+    }
+    o.push('\t\t/* KÉT JÁTÉKOS PÁLYÁK (a szerkesztőben 50-től, a játékban 01-től): külön tábla (a terkep_szerkeszto.html adja ki, a Palya2_Bomba sorig cserélhető) */');
+    o.push('\t\tconst PALYA2_DB\t\t:\tbyte = ' + n + ';');
+    o.push('\t\tTerkepek2\t\t:\tarray[' + n + '*' + PB + '] of byte = (\t/* a Terkepek formátumában: pályánként ' + PB + ' byte, 1 bit/mező */');
+    packLines(lv2, 50).forEach(function (l) { o.push(l); });
+    o.push('\t\t);');
+    o.push('\t\tPalya2_Kod\t\t:\tarray[' + (n * 5) + '] of byte = (' + kodBytes(lv2) + ');\t/* pályakódok, 5 ASCII betű pályánként: ' + kodCmt(lv2) + ' */');
+    o.push('\t\tPalya2_Nev\t\t:\tarray[' + n + '*' + NEVSLOT + '] of byte = (' + nevBytes(lv2) + ');\t/* pályanevek (' + NEVSLOT + ' byte/pálya, 0-végű): ' + nevCmt(lv2) + ' */');
+    arr('Palya2_Cel', 'cel', 'integer', 'versus: aki eléri, NYERT (max 500)');
+    arr('Palya2_PumpaAr', 'pumpaAr', 'integer');
+    arr('Palya2_FalAr', 'falAr', 'integer');
+    arr('Palya2_BombaAr', 'bombaAr', 'integer');
+    arr('Palya2_Penz', 'penz', 'integer');
+    arr('Palya2_Termel', 'termel', 'integer');
+    arr('Palya2_Meteor', 'meteor', 'byte');
+    arr('Palya2_MeteorTor', 'meteorTor', 'byte');
+    arr('Palya2_MeteorVir', 'meteorVir', 'byte');
+    arr('Palya2_Virus', 'virus', 'byte');
+    arr('Palya2_Fal', 'fal', 'byte');
+    arr('Palya2_AknaAr', 'aknaAr', 'integer');
+    arr('Palya2_Akna', 'akna', 'byte');
+    arr('Palya2_Bomba', 'bomba', 'byte');
+    return o.join('\n');
+  }
+  function rasTextCur() { return set === 1 ? rasText2() : rasText(); }
+  function rasText() {
+    var levels = sets[0], n = levels.length, o = [];
+    var ip = Math.max(1, Math.min(n, parseInt($('vIndulo').value, 10) || 1));
+    o.push('\t\t/* PÁLYÁK: a térképek és a pályánkénti értékek (a terkep_szerkeszto.html adja ki, a teljes blokk cserélhető) */');
+    o.push('\t\tconst PALYA_DB\t\t:\tbyte = ' + n + ';\t/* a pályák száma */');
+    o.push('\t\tconst INDULO_PALYA\t:\tbyte = ' + ip + ';\t/* induló pálya sorszáma 1-től (próbához; élesben 1) */');
+    o.push('\t\t/* Terkepek: pályánként ' + PB + ' byte, 1 bit/mező (540 mező, i = x-1 + (y-1)*30; byte = palya*' + PB + ' + i/8, bit = 7 - i mod 8, MSB elöl); 1 = Talaj3 (blokkolt), 0 = Talaj1 - a MapReset bontja ki */');
+    o.push('\t\tTerkepek\t:\tarray[' + n + '*' + PB + '] of byte = (');
+    packLines(levels, 1).forEach(function (l) { o.push(l); });
+    o.push('\t\t);');
+    function coopCel(lv) { return (lv.celCoop | 0) > 0 ? (lv.celCoop | 0) : Math.min(500, Math.floor((lv.cel | 0) * 3 / 2)); }
+    function arr(name, key, type, cmt) {
+      o.push('\t\t' + name + '\t:\tarray[' + n + '] of ' + type + ' = (' + levels.map(function (lv) { return lv[key] | 0; }).join(',') + ');\t/* ' + cmt + ' */');
+    }
+    o.push('\t\tPalya_Kod\t:\tarray[' + (n * 5) + '] of byte = (' + kodBytes(levels) + ');\t/* pályakódok, 5 ASCII betű pályánként: ' + kodCmt(levels) + ' */');
+    o.push('\t\tPalya_KodCoop\t:\tarray[' + (n * 5) + '] of byte = (' + kodBytes(levels, 'kodCoop') + ');\t/* co-op pályakódok (ugyanezek a pályák co-opban), 5 ASCII betű pályánként: ' + kodCmt(levels, 'kodCoop') + ' */');
+    o.push('\t\tPalya_Nev\t:\tarray[' + n + '*' + NEVSLOT + '] of byte = (' + nevBytes(levels) + ');\t/* pályanevek (' + NEVSLOT + ' byte/pálya, 0-végű, a játékban a pálya fölött középen): ' + nevCmt(levels) + ' */');
+    arr('Palya_Cel', 'cel', 'integer', 'cél: ennyi pumpa kell a pálya teljesítéséhez');
+    o.push('\t\tPalya_CelCoop\t:\tarray[' + n + '] of integer = (' + levels.map(coopCel).join(',') + ');\t/* co-op cél: a két játékos pumpáinak ÖSSZEGE (0 = a cél 3/2-e, max 500) */');
+    arr('Palya_PumpaAr', 'pumpaAr', 'integer', 'pumpa ára');
+    arr('Palya_FalAr', 'falAr', 'integer', 'fal ára');
+    arr('Palya_BombaAr', 'bombaAr', 'integer', 'bomba ára');
+    arr('Palya_Penz', 'penz', 'integer', 'kezdő pénz');
+    arr('Palya_Termel', 'termel', 'integer', 'egy pumpa termelése ütemenként');
+    arr('Palya_Meteor', 'meteor', 'byte', '1 = lesz meteor');
+    arr('Palya_MeteorTor', 'meteorTor', 'byte', '1 = a meteor a sziklát (blokkolt mezőt) is rombolja');
+    arr('Palya_MeteorVir', 'meteorVir', 'byte', '1 = a meteor vírust hoz (új telep a becsapódás közepén)');
+    arr('Palya_Virus', 'virus', 'byte', '1 = lesz vírus');
+    arr('Palya_Fal', 'fal', 'byte', '1 = építhető fal');
+    arr('Palya_AknaAr', 'aknaAr', 'integer', 'akna ára');
+    arr('Palya_Akna', 'akna', 'byte', '1 = lerakható akna');
+    arr('Palya_Bomba', 'bomba', 'byte', '1 = használható a bomba');
+    return o.join('\n');
+  }
+
+  // ---------- felület frissítése ----------
+  function fillParams() {
+    var l = L();
+    $('pName').value = l.name; $('pKod').value = l.kod; $('pKodCoop').value = l.kodCoop || ''; $('coopKodRow').style.display = set === 1 ? 'none' : ''; $('kodRow').style.display = set === 1 ? 'none' : ''; kodCheck(); $('pCel').value = l.cel;
+    $('coopRow').style.display = set === 1 ? 'none' : '';
+    $('celLbl').textContent = set === 1 ? 'Versus cél: aki eléri, nyer (legfeljebb 500)' : 'Cél: pumpák száma (legfeljebb 500)';
+    $('rasTitle').textContent = set === 1 ? '.ras adat — két játékos (versus) pályák (50-től)' : '.ras adat — egy játékos / co-op pályák (a var blokkba illeszthető)';
+    $('rasHelp1').style.display = set === 1 ? 'none' : ''; $('rasHelp2').style.display = set === 1 ? '' : 'none'; $('induloRow').style.display = set === 1 ? 'none' : '';
+    $('set1').className = set === 0 ? 'on' : ''; $('set2').className = set === 1 ? 'on' : ''; $('pCelCoop').value = l.celCoop | 0; $('pPumpaAr').value = l.pumpaAr; $('pFalAr').value = l.falAr;
+    $('pBombaAr').value = l.bombaAr; $('pAknaAr').value = l.aknaAr | 0; $('pAkna').checked = !!l.akna; $('pPenz').value = l.penz; $('pTermel').value = l.termel;
+    $('pMeteor').checked = !!l.meteor; $('pMeteorTor').checked = !!l.meteorTor; $('pMeteorVir').checked = !!l.meteorVir; $('pVirus').checked = !!l.virus; $('pFal').checked = !!l.fal; $('pBomba').checked = !!l.bomba;
+  }
+  function renderTabs() {
+    var t = $('tabs'); t.innerHTML = '';
+    levels.forEach(function (lv, i) {
+      var b = document.createElement('button'); b.className = 'tab' + (i === cur ? ' on' : ''); b.textContent = lvlNo(i); b.title = lv.name + ' [' + lv.kod + (lv.kodCoop ? ' / co-op ' + lv.kodCoop : '') + ']';
+      b.onclick = function () { cur = i; undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); };
+      t.appendChild(b);
+    });
+    function btn(txt, fn, dis) { var b = document.createElement('button'); b.textContent = txt; b.onclick = fn; if (dis) b.disabled = true; t.appendChild(b); }
+    btn('+ Új pálya', function () { if (levels.length >= MAXP) return; var nl = newLevel((set === 1 ? 'Versus ' : 'Pálya ') + (levels.length + 1), null, set === 1); nl.kod = randKod(); if (set === 0) nl.kodCoop = randKod(); levels.push(nl); cur = levels.length - 1; undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); }, levels.length >= MAXP);
+    btn('Másolat', function () { if (levels.length >= MAXP) return; var c = JSON.parse(JSON.stringify(L())); c.name += ' (másolat)'; c.kod = randKod(); if (set === 0) c.kodCoop = randKod(); levels.splice(cur + 1, 0, c); cur++; undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); }, levels.length >= MAXP);
+    btn('Törlés', function () { if (levels.length <= 1) return; if (!confirm('Törlöd a(z) ' + (cur + 1) + '. pályát?')) return; levels.splice(cur, 1); cur = Math.min(cur, levels.length - 1); undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); }, levels.length <= 1);
+    btn('◀ Előre', function () { if (cur > 0) { var x = levels[cur]; levels[cur] = levels[cur - 1]; levels[cur - 1] = x; cur--; renderTabs(); refresh(); } }, cur === 0);
+    btn('Hátra ▶', function () { if (cur < levels.length - 1) { var x = levels[cur]; levels[cur] = levels[cur + 1]; levels[cur + 1] = x; cur++; renderTabs(); refresh(); } }, cur === levels.length - 1);
+  }
+  function refresh() {
+    if ($('ascii') !== document.activeElement) $('ascii').value = asciiOf(L().cells);
+    $('ras').value = rasTextCur();
+    var b = 0; L().cells.forEach(function (v) { b += v; });
+    $('stat').textContent = 'blokkolt: ' + b + ' / ' + N;
+    scheduleSave();
+  }
+
+  // ---------- automatikus mentés / betöltés ----------
+  function projekt() { return { levels: sets[0], levels2: sets[1], set: set, cur: cur }; }
+  function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(projekt())); } catch (e) {} }, 400); }
+  function sanitize(o) {
+    if (!o || !o.levels || !o.levels.length) return false;
+    function conv(src, vs) {
+      var out = [];
+      src.slice(0, MAXP).forEach(function (l, i) {
+        var d = newLevel(l.name || ((vs ? 'Versus ' : 'Pálya ') + (i + 1)), null, vs);
+        if (l.cells && l.cells.length === N) d.cells = l.cells.map(function (v) { return v ? 1 : 0; });
+        ['cel', 'celCoop', 'pumpaAr', 'falAr', 'bombaAr', 'aknaAr', 'penz', 'termel'].forEach(function (k) { if (typeof l[k] === 'number') d[k] = l[k]; });
+        ['meteor', 'meteorTor', 'meteorVir', 'virus', 'fal', 'bomba', 'akna'].forEach(function (k) { if (l[k] !== undefined) d[k] = l[k] ? 1 : 0; });
+        if (l.akna === undefined) d.akna = d.bomba;   // régi (akna előtti) projekt: az akna ott engedélyezett, ahol a bomba (ár: 300)
+        d.kod = cleanKod(l.kod); d.kodCoop = vs ? '' : cleanKod(l.kodCoop);
+        out.push(d);
+      });
+      return out;
+    }
+    sets[0] = conv(o.levels, false);
+    sets[1] = (o.levels2 && o.levels2.length) ? conv(o.levels2, true) : [newLevel('Versus 1', null, true)];
+    fixKods();		/* a régi (kód nélküli) projekteknél a hiányzó kódok véletlenszerűen generálódnak */
+    set = (o.set === 1) ? 1 : 0; levels = sets[set]; cur = Math.max(0, Math.min(o.cur | 0, levels.length - 1)); return true;
+  }
+  function kodCheck1(inp, msgId, f) {
+    var k = cleanKod($(inp).value), m = $(msgId), dup = allKods(L(), f).indexOf(k) >= 0;
+    if (k.length !== 5) { m.textContent = ' ' + k.length + '/5 betű - a .ras-ba "A"-val kiegészítve'; m.style.color = '#ff8a8a'; }
+    else if (dup) { m.textContent = ' FOGLALT: egy másik kód is ez!'; m.style.color = '#ff8a8a'; }
+    else { m.textContent = ' rendben'; m.style.color = ''; }
+  }
+  function kodCheck() {
+    kodCheck1('pKod', 'kodMsg', 'kod'); if (set === 0) kodCheck1('pKodCoop', 'kodCoopMsg', 'kodCoop');
+    var nm = $('nevMsg'), raw = String($('pName').value || '').replace(/\s+/g, ' ').trim(), t = nevJatek(raw);
+    nm.textContent = ' a játékban: "' + t + '"' + (raw.length > NEVMAX ? ' (levágva ' + NEVMAX + ' karakterre)' : '');
+    nm.style.color = raw.length > NEVMAX ? '#ff8a8a' : '';
+  }
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) sanitize(saved); } catch (e) {}
+  fixKods();
+
+  // ---------- festés ----------
+  function pushUndo() { undoStack.push(L().cells.slice()); if (undoStack.length > 60) undoStack.shift(); }
+  function undo() { if (!undoStack.length) return; L().cells = undoStack.pop(); paintAll(); refresh(); }
+  function setCells(a) { pushUndo(); L().cells = a; paintAll(); refresh(); }
+  var painting = false, paintVal = 0, lastIdx = -1;
+  function cellAt(e) { var el = document.elementFromPoint(e.clientX, e.clientY); return (el && el.classList && el.classList.contains('cell')) ? parseInt(el.dataset.i, 10) : -1; }
+  function applyAt(e) { var i = cellAt(e); if (i < 0 || i === lastIdx) return; lastIdx = i; if (L().cells[i] !== paintVal) { L().cells[i] = paintVal; paintCell(i); refresh(); } }
+  board.addEventListener('pointerdown', function (e) {
+    var i = cellAt(e); if (i < 0) return; e.preventDefault(); pushUndo(); painting = true; lastIdx = -1;
+    paintVal = ((e.button === 2) || e.ctrlKey) ? 1 - tool : tool;
+    try { board.setPointerCapture(e.pointerId); } catch (x) {}
+    applyAt(e);
+  });
+  board.addEventListener('pointermove', function (e) { if (painting) applyAt(e); });
+  window.addEventListener('pointerup', function () { painting = false; });
+  board.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  function setTool(t) { tool = t; $('toolFree').className = t === 0 ? 'on' : ''; $('toolBlock').className = t === 1 ? 'on' : ''; }
+  $('toolFree').onclick = function () { setTool(0); };
+  $('toolBlock').onclick = function () { setTool(1); };
+  window.addEventListener('keydown', function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT') return;
+    if (e.key === '.') setTool(0); else if (e.key === 'x' || e.key === 'X') setTool(1);
+    else if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); undo(); }
+  });
+  $('bClear').onclick = function () { setCells(new Array(N).fill(0)); };
+  $('bAll').onclick = function () { setCells(new Array(N).fill(1)); };
+  $('bBorder').onclick = function () { var a = L().cells.slice(); for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) if (x === 0 || y === 0 || x === W - 1 || y === H - 1) a[y * W + x] = 1; setCells(a); };
+  $('bInvert').onclick = function () { setCells(L().cells.map(function (v) { return 1 - v; })); };
+  $('bMirror').onclick = function () { var c = L().cells, a = c.slice(); for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) a[y * W + x] = c[y * W + (W - 1 - x)]; setCells(a); };
+  $('bUndo').onclick = undo;
+
+  // ---------- szöveges térkép ----------
+  $('ascii').addEventListener('input', function () {
+    var a = parseAscii($('ascii').value);
+    if (!a) { msg('A szöveg nem ' + N + ' mezős (18 sor × 30 karakter, . és x).', true); return; }
+    pushUndo(); L().cells = a; paintAll(); $('ras').value = rasTextCur();
+    var b = 0; a.forEach(function (v) { b += v; }); $('stat').textContent = 'blokkolt: ' + b + ' / ' + N; scheduleSave();
+  });
+  $('ascii').addEventListener('blur', refresh);
+
+  // ---------- pálya-adatok ----------
+  function num(id, min, max) { var v = parseInt($(id).value, 10); if (isNaN(v)) v = 0; return Math.max(min, Math.min(max, v)); }
+  function readParams() {
+    var l = L();
+    l.name = $('pName').value || ((set === 1 ? 'Versus ' : 'Pálya ') + (cur + 1));
+    var k = cleanKod($('pKod').value); if ($('pKod').value !== k) $('pKod').value = k; l.kod = k;
+    if (set === 0) { var kc = cleanKod($('pKodCoop').value); if ($('pKodCoop').value !== kc) $('pKodCoop').value = kc; l.kodCoop = kc; }
+    kodCheck();
+    var tb = $('tabs').children[cur]; if (tb) tb.title = l.name + ' [' + l.kod + ']';
+    l.cel = num('pCel', 1, 500); l.celCoop = num('pCelCoop', 0, 500); l.pumpaAr = num('pPumpaAr', 0, 32000); l.falAr = num('pFalAr', 0, 32000); l.bombaAr = num('pBombaAr', 0, 32000); l.aknaAr = num('pAknaAr', 0, 9999); l.akna = $('pAkna').checked ? 1 : 0;
+    l.penz = num('pPenz', 0, 9999); l.termel = num('pTermel', 0, 1000);
+    l.meteor = $('pMeteor').checked ? 1 : 0; l.meteorTor = $('pMeteorTor').checked ? 1 : 0; l.meteorVir = $('pMeteorVir').checked ? 1 : 0; l.virus = $('pVirus').checked ? 1 : 0; l.fal = $('pFal').checked ? 1 : 0; l.bomba = $('pBomba').checked ? 1 : 0;
+    refresh();
+  }
+  ['pName', 'pKod', 'pKodCoop', 'pCel', 'pCelCoop', 'pPumpaAr', 'pFalAr', 'pBombaAr', 'pAknaAr', 'pAkna', 'pPenz', 'pTermel', 'pMeteor', 'pMeteorTor', 'pMeteorVir', 'pVirus', 'pFal', 'pBomba'].forEach(function (id) {
+    $(id).addEventListener('input', readParams); $(id).addEventListener('change', readParams);
+  });
+  function setSet(s) { if (s === set) return; set = s; levels = sets[set]; cur = 0; undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); }
+  $('set1').onclick = function () { setSet(0); };
+  $('set2').onclick = function () { setSet(1); };
+  ['vIndulo', 'cAscii'].forEach(function (id) { $(id).addEventListener('input', refresh); $(id).addEventListener('change', refresh); });
+
+  // ---------- vágólap ----------
+  function copyText(text, what) {
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta);
+      msg(ok ? what + ' a vágólapon.' : 'A másolás nem sikerült - jelöld ki a szöveget és Ctrl+C.', !ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { msg(what + ' a vágólapon.'); }, fallback); else fallback();
+  }
+  $('bCopyAscii').onclick = function () { copyText(asciiOf(L().cells), 'A szöveges térkép'); };
+  $('bCopyRas').onclick = function () { copyText(rasTextCur(), 'A .ras adat (' + (set === 1 ? 'versus, ' : '') + levels.length + ' pálya)'); };
+
+  // ---------- fájl ----------
+  $('bDownload').onclick = function () {
+    var blob = new Blob([JSON.stringify(projekt(), null, 1)], { type: 'application/json' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'waterpump_palyak.json'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  };
+  $('bOpen').onclick = function () { $('file').click(); };
+  $('file').addEventListener('change', function () {
+    var f = this.files[0]; if (!f) return; var r = new FileReader();
+    r.onload = function () {
+      try { if (!sanitize(JSON.parse(String(r.result)))) throw 0; undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); msg('Betöltve: ' + f.name + ' (' + sets[0].length + ' + ' + sets[1].length + ' versus pálya)'); }
+      catch (e) { msg('A fájl nem érvényes pályaprojekt.', true); }
+    };
+    r.readAsText(f); this.value = '';
+  });
+
+  build(); fillParams(); paintAll(); refresh(); renderTabs();
+  window.__waterpump = { levels: function () { return levels; }, sets: function () { return sets; }, rasText: rasText, rasText2: rasText2, setSet: setSet, load: function (o) { var ok = sanitize(o); undoStack = []; fillParams(); paintAll(); refresh(); renderTabs(); return ok; }, setCur: function (i) { cur = i; fillParams(); paintAll(); refresh(); renderTabs(); } };
+})();
+</script>
+</body>
+</html>

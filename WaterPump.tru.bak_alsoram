@@ -1,0 +1,321 @@
+Unit WaterPump;
+
+/* ============================================================
+   WaterPump - sajat, kezzel irt Z80 ASM unit a GE melle, a
+   sebesseg-kritikus reszek gyorsitasara.
+
+   NINCS "@use GE" fuggoseg: a Position-szamitashoz szukseges
+   videomemoria-kezdocim (GE::ScreenAddr, alapertelmezetten $8000,
+   GE::Init(GE::DIRECT_TO_SCREEN)-nel) ide, a SCREEN_ADDR sajat
+   VAR-ba van kimasolva (lasd lent - FONTOS: VAR, nem const, kulonben
+   a teljes projekt optimalizaloja kiszedi, lasd a var-nal levo
+   megjegyzest) - ha a fo .ras valaha back-screen/double-buffer modra
+   valt (GE::Init(True) vagy GE::SwapScreens), ezt IS at kell irni,
+   mert akkor mar nem szinkron a GE sajat (futasidoben valtozhato)
+   ScreenAddr-javal.
+
+   EGYETLEN feladata van: MAP-index (0..539, UGYANAZ az indexeles,
+   mint a fo .ras Map[]-jenel: (x-1)+(y-1)*30) alapjan, egy elore
+   kiszamolt kepernyocim-tablabol (ScreenAddrTab) valo tabla-lookuppal
+   kirakni egy 16 byte-os (2x8 sor, GRAPHICS4, NEM maszkolt) fazis-
+   kepet a kepernyore - futas kozben SEMMILYEN SetPosition-hivas/Y*64-
+   szamitas NINCS, csak a lookup + a teljesen kitekert (unrolled) blit.
+   NINCS kulon Sprite-szeru osztaly (PumpaSprite) sem: mivel a
+   PutAt() amugy is csak egy MAR KESZ kepernyocimet olvas ki a
+   tablabol, semmi szukseg X/Y mezokre vagy SetPosition-metodusra -
+   a tabla FELEPITESEKOR (BuildScreenAddrTab, EGYSZER induláskor)
+   szamoljuk ki kozvetlen ASM-mel a SCREEN_ADDR+Y*64+X cimet minden
+   mezore, es azt taroljuk el.
+
+   A masik generalt tabla, PumpaFazPtr_Tab: fazis (0..PUMPA_FAZISOK-1) ->
+   kesz Data-pointer (a pumpa-kep alapcimetol PUMPA_FAZIS_MERET-enkent
+   szamolva). Ezt is a unit epiti fel (BuildPumpaFazTab), es a PutAt() MAR
+   CSAK A FAZIST kapja parameterkent (nem a kesz pointert) - a unit maga
+   keresi ki a hozza tartozo adatcimet a sajat tablajabol. Igy a "pumpa
+   kepenek merete/fazisainak szama" tudas teljes egeszeben a unitban van,
+   a fo .ras csak a fazis-ERTEKET (Map[]-bol szamolva) adja at.
+
+   Hasznalat:
+     WaterPump::BuildScreenAddrTab();          -- EGYSZER, induláskor
+     WaterPump::BuildPumpaFazTab(alapcim);     -- EGYSZER, induláskor (alapcim = Pumpa.AnimSet)
+     ...
+     WaterPump::PutAt(mapIndex, fazis);        -- minden kirakasnal (fazis: 0..PUMPA_FAZISOK-1)
+   ============================================================ */
+
+var
+	/* A videomemoria kezdocime (GE::ScreenAddr masolata - lasd a fenti
+	   fejlec-megjegyzest). GRAPHICS4, DIRECT_TO_SCREEN mod eseten $8000.
+	   FONTOS: EZ NEM LEHET "const"! Egy const, amire kizarolag nyers
+	   asm()-szovegbol hivatkozunk (sehol nincs valodi Rascal-szintu
+	   hasznalata), a TELJES PROJEKT build optimalizaloja KISZEDI (a
+	   sajat unit-onankenti fordites ezt nem szuri, ezert tunt jonak
+	   allomanyszinten) - a vegso .asm-ben ezert "Symbol ... undefined"
+	   hibat ad az assembler. A GE::ScreenAddr is pontosan ezert VAR,
+	   nem const: mint valodi, memoriaba irt globalis, sosem esik ki. */
+	SCREEN_ADDR : integer = $8000;
+
+	/* Kepernyocim-tabla: index 0..539 (= (x-1)+(y-1)*30, UGYANAZ mint a
+	   Map[] indexelese a fo .ras-ban) -> kesz kepernyocim.
+	   A BuildScreenAddrTab() tolti fel EGYSZER, indulaskor. */
+	ScreenAddrTab			: array[18*30] of integer at $0EAC;	/* 3756..4835: a GE szerint szabad (verem alatti terulet) */
+
+	/* Csak a BuildScreenAddrTab() sajat, kezi ASM-es szamitasahoz/
+	   tarolasahoz kellenek globalisan (a "ScreenAddrTab[idx]:=cim;" sima
+	   Rascal forma korabban HIBAS kodot generalt: eldobta a tomb
+	   bazis-cimet, mielott hasznalta volna - ugy tunik, 2-byte-os
+	   (integer) tombbe torteno IRAS sima Rascal ":="-vel nem mukodik
+	   megbizhatoan ebben a TRSE build-ben). */
+	BuildIdx				: integer;	/* 0..539, az eppen epitett mezo indexe */
+	BuildX					: byte;		/* az eppen epitett mezo keperny-X-e (byte-ban) */
+	BuildY					: byte;		/* az eppen epitett mezo keperny-Y-a (pixelben) */
+
+	/* A PutAt()/PutAtRaw() "global" parametereinek MAR LETEZO valtozokent
+	   kell szerepelniuk a var blokkban - a "global" kulcsszo NEM hoz letre
+	   uj valtozot, csak egy MEGLEVO globalishoz kapcsolja a parametert
+	   (lasd a GE.tru sajat X/Y/ImagePtr stb. deklaraciojat, ugyanigy). */
+	Idx						: integer;
+	Faz						: byte;
+	DataPtr					: integer;
+
+	/* A pumpa-kep ismert merete (ugyanaz, mint korabban a fo .ras-ban
+	   volt): PUMPA_FAZISOK db fazis, fazisonkent PUMPA_FAZIS_MERET byte. */
+	const PUMPA_FAZISOK			: byte = 8;
+	const PUMPA_FAZIS_MERET		: byte = 16;
+
+	/* fazis (0..PUMPA_FAZISOK-1) -> kesz Data-pointer. A
+	   BuildPumpaFazTab() tolti fel EGYSZER, indulaskor. */
+	PumpaFazPtr_Tab			: array[32] of integer;	/* 0..7: az 1. jatekos pumpaja, 8..15: a 2. jatekose, 16..31: akna, 16 kep (PumpaFazPtr_Tab[Faz], Faz 0..31) */
+
+	/* EGYSZER hivando (indulaskor): vegigmegy mind az 540 MAP-cellan, es
+	   kozvetlen ASM-mel (nincs kulon osztaly/SetPosition) kiszamolja +
+	   eltarolja a kesz kepernyocimet mindegyikre. */
+	procedure BuildScreenAddrTab();
+		var mapx,mapy	: byte;
+		begin
+			BuildIdx:=0;
+			fori mapy:=1 to 18 do
+				fori mapx:=1 to 30 do
+				begin;
+					BuildX:=mapx*2;
+					BuildY:=30+mapy*10;
+					/* HL := SCREEN_ADDR + BuildY*64 + BuildX (Y*64 shiftekkel,
+					   mint korabban a PumpaSprite.SetPosition()-ben), majd
+					   kezi tarolas a ScreenAddrTab[BuildIdx] cimre (lasd a
+					   fenti megjegyzest, miert kezi ASM-mel). */
+					asm("
+						ld a,[WaterPump_BuildY]
+						ld l,a
+						ld h,0
+						xor a
+						srl h
+						rr l
+						rra
+						srl h
+						rr l
+						rra
+						ld h,l
+						ld l,a
+						ld bc,(WaterPump_SCREEN_ADDR)
+						add hl,bc
+						ld a,[WaterPump_BuildX]
+						ld b,0
+						ld c,a
+						add hl,bc
+						ex de,hl
+						ld hl,[WaterPump_BuildIdx]
+						add hl,hl
+						ld bc,WaterPump_ScreenAddrTab
+						add hl,bc
+						ex de,hl
+						ld a,l
+						ld (de),a
+						inc de
+						ld a,h
+						ld (de),a
+					");
+					BuildIdx:=BuildIdx+1;
+				end;
+		end;
+
+	/* EGYSZER hivando (indulaskor): a pumpa-kep alapcimebol (Pumpa.AnimSet
+	   a fo .ras-ban) kiszamolja es eltarolja mind a PUMPA_FAZISOK db kesz
+	   Data-pointert. Sima Rascal ciklus (nincs benne raw asm) - az "Alap"
+	   parameter ezert lehet EGYSZERU (nem "global") parameter, nem kell
+	   hozza elozetes var-deklaracio. */
+	procedure BuildPumpaFazTab(Alap : integer; Kezdo : byte);	/* Kezdo = 0: az 1. jatekos fazisai (0..7), 8: a 2. jatekose (8..15) */
+		var f, v	: byte;
+			temp	: integer;
+		begin
+			temp:=Alap;
+			f:=Kezdo;
+			v:=Kezdo+PUMPA_FAZISOK;
+			while (f<v) do
+			begin;
+				PumpaFazPtr_Tab[f]:=temp;
+				temp:=temp+PUMPA_FAZIS_MERET;
+				f:=f+1;
+			end;
+		end;
+
+	/* A TENYLEGES, kepkockankenti gyors kirako: MAP-index (0..539) alapjan
+	   a ScreenAddrTab-bol nezi ki a kesz kepernyocimet, a fazisbol
+	   (0..PUMPA_FAZISOK-1) pedig a PumpaFazPtr_Tab-bol a kesz Data-
+	   pointert - NINCS SetPosition-hivas, NINCS Y*64 szamitas, csak KET
+	   tabla-lookup + a 16 byte-os blit.
+	   FONTOS: a "ldi" MELLEKHATASKENT csokkenti BC-t minden lefutasnal
+	   (ezt hasznalja a ldir ciklusszamlalokent) - ezert a sor-eltolashoz
+	   (62) NEM szabad egyszer betoltott BC-t ujrahasznalni a ket ldi
+	   UTAN, mert az mar elcsuszott - minden sor elott UJRA be kell
+	   tolteni BC=62-t. */
+	procedure PutAt(Idx : global integer; Faz : global byte);
+	begin
+		asm("
+			ld hl,[WaterPump_Idx]
+			add hl,hl
+			ld bc,WaterPump_ScreenAddrTab
+			add hl,bc
+			ld e,(hl)
+			inc hl
+			ld d,(hl)
+			ld a,[WaterPump_Faz]
+			ld l,a
+			ld h,0
+			add hl,hl
+			ld bc,WaterPump_PumpaFazPtr_Tab
+			add hl,bc
+			ld a,(hl)
+			inc hl
+			ld h,(hl)
+			ld l,a
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+		");
+	end;
+
+	/* FIGYELEM (2026-09-14): a fo .ras-ban ideiglenesen kiprobaltuk ezt
+	   Enemy/Fal/Talaj1 kirakasara is - a build hibatlanul lefordult, DE
+	   FUTASKOR torz/hianyos grafikat adott (a virus- es pumpa-kepek
+	   egy resze "OK", mas resze szetesett/rossz mintat mutatott a
+	   kepernyon). A gyokerok MEG NINCS kideritve (a forras ES a
+	   generalt .asm is helyesnek nezett ki manualis atnezesre - lasd
+	   CLAUDE.md 2026-09-14 bejegyzes) - jelenleg EZ AZ ELJARAS NINCS
+	   HASZNALATBAN a projektben (a fo .ras visszaallt a Bery/GE::Sprite
+	   Put-ra Enemy/Fal/Talaj1-nel, a WaterPump::PutAt() marad az
+	   EGYETLEN hasznalt kirako, kizarolag a pumpahoz). Ha legkozelebb
+	   valaki ujra hasznalni akarja: ELOSZOR egy kis, onallo teszttel
+	   kell bebizonyitani, hogy tobb, egymast koveto PutAtRaw hivas
+	   (kulonbozo Idx/DataPtr ertekekkel, gyors egymasutanban, egy
+	   frame-en belul TOBBSZOR) helyesen viselkedik, mielott a jatekba
+	   visszakerulne.
+
+	   ALTALANOS valtozat: NEM a PumpaFazPtr_Tab-bol nezi ki a fazis-
+	   pointert, hanem KESZEN (mar kiszamolt Data-pointerkent) kapja -
+	   igy BARMELY 8x8, GRAPHICS4, NEM MASZKOLT, 16 byte/fazis sprite-ra
+	   hasznalhato (nemcsak a Pumpara), pl. Enemy (5 fazisu, sajat
+	   fazis-tablaval a fo .ras-ban), vagy egyfazisu "belyegzo" sprite-ok
+	   (Talaj1/Fal), ahol a hivo egyszeruen a "#Sprite_Data+3" cimet adja
+	   at (nincs is kulon fazistabla). Ugyanaz a ket-tablas lookup +
+	   kitekert blit, mint a PutAt()-ban, csak a masodik (fazis->pointer)
+	   lookup lepes hianyzik - azt mar a HIVO vegezte el (vagy nincs is
+	   ra szukseg egyfazisu sprite-nal). */
+	procedure PutAtRaw(Idx : global integer; DataPtr : global integer);
+	begin
+		asm("
+			ld hl,[WaterPump_Idx]
+			add hl,hl
+			ld bc,WaterPump_ScreenAddrTab
+			add hl,bc
+			ld e,(hl)
+			inc hl
+			ld d,(hl)
+			ld hl,[WaterPump_DataPtr]
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+			ex de,hl
+			ld bc,62
+			add hl,bc
+			ex de,hl
+			ldi
+			ldi
+		");
+	end;
+
+end.

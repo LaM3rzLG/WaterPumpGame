@@ -1,0 +1,830 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+
+var
+		/* Sprite-képek (bináris grafikai adatok) */
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin");
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin");
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin");
+		Enemy_Data						:	incbin("resources\tvc_sprites\enemy.bin");
+		/* A sprite-objektumok: Pumpa (animált szivattyú), Talaj1 (üres talaj mező),
+		   Keret (a játékos által mozgatott kurzor - "keretezi" az aktuális mezőt),
+		   Enemy (zöld "paca" ellenség, 8x8, nem maszkolt, 5 növekvő animfázis) */
+		Pumpa							:	GE::Sprite;
+		Talaj1						 	:	GE::Sprite;
+		Keret							:	GE::Sprite;
+		Enemy							:	GE::Sprite;
+
+		CharSet 							: 	incbin("resources\tvc_sprites\CharSetGR4.bin");
+		CashStr 							: 	string = ("CASH$:");
+		PosStr							:	string = ("POZX:   POZY:");
+
+		/* A Keret aktuális képernyő-pozíciója pixelben/byte-ban */
+		Keret_X_ScreenPOS				: 	byte = 29;
+		Keret_Y_ScreenPOS				:	byte = 128;
+		/* A Keret aktuális rács (mező) pozíciója: X: 1-30, Y: 1-18 */
+		Keret_X_Pos						:	byte = 15;
+		Keret_Y_Pos						:	byte = 9;
+		/* A Keret ELŐZŐ (legutóbb ténylegesen frissített) rács-pozíciója - ebből
+		   tudja a Keret_Frissit, hogy mozgott-e a Keret (lásd ott). */
+		Keret_Elozo_X_Pos				:	byte = 15;
+		Keret_Elozo_Y_Pos				:	byte = 9;
+		/* A játéktér 30x18 mezős rácsa. Minden elem egy mező tartalmát jelöli
+		   (lásd lentebb a MAP értékadások jelentései kommentet). */
+		Map								:	array	[18*30] of byte;
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		Drill_Cash						:	integer = 5000;	/* összegyűjtött pénz (kijelzéshez, max 4 jegy) */
+		Pumpa_price						:	integer = 100;	/* egy pumpa ára */
+		Pumpa_termel					:	integer = 100;	/* egy pumpa hozama Termel_Utem képkockánként - integer, hogy a Pumpa_db*Pumpa_termel szorzat ne csorduljon túl */
+		Pumpa_db						:	byte = 0;		/* eddig lerakott pumpák száma */
+		Termel_Frame					:	integer = 0;	/* képkocka-SZÁMLÁLÓ a termeléshez (0-tól Termel_Utem-ig számol) */
+		Termel_Utem						:	integer = 50;	/* HANGOLHATÓ: ennyi képkockánként termelnek a pumpák (kb. 50 kép = 1 mp) */
+
+		/* -----------------------------------------------------------------
+		   PUMPÁK NYILVÁNTARTÁSA - egy fix méretű "pool" (lásd lentebb a
+		   Pumpak tömböt), mert a gép (3 MHz Z80) nem bír el minden pumpát
+		   minden képkockán újrarajzolni - ez hullámzó, akadozó képet adna.
+		   Helyette képkockánként csak egy forgó, fix méretű RÉSZHALMAZ
+		   animálódik/rajzolódik újra (lásd PumpakFrissit), a tömbindex
+		   sorrendjében - ami NEM térbeli sorrend, ezért nem alakul ki
+		   látható "hullám" a képernyőn.
+		   Ugyanezt a mintát használja a saját SpaceWar.ras (Enemies tömb +
+		   EnemyMoveNr forgó index) is.
+		   PUMPAK_CHUNK a fő hangolható érték a teljesítményhez: ez szabja
+		   meg a KÉPKOCKÁNKÉNTI MAXIMÁLIS Put() hívások számát, függetlenül
+		   attól, hány pumpa van összesen lerakva - ha villog/akadozik a
+		   kép, csökkentsd; ha az animáció túl lassúnak tűnik, óvatosan
+		   növeld.
+		   ----------------------------------------------------------------- */
+		const MAX_PUMPAK				:	byte = 100;	/* egyszerre létező pumpák max. száma */
+		const PUMPAK_CHUNK				:	byte = 20;	/* ennyi pumpa animációja frissül képkockánként */
+		const PUMPA_FAZISOK				:	byte = 8;	/* a Pumpa sprite animációs fázisainak száma */
+
+		/* Egy lerakott pumpa állapota: rács-koordinátája és aktuális
+		   animációs fázisa. x=0 jelenti, hogy a hely szabad (nincs benne
+		   pumpa) - mivel a valós rács-X mindig 1-30 között van. */
+		Pumpa_type =	record
+					x,y,anim				: 	byte;
+					end;
+
+		Pumpak 							:	array	[MAX_PUMPAK] of Pumpa_type;
+		PumpakKezdo						:	byte = 0;	/* honnan folytatja a forgó frissítést a következő képkockán */
+
+		/* --- ENEMY / VÍRUS pool (lásd ENEMY_Szekcio lentebb) --- */
+		const MAX_ENEMY					:	byte = 20;	/* egyszerre létező vírus-kolóniák max. száma (Aqualique: 20) */
+		const ENEMY_MAX_FAZIS			:	byte = 4;	/* az enemy.bin utolsó fázisának indexe (0..4, összesen 5) */
+		/* Egy vírus-kolónia állapota: rács-koordináta + aktuális növekedési
+		   fázis (0..4). x=0 = szabad hely a poolban. */
+		Enemy_type =	record
+					x,y,faz					:	byte;
+					end;
+		Enemies							:	array	[MAX_ENEMY] of Enemy_type;
+		Enemy_db						:	byte = 0;	/* aktív vírus-kolóniák száma */
+		Rnd_Porgeto						:	byte = 0;	/* főciklusonként ide megy egy RandomByte() - a generátor pörgetése entrópiáért */
+		Start_Wait						:	byte = 1;	/* 1 = a kezdőképernyőn állunk, várunk a SPACE-re */
+
+		/* --- A kezdő vírus-kolónia KÉSLELTETÉSE (frame-ben) --- */
+		Enemy_Start_Alap				:	integer = 150;	/* HANGOLHATÓ: a késleltetés alap-frame-száma (~50 frame = 1 mp) */
+		Enemy_Start_Delay				:	integer = 0;	/* a tényleges késleltetés: Enemy_Start_Alap + RandomByte() (0..255), SPACE után egyszer beállítva */
+		Enemy_Start_Frame				:	integer = 0;	/* frame-számláló a késleltetéshez */
+		Enemy_Elso_Kesz					:	byte = 0;		/* 0 = a kezdő vírus-kolónia még nincs lerakva */
+
+		/* --- A vírus-kolóniák NÖVEKEDÉSE (fázisléptetés) --- */
+		Enemy_Faz_Utem					:	integer = 10;	/* HANGOLHATÓ: ennyi frame-enként lép egyet a fázis (0->1->2->3->4) */
+		Enemy_Faz_Frame					:	integer = 0;	/* frame-számláló a fázisléptetéshez */
+
+		/* --- A vírus-kolóniák TERJEDÉSE (csak kifejlett kolónia terjed) --- */
+		Enemy_Terjed_Utem				:	integer = 10;	/* HANGOLHATÓ: ilyen gyakran FUT LE a terjedés-próba. Terjedni CSAK kifejlett (utolsó fázisú) kolónia tud, ÉS csak ha az előző terjedés-gyerek is kifejlett - lásd Enemyk_Terjednek */
+		Enemy_Terjed_Frame				:	integer = 0;	/* frame-számláló a terjedéshez */
+		Enemy_Terjed_Nr					:	byte = 0;		/* forgó index: melyik pool-elemtől keresse a következő terjedő kolóniát */
+		Enemy_Terjed_Gyerek				:	byte = 0;		/* 0 = szabad a terjedés; egyébként a legutóbb "kipöttyözött" kolónia pool-indexe + 1 - amíg az EL NEM éri az utolsó fázist, új terjedés nincs */
+		Enemy_Uj_Index					:	byte = 0;		/* az Enemy_Uj ide írja, hova rakta az új kolóniát (MAX_ENEMY = nem fért be) */
+
+
+
+/*		MAP értékadások jelentései
+		Pumpa animációs fázisok:	1-8
+		Talaj típusok:			10-19
+		Vírusos talaj:			20-29								*/
+
+		PumpaMap						:	byte=1;
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+		VirusMap						:	byte=20;		/* vírusos mező alapértéke (Map[]=20+faz) */
+
+		Pumpa_Penz						:	byte=0;
+
+/* ============================================================
+   Játék indításakor egyszer lefutó beállítások: grafikus mód,
+   paletta, karakterkészlet, Game Engine indítása, sprite-ok
+   inicializálása.
+   ============================================================ */
+Procedure ProgramInit();
+	var i								:	byte;
+	begin
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::InitCharSet(#CharSet, 118, 2, 7);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_VID_ON);
+      	GE::SetRasterInterruptPos(239);
+
+		/* Pumpa sprite: nincs saját háttérpuffere (False), mert "bélyegzőként"
+		   használjuk - mindig egy adott mezőre rajzoljuk ki felülírással (Put).
+		   Az animációs fázisokat MOST már saját kezűleg, a Pumpak tömb alapján
+		   választjuk ki (lásd PumpaFazisKirak) - ezért nincs szükség a beépített
+		   InitAnimation/Animation mechanizmusra, csak az AnimSet kezdőcímére. */
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Pumpa.AnimSet:=	#Pumpa_Data+3;		/* +3: átugorja a típus+szélesség+magasság header byte-jait */
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+		Enemy.Init(#Enemy_Data,0,0,False);	/* mint a Talaj1: bélyegzőként Put-oljuk egy mezőre */
+		Enemy.AnimSet:=	#Enemy_Data+3;		/* 5 növekvő fázis; +3: header átugrása */
+
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		/* A Keret VAN háttérpufferrel (True), mert maszkolt (átlátszó) sprite:
+		   mozgás előtt vissza kell tudni állítani az alatta lévő valós képet. */
+		Keret.Init(#Keret_Data,Keret_X_ScreenPOS,Keret_Y_ScreenPOS,True);
+		Keret.SaveBackground();
+
+		/* Pumpak pool ürítése: minden hely szabad (x=0) induláskor. */
+		i:=0;
+		while (i<MAX_PUMPAK) do
+		begin;
+			Pumpak[i].x:=0;
+			i:=i+1;
+		end;
+
+		/* Enemy (vírus) pool ürítése. A Random unitot NEM seedeljük itt:
+		   a SetRSeed() beragaszthatja 0-ra a generátort; seed nélkül a
+		   Random1 az elso hiváskor az 1 literálból indul (nem 0), tehát a
+		   sorozat rendben fut - csak boot-onként ugyanaz. A tényleges
+		   szórást a fociklusban pörgetett RandomByte() adja (lásd ott). */
+		i:=0;
+		while (i<MAX_ENEMY) do
+		begin;
+			Enemies[i].x:=0;
+			i:=i+1;
+		end;
+
+	end;
+
+
+
+/* Feltölti a teljes Map tömböt üres talajjal (induláskor mindenhol Talaj1 van). */
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			Map[data]:=Talaj1Map;				/* Talaj1 sprite értéke */
+			data:=data+1;
+			end;
+	end;
+
+/* Egy byte kiírása a HUD-ra MINDIG 2 karakteren, vezető nullával
+   (pl. 9 -> "09"). Így a rövidebb szám felülírja a korábbi hosszabb érték
+   helyiértékeit, nem kell külön törölni (a törlés villogott mozgás közben).
+   x = a bal karakterhely byte-pozíciója; egy karakter 2 byte széles. */
+Procedure HUD_Num2(ertek: byte; x: byte);
+	begin
+		if ertek < 10 then
+			begin
+				GE::WriteText(x, 4, "0");
+				GE::ByteToStr(ertek);
+				GE::WriteText(x + 2, 4, #GE_NumStr);
+			end
+		else
+			begin
+				GE::ByteToStr(ertek);
+				GE::WriteText(x, 4, #GE_NumStr);
+			end;
+	end;
+
+/* Egy integer kiírása a HUD-ra MINDIG 4 karakteren, vezető nullákkal
+   (pl. 5 -> "0005", 100 -> "0100"). A számjegyeket kézzel bontjuk ki
+   (ezres/százas/tízes/egyes), és mindet külön kiírjuk - így pontosan 4
+   karakter íródik x, x+2, x+4, x+6 pozícióra, a vezető nullák magukat
+   rajzolják, nem kell külön törölni. x = a bal karakterhely byte-pozíciója.
+   Értéktartomány: 0-9999. */
+Procedure HUD_Num4(ertek: integer; x: byte);
+	var maradek, d : integer;
+	begin
+		maradek := ertek;
+		d := maradek / 1000;
+		GE::IntToStr(d);
+		GE::WriteText(x, 4, #GE_NumStr);
+		maradek := maradek - d * 1000;
+		d := maradek / 100;
+		GE::IntToStr(d);
+		GE::WriteText(x + 2, 4, #GE_NumStr);
+		maradek := maradek - d * 100;
+		d := maradek / 10;
+		GE::IntToStr(d);
+		GE::WriteText(x + 4, 4, #GE_NumStr);
+		d := maradek - d * 10;
+		GE::IntToStr(d);
+		GE::WriteText(x + 6, 4, #GE_NumStr);
+	end;
+
+/* A teljes térkép egyszeri kirajzolása induláskor (minden mező végigjárása),
+   valamint a felső HUD sáv (CASH, POZ-X, POZ-Y feliratok és értékek) kiírása. */
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;
+					Talaj1.Put;
+				end;
+			data:=data+1;
+			end;
+	/* HUD háttérsáv és feliratok kirajzolása a képernyő tetején */
+	GE::FillRect(1, 12, 62, 2, 255);
+	GE::WriteText(4, 4, #CashStr);
+	GE::WriteText(32, 4, #PosStr);
+
+	HUD_Num4(Drill_Cash, 16);
+
+	HUD_Num2(Keret_X_Pos, 42);
+	HUD_Num2(Keret_Y_Pos, 58);
+
+	end;
+
+/* Egy enemy ("zöld paca" ellenség) kirajzolása a megadott rács-mezőre
+   (x: 1-30, y: 1-18), a megadott animációs fázisban (faz: 0..4, növekvő
+   méret - 0=2x2 pötty, 4=teli paca). A fázist a Pumpa mintájára, kézi
+   Data-pointerrel választjuk (AnimSet + faz*Size). Bélyegzőként Put-oljuk,
+   nincs háttérpuffer. */
+Procedure Enemy_Kirak(x, y, faz : byte);
+	begin;
+		Enemy.Data:=Enemy.AnimSet+faz*Enemy.Size;
+		Enemy.X:=x*2;
+		Enemy.Y:=30+y*10;
+		Enemy.SetPosition;
+		Enemy.Put;
+	end;
+
+/* MINDEN aktív vírus-kolónia újrarajzolása a SAJÁT aktuális fázisában.
+   Azért kell, mert a Keret (kurzor) mozgásakor a Keret.RestoreBackground()
+   a Keret alá/mellé eső mezőkre egy ELAVULT képkockát ken vissza - a vírus
+   a memóriában (Enemies[].faz, Map[]) tovább nőtt, de a képernyőn a régi
+   fázis ragad be. A Keret_Frissit() a restore UTÁN, a Keret újrarajzolása
+   ELŐTT hívja (így a Keret friss háttérpuffere is a helyes fázist menti el).
+   Deklaráció-sorrend miatt itt kell állnia, a Keret_Frissit ELŐTT. */
+Procedure Enemyk_Ujrarajzol();
+	var i : byte;
+	begin;
+		i:=0;
+		while (i<MAX_ENEMY) do
+			begin;
+				if (Enemies[i].x<>0) then Enemy_Kirak(Enemies[i].x, Enemies[i].y, Enemies[i].faz);
+				i:=i+1;
+			end;
+	end;
+
+/* Csak a Keret X/Y koordinátáit írja ki a HUD-ra (a szöveges kijelzőt frissíti,
+   a sprite-okat nem érinti). */
+Procedure Keret_OSD();
+	begin
+		HUD_Num2(Keret_X_Pos, 42);
+		HUD_Num2(Keret_Y_Pos, 58);
+	end;
+
+/* A pénz (Drill_Cash) kiírása a HUD-ra, 4 jegyen, vezető nullákkal. */
+Procedure Cash_OSD();
+	begin
+		HUD_Num4(Drill_Cash, 16);
+	end;
+
+/* A rács-koordinátákból (Keret_X_Pos/Keret_Y_Pos) kiszámolja a Keret sprite
+   képernyő-pozícióját (Keret.X / Keret.Y). Ezt még nem érvényesíti a sprite-on -
+   ahhoz a Keret.SetPosition() hívás is kell (lásd Keret_SpriteKirak). */
+Procedure Keret_XY_Calc();
+	begin;
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		Keret.X:=Keret_X_ScreenPOS;
+		Keret.Y:=Keret_Y_ScreenPOS;
+	end;
+
+/* A Keret sprite tényleges kirajzolása az aktuális (Keret.X/Y-ban beállított)
+   pozícióra. Sorrend: pozíció érvényesítése -> a Keret alatti terület
+   elmentése háttérként -> a keret grafika kirajzolása -> "utolsó pozíció"
+   frissítése (ez alapján tudja majd a RestoreBackground, honnan kell
+   visszaállítania a képet, ha a Keret elmozdul). */
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+/* A Pumpa sprite kirajzolása a pool "i". elemének saját pozíciójára és saját
+   animációs fázisára. A Pumpa.Data-t közvetlenül a megfelelő fázis címére
+   állítjuk (AnimSet + fázis * egy fázis mérete) - nem a beépített
+   Animation() eljárással, mert azzal nem lehetne tetszőleges (nem egymást
+   követő) fázisokat, pumpánként eltérő állapotban, ugrás nélkül beállítani. */
+Procedure PumpaFazisKirak(i : byte);
+	begin;
+		Pumpa.Data:=Pumpa.AnimSet+Pumpak[i].anim*Pumpa.Size;
+		Pumpa.X:=Pumpak[i].x*2;
+		Pumpa.Y:=30+Pumpak[i].y*10;
+		Pumpa.SetPosition;
+		Pumpa.Put;
+	end;
+
+/* Megkeresi a Pumpak pool első szabad (x=0) helyét. Ha nincs szabad hely,
+   MAX_PUMPAK-t adja vissza (ezt a hívónak ellenőriznie kell). */
+Function TalalSzabadPumpaHely() : byte;
+	var i								:	byte;
+	begin;
+		i:=0;
+		while ((i<MAX_PUMPAK) and (Pumpak[i].x<>0)) do
+			i:=i+1;
+		TalalSzabadPumpaHely:=i;
+	end;
+
+/* Új pumpa berakása a poolba a megadott rács-koordinátára, és azonnali
+   kirajzolása - nem kell várni a soron következő forgó frissítésre ahhoz,
+   hogy látszódjon.
+   Az induló animációs fázist NEM mindig 0-ra állítjuk, hanem a pool-index
+   (i) alapján szórjuk szét (i mod PUMPA_FAZISOK): ha gyors egymásutánban
+   több pumpát is lerakunk, azok szomszédos pool-indexekre kerülnek, tehát
+   örökre ugyanabban a forgó PumpakFrissitesLepes-chunkban frissülnek - ha
+   mindegyik 0-ról indulna, ez azt jelentené, hogy a fázisuk MINDIG azonos
+   marad, vagyis tökéletesen szinkronban "ugrálnának". A szétszórt induló
+   fázissal ugyanabban a képkockában lépnek ugyan, de a fázisuk különböző
+   marad, ezért nem tűnnek egyetlen összehangolt animációnak. */
+Procedure Pumpa_Uj(x,y : byte);
+	var i								:	byte;
+	begin;
+		i:=TalalSzabadPumpaHely();
+		if (i<MAX_PUMPAK) then
+			begin;
+				Pumpak[i].x:=x;
+				Pumpak[i].y:=y;
+				Pumpak[i].anim:=i-(i/PUMPA_FAZISOK)*PUMPA_FAZISOK;
+				PumpaFazisKirak(i);
+				Pumpa_db:=Pumpa_db+1;			/* termeléshez: hány pumpa van összesen */
+			end;
+	end;
+
+/* Egy adott index-tartomány ([honnan..meddig]) pumpáinak animációs fázisát
+   lépteti eggyel, és újrarajzolja őket. Ezt hívja a PumpakFrissitesLepes,
+   mindig csak egy kis, forgó résztartományra - így képkockánként legfeljebb
+   PUMPAK_CHUNK darab Put() történik, függetlenül attól, hány pumpa van
+   összesen a pályán. */
+Procedure PumpakFrissit(honnan, meddig : byte);
+	var i								:	byte;
+	begin;
+		i:=honnan;
+		while (i<=meddig) do
+			begin;
+				if (Pumpak[i].x<>0) then
+					begin;
+						Pumpak[i].anim:=Pumpak[i].anim+1;
+						if (Pumpak[i].anim>=PUMPA_FAZISOK) then Pumpak[i].anim:=0;
+						PumpaFazisKirak(i);
+					end;
+				i:=i+1;
+			end;
+	end;
+
+/* Képkockánként egyszer hívandó: kiszámolja a soron következő forgó
+   PUMPAK_CHUNK méretű tartományt, és azt frissíti. A tartomány a pool
+   elején kezdődik újra, ha a végére ért - így minden pumpa nagyjából
+   MAX_PUMPAK/PUMPAK_CHUNK képkockánként egyszer lép animációban (100/20
+   esetén: minden 5. képkockán), de mivel a tömbindex nem térbeli
+   elrendezést követ, ez nem okoz látható hullámzást a képernyőn. */
+Procedure PumpakFrissitesLepes();
+	var vege							:	byte;
+	begin;
+		vege:=PumpakKezdo+PUMPAK_CHUNK-1;
+		if (vege>=MAX_PUMPAK) then vege:=MAX_PUMPAK-1;
+		PumpakFrissit(PumpakKezdo, vege);
+		PumpakKezdo:=PumpakKezdo+PUMPAK_CHUNK;
+		if (PumpakKezdo>=MAX_PUMPAK) then PumpakKezdo:=0;
+	end;
+
+/* Mindent egy eljárásban végez el a Keret körül, a helyes sorrendben:
+     1) eldönti, kell-e frissíteni (mozgott VAGY pumpa van alatta - az
+        animálódhat), és ha igen, MÁR ITT elvégzi a RestoreBackground-ot;
+     2) lefuttatja a PumpakFrissitesLepes-t (pumpák animációjának forgó
+        frissítése) - ez azért van KÖZBEN, mert ha a Keret alatti pumpa
+        pont ekkor lép fázist, a friss képkockának a RestoreBackground UTÁN,
+        de a SaveBackground ELŐTT kell megjelennie a képernyőn, különben a
+        Keret alatti pumpa animációja "befagyna" (a Keret mindig egy régi,
+        elmentett fázist állítana vissza rá). Ez az eredeti (4.0-ás) sorrend:
+        RestoreBackground -> PumpakFrissitesLepes -> mentés+rajzolás;
+     3) ha kellett a frissítés, elmenti a (már friss pumpa-animációt is
+        tartalmazó) hátteret és ráteszi a Keret kerekét;
+     4) a HUD-ot mindig frissíti, függetlenül attól, hogy a sprite
+        frissült-e.
+   (Korábban ez két külön eljárásra volt bontva egy globális boolean
+   jelzővel közöttük - az ELÉG VOLT, hogy a TRSE fordító összeomoljon
+   [exit code 3221225477 / access violation] rajta. Ez az egy-eljárásos,
+   csak lokális boolean-okat használó forma bizonyítottan fordul. FONTOS:
+   ennek a PumpakFrissitesLepes UTÁN kell állnia a fájlban, mert a TRSE
+   deklaráció-előtti hívást nem enged - máskülönben ez a procedura a saját
+   testében még nem létező PumpakFrissitesLepes-t hívná.) */
+Procedure Keret_Frissit();
+	var mozgott						:	boolean;
+		pumpavan						:	boolean;
+	begin;
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		mozgott:=((Keret_X_Pos<>Keret_Elozo_X_Pos) or (Keret_Y_Pos<>Keret_Elozo_Y_Pos));
+		pumpavan:=(Map[MapPos]=PumpaMap);
+		if (mozgott or pumpavan) then Keret.RestoreBackground();
+
+		PumpakFrissitesLepes();
+
+		if (mozgott or pumpavan) then
+			begin;
+				/* a RestoreBackground által elkent vírus-mezők helyreállítása
+				   a valós fázisukra, MÉG a Keret háttérmentése/rajzolása előtt */
+				Enemyk_Ujrarajzol();
+				Keret_XY_Calc();
+				Keret_SpriteKirak();
+				Keret_Elozo_X_Pos:=Keret_X_Pos;
+				Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+			end;
+		Keret_OSD();
+	end;
+
+/* A Keret_MoveXXX eljárások CSAK a rács-koordinátát (Keret_X_Pos/Y_Pos)
+   módosítják - a tényleges háttér-visszaállítást és újrarajzolást a
+   főciklus végi Keret_Frissit() végzi el (ami észleli a mozgást és emiatt
+   restore-ol+újrarajzol), egyszer képkockánként. Ez azért fontos, mert ha
+   itt is rajzolnánk, a Keret duplán rajzolódna ki minden mozgásnál. */
+Procedure Keret_MoveLeft();
+	begin
+		Keret_X_Pos:=Keret_X_Pos-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		Keret_X_Pos:=Keret_X_Pos+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos+1;
+	end;
+
+/* Pumpa lerakása a Keret alatti mezőre (Space lenyomásakor hívódik).
+   Saját, önálló restore->lerakás->mentés+rajzolás sorrendet használ, hogy a
+   pumpa AZONNAL látszódjon. Ellenőrzi, hogy a mezőn már van-e pumpa, hogy
+   ismételt Space lenyomásra ne fogyjon feleslegesen a Pumpak pool. */
+Procedure DrillLerak();
+	begin
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		/* Csak akkor rakható le pumpa, ha:
+		   - a mező SZABAD TALAJ (Talaj1Map) - ez egyszerre zárja ki a már
+		     lerakott pumpát (1-8) ÉS a bármilyen fázisú vírust (20-29),
+		   - van rá fedezet (a Drill_Cash nem mehet 0 alá),
+		   - és még nem értük el a maximális pumpaszámot (különben a Pumpa_Uj
+		     úgyis eldobná, de az árat már levontuk / termelésnek vettük volna).
+		   Két egymásba ágyazott if, mert a TRSE zárójelpáronként csak EGY
+		   and-et enged (a háromtagú feltétel fordítási hibát adott). */
+		if ((Map[MapPos]=Talaj1Map) and (Drill_Cash>=Pumpa_price)) then
+		if (Pumpa_db<MAX_PUMPAK) then
+			begin;
+				Keret.RestoreBackground();		/* a keret alatti valós talajt tesszük láthatóvá lerakás előtt */
+				Map[MapPos]:=PumpaMap;
+				Pumpa_Uj(Keret_X_Pos, Keret_Y_Pos);
+				Drill_Cash:=Drill_Cash-Pumpa_price;	/* a pumpa ára levonva a pénzből */
+				Cash_OSD();							/* pénz-kijelző frissítése */
+				Keret_SpriteKirak();			/* elmenti a friss (pumpát tartalmazó) hátteret, majd ráteszi a keretet */
+				Keret_OSD();
+			end;
+	end;
+
+/* A lerakott pumpák termelése: a Drill_Cash annyiszor Pumpa_termel értékkel nő,
+   ahány pumpa le lett rakva (Pumpa_db). A főciklus Termel_Utem képkockánként hívja.
+   A szorzatot integer-ben számoljuk (Pumpa_db * Pumpa_termel akár 800 is lehet,
+   ami byte-ban túlcsordulna), és 9999-re vágjuk, mert a HUD_Num4 csak 4 jegyet
+   tud kiírni. */
+Procedure Pumpak_Termelnek();
+	var termeny : integer;
+	begin
+		if (Pumpa_db > 0) then
+			begin
+				termeny:=Pumpa_db;
+				termeny:=termeny*Pumpa_termel;
+				Drill_Cash:=Drill_Cash+termeny;
+				if (Drill_Cash > 9999) then Drill_Cash:=9999;
+				Cash_OSD();
+			end;
+	end;
+
+/* ============================================================
+   ENEMY_Szekcio - a terjedő "vírus" (zöld paca) ellenség.
+
+   Az eredeti Aqualique 1.0 logikája: kolóniák véletlen helyeken,
+   idővel jelennek meg egy plafonig (MAX_ENEMY), majd véletlen
+   irányba, egy mezőnyit léptetve terjednek; a pumpát elpusztítják.
+   Fal / meteor EGYELŐRE NINCS, de a szerkezet készüljön fel rá.
+
+   Jelenlegi állapot: pool + véletlen kezdő-kolónia (frame-késleltetéssel)
+   + fázisléptetés (0->4, az utolsónál megáll) + TERJEDÉS (tick-enként
+   EGY kifejlett kolónia egy véletlen szomszéd talajmezőre; új terjedés
+   csak ha az előző terjedés-gyerek is kifejlett - lásd Enemyk_Terjednek).
+   PUMPAPUSZTÍTÁS és a "20 kolónia után újra random spawn" még nincs.
+   ============================================================ */
+
+/* Egy új vírus-kolónia a pool első szabad helyére, adott rács-mezőre
+   (x: 1-30, y: 1-18), 0. fázisban. Beírja a Map-be (VirusMap = 20)
+   és azonnal kirajzolja a 0. fázisú enemy-sprite-ot. */
+Procedure Enemy_Uj(x, y : byte);
+	var i : byte;
+		mp : integer;			/* Map-index integerben - a (y-1)*30 byte-ban túlcsordulna */
+	begin;
+		i:=0;
+		while ((i<MAX_ENEMY) and (Enemies[i].x<>0)) do
+			i:=i+1;
+		Enemy_Uj_Index:=i;					/* MAX_ENEMY, ha nem fért be */
+		if (i<MAX_ENEMY) then
+			begin;
+				Enemies[i].x:=x;
+				Enemies[i].y:=y;
+				Enemies[i].faz:=0;
+				mp:=x-1+(y-1)*30;
+				Map[mp]:=VirusMap;				/* 20 = vírusos mező, 0. fázis */
+				Enemy_db:=Enemy_db+1;
+				Enemy_Kirak(x, y, 0);
+			end;
+	end;
+
+/* Egy véletlen rács-mezőre lerak egy 0. fázisú vírus-kolóniát.
+   A RandomByte() 0-255 -> mod 30/18 -> +1 => 1-30 / 1-18.
+   (A mod-ot a bevált a-(a/b)*b alakkal, mert a mod operátor
+   szintaxisa TRSE-ben nem megerősített.)
+   MEGJEGYZÉS: seed hiányában a Random1 az 1 literálból indul, tehát a
+   sorozat boot-onként AZONOS -> a kezdo vírus mindig ugyanoda kerül.
+   (Nem a 0,0-ba: az a SetRSeed 0-ra ragadása volt.) Ha boot-onként
+   más kell, a fociklusban pörgetett RandomByte() ad entrópiát, és a
+   lerakást elso billentyunyomásra kell idozíteni - lásd fociklus. */
+Procedure Enemy_Random_Lerak();
+	var rx, ry, k : byte;
+	begin;
+		/* a generátor bemelegítése - az elso pár érték gyenge/0 lehet */
+		k:=0;
+		while (k<8) do
+			begin;
+				rx:=Random::RandomByte();
+				k:=k+1;
+			end;
+		rx:=Random::RandomByte();
+		ry:=Random::RandomByte();
+		rx:=1 + (rx - (rx/30)*30);
+		ry:=1 + (ry - (ry/18)*18);
+		Enemy_Uj(rx, ry);
+		Enemy_Faz_Frame:=0;		/* a friss kolónia töltse ki a teljes elso fázis-időt */
+	end;
+
+/* Minden aktív vírus-kolónia fázisát lépteti eggyel (0->1->2->3->4), amíg
+   el nem éri az utolsó fázist (ENEMY_MAX_FAZIS) - ott MEGÁLL, nem indul
+   elölről. A Map-be a 20+faz érték kerül, a sprite-ot pedig újrarajzoljuk:
+   az enemy.bin nem maszkolt, minden fázis a teljes 8x8 cellát felülírja,
+   így a következo fázis magától eltünteti az elozot. A fociklus
+   Enemy_Faz_Utem frame-enként hívja. */
+Procedure Enemyk_Fejlodnek();
+	var i : byte;
+		mp : integer;
+	begin;
+		i:=0;
+		while (i<MAX_ENEMY) do
+			begin;
+				if (Enemies[i].x<>0) then
+				if (Enemies[i].faz<ENEMY_MAX_FAZIS) then
+					begin;
+						Enemies[i].faz:=Enemies[i].faz+1;
+						mp:=Enemies[i].x-1+(Enemies[i].y-1)*30;
+						Map[mp]:=VirusMap+Enemies[i].faz;
+						Enemy_Kirak(Enemies[i].x, Enemies[i].y, Enemies[i].faz);
+					end;
+				i:=i+1;
+			end;
+	end;
+
+/* A vírus terjedése - TICK-ENKÉNT CSAK EGY kolónia, EGY irányba.
+   Szabályok:
+   - Csak TELJESEN kifejlett kolónia (faz = ENEMY_MAX_FAZIS) terjedhet.
+   - Új terjedés csak akkor, ha a LEGUTÓBB kipöttyözött kolónia
+     (Enemy_Terjed_Gyerek) is elérte már az utolsó fázist - addig a
+     terjedés globálisan szünetel (a felhasználó kérése: "csak akkor,
+     amikor az új mező ahova terjedt már az utolsó fázisban van").
+   - A terjedő kolóniát forgó indexszel (Enemy_Terjed_Nr) választjuk.
+   - Irány: két független 0..2 véletlen (0->-1, 1->0, 2->+1 az x/y-ra),
+     előjeles aritmetika nélkül -> 8 irány + "helyben" eset.
+   - Csak SZABAD TALAJRA (Talaj1Map) terjed - pumpát/vírust EGYELŐRE nem
+     bánt -, a pálya szélén megáll, tele poolnál (MAX_ENEMY) nem terjed.
+   A fociklus Enemy_Terjed_Utem frame-enként hívja. */
+Procedure Enemyk_Terjednek();
+	var db, rdx, rdy, nx, ny, kesz, mehet : byte;
+		mp : integer;
+	begin;
+		/* GATE: amíg a legutóbbi terjedés-gyerek nem kifejlett, nincs új terjedés */
+		mehet:=1;
+		if (Enemy_Terjed_Gyerek <> 0) then
+			begin;
+				if (Enemies[Enemy_Terjed_Gyerek-1].faz = ENEMY_MAX_FAZIS) then
+					Enemy_Terjed_Gyerek:=0
+				else
+					mehet:=0;
+			end;
+
+		if (mehet = 1) then
+			begin;
+				kesz:=0;
+				db:=0;
+				while ((db<MAX_ENEMY) and (kesz=0)) do
+					begin;
+						Enemy_Terjed_Nr:=Enemy_Terjed_Nr+1;
+						if (Enemy_Terjed_Nr>=MAX_ENEMY) then Enemy_Terjed_Nr:=0;
+						if (Enemies[Enemy_Terjed_Nr].x<>0) then
+						if (Enemies[Enemy_Terjed_Nr].faz=ENEMY_MAX_FAZIS) then
+							begin;
+								rdx:=Random::RandomByte();
+								rdx:=rdx-(rdx/3)*3;
+								rdy:=Random::RandomByte();
+								rdy:=rdy-(rdy/3)*3;
+								nx:=Enemies[Enemy_Terjed_Nr].x;
+								ny:=Enemies[Enemy_Terjed_Nr].y;
+								if (rdx=0) then nx:=nx-1;
+								if (rdx=2) then nx:=nx+1;
+								if (rdy=0) then ny:=ny-1;
+								if (rdy=2) then ny:=ny+1;
+								if ((nx>=1) and (nx<=30)) then
+								if ((ny>=1) and (ny<=18)) then
+									begin;
+										mp:=nx-1+(ny-1)*30;
+										if (Map[mp]=Talaj1Map) then
+											begin;
+												Enemy_Uj(nx, ny);
+												if (Enemy_Uj_Index < MAX_ENEMY) then Enemy_Terjed_Gyerek:=Enemy_Uj_Index+1;
+											end;
+									end;
+								kesz:=1;		/* egy kolónia megkapta a körét - vége ennek a tick-nek */
+							end;
+						db:=db+1;
+					end;
+			end;
+	end;
+
+/* ============================================================
+   KEZDOKEPERNYO / RND-beallitas
+   Letorli a kepernyot, kiirja kozepre a felhivast, es VAR a SPACE-re.
+   A varakozas alatt minden kepkockan porget egyet a Random generatoron
+   -> a seed a jatekos reakcioidejetol fugg (boot-onkent mas). TVC-n
+   nincs jobb entropiaforras induláskor.
+   MEGJ.: a felirat ekezet nelkuli - a CharSetGR4.bin ekezetkeszlete
+   nem biztos, hogy teljes.
+   ============================================================ */
+Procedure Start_Kepernyo();
+	begin;
+		GE::ClearScreen(0);
+		GE::WriteText(10, 116, "SPACE-RE INDUL A JATEK");
+		Start_Wait:=1;
+		while (Start_Wait = 1) do
+			begin;
+				GE::GetKeyboard();
+				Rnd_Porgeto:=Random::RandomByte();
+				if (GE::Pressed(GE::KEY_SPACE)) then Start_Wait:=0;
+				GE::WaitForSync();
+			end;
+		GE::ClearScreen(0);
+	end;
+
+/* ============================================================
+   FŐPROGRAM
+   ============================================================ */
+begin
+	/* Egyszeri indítási beállítások. */
+	ProgramInit;
+
+	/* Kezdőképernyő: "SPACE-RE INDUL A JÁTÉK" - eddig NEM történik semmi
+	   más, csak a szöveg látszik, és a Random generátor pörög. SPACE-re
+	   megy tovább. */
+	Start_Kepernyo();
+
+	/* Térkép feltöltése és kirajzolása, a Keret kezdő kirajzolása. */
+	MapReset;
+	MapToScreen;
+	/* Kezdő kirajzolás FELTÉTEL NÉLKÜL (nem a Keret_Frissit-en keresztül, mert az
+	   mostantól csak mozgás/pumpa esetén frissít - induláskor viszont mindig
+	   látszódnia kell a Keretnek). RestoreBackground-ot itt szándékosan NEM
+	   hívunk: a ProgramInit-ben elmentett háttér még a MapToScreen előttről,
+	   "üres" állapotból származna, annak visszaállítása most elrontaná a már
+	   kirajzolt térképet. */
+	Keret_XY_Calc();
+	Keret_SpriteKirak();
+	Keret_Elozo_X_Pos:=Keret_X_Pos;
+	Keret_Elozo_Y_Pos:=Keret_Y_Pos;
+	Keret_OSD();
+
+	/* ENEMY_Szekcio: a kezdő vírus-kolónia NEM azonnal kerül le, hanem
+	   Enemy_Start_Delay frame késleltetéssel (lásd a főciklust). A
+	   késleltetést itt sorsoljuk: alap + egy véletlen 0..255. A Random
+	   generátor a kezdőképernyőn már bekeveredett a játékos reakcióidejéig. */
+	Enemy_Start_Delay:=Enemy_Start_Alap + Random::RandomByte();
+
+    while (true) do
+	begin
+
+		/* 1. Bemenetkezelés: billentyűzet/joystick lekérdezése, és ez alapján
+		   a Keret rács-pozíciójának módosítása vagy pumpa lerakása.
+		   Ezek a lépések itt még NEM rajzolnak semmit a képernyőre. */
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+
+		/* A véletlenszám-generátort minden képkockán pörgetjük, hogy a
+		   későbbi vírus-terjedés iránya se legyen determinisztikus. */
+		Rnd_Porgeto:=Random::RandomByte();
+
+		if (GE::Joystick(1, GE::JOY_LEFT) and (Keret_X_Pos > 1)) then Keret_MoveLeft();
+		if (GE::Joystick(1, GE::JOY_RIGHT) and (Keret_X_Pos < 30)) then Keret_MoveRight();
+		if (GE::Joystick(1, GE::JOY_UP) and (Keret_Y_Pos > 1)) then Keret_MoveUp();
+		if (GE::Joystick(1, GE::JOY_DOWN) and (Keret_Y_Pos < 18)) then Keret_MoveDown();
+		if (GE::Pressed(GE::KEY_SPACE)) then DrillLerak();
+
+		/* 2. Várakozás a képfrissítésre (raszter-megszakítás), hogy a
+		   rajzolás ne okozzon szakadást/villogást a képen. */
+		GE::WaitForSync();
+
+		/* 3. Rajzolási fázis: a Keret_Frissit() maga tartalmazza a helyes
+		      sorrendet (RestoreBackground -> PumpakFrissitesLepes -> mentés+
+		      rajzolás), lásd a fejléc-kommentjét a definíciójánál. */
+		Keret_Frissit();
+
+		/* 4. Pumpák termelése: Termel_Utem képkockánként egyszer. */
+		Termel_Frame:=Termel_Frame+1;
+		if (Termel_Frame >= Termel_Utem) then
+			begin
+				Termel_Frame:=0;
+				Pumpak_Termelnek();
+			end;
+
+		/* 5. A kezdő vírus-kolónia lerakása Enemy_Start_Delay frame után
+		   (nem a játék legelejétől, hogy legyen egy kis nyugalom). */
+		if (Enemy_Elso_Kesz = 0) then
+			begin;
+				Enemy_Start_Frame:=Enemy_Start_Frame+1;
+				if (Enemy_Start_Frame >= Enemy_Start_Delay) then
+					begin;
+						Enemy_Elso_Kesz:=1;
+						Enemy_Random_Lerak();
+					end;
+			end;
+
+		/* 6. Vírus-kolóniák növekedése: Enemy_Faz_Utem frame-enként egy
+		   fázislépés, az utolsó fázisig (ott megáll). */
+		if (Enemy_Elso_Kesz = 1) then
+			begin;
+				Enemy_Faz_Frame:=Enemy_Faz_Frame+1;
+				if (Enemy_Faz_Frame >= Enemy_Faz_Utem) then
+					begin;
+						Enemy_Faz_Frame:=0;
+						Enemyk_Fejlodnek();
+					end;
+			end;
+
+		/* 7. Vírus terjedése: Enemy_Terjed_Utem frame-enként a kifejlett
+		   kolóniák egy véletlen szomszéd talajmezőre terjednek. */
+		if (Enemy_Elso_Kesz = 1) then
+			begin;
+				Enemy_Terjed_Frame:=Enemy_Terjed_Frame+1;
+				if (Enemy_Terjed_Frame >= Enemy_Terjed_Utem) then
+					begin;
+						Enemy_Terjed_Frame:=0;
+						Enemyk_Terjednek();
+					end;
+			end;
+
+	end;
+
+//	GE::SetBorder(GE::Border_DarkRed);
+end.

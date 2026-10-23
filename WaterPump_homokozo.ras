@@ -1,0 +1,338 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+
+var
+		/* Sprite-képek (bináris grafikai adatok) */
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin");
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin");
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin");
+		/* Pumpa (animált szivattyú), Talaj1 (üres talaj), Keret (mozgatható kurzor) */
+		Pumpa							:	GE::Sprite;
+		Talaj1							:	GE::Sprite;
+		Keret							:	GE::Sprite;
+
+		CharSet 							: 	incbin("resources\tvc_sprites\CharSetGR4.bin");
+		CashStr 							: 	string = ("CASH$:");
+		PosStr							:	string = ("POZ-X:   POZ-Y:");
+
+		/* Keret pozíciója: XPOS/YPOS a rács-koordináta (1-30/1-18),
+		   XScreenPOS/YScreenPOS az ebből számolt képernyő-pozíció (byte/pixel).
+		   Külön névvel (nem "Keret"), mert az már a sprite-objektum neve. */
+		KeretPOS = record
+					XPOS			:	byte;
+					YPOS			:	byte;
+					XScreenPOS		:	byte;
+					YScreenPOS		:	byte;
+					end;
+		KeretPoz						:	KeretPOS;
+
+		/* A játéktér 30x18 mezős rácsa (lásd lent a MAP értékadások kommentet). */
+		Map								:	array	[18*30] of byte;
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		Drill_Cash						:	byte;		/* összegyűjtött pénz (kijelzéshez) */
+
+		/* PumpaScreen[i] a Map[i]-nek megfelelő pumpa-állapot: X/Y (előre
+		   kiszámolt képernyő-koord.), Van (0/1), AnimPhase (0..7). A
+		   PumpakSzamol (vsync előtt) lépteti a fázist, a PumpakKirak
+		   (vsync után) rajzol - mindkettő a teljes 540 mezőt végigjárja. */
+		const PUMPA_FAZISOK			:	byte = 8;	/* a Pumpa sprite animációs fázisainak száma */
+		const PUMPA_FAZIS_MERET		:	byte = 16;	/* egy fázis mérete byte-ban - meg kell egyeznie a Pumpa.Size-szal */
+
+		/* Minden mező byte (X/Y is csak byte-tartományban mozog) - ugyanaz a
+		   minta, mint a bevált 4.0-s Pumpa_type. */
+		PumpaScreen_type = record
+					X				:	byte;	/* előre kiszámolt képernyő-X (mapx*2) */
+					Y				:	byte;	/* előre kiszámolt képernyő-Y (30+mapy*10) */
+					Van				:	byte;	/* 0 = szabad mező, 1 = van rajta pumpa */
+					AnimPhase		:	byte;	/* 0..PUMPA_FAZISOK-1, csak ha Van=1 */
+					end;
+
+		PumpaScreen						:	array	[18*30] of PumpaScreen_type;
+		/* fázis (0..7) -> kész Pumpa.Data pointer, ProgramInit tölti fel egyszer */
+		PumpaFazPtr_Tab					:	array	[PUMPA_FAZISOK] of integer;
+
+
+
+/*		MAP értékadások jelentései
+		Pumpa jelenlét-jelző (a tényleges fázis a PumpaScreen[]-ben van):	1
+		Talaj típusok:			10-19
+		Vírusos talaj:			20-29								*/
+
+		PumpaMap							:	byte=1;
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+
+		Pumpa_Penz						:	byte=0;
+
+/* Egyszeri indítási beállítások: grafikus mód, paletta, GE init, sprite-ok. */
+Procedure ProgramInit();
+	var mapx,mapy						:	byte;
+		data							:	integer;
+		f								:	byte;
+		temp							:	integer;
+	begin
+		/* Keret kezdő rács-pozíciója (a ScreenPOS-t lentebb ebből számoljuk). */
+		KeretPoz.XPOS:=15;
+		KeretPoz.YPOS:=9;
+
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::InitCharSet(#CharSet, 118, 2, 7);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_VID_ON);
+      	GE::SetRasterInterruptPos(239);
+
+		/* Pumpa: nincs háttérpuffere (bélyegzőként használjuk); a fázist a
+		   PumpaFazPtr_Tab-ból kézzel állítjuk (lásd PumpakKirak). */
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Pumpa.AnimSet:=	#Pumpa_Data+3;		/* +3: átugorja a típus+szélesség+magasság header byte-jait */
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+
+		KeretPoz.XScreenPOS:=(KeretPoz.XPOS*2)-1;
+		KeretPoz.YScreenPOS:=28+(KeretPoz.YPOS*10);
+		/* Keret: maszkolt, van háttérpuffere (a mozgás előtti terület visszaállításához). */
+		Keret.Init(#Keret_Data,KeretPoz.XScreenPOS,KeretPoz.YScreenPOS,True);
+		/* A Keret.SaveBackground() ide MÉG NEM kerülhet: a MapToScreen()
+		   előtt a képernyő üres, azt mentené el. A helyes mentés a
+		   MapToScreen() UTÁN történik (lásd a főprogramban). */
+
+		/* Fázis -> kész Data-pointer tábla. A Pumpa.AnimSet-et skalárba kell
+		   "mosni" a "Storing writetype index" hiba elkerüléséhez. */
+		temp:=Pumpa.AnimSet;
+		f:=0;
+		while (f<PUMPA_FAZISOK) do
+		begin;
+			PumpaFazPtr_Tab[f]:=temp;
+			temp:=temp+PUMPA_FAZIS_MERET;
+			f:=f+1;
+		end;
+
+		/* PumpaScreen feltöltése: előre kiszámolt X/Y minden mezőre, Van/AnimPhase nullázva. */
+		data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+				PumpaScreen[data].X:=mapx*2;
+				PumpaScreen[data].Y:=30+mapy*10;
+				PumpaScreen[data].Van:=0;
+				PumpaScreen[data].AnimPhase:=0;
+				data:=data+1;
+			end;
+
+	end;
+
+
+
+/* Feltölti a teljes Map tömböt üres talajjal (induláskor mindenhol Talaj1 van). */
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			Map[data]:=Talaj1Map;				/* Talaj1 sprite értéke */
+			data:=data+1;
+			end;
+	end;
+
+/* A teljes térkép + HUD egyszeri kirajzolása induláskor. */
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;
+					Talaj1.Put;
+				end;
+			data:=data+1;
+			end;
+	/* HUD háttérsáv és feliratok kirajzolása a képernyő tetején */
+	GE::FillRect(1, 12, 62, 2, 255);
+	GE::WriteText(4, 4, #CashStr);
+	GE::WriteText(32, 4, #PosStr);
+
+	GE::IntToStr(Drill_Cash);
+	GE::WriteText(16, 4, #GE_NumStr);
+
+	GE::ByteToStr(KeretPoz.XPOS);
+	GE::WriteText(42, 4, #GE_NumStr);
+	GE::ByteToStr(KeretPoz.YPOS);
+	GE::WriteText(58, 4, #GE_NumStr);
+
+	end;
+
+/* A Keret X/Y kiírása a HUD-ra. */
+Procedure Keret_OSD();
+	begin
+		GE::ByteToStr(KeretPoz.XPOS);
+		GE::WriteText(42, 4, #GE_NumStr);
+		GE::ByteToStr(KeretPoz.YPOS);
+		GE::WriteText(58, 4, #GE_NumStr);
+	end;
+
+/* Rács-koordinátából képernyő-pozíció (Keret.X/Y) - SetPosition még nem hívja. */
+Procedure Keret_XY_Calc();
+	begin;
+		KeretPoz.XScreenPOS:=(KeretPoz.XPOS*2)-1;
+		KeretPoz.YScreenPOS:=28+(KeretPoz.YPOS*10);
+		Keret.X:=KeretPoz.XScreenPOS;
+		Keret.Y:=KeretPoz.YScreenPOS;
+	end;
+
+/* Keret kirajzolása: pozíció + háttérmentés + rajz + utolsó pozíció frissítése. */
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+/* MapPos frissítése + Keret újrarajzolása + HUD frissítése, minden képkockán. */
+Procedure Keret_Kirak();
+	begin
+		MapPos:=KeretPoz.XPOS-1+(KeretPoz.YPOS-1)*30;
+		Keret_XY_Calc();
+		Keret_SpriteKirak();
+	end;
+
+/* SZÁMOLÁSI fázis (vsync ELŐTT): minden aktív pumpa fázisát lépteti, nem rajzol. */
+Procedure PumpakSzamol();
+	var data							:	integer;
+		f								:	byte;
+	begin;
+		data:=0;
+		while (data<30) do
+			begin;
+				if (PumpaScreen[data].Van=1) then
+					begin;
+						f:=PumpaScreen[data].AnimPhase;
+						f:=f+1;
+						if (f>=PUMPA_FAZISOK) then f:=0;
+						PumpaScreen[data].AnimPhase:=f;
+					end;
+				data:=data+1;
+			end;
+	end;
+
+/* KIRAKÁSI fázis (vsync UTÁN): minden aktív pumpát kirajzol X/Y+SetPosition-nel
+   (a Position direkt írása korábban nem működött ezen a gépen). */
+Procedure PumpakKirak();
+	var data							:	integer;
+		f								:	byte;
+		van							:	byte;
+	begin;
+		data:=0;
+		while (data<30) do
+			begin;
+				/* a case a tömb-indexelt mezőt közvetlenül nem fogadta el -
+				   előbb skalárba mosva (van) fordul */
+				van:=PumpaScreen[data].Van;
+				case van of
+					1: begin
+							f:=PumpaScreen[data].AnimPhase;
+							Pumpa.X:=PumpaScreen[data].X;
+							Pumpa.Y:=PumpaScreen[data].Y;
+							Pumpa.SetPosition;
+							Pumpa.Data:=PumpaFazPtr_Tab[f];
+							Pumpa.Put;
+						end;
+				end;
+				data:=data+1;
+			end;
+	end;
+
+/* Csak a rács-koordinátát módosítják, a rajzolás a főciklusban történik. */
+Procedure Keret_MoveLeft();
+	begin
+		KeretPoz.XPOS:=KeretPoz.XPOS-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		KeretPoz.XPOS:=KeretPoz.XPOS+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		KeretPoz.YPOS:=KeretPoz.YPOS-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		KeretPoz.YPOS:=KeretPoz.YPOS+1;
+	end;
+
+/* Space: csak a táblákba ír (Map/PumpaScreen), nem rajzol - a PumpakKirak
+   ugyanabban a képkockában úgyis kirajzolja. */
+Procedure DrillLerak();
+	begin
+		MapPos:=KeretPoz.XPOS-1+(KeretPoz.YPOS-1)*30;
+		if (Map[MapPos]<>PumpaMap) then
+			begin;
+				Map[MapPos]:=PumpaMap;
+				PumpaScreen[MapPos].Van:=1;
+				PumpaScreen[MapPos].AnimPhase:=0;
+			end;
+	end;
+
+/* ============================================================
+   FŐPROGRAM
+   ============================================================ */
+begin
+	/* ProgramInit/MapReset/MapToScreen: egyszeri, induláskor. A MapToScreen
+	   kivétel a "kirakás csak a fő ciklusban" elv alól, mert csak egyszer fut. */
+	ProgramInit;
+	MapReset;
+	MapToScreen();
+	/* Keret hátterének első mentése - csak itt jó, a MapToScreen() UTÁN (lásd ProgramInit). */
+	Keret.SaveBackground();
+
+    while (true) do
+	begin
+		/* Raszteridő-mérés: DarkBlue = JOY kezelés ideje, alap border fekete. */
+		GE::SetBorder(GE::Border_DarkBlue);
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+		if (GE::Joystick(1, GE::JOY_LEFT) and (KeretPoz.XPOS > 1)) then Keret_MoveLeft();
+		if (GE::Joystick(1, GE::JOY_RIGHT) and (KeretPoz.XPOS < 30)) then Keret_MoveRight();
+		if (GE::Joystick(1, GE::JOY_UP) and (KeretPoz.YPOS > 1)) then Keret_MoveUp();
+		if (GE::Joystick(1, GE::JOY_DOWN) and (KeretPoz.YPOS < 18)) then Keret_MoveDown();
+		if (GE::Pressed(GE::KEY_SPACE)) then DrillLerak();
+		GE::SetBorder(GE::Border_Black);
+
+		GE::SetBorder(GE::Border_DarkRed);
+		PumpakSzamol();		/* számolás - a WaitForSync ELÉ kell */
+		GE::SetBorder(GE::Border_Black);
+
+		GE::WaitForSync();
+
+		/* Rajzolási fázis (a MapToScreen kivételével az egyetlen hely, ahol
+		   kirakás történhet): Keret törlése -> pumpák -> Keret újrarajzolása + HUD. */
+		Keret.RestoreBackground();
+		GE::SetBorder(GE::Border_DarkGreen);
+		PumpakKirak();
+  		GE::SetBorder(GE::Border_DarkYellow);
+	    Keret_Kirak();
+		GE::SetBorder(GE::Border_Yellow);
+		Keret_OSD();
+		GE::SetBorder(GE::Border_Black);
+	end;
+
+//	GE::SetBorder(GE::Border_DarkRed);
+end.

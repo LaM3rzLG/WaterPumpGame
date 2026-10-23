@@ -1,0 +1,402 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+@use "WaterPump"
+
+var
+		/* Sprite-képek (bináris grafikai adatok) */
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin");
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin");
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin");
+		/* Pumpa (animált szivattyú), Talaj1 (üres talaj), Keret (mozgatható kurzor) */
+		Pumpa							:	GE::Sprite;
+		Talaj1							:	GE::Sprite;
+		Keret							:	GE::Sprite;
+
+		CharSet 							: 	incbin("resources\tvc_sprites\CharSetGR4.bin");
+		CashStr 							: 	string = ("CASH$:");
+		PosStr							:	string = ("POZ-X:   POZ-Y:");
+
+		/* Keret pozíciója: XPOS/YPOS a rács-koordináta (1-30/1-18),
+		   XScreenPOS/YScreenPOS az ebből számolt képernyő-pozíció (byte/pixel).
+		   Külön névvel (nem "Keret"), mert az már a sprite-objektum neve. */
+		KeretPOS = record
+					XPOS			:	byte;
+					YPOS			:	byte;
+					XScreenPOS		:	byte;
+					YScreenPOS		:	byte;
+					end;
+		KeretPoz						:	KeretPOS;
+
+		/* A játéktér 30x18 mezős rácsa (lásd lent a MAP értékadások kommentet).
+		   EGYETLEN állapot-tömb: nincs kimondottan "PumpaActiv"/"PumpaScreen"
+		   lista - a pumpa animációs FÁZISA is a Map[]-ben van kódolva
+		   (Map[i] = PumpaMap+fázis, lásd lent), pontosan ugyanúgy, ahogy a
+		   (később visszatérő) vírus is "VirusMap+fázis" értékekkel dolgozott
+		   korábban. Ez kiváltja a külön aktív-pumpa listát: egy pumpa
+		   törlése/hozzáadása egyetlen Map-mezőírás, nincs lista-karbantartás
+		   (swap-remove, kockázatos integer-tömb-írás stb.). */
+		const TERKEP_MERET				:	integer = 18*30;	/* a Map[] mérete (540) */
+		Map								:	array	[TERKEP_MERET] of byte;
+
+		/* AKTÍV-PUMPA POOL (a WaterPump_fal_9.0 "Pumpak[]" tömbjének
+		   megfelelője) - KIZÁRÓLAG a forgó chunk-scan sűrűségéhez kell,
+		   NEM a fázis-állapot tárolására (az továbbra is a Map[]-ben van,
+		   Map[i]=PumpaMap+fázis - lásd fent). Ha a forgó ablak a teljes
+		   540 mezős Map[]-en menne végig (mint az előző próbálkozásban),
+		   egy PUMPAK_CHUNK méretű ablak túlnyomórészt ÜRES talajt találna
+		   (a pumpák ritkák a 540 mezőhöz képest) - ténylegesen sokkal
+		   KEVESEBB, mint PUMPAK_CHUNK pumpa frissülne/frame. A pool sűrűn
+		   (üres helyek nélkül, elölről feltöltve) tárolja a LERAKOTT
+		   pumpák rács-koordinátáit -> egy PUMPAK_CHUNK méretű ablak a
+		   poolban tényleg kb. PUMPAK_CHUNK valódi pumpát talál, pontosan
+		   mint a 9.0-ban. Csak byte mezők (x,y - 1..30/1..18 mindkettő
+		   belefér) -> indexelt írásuk BIZTONSÁGOS (nem az a kockázatos
+		   integer-tömb-írás, ami miatt annak idején a PumpaActiv listát
+		   elvetettük). x=0 = szabad slot. */
+		const MAX_PUMPAK				:	byte = 150;	/* max. egyidejűleg lerakható pumpák (pool méret) */
+		PumpaAktivX						:	array	[MAX_PUMPAK] of byte;
+		PumpaAktivY						:	array	[MAX_PUMPAK] of byte;
+
+		/* Forgó ablak a PumpaAktivX/Y poolon (NEM a Map[]-en!) - PumpakSzamol/
+		   PumpakKirak minden képkockán csak a PumpaScanPos..+PUMPAK_CHUNK-1
+		   pool-tartományt dolgozza fel, körbeforogva a pool méretén (MAX_PUMPAK). */
+		const PUMPAK_CHUNK				:	byte = 10;	/* ennyi pool-hely animációja frissül/rajzolódik képkockánként - fő perf-hangoló */
+		PumpaScanPos					:	byte = 0;	/* a forgó ablak kezdő indexe a poolban */
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		Drill_Cash						:	byte;		/* összegyűjtött pénz (kijelzéshez) */
+
+		/* PUMPA_FAZISOK: a Pumpa sprite animációs fázisainak száma - csak a
+		   Map[]-beli fázis-tartomány (PumpaMap..PumpaMap+PUMPA_FAZISOK-1)
+		   ellenőrzéséhez/wrap-hoz kell itt. A fázis -> kész Data-pointer
+		   tábla (a "pumpa-kép mérete" tudás) már NEM itt van, hanem a
+		   WaterPump unitban (PumpaFazPtr_Tab, BuildPumpaFazTab) - a
+		   PumpakKirak() már csak a fázis-ÉRTÉKET adja át a
+		   WaterPump::PutAt()-nak, a unit maga keresi ki a pointert. */
+		const PUMPA_FAZISOK			:	byte = 8;
+
+
+
+/*		MAP értékadások jelentései
+		Pumpa (a fázis is IDE van kódolva, lásd fent):	PumpaMap..PumpaMap+PUMPA_FAZISOK-1 (1-8)
+		Talaj típusok:			10-19
+		Vírusos talaj:			20-29								*/
+
+		PumpaMap							:	byte=1;
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+
+		Pumpa_Penz						:	byte=0;
+
+/* Egyszeri indítási beállítások: grafikus mód, paletta, GE init, sprite-ok. */
+Procedure ProgramInit();
+	var temp							:	integer;
+		i								:	byte;
+	begin
+		/* Keret kezdő rács-pozíciója (a ScreenPOS-t lentebb ebből számoljuk). */
+		KeretPoz.XPOS:=15;
+		KeretPoz.YPOS:=9;
+
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::InitCharSet(#CharSet, 118, 2, 7);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_VID_ON);
+      	GE::SetRasterInterruptPos(220);
+
+		/* Pumpa: nincs háttérpuffere (bélyegzőként használjuk); a fázis ->
+		   Data-pointer táblát a WaterPump unit építi/kezeli (lásd lent). */
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Pumpa.AnimSet:=	#Pumpa_Data+3;		/* +3: átugorja a típus+szélesség+magasság header byte-jait */
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+
+		KeretPoz.XScreenPOS:=(KeretPoz.XPOS*2)-1;
+		KeretPoz.YScreenPOS:=28+(KeretPoz.YPOS*10);
+		/* Keret: maszkolt, van háttérpuffere (a mozgás előtti terület visszaállításához). */
+		Keret.Init(#Keret_Data,KeretPoz.XScreenPOS,KeretPoz.YScreenPOS,True);
+		/* A Keret.SaveBackground() ide MÉG NEM kerülhet: a MapToScreen()
+		   előtt a képernyő üres, azt mentené el. A helyes mentés a
+		   MapToScreen() UTÁN történik (lásd a főprogramban). */
+
+		/* Fázis -> kész Data-pointer tábla felépítése a WaterPump unitban -
+		   a Pumpa.AnimSet-et skalárba kell "mosni" a "Storing writetype
+		   index" hiba elkerüléséhez, mielőtt átadnánk. */
+		temp:=Pumpa.AnimSet;
+		WaterPump::BuildPumpaFazTab(temp);
+
+		/* A Map[]-et a MapReset() úgyis Talaj1Map-re állítja (lásd lent) -
+		   azt nem kell itt nullázni. A PumpaAktivX/Y poolt VISZONT itt kell
+		   üresre állítani (minden slot szabad, x=0), hogy a forgó chunk-scan
+		   induláskor ne találjon "szemét" pumpa-bejegyzéseket. */
+		i:=0;
+		while (i<MAX_PUMPAK) do
+			begin
+				PumpaAktivX[i]:=0;
+				i:=i+1;
+			end;
+
+		/* A képernyőcím-tábla felépítése a WaterPump unitban - EGYSZER,
+		   itt, induláskor (lásd WaterPump.tru: BuildScreenAddrTab). */
+		WaterPump::BuildScreenAddrTab();
+
+	end;
+
+
+
+/* Feltölti a teljes Map tömböt üres talajjal (induláskor mindenhol Talaj1 van). */
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			Map[data]:=Talaj1Map;				/* Talaj1 sprite értéke */
+			data:=data+1;
+			end;
+	end;
+
+/* A teljes térkép + HUD egyszeri kirajzolása induláskor. */
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;
+					Talaj1.Put;
+				end;
+			data:=data+1;
+			end;
+	/* HUD háttérsáv és feliratok kirajzolása a képernyő tetején */
+	GE::FillRect(1, 12, 62, 2, 255);
+	GE::WriteText(4, 4, #CashStr);
+	GE::WriteText(32, 4, #PosStr);
+
+	GE::IntToStr(Drill_Cash);
+	GE::WriteText(16, 4, #GE_NumStr);
+
+	GE::ByteToStr(KeretPoz.XPOS);
+	GE::WriteText(42, 4, #GE_NumStr);
+	GE::ByteToStr(KeretPoz.YPOS);
+	GE::WriteText(58, 4, #GE_NumStr);
+
+	end;
+
+/* A Keret X/Y kiírása a HUD-ra. */
+Procedure Keret_OSD();
+	begin
+		GE::ByteToStr(KeretPoz.XPOS);
+		GE::WriteText(42, 4, #GE_NumStr);
+		GE::ByteToStr(KeretPoz.YPOS);
+		GE::WriteText(58, 4, #GE_NumStr);
+	end;
+
+/* Rács-koordinátából képernyő-pozíció (Keret.X/Y) - SetPosition még nem hívja. */
+Procedure Keret_XY_Calc();
+	begin;
+		KeretPoz.XScreenPOS:=(KeretPoz.XPOS*2)-1;
+		KeretPoz.YScreenPOS:=28+(KeretPoz.YPOS*10);
+		Keret.X:=KeretPoz.XScreenPOS;
+		Keret.Y:=KeretPoz.YScreenPOS;
+	end;
+
+/* Keret kirajzolása: pozíció + háttérmentés + rajz + utolsó pozíció frissítése. */
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+/* MapPos frissítése + Keret újrarajzolása + HUD frissítése, minden képkockán. */
+Procedure Keret_Kirak();
+	begin
+		MapPos:=KeretPoz.XPOS-1+(KeretPoz.YPOS-1)*30;
+		Keret_XY_Calc();
+		Keret_SpriteKirak();
+	end;
+
+/* Megkeresi a PumpaAktivX/Y pool első szabad (x=0) helyét (9.0:
+   TalalSzabadPumpaHely). Ha nincs szabad hely, MAX_PUMPAK-ot adja vissza -
+   ezt a hívónak (Pumpa_Uj) ellenőriznie kell. */
+Function TalalSzabadPumpaHely() : byte;
+	var i							:	byte;
+	begin;
+		i:=0;
+		while ((i<MAX_PUMPAK) and (PumpaAktivX[i]<>0)) do
+			i:=i+1;
+		TalalSzabadPumpaHely:=i;
+	end;
+
+/* Új pumpa berakása a poolba (9.0: Pumpa_Uj) - a Map[]-be írja a kezdő
+   fázist (PumpaMap = 0. fázis), a poolba a rács-koordinátát (hogy a forgó
+   chunk-scan sűrűn, valódi pumpákat találjon), és AZONNAL kirajzolja -
+   nem kell várnia a forgó ablak sorára, hogy látszódjon. Ha a pool tele
+   van, a lerakás némán elmarad (nincs Map-írás sem). */
+Procedure Pumpa_Uj(x,y : byte);
+	var i							:	byte;
+		idx							:	integer;
+	begin;
+		i:=TalalSzabadPumpaHely();
+		if (i<MAX_PUMPAK) then
+			begin;
+				PumpaAktivX[i]:=x;
+				PumpaAktivY[i]:=y;
+				idx:=x-1+(y-1)*30;
+				Map[idx]:=PumpaMap;
+				WaterPump::PutAt(idx,0);
+			end;
+	end;
+
+/* SZÁMOLÁSI fázis (vsync ELŐTT): a fal_9.0 mintájára a forgó ablak a
+   PumpaAktivX/Y POOLON megy végig (PumpaScanPos..+PUMPAK_CHUNK-1), NEM a
+   teljes Map[]-en - így egy PUMPAK_CHUNK méretű ablak tényleg kb.
+   PUMPAK_CHUNK valódi, lerakott pumpát talál (nem szór szét ritkán a
+   sok üres talaj-mezőn). A fázist a Map[]-ben lépteti (az marad az
+   egyetlen fázis-forrás) - nem rajzol. A PumpaScanPos-t a PumpakKirak()
+   lépteti tovább, hogy a Szamol és a Kirak ugyanazt az ablakot dolgozza
+   fel egy adott képkockán belül. */
+Procedure PumpakSzamol();
+	var i							:	byte;
+		vege						:	byte;
+		idx							:	integer;
+		faz							:	byte;
+	begin;
+		i:=PumpaScanPos;
+		vege:=PumpaScanPos+PUMPAK_CHUNK-1;
+		if (vege>=MAX_PUMPAK) then vege:=MAX_PUMPAK-1;
+		while (i<=vege) do
+			begin;
+				if (PumpaAktivX[i]<>0) then
+					begin;
+						idx:=PumpaAktivX[i]-1+(PumpaAktivY[i]-1)*30;
+						faz:=Map[idx]-PumpaMap;
+						faz:=faz+1;
+						if (faz>=PUMPA_FAZISOK) then faz:=0;
+						Map[idx]:=PumpaMap+faz;
+					end;
+				i:=i+1;
+			end;
+	end;
+
+/* KIRAKÁSI fázis (vsync UTÁN): ugyanazt a pool-ablakot rajzolja ki, amit a
+   PumpakSzamol() az imént léptetett (WaterPump::PutAt()-tal, csak a FÁZIS
+   értékét adva át). A végén továbblépteti a PumpaScanPos-t a pool
+   következő szeletére (körbeforogva MAX_PUMPAK-on) - ez a fő perf-
+   hangoló: PUMPAK_CHUNK valódi Put/frame, függetlenül attól, hány pumpa
+   van összesen a pályán (mint a 9.0-ban). */
+Procedure PumpakKirak();
+	var i							:	byte;
+		vege						:	byte;
+		idx							:	integer;
+		faz							:	byte;
+	begin;
+		i:=PumpaScanPos;
+		vege:=PumpaScanPos+PUMPAK_CHUNK-1;
+		if (vege>=MAX_PUMPAK) then vege:=MAX_PUMPAK-1;
+		while (i<=vege) do
+			begin;
+				if (PumpaAktivX[i]<>0) then
+					begin;
+						idx:=PumpaAktivX[i]-1+(PumpaAktivY[i]-1)*30;
+						faz:=Map[idx]-PumpaMap;
+						WaterPump::PutAt(idx,faz);
+					end;
+				i:=i+1;
+			end;
+
+		PumpaScanPos:=PumpaScanPos+PUMPAK_CHUNK;
+		if (PumpaScanPos>=MAX_PUMPAK) then PumpaScanPos:=0;
+	end;
+
+/* Csak a rács-koordinátát módosítják, a rajzolás a főciklusban történik. */
+Procedure Keret_MoveLeft();
+	begin
+		KeretPoz.XPOS:=KeretPoz.XPOS-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		KeretPoz.XPOS:=KeretPoz.XPOS+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		KeretPoz.YPOS:=KeretPoz.YPOS-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		KeretPoz.YPOS:=KeretPoz.YPOS+1;
+	end;
+
+/* Space: csak szabad talajra (Talaj1Map) lehet pumpát rakni - a tényleges
+   pool-berakást és azonnali kirajzolást a Pumpa_Uj() végzi (9.0 minta). */
+Procedure DrillLerak();
+	begin
+		MapPos:=KeretPoz.XPOS-1+(KeretPoz.YPOS-1)*30;
+		if (Map[MapPos]=Talaj1Map) then Pumpa_Uj(KeretPoz.XPOS, KeretPoz.YPOS);
+	end;
+
+/* ============================================================
+   FŐPROGRAM
+   ============================================================ */
+begin
+	/* ProgramInit/MapReset/MapToScreen: egyszeri, induláskor. A MapToScreen
+	   kivétel a "kirakás csak a fő ciklusban" elv alól, mert csak egyszer fut. */
+	ProgramInit;
+	MapReset;
+	MapToScreen();
+
+	/* Keret hátterének első mentése - csak itt jó, a MapToScreen() UTÁN (lásd ProgramInit). */
+	Keret.SaveBackground();
+
+    while (true) do
+	begin
+		/* Raszteridő-mérés: DarkBlue = JOY kezelés ideje, alap border fekete. */
+		GE::SetBorder(GE::Border_DarkBlue);
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+		if (GE::Joystick(1, GE::JOY_LEFT) and (KeretPoz.XPOS > 1)) then Keret_MoveLeft();
+		if (GE::Joystick(1, GE::JOY_RIGHT) and (KeretPoz.XPOS < 30)) then Keret_MoveRight();
+		if (GE::Joystick(1, GE::JOY_UP) and (KeretPoz.YPOS > 1)) then Keret_MoveUp();
+		if (GE::Joystick(1, GE::JOY_DOWN) and (KeretPoz.YPOS < 18)) then Keret_MoveDown();
+		if (GE::Pressed(GE::KEY_SPACE)) then DrillLerak();
+		GE::SetBorder(GE::Border_Black);
+
+		GE::SetBorder(GE::Border_DarkRed);
+		PumpakSzamol();		/* számolás - a WaitForSync ELÉ kell */
+		GE::SetBorder(GE::Border_Black);
+
+		GE::WaitForSync();
+
+		/* Rajzolási fázis (a MapToScreen kivételével az egyetlen hely, ahol
+		   kirakás történhet): Keret törlése -> pumpák -> Keret újrarajzolása + HUD. */
+		GE::SetBorder(GE::Border_red);
+		Keret.RestoreBackground();
+		GE::SetBorder(GE::Border_DarkGreen);
+		PumpakKirak();
+  		GE::SetBorder(GE::Border_DarkYellow);
+	    Keret_Kirak();
+/*		GE::SetBorder(GE::Border_Yellow);
+		Keret_OSD();
+		GE::SetBorder(GE::Border_Black);
+*/
+	end;
+
+//	GE::SetBorder(GE::Border_DarkRed);
+end.

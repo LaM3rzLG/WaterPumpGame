@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Karakterkészlet-szerkesztő</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#1d2126; --panel:#272c33; --line:#3a414b; --text:#e6e6e6; --dim:#9aa3ad; --acc:#e0a040; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.4 system-ui, Segoe UI, sans-serif; }
+  header { padding:10px 16px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; }
+  header h1 { font-size:17px; margin:0 12px 0 0; }
+  label { color:var(--dim); font-size:13px; }
+  select, input[type=number], input[type=text] { background:#15181c; color:var(--text); border:1px solid var(--line); border-radius:4px; padding:4px 6px; font:inherit; }
+  input[type=number] { width:60px; }
+  button { background:#343b44; color:var(--text); border:1px solid #4a525d; border-radius:4px; padding:5px 10px; font:inherit; cursor:pointer; }
+  button:hover { background:#3f4752; }
+  button.acc { background:#5a4418; border-color:#8a6a28; }
+  main { display:grid; grid-template-columns: minmax(0,1fr) 340px; gap:14px; padding:14px 16px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; }
+  .panel h2 { font-size:14px; margin:0 0 8px; color:var(--dim); font-weight:600; }
+  #set { display:flex; flex-wrap:wrap; gap:6px; }
+  .ch { display:flex; flex-direction:column; align-items:center; gap:2px; padding:3px; border:2px solid transparent; border-radius:4px; cursor:pointer; background:#1f2328; }
+  .ch.sel { border-color:var(--acc); }
+  .ch canvas { image-rendering:pixelated; display:block; }
+  .ch span { font:11px ui-monospace, Consolas, monospace; color:var(--dim); }
+  #edWrap { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+  #ed { image-rendering:pixelated; cursor:crosshair; border:1px solid var(--line); touch-action:none; }
+  .tools { display:flex; flex-direction:column; gap:6px; min-width:180px; }
+  .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .sw { width:34px; height:34px; border:2px solid #555; border-radius:4px; cursor:pointer; }
+  .sw.sel { border-color:var(--acc); box-shadow:0 0 0 2px var(--acc); }
+  #prev { image-rendering:pixelated; border:1px solid var(--line); max-width:100%; }
+  .info { color:var(--dim); font-size:12.5px; }
+  code { background:#15181c; padding:2px 6px; border-radius:3px; color:#f0d090; }
+  #big { font:700 22px ui-monospace, Consolas, monospace; color:var(--acc); min-width:40px; }
+  textarea { width:100%; background:#15181c; color:var(--text); border:1px solid var(--line); border-radius:4px; font:13px ui-monospace, Consolas, monospace; padding:6px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Karakterkészlet-szerkesztő (TVC GRAPHICS4, Bery/GE)</h1>
+  <label>Karakter szélesség
+    <select id="cw"><option value="1">1 byte (4 px)</option><option value="2">2 byte (8 px)</option></select></label>
+  <label>Magasság (sor) <input type="number" id="ch" min="3" max="16"></label>
+  <button id="bSize">Méret alkalmazása</button>
+  <span class="info">InitCharSet: <code id="init"></code></span>
+</header>
+<main>
+  <div>
+    <div class="panel">
+      <h2>A készlet (59 karakter, ASCII 32..90) — kattints egyre a szerkesztéshez</h2>
+      <div id="set"></div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h2>Szerkesztés</h2>
+      <div id="edWrap">
+        <canvas id="ed"></canvas>
+        <div class="tools">
+          <div class="row"><span id="big"></span><span class="info" id="bigInfo"></span></div>
+          <div class="row" id="pal"></div>
+          <div class="info">Bal gomb: a kiválasztott szín · Jobb gomb: háttér (szürke)</div>
+          <div class="row"><button id="bPrev">◀ Előző</button><button id="bNext">Következő ▶</button></div>
+          <div class="row"><button id="bL">←</button><button id="bR">→</button><button id="bU">↑</button><button id="bD">↓</button><span class="info">eltolás</span></div>
+          <div class="row"><button id="bFlip">Tükrözés ↔</button><button id="bClr">Törlés</button></div>
+          <div class="row"><button id="bCopy">Másolás</button><button id="bPaste">Beillesztés</button><button id="bUndo">Vissza (Ctrl+Z)</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>Előnézet (a TVC képernyő szélessége: 64 byte = 256 px)</h2>
+      <textarea id="txt" rows="4">LEVEL: 10   LIVES:
+P1$:0956 PUMP:048/255 P2$:2132
+1....ONE PLAYER GAME
+PRESS SPACE TO CONTINUE</textarea>
+      <div class="info" id="fit"></div>
+      <canvas id="prev"></canvas>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h2>Fájlok</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button class="acc" id="bSaveBin">Mentés .bin</button>
+        <button id="bSaveBmp">Mentés .bmp</button>
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <button id="bLoadBin">Betöltés .bin</button>
+        <button id="bLoadBmp">Betöltés .bmp</button>
+        <input type="file" id="fBin" accept=".bin" hidden>
+        <input type="file" id="fBmp" accept=".bmp,.png" hidden>
+      </div>
+      <div class="row"><button id="bReset">Eredeti készlet visszatöltése</button></div>
+      <p class="info">A .bin a projektbe: <code>resources\tvc_sprites\CharSetGR4.bin</code>, a .ras-ban pedig az <code>InitCharSet</code> sort a fenti értékekre kell állítani. A .bin betöltésekor a fenti szélesség/magasság szerint értelmezi a fájlt. A munka automatikusan mentődik a böngészőbe.</p>
+    </div>
+  </div>
+</main>
+<script>
+(function () {
+  'use strict';
+  var N = 59;                                   // ASCII 32..90
+  var COLS = ['#c0c0c0', '#000000', '#04ff04', '#0000ff'];
+  var RGB = [[192,192,192],[0,0,0],[4,255,4],[0,0,255]];
+  var KEY = 'waterpump_charset_v1';
+  var ORIG = 'AACAAKAAQIAgAMBAIABAACAAgAAAAAAAAAAAAAAAAEBwAGAAcABwADAA8IBwgPCAcABwAAAAAAAAAAAAAABwAHAAcADwAHCA8ADwgPCAcICAgPCA8ACQAIAAgICAgHAA8ABwAPAAcIDwgIBAgICAgICAgIDwgAAAgACgAPDAcIDAgFAAQABAAEAAoIAgAAAAAAAAAACAgICgAICAgIBQAIAAgAAAgICAgIAAAAAAIAAAAIAAgICAgICAgICAAICAgACAAIAAgIAgABAAoACAANCAwICAgICAgICAgIAAIACAQICAoIBQAFAAAIAAAIAAAABAgKAAEABgAIAAgAAgAHAAIAAAAPCAAAAQAICAIAAAgDAAkADwAPAAEABwAICAgAAAAEAA8IBAABAAoIDwgPAAgACAgPAA8ACQgPCAIAAQAMAAgACggKCAgICAgICAgIBwACAAgEBQAKCAIABQABAAAACAAAAAQIBwACAAoIAAAIAAIADwgPCAAAAAAAAAIACAgCAAMAAAgPCAAICAgCAAgIBwgAAAgACAAAAAIAAgALAAgICAgIAAgICAAIAAgICAgCAAEACgAIAAoICQgICA8ACAgPAAAIAgAIBAUADwgFAAIAAgAAAAAAAAAPDAIIBAwJAAAABAAEAAcAAgAAAAAADAAEAAgIAgAMAAgIAQAACAgIBAAICAAICAAAAAQADwgEAAAACAAICAgICAAICAgACAAICAgIAgABAAkACAAICAkICAgIAAgICQAACAIACAQFAAUACAgCAAwAAAAIAAAABAgPAAgMBggAAAIACAAKCAIACAAAAAwACAAHAA8IDwgHAAEADwAHAAQABwAPAAAACAACAAAACAACAAcACAgPAAcIDwAPCAgABwgICA8IDgAICA8ACAgICAcACAAHAAgIDwACAAcIAgAFAAgIAgAPCAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAA==';                        // a CharSetGR4.bin (118 byte x 7 sor, 2 byte/karakter)
+  var cw = 2, chh = 7, chars = [], cur = 33, color = 1, clip = null, undoStack = [];
+  var $ = function (id) { return document.getElementById(id); };
+
+  function wpx() { return cw * 4; }
+  function blank() { return new Array(wpx() * chh).fill(0); }
+
+  // ---- .bin <-> karakterek ----
+  function decode(bytes, cwB, h) {
+    var imgW = N * cwB, out = [];
+    for (var i = 0; i < N; i++) out.push(new Array(cwB * 4 * h).fill(0));
+    for (var y = 0; y < h; y++) for (var i = 0; i < N; i++) for (var b = 0; b < cwB; b++) {
+      var v = bytes[y * imgW + i * cwB + b] || 0;
+      for (var n = 0; n < 4; n++) out[i][y * cwB * 4 + b * 4 + n] = ((v >> (7 - n)) & 1) + 2 * ((v >> (3 - n)) & 1);
+    }
+    return out;
+  }
+  function encode() {
+    var imgW = N * cw, bytes = new Uint8Array(imgW * chh);
+    for (var y = 0; y < chh; y++) for (var i = 0; i < N; i++) for (var b = 0; b < cw; b++) {
+      var v = 0;
+      for (var n = 0; n < 4; n++) { var c = chars[i][y * wpx() + b * 4 + n]; if (c & 1) v |= 0x80 >> n; if (c & 2) v |= 0x08 >> n; }
+      bytes[y * imgW + i * cw + b] = v;
+    }
+    return bytes;
+  }
+  function resize(newCw, newH) {
+    var ow = wpx(), oh = chh, nw = newCw * 4;
+    chars = chars.map(function (c) {
+      var a = new Array(nw * newH).fill(0);
+      for (var y = 0; y < Math.min(oh, newH); y++) for (var x = 0; x < Math.min(ow, nw); x++) a[y * nw + x] = c[y * ow + x];
+      return a;
+    });
+    cw = newCw; chh = newH; undoStack = []; clip = null;
+  }
+
+  // ---- rajzolás ----
+  function drawChar(ctx, c, z, ox, oy) {
+    for (var y = 0; y < chh; y++) for (var x = 0; x < wpx(); x++) { ctx.fillStyle = COLS[c[y * wpx() + x]]; ctx.fillRect(ox + x * z, oy + y * z, z, z); }
+  }
+  function label(i) { return i === 0 ? 'SP' : String.fromCharCode(32 + i); }
+  function buildSet() {
+    var s = $('set'); s.innerHTML = '';
+    for (var i = 0; i < N; i++) {
+      var d = document.createElement('div'); d.className = 'ch' + (i === cur ? ' sel' : ''); d.dataset.i = i;
+      var cv = document.createElement('canvas'); cv.width = wpx() * 5; cv.height = chh * 5;
+      var sp = document.createElement('span'); sp.textContent = label(i);
+      d.appendChild(cv); d.appendChild(sp); s.appendChild(d);
+      d.onclick = function () { select(+this.dataset.i); };
+    }
+    for (var i = 0; i < N; i++) drawThumb(i);
+  }
+  function drawThumb(i) { var cv = $('set').children[i].firstChild; drawChar(cv.getContext('2d'), chars[i], 5, 0, 0); }
+  var Z = 32;
+  function drawEd() {
+    var cv = $('ed'); Z = Math.max(18, Math.min(48, Math.floor(420 / Math.max(wpx(), chh))));
+    cv.width = wpx() * Z + 1; cv.height = chh * Z + 1;
+    var g = cv.getContext('2d'); drawChar(g, chars[cur], Z, 0, 0);
+    g.strokeStyle = 'rgba(80,80,80,.6)'; g.lineWidth = 1;
+    for (var x = 0; x <= wpx(); x++) { g.beginPath(); g.moveTo(x * Z + .5, 0); g.lineTo(x * Z + .5, chh * Z); g.stroke(); }
+    for (var y = 0; y <= chh; y++) { g.beginPath(); g.moveTo(0, y * Z + .5); g.lineTo(wpx() * Z, y * Z + .5); g.stroke(); }
+    g.strokeStyle = '#e0a040'; g.lineWidth = 2;               // byte-határ (4 px)
+    for (var b = 0; b <= cw; b++) { g.beginPath(); g.moveTo(b * 4 * Z + 1, 0); g.lineTo(b * 4 * Z + 1, chh * Z); g.stroke(); }
+    $('big').textContent = label(cur);
+    $('bigInfo').textContent = '#' + (32 + cur) + ' · ' + wpx() + '×' + chh + ' px';
+  }
+  function drawPrev() {
+    var lines = $('txt').value.toUpperCase().split('\n'), z = 2, W = 256, lh = chh + 3;
+    var cv = $('prev'); cv.width = W * z; cv.height = Math.max(1, lines.length) * lh * z;
+    var g = cv.getContext('2d'); g.fillStyle = COLS[0]; g.fillRect(0, 0, cv.width, cv.height);
+    var per = Math.floor(64 / cw), maxLen = 0;
+    lines.forEach(function (ln, r) {
+      maxLen = Math.max(maxLen, ln.length);
+      for (var k = 0; k < ln.length && k < per; k++) {
+        var code = ln.charCodeAt(k); if (code < 32 || code > 90) continue;
+        drawChar(g, chars[code - 32], z, k * wpx() * z, r * lh * z);
+      }
+    });
+    $('fit').textContent = 'Egy sorba ' + per + ' karakter fér (a leghosszabb sor: ' + maxLen + (maxLen > per ? ' — NEM fér el!' : '') + ')';
+  }
+  function info() { $('init').textContent = 'GE::InitCharSet(#CharSet, ' + (N * cw) + ', ' + cw + ', ' + chh + ');'; $('cw').value = cw; $('ch').value = chh; }
+  function refreshAll() { buildSet(); drawEd(); drawPrev(); info(); save(); }
+  function refreshCur() { drawThumb(cur); drawEd(); drawPrev(); save(); }
+  function select(i) {
+    cur = (i + N) % N;
+    Array.prototype.forEach.call($('set').children, function (d, k) { d.classList.toggle('sel', k === cur); });
+    drawEd();
+  }
+
+  // ---- mentés a böngészőbe ----
+  var t = null;
+  function save() { clearTimeout(t); t = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify({ cw: cw, h: chh, chars: chars, cur: cur })); } catch (e) {} }, 300); }
+  function loadOrig() { var s = atob(ORIG), b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); cw = 2; chh = 7; chars = decode(b, 2, 7); }
+  function restore() {
+    try { var o = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (o && o.chars && o.chars.length === N && (o.cw === 1 || o.cw === 2) && o.h >= 3) { cw = o.cw; chh = o.h; chars = o.chars; cur = o.cur | 0; return; } } catch (e) {}
+    loadOrig();
+  }
+
+  // ---- szerkesztés ----
+  function pushUndo() { undoStack.push({ i: cur, d: chars[cur].slice() }); if (undoStack.length > 100) undoStack.shift(); }
+  var painting = false, paintCol = 1;
+  function cellAt(e) { var r = $('ed').getBoundingClientRect(); var x = Math.floor((e.clientX - r.left) / Z), y = Math.floor((e.clientY - r.top) / Z); return (x >= 0 && y >= 0 && x < wpx() && y < chh) ? y * wpx() + x : -1; }
+  function paint(e) { var k = cellAt(e); if (k < 0 || chars[cur][k] === paintCol) return; chars[cur][k] = paintCol; refreshCur(); }
+  $('ed').addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  $('ed').addEventListener('pointerdown', function (e) { pushUndo(); painting = true; paintCol = (e.button === 2 || e.ctrlKey) ? 0 : color; $('ed').setPointerCapture(e.pointerId); paint(e); });
+  $('ed').addEventListener('pointermove', function (e) { if (painting) paint(e); });
+  $('ed').addEventListener('pointerup', function () { painting = false; });
+  function mod(f) { pushUndo(); chars[cur] = f(chars[cur]); refreshCur(); }
+  function shift(dx, dy) { mod(function (c) { var a = new Array(c.length).fill(0), w = wpx();
+    for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) { var nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < w && ny < chh) a[ny * w + nx] = c[y * w + x]; } return a; }); }
+  $('bL').onclick = function () { shift(-1, 0); }; $('bR').onclick = function () { shift(1, 0); };
+  $('bU').onclick = function () { shift(0, -1); }; $('bD').onclick = function () { shift(0, 1); };
+  $('bFlip').onclick = function () { mod(function (c) { var a = c.slice(), w = wpx(); for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) a[y * w + x] = c[y * w + (w - 1 - x)]; return a; }); };
+  $('bClr').onclick = function () { mod(function () { return blank(); }); };
+  $('bCopy').onclick = function () { clip = chars[cur].slice(); };
+  $('bPaste').onclick = function () { if (clip && clip.length === chars[cur].length) mod(function () { return clip.slice(); }); };
+  function undo() { var u = undoStack.pop(); if (!u) return; chars[u.i] = u.d; if (u.i !== cur) select(u.i); refreshCur(); }
+  $('bUndo').onclick = undo;
+  $('bPrev').onclick = function () { select(cur - 1); }; $('bNext').onclick = function () { select(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
+    else if (e.key === 'PageUp') select(cur - 1); else if (e.key === 'PageDown') select(cur + 1);
+    else if (e.key >= '1' && e.key <= '4') setColor(+e.key - 1);
+  });
+  function setColor(c) { color = c; Array.prototype.forEach.call($('pal').children, function (d, k) { d.classList.toggle('sel', k === c); }); }
+  COLS.forEach(function (c, k) { var d = document.createElement('div'); d.className = 'sw'; d.style.background = c; d.title = ['szürke (háttér)', 'fekete', 'zöld', 'kék'][k] + ' — billentyű: ' + (k + 1); d.onclick = function () { setColor(k); }; $('pal').appendChild(d); });
+  $('txt').addEventListener('input', drawPrev);
+  $('bSize').onclick = function () {
+    var nc = +$('cw').value, nh = Math.max(3, Math.min(16, parseInt($('ch').value, 10) || chh));
+    if (nc === cw && nh === chh) return;
+    if (!confirm('Méretváltás: ' + wpx() + '×' + chh + ' → ' + (nc * 4) + '×' + nh + ' px. A rajzok a bal felső sarokhoz igazítva megmaradnak, ami kilóg, levágódik. Mehet?')) { info(); return; }
+    resize(nc, nh); refreshAll();
+  };
+
+  // ---- fájlok ----
+  function download(name, data, type) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: type })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+  $('bSaveBin').onclick = function () { download('CharSetGR4.bin', encode(), 'application/octet-stream'); };
+  $('bSaveBmp').onclick = function () {
+    var w = N * wpx(), h = chh, rs = (w * 3 + 3) & ~3, sz = 54 + rs * h, b = new Uint8Array(sz), dv = new DataView(b.buffer);
+    b[0] = 66; b[1] = 77; dv.setUint32(2, sz, true); dv.setUint32(10, 54, true); dv.setUint32(14, 40, true);
+    dv.setInt32(18, w, true); dv.setInt32(22, h, true); dv.setUint16(26, 1, true); dv.setUint16(28, 24, true); dv.setUint32(34, rs * h, true);
+    for (var y = 0; y < h; y++) for (var i = 0; i < N; i++) for (var x = 0; x < wpx(); x++) {
+      var c = RGB[chars[i][y * wpx() + x]], o = 54 + (h - 1 - y) * rs + (i * wpx() + x) * 3; b[o] = c[2]; b[o + 1] = c[1]; b[o + 2] = c[0];
+    }
+    download('charset.bmp', b, 'image/bmp');
+  };
+  $('bLoadBin').onclick = function () { $('fBin').click(); };
+  $('fBin').onchange = function () {
+    var f = this.files[0]; if (!f) return; var r = new FileReader();
+    r.onload = function () {
+      var b = new Uint8Array(r.result), nc = +$('cw').value, nh = parseInt($('ch').value, 10) || chh;
+      if (b.length !== N * nc * nh) {
+        var alt = [[2, b.length / (N * 2)], [1, b.length / N]].filter(function (p) { return p[1] === Math.floor(p[1]) && p[1] >= 3 && p[1] <= 16; });
+        if (!alt.length) { alert('A fájl mérete (' + b.length + ' byte) nem illik egyik beállításhoz sem (59 × szélesség × magasság).'); return; }
+        nc = alt[0][0]; nh = alt[0][1];
+        if (!confirm('A fájl mérete alapján: ' + (nc * 4) + '×' + nh + ' px karakterek. Így töltsem be?')) return;
+      }
+      pushUndo(); cw = nc; chh = nh; chars = decode(b, nc, nh); undoStack = []; refreshAll();
+    };
+    r.readAsArrayBuffer(f); this.value = '';
+  };
+  $('bLoadBmp').onclick = function () { $('fBmp').click(); };
+  $('fBmp').onchange = function () {
+    var f = this.files[0]; if (!f) return; var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function () {
+      var w = img.width, h = img.height; URL.revokeObjectURL(url);
+      var nc = (w === N * 4) ? 1 : (w === N * 8) ? 2 : 0;
+      if (!nc) { alert('A kép szélessége ' + w + ' px; 236 (4 px-es) vagy 472 (8 px-es karakterek) kell.'); return; }
+      if (h < 3 || h > 16) { alert('A kép magassága ' + h + ' px; 3..16 lehet.'); return; }
+      var c = document.createElement('canvas'); c.width = w; c.height = h; var g = c.getContext('2d'); g.drawImage(img, 0, 0);
+      var d = g.getImageData(0, 0, w, h).data;
+      cw = nc; chh = h; chars = [];
+      for (var i = 0; i < N; i++) { var a = [];
+        for (var y = 0; y < h; y++) for (var x = 0; x < nc * 4; x++) {
+          var o = (y * w + i * nc * 4 + x) * 4, R = d[o], G = d[o + 1], B = d[o + 2], k;
+          if (R < 40 && G < 40 && B < 40) k = 1; else if (Math.abs(R - G) < 24 && Math.abs(G - B) < 24) k = 0; else if (G > R && G > B) k = 2; else k = 3;
+          a.push(k);
+        }
+        chars.push(a); }
+      undoStack = []; refreshAll();
+    };
+    img.src = url; this.value = '';
+  };
+  $('bReset').onclick = function () { if (confirm('Visszatöltöm az eredeti (8×7-es) készletet? A mostani munka elvész (előtte mentsd .bin-be, ha kell).')) { loadOrig(); undoStack = []; refreshAll(); } };
+
+  restore(); setColor(1); refreshAll(); select(cur);
+})();
+</script>
+</body>
+</html>

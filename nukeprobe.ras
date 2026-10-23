@@ -1,0 +1,80 @@
+﻿program nukeprobe;
+@use "TVC"
+
+/* nukeprobe.ras - DIAGNOSZTIKA: a ROM fájl-megnyitása (CAS_OPEN, rst $30 / $D3), a Lemmings-stub módszerével.
+   FIGYELEM: a TVC rendszer-megszakítás ~20 ms-onként visszaállítja a bordert -> a színt a várakozó ciklus folyamatosan újraírja.
+   Minden próba: FEHÉR (rövid) -> ZÖLD (~1 mp) = a fájl MEGNYÍLT, vagy PIROS (~1 mp) = a ROM szerint nincs ilyen fájl.
+   Próbák: 1. "nuke.bin" (a név a program RAM-jában)   2. "main.prg" (KONTROLL: a Lemmings ismert-jó fájlja, a munkamappába másolva)
+           3. "nuke.bin" a név az $0131-en (alsó RAM, mint a stubban)   4. "main.prg" az $0131-en
+   A vége: tartós KÉK. Ha a ROM hívás nem tér vissza, a border az adott próba előtti FEHÉR marad. */
+
+var
+		NameA	:	array[10] of byte = (8,110,117,107,101,46,98,105,110,0);
+		NameD	:	array[10] of byte = (8,109,97,105,110,46,112,114,103,0);
+		Kesz	:	byte = 0;
+
+begin
+	asm("
+		xor a
+		ld ($0B0A),a
+		ld ($0B4D),a
+		ld ($0B4F),a
+		ld a,3
+		ld ($0B50),a
+		ld de,NameA
+		call np_probe
+		ld de,NameD
+		call np_probe
+		ld hl,NameA
+		call np_low
+		ld hl,NameD
+		call np_low
+		ld e,130
+		ld d,255
+		call np_var
+np_vege:
+		jr np_vege
+
+np_low:
+		ld de,$0131
+		ld bc,10
+		ldir
+		ld de,$0131
+np_probe:
+		push de
+		ld e,170
+		ld d,1
+		call np_var
+		pop de
+		rst $30
+		db $D3
+		jr nz,np_hiba
+		xor a
+		rst $30
+		db $D4
+		ld e,160
+		ld d,2
+		call np_var
+		ret
+np_hiba:
+		ld e,136
+		ld d,2
+		call np_var
+		ret
+
+np_var:
+np_d1:
+		ld bc,0
+np_d2:
+		ld a,e
+		out ($0),a
+		dec bc
+		ld a,b
+		or c
+		jr nz,np_d2
+		dec d
+		jr nz,np_d1
+		ret
+	");
+	Kesz:=1;
+end.

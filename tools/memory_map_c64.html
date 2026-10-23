@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WaterPump memóriatérkép</title>
+<!-- minta: C:\TVC\TRSE_Projects\C64Memmap\memmap.template.html; adat: tools\memoria_adat.js (resources\memoria_terkep.ps1 írja build után) -->
+<style>
+:root {
+  --bg: #f5f6f8; --panel: #ffffff; --panel2: #f0f2f5; --text: #1c2230; --muted: #667085; --border: #d8dce4; --grid: rgba(0,0,0,.10);
+  --accent: #3f6fd8; --warn: #d9822b; --bad: #d64545;
+  --k-code: #4c78c8; --k-data: #2a9d92; --k-asset: #dd7f30; --k-ures: #dd7f30; --k-absvar: #cc5577; --k-system: #8e96a5;
+  --k-stack: #b5835a; --k-video: #8c63bd; --k-free: #3fa864; --k-lap: #5a6372;
+  --seg-text: #ffffff; --free-a: rgba(63,168,100,.18); --free-b: rgba(63,168,100,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111419; --panel: #191d25; --panel2: #20252f; --text: #e3e6eb; --muted: #97a1b2; --border: #2d333e; --grid: rgba(255,255,255,.10);
+    --accent: #6f98f0; --warn: #f0a050; --bad: #f06a6a;
+    --k-code: #5b8ae0; --k-data: #30b0a3; --k-asset: #e98d41; --k-ures: #e98d41; --k-absvar: #dd6a8a; --k-system: #6f7787;
+    --k-stack: #b98a5e; --k-video: #9f78d0; --k-free: #4cc077; --k-lap: #4a5260;
+    --free-a: rgba(76,192,119,.22); --free-b: rgba(76,192,119,.05);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111419; --panel: #191d25; --panel2: #20252f; --text: #e3e6eb; --muted: #97a1b2; --border: #2d333e; --grid: rgba(255,255,255,.10);
+  --accent: #6f98f0; --warn: #f0a050; --bad: #f06a6a;
+  --k-code: #5b8ae0; --k-data: #30b0a3; --k-asset: #e98d41; --k-ures: #e98d41; --k-absvar: #dd6a8a; --k-system: #6f7787;
+  --k-stack: #b98a5e; --k-video: #9f78d0; --k-free: #4cc077; --k-lap: #4a5260;
+  --free-a: rgba(76,192,119,.22); --free-b: rgba(76,192,119,.05);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.mono, code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+button, select, input { font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 5; }
+header h1 { font-size: 16px; margin: 0; }
+header .meta { color: var(--muted); font-size: 12px; }
+.ctl { display: flex; align-items: center; gap: 6px; }
+.seg-btns { display: inline-flex; }
+.seg-btns button { border-radius: 0; margin-left: -1px; }
+.seg-btns button:first-child { border-radius: 5px 0 0 5px; margin-left: 0; }
+.seg-btns button:last-child { border-radius: 0 5px 5px 0; }
+.spacer { flex: 1; }
+.tiles { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 16px 0; }
+.tile { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; min-width: 150px; }
+.tile .v { font-size: 18px; font-weight: 600; }
+.tile .l { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+.tile .d { font-size: 11px; color: var(--muted); }
+.tile.rossz .v { color: var(--bad); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 12px; padding: 12px 16px 24px; align-items: start; }
+@media (max-width: 1000px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+#map { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; user-select: none; }
+.row { display: grid; grid-template-columns: 44px 19px minmax(0, 1fr) 54px; align-items: stretch; border-top: 1px solid var(--grid); }
+.row:first-child { border-top: 0; }
+.row.lapkezd { border-top: 2px solid var(--muted); }
+.row .addr { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; color: var(--muted); padding-top: 2px; }
+.row .rfree { font-size: 10px; color: var(--k-free); text-align: right; padding-top: 3px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.band { position: absolute; writing-mode: vertical-rl; font-size: 10px; line-height: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; border-radius: 3px; cursor: pointer; color: var(--text);
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--k-lap) 30%, transparent) 0 3px, transparent 3px 7px); border: 1px solid var(--k-lap); }
+.band.sel { outline: 2px solid var(--text); }
+.track { position: relative; background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px); background-size: 25% 100%; }
+.seg { position: absolute; border-radius: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 10px; line-height: 14px; padding: 0 3px;
+  color: var(--seg-text); text-shadow: 0 0 2px rgba(0,0,0,.45); min-width: 1px; cursor: pointer; }
+.seg.k-code { background: var(--k-code); } .seg.k-data { background: var(--k-data); } .seg.k-asset { background: var(--k-asset); }
+.seg.k-absvar { background: var(--k-absvar); } .seg.k-system { background: var(--k-system); } .seg.k-stack { background: var(--k-stack); }
+.seg.k-video { background: var(--k-video); }
+.seg.k-ures { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--k-ures) 45%, transparent) 0 4px, color-mix(in srgb, var(--k-ures) 12%, transparent) 4px 8px); color: var(--text); text-shadow: none; }
+.seg.k-free { background: repeating-linear-gradient(135deg, var(--free-a) 0 4px, var(--free-b) 4px 8px); color: var(--k-free); text-shadow: none; }
+.seg.k-free.c-lapozni { background: repeating-linear-gradient(135deg, rgba(128,128,128,.18) 0 4px, transparent 4px 8px); color: var(--muted); }
+.seg.baj { outline: 2px solid var(--bad); outline-offset: -2px; }
+.seg.sel { outline: 2px solid var(--text); outline-offset: 0; z-index: 2; }
+.dim .seg:not(.hl):not(.k-free) { opacity: .25; }
+.seg.hl { z-index: 1; }
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 12px; max-width: 360px; box-shadow: 0 4px 16px rgba(0,0,0,.18); display: none; }
+#tip b { font-weight: 600; }
+#tip .t-sub { color: var(--muted); }
+aside { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; position: sticky; top: 64px; max-height: calc(100vh - 80px); display: flex; flex-direction: column; }
+.tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+.tabs button { border: 0; border-radius: 0; background: transparent; padding: 8px 10px; border-bottom: 2px solid transparent; }
+.tabs button.on { color: var(--accent); background: transparent; border-bottom-color: var(--accent); }
+.tabs .badge { display: inline-block; min-width: 16px; padding: 0 4px; border-radius: 8px; background: var(--bad); color: #fff; font-size: 10px; margin-left: 3px; }
+.panel { padding: 10px 12px; overflow: auto; }
+.panel h3 { font-size: 13px; margin: 12px 0 6px; } .panel h3:first-child { margin-top: 0; }
+.kv { display: grid; grid-template-columns: 104px 1fr; gap: 2px 8px; }
+.kv .k { color: var(--muted); }
+table { border-collapse: collapse; width: 100%; }
+td, th { padding: 3px 5px; text-align: left; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--muted); font-weight: 500; font-size: 11px; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.sub td.mono { white-space: nowrap; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--panel2); }
+tr.sub td { font-size: 12px; } tr.sub td:first-child { padding-left: 18px; }
+.bar { height: 6px; background: var(--k-code); border-radius: 3px; min-width: 1px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+.muted { color: var(--muted); }
+.note { background: var(--panel2); border-radius: 6px; padding: 6px 8px; margin: 6px 0; font-size: 12px; }
+.note.rossz { border-left: 3px solid var(--bad); }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--muted); padding: 4px 0 8px; }
+.btnrow { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; align-items: center; }
+.small { font-size: 11px; }
+.ures-oldal { padding: 40px 16px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>WaterPump memóriatérkép</h1>
+  <span class="meta" id="meta"></span>
+  <a href="memoria_terkep.html" class="meta">[lapos nézet]</a>
+  <span class="spacer"></span>
+  <span class="ctl"><span class="muted">$8000</span><span class="seg-btns" id="kozepBtns"></span></span>
+  <span class="ctl"><span class="muted">Sor</span><select id="rowSize"><option value="256">256 B</option><option value="1024">1 KB</option><option value="4096">4 KB</option></select></span>
+  <span class="ctl"><span class="muted">Szín</span><select id="colorBy"><option value="kind">fajta szerint</option><option value="unit">egység szerint</option></select></span>
+  <span class="ctl"><input id="search" type="search" placeholder="Keresés: név / egység" size="22"></span>
+</header>
+<section class="tiles" id="tiles"></section>
+<main class="layout">
+  <div id="map"></div>
+  <aside>
+    <div class="tabs" id="tabs"></div>
+    <div class="panel" id="panel"></div>
+  </aside>
+</main>
+<div id="tip"></div>
+<script src="memoria_adat.js"></script>
+<script>
+(() => {
+const M = window.MEMORIA;
+if (!M) {
+  document.querySelector('main').innerHTML = '<div class="ures-oldal">Nincs adat. Build után futtasd: <code>powershell -File resources\\memoria_terkep.ps1</code> (ez írja a <code>tools\\memoria_adat.js</code>-t), utána F5.</div>';
+  return;
+}
+const KOD_E = 0x19EF, KOD_V = M.kodVeg, KOD_H = KOD_V - KOD_E;
+const NEV = M.nev;
+/* a 4 lap; a $8000-es lapon a VID (a játék alatt) vagy az U2 látszik */
+const LAPOK = [
+  { n: 'U0', s: 0x0000, m: 'alsó RAM: rendszer, GE, unit-tömbök, verem, a kód eleje' },
+  { n: 'U1', s: 0x4000, m: 'RAM: a kód vége, utána szabad' },
+  { n: 'VID', s: 0x8000, valt: 1, m: 'videó-RAM (a játék alatt ez van belapozva)' },
+  { n: 'U3', s: 0xC000, m: 'RAM: adatfájlok fix címen + unit-tömbök' }
+];
+const FAJTA = { code: 'Kód', data: 'Adat (változó, tábla)', asset: 'Adatfájl (incbin)', ures: 'Rekesz üres vége', absvar: 'Unit-tömb (fix cím)',
+  system: 'Rendszer / GE / TVC', stack: 'Verem', video: 'Videó-RAM', free: 'Szabad' };
+const T_FAJTA = { sz: 'free', r: 'system', v: 'stack', vid: 'video', u: 'absvar' };
+const EGYSEG = {
+  ras: { n: NEV + '.ras', m: 'a főprogram', szin: '#4c78c8' },
+  unit: { n: NEV + '.tru', m: 'a saját unit', szin: '#3fb1a8' },
+  GE: { n: 'GE', m: 'Bery Game Engine', szin: '#b279a2' },
+  TVC: { n: 'TVC', m: 'TVC unit', szin: '#c9a227' },
+  trse: { n: 'TRSE', m: 'a TRSE saját rutinjai + BASIC indító', szin: '#7f8ea3' }
+};
+const STORE_KEY = 'memoria:' + NEV;
+
+const hex4 = a => '$' + a.toString(16).toUpperCase().padStart(4, '0');
+const range = (s, e) => e - s <= 1 ? hex4(s) : hex4(s) + '-' + hex4(e - 1);
+const kb = n => n >= 1024 ? (n / 1024).toFixed(n % 1024 ? 2 : 0).replace(/\.?0+$/, '').replace('.', ',') + ' K' : n + ' B';
+const sz = n => n >= 1024 ? `${kb(n)} <span class="muted">(${n})</span>` : `${n} B`;
+const pct = (n, t) => (n / t * 100).toFixed(1).replace('.', ',') + ' %';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const egysegNev = u => (EGYSEG[u] || { n: u }).n;
+const egysegSzin = u => (EGYSEG[u] || { szin: '#9aa3b2' }).szin;
+const lapOf = a => LAPOK[Math.floor(a / 0x4000)];
+const lapNev = l => l.valt ? S.kozep.toUpperCase() : l.n;
+
+// ---------- állapot ----------
+const S = { rowSize: 1024, colorBy: 'kind', search: '', kozep: 'vid', tab: 'details', sel: null, hl: null, expanded: {}, freeSort: 'size', freeMin: 1 };
+try { const ui = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); if (ui) ['rowSize', 'colorBy', 'kozep', 'tab'].forEach(k => { if (ui[k] !== undefined) S[k] = ui[k]; }); } catch (e) { }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify({ rowSize: S.rowSize, colorBy: S.colorBy, kozep: S.kozep, tab: S.tab })); } catch (e) { } }
+
+// ---------- adatmodell: a .js részeiből + a kód bontásából egy lista ----------
+M.kod.forEach((x, i) => { x.i = i; x.h = x.k + x.a; });
+let VIEW = null;
+function build() {
+  const out = [];
+  M.reszek.forEach((r, i) => {
+    if (r.l && r.l !== S.kozep) return;
+    if (r.t === 'k') return;   // a kód helyén az eljárások
+    const s = r.e, e = r.v + 1;
+    if (r.t === 'a') {
+      const h = r.h ?? (e - s);
+      out.push({ id: 'r' + i, kind: 'asset', name: r.n, s, e: s + Math.min(h, e - s), rek: [s, e], fill: h, baj: r.baj });
+      if (h < e - s) out.push({ id: 'r' + i + 'u', kind: 'ures', name: r.n + ' - üres vége', s: s + h, e, rek: [s, e], fill: h, of: r.n });
+    } else {
+      out.push({ id: 'r' + i, kind: T_FAJTA[r.t] || 'system', name: r.n, s, e, baj: r.baj, cat: r.l === 'u2' ? 'lapozni' : null, kezi: ['r', 'v', 'vid'].includes(r.t) && !/változói/.test(r.n) });
+    }
+  });
+  M.kod.forEach(x => x.r.forEach((p, j) => out.push({ id: 'k' + x.i + '_' + j, kind: p[2] === 'a' ? 'data' : 'code', name: x.n, unit: x.u, s: p[0], e: p[0] + p[1], isProg: true, ki: x.i })));
+  return out;
+}
+function assignLanes(list) {
+  const order = list.slice().sort((a, b) => a.s - b.s || (b.e - b.s) - (a.e - a.s));
+  const lanes = [];
+  order.forEach(r => {
+    let L = 0;
+    while (lanes[L] && lanes[L].some(([s, e]) => r.s < e && s < r.e)) L++;
+    (lanes[L] = lanes[L] || []).push([r.s, r.e]); r.lane = L;
+  });
+}
+function compute() {
+  const items = build();
+  assignLanes(items);
+  const free = items.filter(r => r.kind === 'free' || r.kind === 'ures');
+  const baj = items.filter(r => r.baj);
+  VIEW = { items, free, baj };
+}
+function freeStats(lap) {
+  const st = { free: 0, ures: 0, lapozni: 0, largest: null };
+  VIEW.free.forEach(g => {
+    if (lap && (g.e <= lap.s || g.s >= lap.s + 0x4000)) return;
+    const s = lap ? Math.max(g.s, lap.s) : g.s, e = lap ? Math.min(g.e, lap.s + 0x4000) : g.e;
+    if (g.cat === 'lapozni') { st.lapozni += e - s; return; }
+    if (g.kind === 'ures') st.ures += e - s; else st.free += e - s;
+    if (!st.largest || e - s > st.largest.e - st.largest.s) st.largest = { s, e };
+  });
+  return st;
+}
+function matches(r, q) { return !!q && [r.name, r.unit && egysegNev(r.unit), FAJTA[r.kind]].filter(Boolean).join(' ').toLowerCase().includes(q); }
+function hlTest(r) {
+  if (S.hl) { if (S.hl.type === 'unit') return r.unit === S.hl.v; if (S.hl.type === 'proc') return r.ki === S.hl.v; }
+  return S.search ? matches(r, S.search) : false;
+}
+const isSel = r => S.sel && (S.sel.id === r.id || (S.sel.isProg && r.isProg && S.sel.ki === r.ki));
+
+// ---------- térkép ----------
+function renderMap() {
+  const R = S.rowSize, rows = 65536 / R, LH = R === 4096 ? 15 : 16;
+  const byRow = Array.from({ length: rows }, () => []);
+  VIEW.items.forEach((r, idx) => { for (let row = Math.floor(r.s / R); row <= Math.floor((r.e - 1) / R) && row < rows; row++) byRow[row].push(idx); });
+  const dimming = !!(S.hl || S.search);
+  let h = '';
+  for (let row = 0; row < rows; row++) {
+    const base = row * R, ids = byRow[row];
+    const used = [...new Set(ids.map(i => VIEW.items[i].lane))].sort((a, b) => a - b);
+    const nl = Math.max(1, used.length);
+    let freeB = 0, segs = '';
+    ids.forEach(i => {
+      const r = VIEW.items[i], s = Math.max(r.s, base), e = Math.min(r.e, base + R);
+      if ((r.kind === 'free' && r.cat !== 'lapozni') || r.kind === 'ures') freeB += e - s;
+      const left = (s - base) / R * 100, w = (e - s) / R * 100;
+      const cls = ['seg', 'k-' + r.kind];
+      if (r.cat) cls.push('c-' + r.cat);
+      if (r.baj) cls.push('baj');
+      if (isSel(r)) cls.push('sel');
+      if (dimming && hlTest(r)) cls.push('hl');
+      let style = `left:${left}%;width:${w}%;top:${used.indexOf(r.lane) * LH + 1}px;height:${LH - 2}px;`;
+      if (S.colorBy === 'unit' && r.isProg) style += `background:${egysegSzin(r.unit)};`;
+      segs += `<div class="${cls.join(' ')}" data-i="${i}" style="${style}">${w > 2.5 ? esc(r.name) : ''}</div>`;
+    });
+    h += `<div class="row${base % 0x4000 === 0 && base ? ' lapkezd' : ''}"><div class="addr">${hex4(base)}</div><div class="bandcell"></div><div class="track" style="height:${nl * LH + 1}px">${segs}</div><div class="rfree">${freeB || ''}</div></div>`;
+  }
+  const map = document.getElementById('map');
+  map.className = dimming ? 'dim' : '';
+  map.innerHTML = h;
+  const rowEls = map.querySelectorAll('.row');
+  let bh = '';
+  LAPOK.forEach((l, i) => {
+    const r0 = rowEls[Math.floor(l.s / R)], r1 = rowEls[Math.floor((l.s + 0x3FFF) / R)], cell = r0.querySelector('.bandcell');
+    const top = r0.offsetTop + 1, height = r1.offsetTop + r1.offsetHeight - r0.offsetTop - 2;
+    bh += `<div class="band${S.sel && S.sel.id === 'lap' + i ? ' sel' : ''}" data-b="${i}" style="left:${cell.offsetLeft + 1}px;top:${top}px;height:${height}px;width:15px">${height > 40 ? esc(lapNev(l) + ' ' + hex4(l.s)) : ''}</div>`;
+  });
+  map.insertAdjacentHTML('beforeend', bh);
+}
+
+// ---------- csempék ----------
+function renderTiles() {
+  const st = freeStats(null);
+  const kodB = M.kod.reduce((a, x) => a + x.k, 0), adatB = M.kod.reduce((a, x) => a + x.a, 0);
+  const u3 = freeStats(LAPOK[3]);
+  const tl = (l, v, d, cls) => `<div class="tile ${cls || ''}"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d || ''}</div></div>`;
+  document.getElementById('tiles').innerHTML =
+    tl('Program (kód)', kb(KOD_H), `kód ${kb(kodB)} · adat ${kb(adatB)}<br>${range(KOD_E, KOD_V)}`) +
+    tl('Szabad $8000-ig', kb(0x8000 - KOD_V), 'a kód vége után, egyben') +
+    tl('Szabad összesen · ' + S.kozep.toUpperCase(), kb(st.free + st.ures), st.largest ? `legnagyobb ${range(st.largest.s, st.largest.e)} (${kb(st.largest.e - st.largest.s)})` : '') +
+    tl('U3 rekeszekben szabad', kb(u3.ures), 'a BIN-rekeszek üres vége') +
+    tl('Átfedés / túlcsordulás', VIEW.baj.length ? VIEW.baj.length + ' helyen' : 'nincs', 'a fordító nem nézi - itt kell', VIEW.baj.length ? 'rossz' : '');
+}
+
+// ---------- oldalpanel ----------
+const TABS = [['details', 'Részletek'], ['units', 'Egységek'], ['free', 'Szabad'], ['issues', 'Ellenőrzés']];
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = TABS.map(([id, l]) => `<button data-tab="${id}" class="${S.tab === id ? 'on' : ''}">${l}${id === 'issues' && VIEW.baj.length ? `<span class="badge">${VIEW.baj.length}</span>` : ''}</button>`).join('');
+}
+function renderPanel() {
+  document.getElementById('panel').innerHTML = ({ details: panelDetails, units: panelUnits, free: panelFree, issues: panelIssues })[S.tab]();
+}
+function legendHtml() {
+  return `<div class="legend">${Object.keys(FAJTA).map(k => `<span><span class="swatch" style="background:var(--k-${k})"></span>${FAJTA[k]}</span>`).join('')}</div>` +
+    (S.colorBy === 'unit' ? `<div class="legend">${Object.keys(EGYSEG).map(u => `<span><span class="swatch" style="background:${egysegSzin(u)}"></span>${esc(egysegNev(u))}</span>`).join('')}</div>` : '');
+}
+function panelDetails() {
+  const r = S.sel;
+  if (!r) {
+    return `<h3>Hogyan olvasd</h3><div class="small">Minden sor ${kb(S.rowSize)} a 64 KB-ból; a bal szélen a lap (U0 / U1 / ${S.kozep.toUpperCase()} / U3). A kód eljárásonként látszik. Kattints egy téglalapra a részletekért; az <b>Egységek</b> fülön egy egységre vagy eljárásra kattintva kiemelődik a térképen. Zöld csíkozás = szabad; narancs csíkozás = egy BIN-rekesz üres vége; piros keret = átfedés. Jobb szélen: a sor szabad byte-jai.</div>` +
+      `<h3>Jelmagyarázat</h3>` + legendHtml() +
+      `<h3>Fordítás</h3><div class="kv"><span class="k">Projekt</span><span>${esc(NEV)}</span><span class="k">Fordítva</span><span>${esc(M.datum)}</span>` +
+      `<span class="k">Források</span><span class="small">${esc(NEV)}.asm (rekeszek, címek, eljárások), ${esc(NEV)}.sym (címkék címe, a kód vége), ${esc(NEV)}.tru (tömbméret); rendszer / verem / videó: kézi lista a szkriptben</span>` +
+      `<span class="k">Frissítés</span><span class="small">build, utána <code>/memoria</code> vagy <code>powershell -File resources\\memoria_terkep.ps1</code>, majd F5</span></div>`;
+  }
+  if (r.band !== undefined) {
+    const l = LAPOK[r.band], st = freeStats(l);
+    return `<h3>${esc(lapNev(l))} lap</h3><div class="kv"><span class="k">Tartomány</span><span class="mono">${range(l.s, l.s + 0x4000)}</span><span class="k">Mi ez</span><span>${esc(l.valt && S.kozep === 'u2' ? 'U2 RAM - a játék alatt NINCS belapozva' : l.m)}</span>` +
+      `<span class="k">Szabad</span><span>${sz(st.free)}</span><span class="k">Rekeszek vége</span><span>${sz(st.ures)}</span>${st.lapozni ? `<span class="k">Lapozással</span><span>${sz(st.lapozni)}</span>` : ''}</div>`;
+  }
+  let h = '';
+  if (r.isProg) {
+    const x = M.kod[r.ki];
+    h += `<h3>${esc(x.n)}</h3><div class="kv"><span class="k">Egység</span><span><span class="swatch" style="background:${egysegSzin(x.u)}"></span>${esc(egysegNev(x.u))} <span class="muted">(${esc((EGYSEG[x.u] || {}).m || '')})</span></span>` +
+      `<span class="k">Méret</span><span>${sz(x.h)} <span class="muted">· a kód ${pct(x.h, KOD_H)}-a</span></span><span class="k">Kód / adat</span><span>${x.k} B / ${x.a} B</span>` +
+      `<span class="k">Tartomány</span><span class="mono">${range(x.r[0][0], x.r[x.r.length - 1][0] + x.r[x.r.length - 1][1])}</span></div>`;
+    if (x.r.length > 1) h += `<h3>Darabok (${x.r.length})</h3><table>${x.r.map(p => `<tr><td class="mono">${range(p[0], p[0] + p[1])}</td><td>${p[2] === 'a' ? 'Adat' : 'Kód'}</td><td class="n">${p[1]}</td></tr>`).join('')}</table>`;
+    if (x.c && x.c.length) h += `<h3>Legnagyobb címkék</h3><table><tr><th>Címke</th><th>Cím</th><th class="n">Byte</th></tr>${x.c.map(l => `<tr><td class="mono small">${esc(l[0])}</td><td class="mono small">${hex4(l[1])}</td><td class="n">${l[2]}</td></tr>`).join('')}</table><div class="small muted">Címke mérete = a következő címke címe - a sajátja (.sym).</div>`;
+    return h;
+  }
+  h += `<h3>${esc(r.name)}</h3><div class="kv"><span class="k">Tartomány</span><span class="mono">${range(r.s, r.e)}</span><span class="k">Méret</span><span>${sz(r.e - r.s)}</span>` +
+    `<span class="k">Fajta</span><span>${FAJTA[r.kind] || r.kind}${r.cat === 'lapozni' ? ' · csak lapozással érhető el' : ''}</span><span class="k">Lap</span><span>${esc(lapNev(lapOf(r.s)))}</span>`;
+  if (r.rek) {
+    const rh = r.rek[1] - r.rek[0];
+    h += `<span class="k">Rekesz</span><span class="mono">${range(r.rek[0], r.rek[1])} (${rh} B)</span><span class="k">Fájl</span><span>${r.fill} B</span><span class="k">Rekeszben szabad</span><span>${Math.max(0, rh - r.fill)} B</span>`;
+  }
+  if (r.kezi) h += `<span class="k">Forrás</span><span>kézi határ (a szkript $Fix listája)</span>`;
+  h += `</div>`;
+  if (r.baj) h += `<div class="note rossz">ÁTFEDÉS / NEM FÉR BELE: a fájl hosszabb a rekeszénél, vagy két rész ugyanazt a címet foglalja.</div>`;
+  if (r.kind === 'ures') h += `<div class="note">A(z) ${esc(r.of)} rekeszének kihasználatlan vége - ide nőhet a fájl, másra nem használt.</div>`;
+  if (r.kind === 'absvar') h += `<div class="note">A ${esc(NEV)}.tru "array[N] of byte at $cím" tömbje: a címe az .asm "equ" sorából, a mérete a .tru-ból.</div>`;
+  return h;
+}
+function panelUnits() {
+  const agg = {};
+  M.kod.forEach(x => { const u = agg[x.u] = agg[x.u] || { k: 0, a: 0, t: 0, list: [] }; u.k += x.k; u.a += x.a; u.t += x.h; u.list.push(x); });
+  const units = Object.keys(agg).sort((a, b) => agg[b].t - agg[a].t), max = Math.max(...units.map(u => agg[u].t), 1);
+  let h = `<div class="small muted">A kód (${range(KOD_E, KOD_V)}) az .asm eljáráshatárai szerint. Egységre kattintva lenyílik és kiemelődik; eljárásra kattintva a térképen mutatja.</div>`;
+  h += `<table><tr><th>Egység</th><th class="n">Kód</th><th class="n">Adat</th><th class="n">Össz.</th><th class="n">%</th><th style="width:60px"></th></tr>`;
+  units.forEach(u => {
+    const a = agg[u], on = S.hl && S.hl.type === 'unit' && S.hl.v === u;
+    h += `<tr class="click" data-unit="${esc(u)}"><td><span class="swatch" style="background:${egysegSzin(u)}"></span>${S.expanded[u] ? '▾' : '▸'} <b>${esc(egysegNev(u))}</b>${on ? ' ●' : ''}<div class="small muted">${esc((EGYSEG[u] || {}).m || '')} · ${a.list.length} db</div></td><td class="n">${a.k}</td><td class="n">${a.a}</td><td class="n"><b>${a.t}</b></td><td class="n">${pct(a.t, KOD_H)}</td><td><div class="bar" style="width:${a.t / max * 100}%;background:${egysegSzin(u)}"></div></td></tr>`;
+    if (S.expanded[u]) {
+      const pm = Math.max(...a.list.map(x => x.h), 1);
+      a.list.slice().sort((p, q) => q.h - p.h).forEach(x => {
+        const on2 = S.hl && S.hl.type === 'proc' && S.hl.v === x.i;
+        h += `<tr class="click sub" data-proc="${x.i}"><td class="mono">${esc(x.n)}${on2 ? ' ●' : ''}</td><td class="n">${x.k}</td><td class="n">${x.a}</td><td class="n">${x.h}</td><td class="n">${pct(x.h, KOD_H)}</td><td><div class="bar" style="width:${x.h / pm * 100}%;background:${egysegSzin(u)}"></div></td></tr>`;
+      });
+    }
+  });
+  h += `<tr><td><b>Összesen</b></td><td class="n">${M.kod.reduce((s, x) => s + x.k, 0)}</td><td class="n">${M.kod.reduce((s, x) => s + x.a, 0)}</td><td class="n"><b>${KOD_H}</b></td><td class="n">100 %</td><td></td></tr></table>`;
+  const top = M.kod.slice().sort((p, q) => q.h - p.h).slice(0, 10);
+  h += `<h3>A 10 legnagyobb</h3><table>${top.map(x => `<tr class="click" data-proc="${x.i}"><td><span class="swatch" style="background:${egysegSzin(x.u)}"></span><span class="mono">${esc(x.n)}</span></td><td class="small muted">${esc(egysegNev(x.u))}</td><td class="n">${x.h}</td><td class="n">${pct(x.h, KOD_H)}</td></tr>`).join('')}</table>`;
+  if (S.hl) h += `<div class="btnrow"><button data-act="clear-hl">Kiemelés törlése</button></div>`;
+  return h;
+}
+function panelFree() {
+  let h = `<h3>Laponként · ${S.kozep.toUpperCase()}</h3><table><tr><th>Lap</th><th class="n">Szabad</th><th class="n">Rekeszek vége</th><th class="n">Legnagyobb</th></tr>`;
+  LAPOK.forEach((l, i) => {
+    const st = freeStats(l);
+    h += `<tr class="click" data-band="${i}"><td><b>${esc(lapNev(l))}</b> <span class="muted mono small">${hex4(l.s)}</span></td><td class="n">${st.free}${st.lapozni ? `<div class="small muted">+${st.lapozni} lapozva</div>` : ''}</td><td class="n">${st.ures || ''}</td><td class="n">${st.largest ? st.largest.e - st.largest.s : 0}</td></tr>`;
+  });
+  const all = freeStats(null);
+  h += `<tr><td><b>Összesen</b></td><td class="n"><b>${all.free}</b></td><td class="n"><b>${all.ures}</b></td><td></td></tr></table>`;
+  const gaps = VIEW.free.filter(g => g.e - g.s >= S.freeMin).slice().sort((a, b) => S.freeSort === 'size' ? (b.e - b.s) - (a.e - a.s) : a.s - b.s);
+  h += `<h3>Hézagok</h3><div class="btnrow small"><span class="muted">rendezés</span><span class="seg-btns"><button data-fsort="size" class="${S.freeSort === 'size' ? 'on' : ''}">méret</button><button data-fsort="addr" class="${S.freeSort === 'addr' ? 'on' : ''}">cím</button></span><span class="muted">legalább</span><select id="freeMin">${[1, 16, 64, 256, 1024].map(v => `<option ${S.freeMin === v ? 'selected' : ''} value="${v}">${v} B</option>`).join('')}</select></div>`;
+  h += `<table><tr><th>Tartomány</th><th class="n">Byte</th><th>Fajta</th></tr>${gaps.map(g => `<tr class="click" data-sel="${g.id}"><td class="mono">${range(g.s, g.e)}</td><td class="n">${g.e - g.s}</td><td class="small">${g.kind === 'ures' ? esc(g.of) + ' vége' : g.cat === 'lapozni' ? 'csak lapozással' : esc(lapNev(lapOf(g.s))) + ' szabad'}</td></tr>`).join('')}</table>`;
+  return h;
+}
+function panelIssues() {
+  let h = `<div class="small muted">A fordító NEM nézi, hogy a fix címen lévő fájlok és tömbök átfedik-e egymást - ezt a szkript számolja.</div>`;
+  h += `<h3>Átfedés / túlcsordulás (${VIEW.baj.length})</h3>` + (VIEW.baj.length ? VIEW.baj.map(r => `<div class="note rossz"><a href="#" data-sel="${r.id}">${esc(r.name)}</a> <span class="mono">${range(r.s, r.e)}</span></div>`).join('') : '<div class="muted">nincs</div>');
+  const kezi = VIEW.items.filter(r => r.kezi);
+  h += `<h3>Kézi határok (${kezi.length})</h3><div class="small muted">Ezeket a szkript $Fix listája adja, nem a fordítás - ha változnak, ott kell átírni.</div><table>${kezi.map(r => `<tr class="click" data-sel="${r.id}"><td>${esc(r.name)}</td><td class="mono small">${range(r.s, r.e)}</td><td class="n">${r.e - r.s}</td></tr>`).join('')}</table>`;
+  const ures = VIEW.items.filter(r => r.kind === 'asset').map(r => ({ r, sz: r.rek[1] - r.rek[0] - r.fill })).sort((a, b) => a.sz - b.sz);
+  h += `<h3>A legszűkebb rekeszek</h3><table><tr><th>Fájl</th><th>Rekesz</th><th class="n">Szabad</th></tr>${ures.map(({ r, sz }) => `<tr class="click" data-sel="${r.id}"><td>${esc(r.name)}</td><td class="mono small">${range(r.rek[0], r.rek[1])}</td><td class="n"${sz < 64 ? ' style="color:var(--warn)"' : ''}>${sz}</td></tr>`).join('')}</table>`;
+  return h;
+}
+
+// ---------- súgó, események ----------
+const tip = document.getElementById('tip');
+function tipHtml(r) {
+  if (r.isProg) {
+    const x = M.kod[r.ki];
+    return `<b>${esc(x.n)}</b><br><span class="t-sub">${esc(egysegNev(x.u))} · ${r.kind === 'data' ? 'adat' : 'kód'}</span><br><span class="mono">${range(r.s, r.e)}</span> · ${r.e - r.s} B${x.r.length > 1 ? ` <span class="t-sub">(összesen ${x.h} B)</span>` : ''}`;
+  }
+  return `<b>${esc(r.name)}</b><br><span class="t-sub">${FAJTA[r.kind] || r.kind}</span><br><span class="mono">${range(r.s, r.e)}</span> · ${r.e - r.s} B` +
+    (r.rek && r.kind === 'asset' ? `<br><span class="t-sub">rekesz ${r.rek[1] - r.rek[0]} B, szabad ${Math.max(0, r.rek[1] - r.rek[0] - r.fill)} B</span>` : '');
+}
+function moveTip(e) { const x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8), y = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8); tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+function render() { compute(); renderControls(); renderTiles(); renderMap(); renderTabs(); renderPanel(); }
+function renderControls() {
+  document.getElementById('meta').textContent = `fordítva ${M.datum} · kód vége ${hex4(KOD_V)}`;
+  document.getElementById('kozepBtns').innerHTML = ['vid', 'u2'].map(k => `<button data-kozep="${k}" class="${S.kozep === k ? 'on' : ''}">${k.toUpperCase()}</button>`).join('');
+  document.getElementById('rowSize').value = S.rowSize;
+  document.getElementById('colorBy').value = S.colorBy;
+}
+function scrollToAddr(a) {
+  const el = document.querySelectorAll('#map .row')[Math.floor(a / S.rowSize)];
+  if (el) { const rc = el.getBoundingClientRect(); if (rc.top < 70 || rc.bottom > window.innerHeight) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+}
+function select(r) { S.sel = r; S.tab = 'details'; save(); renderMap(); renderTabs(); renderPanel(); if (r && r.s !== undefined) scrollToAddr(r.s); }
+
+const map = document.getElementById('map');
+map.addEventListener('mousemove', e => {
+  const t = e.target.closest('.seg, .band');
+  if (!t) { tip.style.display = 'none'; return; }
+  if (t.dataset.b !== undefined) { const l = LAPOK[+t.dataset.b]; tip.innerHTML = `<b>${esc(lapNev(l))}</b> <span class="mono">${range(l.s, l.s + 0x4000)}</span><br><span class="t-sub">${esc(l.m)}</span>`; }
+  else tip.innerHTML = tipHtml(VIEW.items[+t.dataset.i]);
+  tip.style.display = 'block'; moveTip(e);
+});
+map.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+map.addEventListener('click', e => {
+  const t = e.target.closest('.seg, .band');
+  if (!t) { select(null); return; }
+  if (t.dataset.b !== undefined) select({ id: 'lap' + t.dataset.b, band: +t.dataset.b });
+  else { const r = VIEW.items[+t.dataset.i]; S.sel = r; S.tab = 'details'; save(); renderMap(); renderTabs(); renderPanel(); }
+});
+document.getElementById('tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (!b) return; S.tab = b.dataset.tab; save(); renderTabs(); renderPanel(); });
+document.getElementById('panel').addEventListener('click', e => {
+  const u = e.target.closest('[data-unit]'), p = e.target.closest('[data-proc]'), sl = e.target.closest('[data-sel]'), bd = e.target.closest('[data-band]');
+  const fs = e.target.closest('[data-fsort]'), act = e.target.closest('[data-act]');
+  if (sl) { e.preventDefault(); const r = VIEW.items.find(x => x.id === sl.dataset.sel); if (r) select(r); return; }
+  if (bd) { select({ id: 'lap' + bd.dataset.band, band: +bd.dataset.band }); scrollToAddr(LAPOK[+bd.dataset.band].s); return; }
+  if (p) {
+    const ki = +p.dataset.proc;
+    S.hl = S.hl && S.hl.type === 'proc' && S.hl.v === ki ? null : { type: 'proc', v: ki };
+    const r = VIEW.items.find(x => x.ki === ki); S.sel = r || null;
+    renderMap(); renderPanel(); if (r) scrollToAddr(r.s); return;
+  }
+  if (u) {
+    const v = u.dataset.unit;
+    S.expanded[v] = !S.expanded[v];
+    S.hl = S.expanded[v] ? { type: 'unit', v } : (S.hl && S.hl.type === 'unit' && S.hl.v === v ? null : S.hl);
+    renderMap(); renderPanel(); return;
+  }
+  if (fs) { S.freeSort = fs.dataset.fsort; renderPanel(); return; }
+  if (act && act.dataset.act === 'clear-hl') { S.hl = null; renderMap(); renderPanel(); }
+});
+document.getElementById('panel').addEventListener('change', e => { if (e.target.id === 'freeMin') { S.freeMin = +e.target.value; renderPanel(); } });
+document.getElementById('kozepBtns').addEventListener('click', e => { const b = e.target.closest('[data-kozep]'); if (!b) return; S.kozep = b.dataset.kozep; S.sel = null; save(); render(); });
+document.getElementById('rowSize').addEventListener('change', e => { S.rowSize = +e.target.value; save(); renderMap(); renderPanel(); });
+document.getElementById('colorBy').addEventListener('change', e => { S.colorBy = e.target.value; save(); renderMap(); renderPanel(); });
+document.getElementById('search').addEventListener('input', e => { S.search = e.target.value.trim().toLowerCase(); renderMap(); });
+window.addEventListener('resize', () => renderMap());
+render();
+})();
+</script>
+</body>
+</html>

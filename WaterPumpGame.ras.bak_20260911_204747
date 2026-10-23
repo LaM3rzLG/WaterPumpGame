@@ -1,0 +1,301 @@
+program WaterPumpGame;
+@use "TVC"
+@use "GE"
+@use "random"
+ 
+var
+		Pumpa_Data						:	incbin("resources\tvc_sprites\Pumpa.bin");
+		Talaj1_Data						:	incbin("resources\tvc_sprites\talaj1.bin");
+		Keret_Data						:	incbin("resources\tvc_sprites\keret.bin");
+		Pumpa							:	GE::Sprite;
+		Talaj1							:	GE::Sprite;
+		Keret							:	GE::Sprite;
+		
+		CharSet 							: 	incbin("resources\tvc_sprites\CharSetGR4.bin");
+		CashStr 							: 	string = ("CASH$:");
+		PosStr							:	string = ("POZ-X:   POZ-Y:");		
+
+		Keret_X_ScreenPOS				: 	byte = 29;
+		Keret_Y_ScreenPOS				:	byte = 128;
+		Keret_X_Pos						:	byte = 15; 
+		Keret_Y_Pos						:	byte = 9;
+
+		Map								:	array	[18*30] of byte;
+
+		MapPos							:	integer;	/* Keret alatti mező indexe a Map tömbben */
+		MapRefreshKezd					:	integer;	/* (régi soronkénti MapRefresher maradéka - nem használt) */
+		MapRefreshY						:	byte = 1;	/* (régi soronkénti MapRefresher maradéka - nem használt) */
+		Drill_Cash						:	byte;		/* összegyűjtött pénz (kijelzéshez) */
+
+		/* --- FUTÓ KURZOROS ("stride") pumpa-frissítés, PER-PUMPA fázissal ---
+		   A pumpák a Map-ben, POZÍCIÓ szerint vannak (nincs pool). Egy
+		   pumpa-mező értéke MAGA A FÁZIS: Map[i] = 1..PUMPA_FAZISOK (a
+		   MAP-legenda 1-8 = pumpa-fázis) -> minden pumpának SAJÁT fázisa van,
+		   nincs közös animáció.
+		   A frissítés EGYETLEN futó kurzor (Pumpa_Cur), amit képkockánként
+		   PONTOSAN PUMPA_MAX_FRAME-szer léptetünk PUMPA_STRIDE-dal, a
+		   540 mezős Map-en körbe (Pumpa_Cur := (Pumpa_Cur + STRIDE) mod 540).
+		   A kurzor a frame-ek között MEGŐRZŐDIK - ott folytatja, ahol
+		   abbahagyta (kis STRIDE -> nem ér a Map végére egy frame alatt;
+		   nagy STRIDE -> egy frame alatt többször körbefordul).
+		   Az érintett mező, ha pumpa (Map[i] 1..8): kirajzoljuk a SAJÁT
+		   fázisában (Pumpa.Data := AnimSet + (Map[i]-1)*Size), majd CSAK
+		   annak a pumpának lépjük a fázisát (Map[i]+1, wrap 8->1). Egy
+		   pumpa akkor lép fázist, amikor a kurzor visszaér rá.
+		   FONTOS - TELJES LEFEDÉS: a (Pumpa_Cur + STRIDE) mod 540 CSAK akkor
+		   járja be MIND az 540 mezőt, ha STRIDE relatív prím 540-nel
+		   (540 = 2*2*3*3*3*5). Ha gcd(STRIDE,540) = g > 1, csak 540/g mező
+		   frissül valaha (pl. STRIDE=100 -> g=20 -> csak a 20 többszörösei,
+		   27 mező; STRIDE=20 -> g=20 -> ugyanígy). A többi pumpa SOSE
+		   animálódik. Jó értékek: 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+		   43, 47, 49, 53, 59, 61, 67, 71, 73, 77, 79, 83, ... (páratlan,
+		   3-mal és 5-tel sem osztható). */
+		const PUMPA_STRIDE				:	byte = 19;	/* lépésköz; relatív prím legyen 540-nel! (lásd fent) */
+		const PUMPA_MAX_FRAME			:	byte = 20;	/* ennyi MEZŐT léptet a kurzor képkockánként (a pumpásat rajzolja + fázisléptet) */
+		const PUMPA_FAZISOK				:	byte = 8;	/* a Pumpa.bin fázisainak száma; a pumpa-mező értéke 1..PUMPA_FAZISOK */
+		Pumpa_Cur						:	integer = 0;	/* a futó kurzor (0..539), frame-ek között megőrződik */
+		Pumpa_db						:	byte = 0;	/* lerakott pumpák száma (a 160-as limithez) */
+		const MAX_PUMPAK				:	byte = 160;	/* max. lerakható pumpa */
+		Pumpa_type =	record
+					x,y,anim				: 	byte;
+					end;    
+
+		Pumpak 							:	array	[18*30] of Pumpa_type;
+
+
+		
+/*		MAP értékadások jelentései
+		Pumpa animációs fázisok:	1-8
+		Talaj típusok:			10-19
+		Vírusos talaj:			20-29								*/	
+	
+		PumpaMap							:	byte=1;
+		Talaj1Map						:	byte=10;		/* Talaj1 sprite értéke */
+		
+		Pumpa_Penz						:	byte=0;	
+		
+Procedure ProgramInit();
+	begin
+		GE::SetGraphics(GE::GRAPHICS4);
+		GE::SetPalette(0,GE::PALETTE_Gray);
+		GE::SetPalette(1,GE::PALETTE_Black);
+		GE::SetPalette(2,GE::PALETTE_Green);
+		GE::SetPalette(3,GE::PALETTE_Blue);
+		GE::InitCharSet(#CharSet, 118, 2, 7);
+		GE::Init(GE::DIRECT_TO_SCREEN);
+		GE::SetMemory(GE::MEM_VID_ON);
+      	GE::SetRasterInterruptPos(239);
+		
+		Pumpa.Init(#Pumpa_Data,0,0,False);
+		Talaj1.Init(#Talaj1_Data,0,0,False);
+
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		Keret.Init(#Keret_Data,Keret_X_ScreenPOS,Keret_Y_ScreenPOS,True);
+		Keret.SaveBackground();
+
+		Pumpa.AnimSet:=	#Pumpa_Data+3;		/* +3: a header (típus,szél,mag) átugrása; a fázist kézzel választjuk */
+
+	end;
+
+
+
+Procedure MapReset();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			Map[data]:=Talaj1Map;				/* Talaj1 sprite értéke */
+			data:=data+1;
+			end;
+	end;
+
+Procedure MapToScreen();
+	var	mapx,mapy							:	byte;
+		data							:	integer;
+
+	begin;
+	data:=0;
+		fori mapy:=1 to 18 do
+			fori mapx:=1 to 30 do
+			begin;
+			if Map[data]=Talaj1Map then
+				begin;
+					Talaj1.X:=mapx*2;
+					Talaj1.Y:=30+mapy*10;
+					Talaj1.SetPosition;	
+					Talaj1.Put;
+				end;
+			if ((Map[data]>=1) and (Map[data]<=8)) then
+				begin;
+					Pumpa.X:=mapx*2;
+					Pumpa.Y:=30+mapy*10;
+					Pumpa.SetPosition;
+					Pumpa.Data:=Pumpa.AnimSet;			/* 1. fázis (induláskor nincs is pumpa) */
+					Pumpa.Put;
+				end;
+			data:=data+1;
+			end;
+	GE::FillRect(1, 12, 62, 2, 255);
+	GE::WriteText(4, 4, #CashStr);
+	GE::WriteText(32, 4, #PosStr);
+
+	GE::IntToStr(Drill_Cash);
+	GE::WriteText(16, 4, #GE_NumStr);
+	
+	GE::ByteToStr(Keret_X_Pos);
+	GE::WriteText(42, 4, #GE_NumStr);
+	GE::ByteToStr(Keret_Y_Pos);
+	GE::WriteText(58, 4, #GE_NumStr);
+	
+	end;
+
+Procedure Keret_OSD();
+	begin
+		GE::ByteToStr(Keret_X_Pos);
+		GE::WriteText(42, 4, #GE_NumStr);
+		GE::ByteToStr(Keret_Y_Pos);
+		GE::WriteText(58, 4, #GE_NumStr);	
+	
+	end;
+
+Procedure Keret_XY_Calc();
+	begin;
+		Keret_X_ScreenPOS:=(Keret_X_Pos*2)-1;
+		Keret_Y_ScreenPOS:=28+(Keret_Y_Pos*10);
+		Keret.X:=Keret_X_ScreenPOS;
+		Keret.Y:=Keret_Y_ScreenPOS;
+	end;
+	
+Procedure Keret_SpriteKirak();
+	begin;
+		Keret.SetPosition();
+		Keret.SaveBackground();
+		Keret.Draw;
+		Keret.UpdateLastPos;
+	end;
+
+Procedure Keret_Kirak();
+	begin
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		Keret_XY_Calc();
+		Keret_SpriteKirak();
+		Keret_OSD();
+	end;
+
+/* Pumpa-frissítés: EGYETLEN futó kurzort (Pumpa_Cur) léptet képkockánként
+   PONTOSAN PUMPA_MAX_FRAME-szer PUMPA_STRIDE-dal, a 540 mezős Map-en körbe.
+   Az érintett pumpást (Map[i] 1..PUMPA_FAZISOK) a SAJÁT fázisában rajzolja,
+   majd CSAK annak lépi a fázisát. A kurzor a frame-ek között MEGŐRZŐDIK.
+   Lásd a var blokk fejlécét (STRIDE 540-nel relatív prím legyen!). */
+Procedure MapRefresher();
+	var	k, f, fp, gy					:	byte;
+		gx							:	integer;
+	begin;
+		k:=0;
+		while (k<PUMPA_MAX_FRAME) do
+		begin;
+			/* aktuális mező: pumpa-e? (Map[i] = 1..PUMPA_FAZISOK a fázis) */
+			f:=Map[Pumpa_Cur];
+			if ((f>=1) and (f<=PUMPA_FAZISOK)) then
+				begin;
+					fp:=f-1;
+					/* Pumpa_Cur (0..539) -> rács-koord, OSZTÁS NÉLKÜL:
+					   gx = Pumpa_Cur mod 30 (0-alapú oszlop), gy = Pumpa_Cur / 30 + 1 (1-alapú sor) */
+					gx:=Pumpa_Cur;
+					gy:=1;
+					while (gx>=30) do
+						begin;
+							gx:=gx-30;
+							gy:=gy+1;
+						end;
+					Pumpa.X:=(gx+1)*2;
+					Pumpa.Y:=30+gy*10;
+					Pumpa.SetPosition;
+					Pumpa.Data:=Pumpa.AnimSet+fp*Pumpa.Size;	/* az ehhez a pumpához tárolt fázis */
+					Pumpa.Put;
+					/* fázis léptetése CSAK ehhez a pumpához (1..PUMPA_FAZISOK, wrap) */
+					f:=f+1;
+					if f>PUMPA_FAZISOK then f:=1;
+					Map[Pumpa_Cur]:=f;
+				end;
+
+			/* futó kurzor: +STRIDE, körbefordulás a Map végén (egy kivonás elég,
+			   mert STRIDE < 540) */
+			Pumpa_Cur:=Pumpa_Cur+PUMPA_STRIDE;
+			if Pumpa_Cur>=18*30 then Pumpa_Cur:=Pumpa_Cur-18*30;
+
+			k:=k+1;
+		end;
+	end;
+
+Procedure Keret_MoveLeft();
+	begin
+		Keret_X_Pos:=Keret_X_Pos-1;
+	end;
+
+Procedure Keret_MoveRight();
+	begin
+		Keret_X_Pos:=Keret_X_Pos+1;
+	end;
+
+Procedure Keret_MoveUp();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos-1;
+	end;
+
+Procedure Keret_MoveDown();
+	begin
+		Keret_Y_Pos:=Keret_Y_Pos+1;
+	end;
+	
+Procedure DrillLerak();
+	begin
+		MapPos:=Keret_X_Pos-1+(Keret_Y_Pos-1)*30;
+		/* csak SZABAD TALAJRA (nem meglévő pumpára), és csak a MAX_PUMPAK
+		   limitig - így a Pumpa_db pontos marad a dinamikus ciklushoz */
+		if ((Map[MapPos]=Talaj1Map) and (Pumpa_db<MAX_PUMPAK)) then
+			begin;
+				Keret.RestoreBackground();		/* a keret alatti valós talajt tesszük láthatóvá lerakás előtt */
+				Map[MapPos]:=1;					/* 1. animációs fázis */
+				Pumpa_db:=Pumpa_db+1;
+				Pumpa.X:=Keret_X_Pos*2;
+				Pumpa.Y:=30+Keret_Y_Pos*10;
+				Pumpa.SetPosition;
+				Pumpa.Data:=Pumpa.AnimSet;		/* 1. fázis */
+				Pumpa.Put;						/* a pumpa azonnal megjelenik, nem kell rá várni a MapRefresher-re */
+				Keret_SpriteKirak();			/* elmenti a friss (pumpát tartalmazó) hátteret, majd ráteszi a keretet */
+				Keret_OSD();
+			end;
+	end;
+	
+begin
+	ProgramInit;
+	MapReset;
+	MapToScreen;
+	Keret_Kirak();
+	
+    while (true) do
+	begin
+
+		GE::GetKeyboard();
+		GE::GetJoysticks();
+		if (GE::Joystick(1, GE::JOY_LEFT) and (Keret_X_Pos > 1)) then Keret_MoveLeft();
+		if (GE::Joystick(1, GE::JOY_RIGHT) and (Keret_X_Pos < 30)) then Keret_MoveRight();
+		if (GE::Joystick(1, GE::JOY_UP) and (Keret_Y_Pos > 1)) then Keret_MoveUp();
+		if (GE::Joystick(1, GE::JOY_DOWN) and (Keret_Y_Pos < 18)) then Keret_MoveDown();
+		if (GE::Pressed(GE::KEY_SPACE)) then DrillLerak();
+		GE::WaitForSync();
+		Keret.RestoreBackground();
+		MapRefresher();
+		Keret_Kirak();
+
+	end;
+		
+//	GE::SetBorder(GE::Border_DarkRed);
+end.
+
+
