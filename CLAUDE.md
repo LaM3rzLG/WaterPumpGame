@@ -53,7 +53,7 @@ TVC/TRSE tudás: **TVC-TRSE skill** (mindig töltsd be); PC-s eszközök: **TVC-
 - `Ir` / `Ir_Hossza`: pixelre arányos kiíró (betűnként 0..8 px szélesség a betűközzel), sorpuffer `$1460`,
   1-es szín, byte-határon kezd, a végét byte-ra kerekíti. `font.bin` 1 bites: `$80+magasság`, 109 szélesség
   (ASCII 32..122 + kód 123..140 = ÁÉÍÓÖŐÚÜŰáéíóöőúüű, 2026-10-25), soronként 109 byte; 873 byte
-  (a font most `$FC97`). A `make_szabaly_bin.ps1` az ékezeteseket 123..140-re kódolja; a .ras-beli string-literálokban NE legyen ékezet. Szerkesztő: `tools\charset_szerkeszto.html` (átírva).
+  (a font most `$FC97`). A `make_szabaly_bin.ps1` az ékezeteseket 123..140-re kódolja; a .ras-beli szövegekben LEHET ékezet (2026-10-26): az assembler Latin-1-re fordít, az `Ir` (`Ir_Ekezet`, `Ir_EkTab`) a font kódjaira képezi; az ő/ű/Ő/Ű NINCS a Latin-1-ben (0 lenne belőle!) - helyettük `ô`/`û`/`Ô`/`Û` írandó (pl. "TÛZ"). A játék szövegei magyarok (J1/J2, ÉLET, PÁLYA); csak a pause sötétít, a többi doboz `Doboz`-zal, palettaváltás nélkül; a szabály-lapokon ESC = vissza. Szerkesztő: `tools\charset_szerkeszto.html` (átírva).
   A kisbetűket a felhasználó újrarajzolja. Az eredeti font: `font_eredeti.bin`.
 - Játékszabály (2026-10-26, visszaigazolva): főmenü 5. pont -> `Szabaly_Kepernyo` (1. oldal sztori; oldalanként U2 `Szab_Src` -> `Pause_Buf`,
   `Szov_Kiir` 254/255 jelig, `Tuz_Var` lapoz) -> a jelmagyarázat is itt (4-5. oldal, `@IKON | szöveg` sorok, 253-as ikon-rekord, `Szov_Ikon`). A `szabaly.txt` SIMA SZÖVEG ("N. oldal", 1. sor cím, utolsó lábsor, CSUPA NAGY = fejezet);

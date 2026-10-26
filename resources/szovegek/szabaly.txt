@@ -11,7 +11,7 @@ Az emberiség utolsó reménye egy Aqualique nevű rideg, kietlen égitest lett.
 A KONFLIKTUS
 Az emberiség bázisokat épít a bolygón, hogy megkezdje a víz kitermelését. A küldetést azonban folyamatos meteorzáporok nehezítik, ráadásul a kitermelt erőforrásokra és a bázisokra egy folyamatosan terjedő, mindent megfertőző idegen organizmus/korrupció is veszélyt jelent.
 
-TŰZ / SPACE: TOVÁBB
+TŰZ / SPACE: TOVÁBB   ESC: VISSZA
 
 2. oldal
 
@@ -32,7 +32,7 @@ A fal megállítja, a bomba és a rezonancia-töltet elpusztítja végleg.
 Öt élettel indulsz. Ha nincs több pumpád, és pénzed sincs legalább egy darabra, a pálya elbukott, és elvész egy élet.
 Ha valamilyen okból nem tudod teljesíteni a pályát, az "R" gombbal újraindíthatod a pályát, viszont ez is egy életedbe kerül.
 
-TŰZ / SPACE: TOVÁBB
+TŰZ / SPACE: TOVÁBB   ESC: VISSZA
 
 3. oldal
 
@@ -53,7 +53,7 @@ PÁRBAJ (VERSUS)
 Egymás ellen harcoltok. Aki előbb éri el a pálya CÉL-t, az nyer.
 Akinek viszont elfogy a pumpája és a pénze, az veszít.
 
-TŰZ / SPACE: TOVÁBB
+TŰZ / SPACE: TOVÁBB   ESC: VISSZA
 
 4. oldal
 
@@ -65,7 +65,7 @@ J E L M A G Y A R Á Z A T
 @FAL | FAL: vírus blokkolására használható.
 @KERET | KERET: a kerettel tudsz kiválasztani lerakható tárgyakat, majd ezeket a térképen elhelyezni.
 
-TŰZ / SPACE: TOVÁBB
+TŰZ / SPACE: TOVÁBB   ESC: VISSZA
 
 5. oldal
 
@@ -78,4 +78,4 @@ J E L M A G Y A R Á Z A T
 "P" gomb | pillanatállj.
 "TŰZ / SPACE" | eszköz választó menüben kiválasztás, térképen eszköz lerakására szolgál.
 
-TŰZ / SPACE: VISSZA
+TŰZ / SPACE / ESC: VISSZA

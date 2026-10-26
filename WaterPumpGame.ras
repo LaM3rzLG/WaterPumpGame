@@ -63,7 +63,7 @@ BombaIkon_Data				:	array[1] of byte at $FAFE;	/* SPRITES.BIN: tvc_sprites\bomba
 		VSE_Byte, VSE_Bit				:	byte = 0;		/* VS_Elonezet asm: az aktuális byte és a hátralévő bitek */
 		Kod_Palya						:	byte = 255;		/* érvényes kód után: a pálya indexe (255 = nincs) */
 		Kod_Mod							:	byte = 0;		/* érvényes kód után: 0 = egy játékos, 1 = co-op, 2 = versus pálya */
-		Kov_Str							:	array[17] of byte = (78,69,88,84,32,67,79,68,69,58,32,65,65,65,65,65,0);	/* "NEXT CODE: " + a következő pálya kódja (11..15) - a LEVEL COMPLETED dobozban */
+		Kov_Str							:	array[21] of byte = (75,127,86,69,84,75,69,90,128,32,75,126,68,58,32,65,65,65,65,65,0);	/* "KÖVETKEZŐ KÓD: " (Ö=127, Ő=128, Ó=126 a font kódjai) + a következő pálya kódja (15..19) - a PÁLYA TELJESÍTVE dobozban */
 		P2_Kep							:	byte = 8;	/* a 2. játékos pumpáinak képindex-eltolása: versus 8 (saját grafika), co-op 0 (az 1. játékos képe; a Map-ben külön marad a számoláshoz) */
 		Joy_Bal, Joy_Jobb, Joy_Fel, Joy_Le	:	byte = 0;	/* a Jatekos_Mozog bemenete (az épp mozgatott játékos iránya) */
 		const IKON_Y					:	byte = 30;	/* a választó-ikonok sora = a pálya 0. sora (a Keret ide is feljöhet) */
@@ -101,9 +101,9 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 		Kep_W, Kep_H, Menu16		:	byte = 0;	/* Menu16 = 1: a 16 szinu fomenu van a kepernyon */
 		Fajl_Hossz, Fajl_Cel			:	integer;
 		Fajl_Hiba						:	byte = 0;	/* Fajl_Olvas: 0 = jo, 1 = nem nyilik, 2 = olvasasi hiba */
-		LvlStr						:	string = ("LVL:");	/* két játékos: rövid LEVEL a pálya alatt */
+		LvlStr						:	string = ("PÁLYA:");	/* két játékos: rövid LEVEL a pálya alatt */
 		SlashStr					:	string = ("/");
-		LivesStr					:	string = ("LIVES:");
+		LivesStr					:	string = ("ÉLET:");
 		Gyoztes						:	byte = 0;	/* versus: ki érte el a célt (1/2) */
 		ColonStr					:	string = (":");
 
@@ -364,6 +364,7 @@ Ir_Kar:
 			or a
 			jr z,Ir_Kiir
 			inc hl
+			call Ir_Ekezet
 			cp 32
 			jr c,Ir_Kar
 			cp 141
@@ -471,6 +472,7 @@ Ir_PKov:
 			or a
 			jr z,Ir_PVege
 			inc hl
+			call Ir_Ekezet
 			cp 32
 			jr c,Ir_PKov
 			cp 141
@@ -498,6 +500,33 @@ Ir_PVege:
 			rr l
 			ld a,l
 			ret
+; Ekezetes betu: a forras Latin-1 kodja ($C0..$FF) -> a font kodja (123..140); ismeretlen -> 0 (kimarad).
+; A hosszu o es u (o, u ketto vesszovel) nincs a Latin-1-ben: a forrasban o^/u^ (kalapos) all helyettuk. A: a karakter; HL marad, DE romlik.
+Ir_Ekezet:
+			cp $C0
+			ret c
+			push hl
+			sub $C0
+			ld d,a
+			and $1F
+			ld e,a
+			ld a,d
+			ld d,0
+			ld hl,Ir_EkTab
+			add hl,de
+			ld e,a
+			ld a,(hl)
+			or a
+			jr z,Ir_EkX
+			bit 5,e
+			jr z,Ir_EkX
+			add a,9
+Ir_EkX:
+			pop hl
+			ret
+Ir_EkTab:
+			db 0,123,0,0,0,0,0,0,0,124,0,0,0,125,0,0
+			db 0,0,0,126,128,0,127,0,0,0,129,131,130,0,0,0
 Ir_Vege:
 		");
 	end;
@@ -1052,7 +1081,7 @@ Procedure MapToScreen();
 			data:=data+1;
 			end;
 	/* HUD (minden módban ugyanaz, a 2. játékos részei csak két játékosnál): 1. sor "P1$:0990 ... P2$:0450", 2. sor "[pumpa]:023 ... [pumpa]:017", középen az árak; a pálya alatt (nem versus) LIVES, LVL, cél "[pumpa]:össz/cél"; a feliratok helye láncolva (Ir_X) */
-	Ir(2, 4, "P1$:");
+	Ir(2, 4, "J1$:");
 	Cash_X:=Ir_X;
 	Pumpa.Data:=Pumpa.AnimSet;			/* 2. sor: "[pumpa-ikon]:009" (a PUMPS: felirat helyett ikon) */
 	Pumpa.X:=2;
@@ -1068,9 +1097,9 @@ Procedure MapToScreen();
 		end;
 	if (Ket_Jatekos=1) then		/* a 2. játékos: jobbra igazítva, a jobb szél a 62. byte */
 		begin;
-		Ir_Hossza("P2$:");
+		Ir_Hossza("J2$:");
 		Cash2_X:=63-Ir_Hossz-Jegy_Sz*4;
-		Ir(Cash2_X, 4, "P2$:");
+		Ir(Cash2_X, 4, "J2$:");
 		Cash2_X:=Ir_X;
 		Ir_Hossza(#ColonStr);			/* ikon + hézag (3) + ":" + 3 jegy */
 		Pump2_X:=63-Ir_Hossz-Jegy_Sz*3-3;
@@ -1731,7 +1760,7 @@ Procedure Frame_Sync();
 		else GE::WaitForSync();
 	end;
 
-/* PAUSE: a "GAME PAUSED" felirat alatti képterület mentése (Pause_Irany=0) / visszaírása (1): Pause_H sor, soronként Pause_W byte, Pause_Pos képernyőcímtől */
+/* PAUSE: a "SZÜNET" felirat alatti képterület mentése (Pause_Irany=0) / visszaírása (1): Pause_H sor, soronként Pause_W byte, Pause_Pos képernyőcímtől */
 Procedure Pause_Csere();
 	begin;
 		asm("
@@ -1862,12 +1891,12 @@ Procedure Normal_Szinek();
 		GE::SetBorder(GE::BORDER_Gray);
 	end;
 
-/* P = PAUSE (pisi szünet): minden megáll, sötét színek (szürke->fekete, fekete->sötétkék, zöld->sötétzöld, kék->fekete, keret fekete), középen "GAME PAUSED"; a következő P-re minden megy tovább */
+/* P = PAUSE (pisi szünet): minden megáll, sötét színek (szürke->fekete, fekete->sötétkék, zöld->sötétzöld, kék->fekete, keret fekete), középen "SZÜNET"; a következő P-re minden megy tovább */
 Procedure Pause_Kezel();
 	var x : byte;
 	begin;
 		Digi_Le();							/* a szóló hang le (a várakozás sima WaitForSync) */
-		Ir_Hossza("GAME PAUSED");
+		Ir_Hossza("SZÜNET");
 		Pause_W:=Ir_Hossz;
 		x:=64-Pause_W;
 		x:=x/2;
@@ -1879,7 +1908,7 @@ Procedure Pause_Kezel();
 		Pause_Irany:=0;
 		Pause_Csere();						/* a felirat alatti terület mentése */
 		Sotet_Szinek();
-		Ir(x, 116, "GAME PAUSED");
+		Ir(x, 116, "SZÜNET");
 		Szinez(x, 116, Pause_W, 7);			/* a felirat betűi 1-es színről 3-asra (szürke) */
 		Start_Wait:=1;						/* 1: a P felengedésére vár, 2: új P-re, 3: annak felengedésére */
 		while (Start_Wait<>0) do
@@ -2041,7 +2070,7 @@ Procedure Bomba_Ledob(px, py, j : byte);	/* bomba a (px,py) mezőre; j = 1/2: ki
 			end;
 	end;
 
-/* KILÉPÉS (ESC vagy Q, minden módban): "EXIT TO MENU ?" a képernyő közepén, a pause színrendjével; ESC/Q = igen (Jatek_Fut:=0 -> főmenü), BÁRMI MÁS (billentyű vagy joystick) = nem (a doboz alatti kép vissza, megy tovább a játék). A végén megvárja, hogy minden gomb felengedődjön (ne tüzeljen tovább a játékban) */
+/* KILÉPÉS (ESC vagy Q, minden módban): "KILÉPSZ A MENÜBE ?" a képernyő közepén, a pause színrendjével; ESC/Q = igen (Jatek_Fut:=0 -> főmenü), BÁRMI MÁS (billentyű vagy joystick) = nem (a doboz alatti kép vissza, megy tovább a játék). A végén megvárja, hogy minden gomb felengedődjön (ne tüzeljen tovább a játékban) */
 Procedure Exit_Kerdes();
 	var v : byte;
 	begin;
@@ -2054,12 +2083,10 @@ Procedure Exit_Kerdes();
 		Pause_Pos:=Pause_Pos+$8000;			/* a doboz: (7,106), 50 byte x 40 sor */
 		Pause_Irany:=0;
 		Pause_Csere();						/* a doboz alatti kép mentése */
-		GE::FillRect(7, 106, 50, 40, 0);
-		Ir_Kozep(110, "EXIT TO MENU ?");
-		Ir_Kozep(122, "ESC/Q = YES");
-		Ir_Kozep(134, "OTHER KEY = NO");
-		Szinez(7, 106, 50, 40);
-		Sotet_Szinek();
+		Doboz(7, 106, 50, 40);			/* szürke doboz fekete kerettel, palettaváltás nélkül (sötét csak a pause) */
+		Ir_Kozep(110, "KILÉPSZ A MENÜBE ?");
+		Ir_Kozep(122, "ESC/Q = IGEN");
+		Ir_Kozep(134, "MÁS GOMB = NEM");
 		Start_Wait:=1;						/* 1: minden gomb felengedésére vár, 2: a döntésre, 3: a döntés gombjának felengedésére */
 		while (Start_Wait<>0) do
 			begin;
@@ -2103,7 +2130,6 @@ Exit_Kerdes_barmi:
 					if (v=0) then Start_Wait:=0;	/* 3: minden felengedve */
 				end;
 			end;
-		Normal_Szinek();
 	end;
 
 /* 1, ha a j. játékos ikon-menüjében az x oszlopon lévő eszköz az adott pályán engedélyezett (pumpa mindig; fal: Fal_Engedve, bomba: Bomba_Engedve) */
@@ -2678,6 +2704,7 @@ Procedure Tuz_Var();
 			GE::GetKeyboard();
 			GE::GetJoysticks();
 			if (Tuz()=1) then Start_Wait:=0;
+			if (GE::Pressed(GE::KEY_ESC)) then Start_Wait:=0;	/* ESC: kilépés (a Szabaly_Kepernyo nézi) */
 			GE::WaitForSync();
 			end;
 	end;
@@ -2717,6 +2744,7 @@ Procedure Szabaly_Kepernyo();
 				ld [Szab_Src],hl
 			");
 			Tuz_Var();
+			if (GE::Pressed(GE::KEY_ESC)) then c:=255;	/* ESC bármelyik lapon: vissza a menübe */
 			end;
 		Szab_IT_Ki();
 	end;
@@ -2841,7 +2869,7 @@ Procedure Kod_Bevitel();
 	var n, b, elozo, villog, cx, y, i, j, egy, a1, a2, a3, gomb, kesz : byte;
 	begin;
 		y:=156;
-		Ir(Menu_X, y, "PALYAKOD");
+		Ir(Menu_X, y, "PÁLYAKÓD");
 		cx:=Ir_X+2;
 		n:=0;
 		elozo:=255;
@@ -2950,7 +2978,7 @@ Procedure Kod_Bevitel();
 						end;
 					if (Kod_Palya=255) then
 						begin;
-						Ir_Kozep(176, "HIBAS KOD");		/* rossz kód: ~1 mp, aztán vissza a menübe */
+						Ir_Kozep(176, "HIBÁS KÓD");		/* rossz kód: ~1 mp, aztán vissza a menübe */
 						i:=0;
 						while (i<50) do
 							begin;
@@ -3259,7 +3287,7 @@ Procedure Pal_Ment();
 Procedure VS_Szerk(p : byte);
 	var m, irany, elozo, ism, kesz, e, ev, t : byte;
 	begin;
-		Ir_Kozep(208, "RETURN = OK ES MENTES   ");
+		Ir_Kozep(208, "RETURN = OK ÉS MENTÉS   ");
 		m:=0;
 		Ed_Jelol(m);
 		elozo:=0;
@@ -3318,9 +3346,9 @@ Procedure VS_Szerk(p : byte);
 			if (e=1) then if (ev=0) then kesz:=1;
 			ev:=e;
 			end;
-		Ir_Kozep(208, "      MENTES...         ");
+		Ir_Kozep(208, "      MENTÉS...         ");
 		Pal_Ment();
-		Ir_Kozep(208, "E = ERTEKEK SZERKESZTESE");
+		Ir_Kozep(208, "E = ÉRTÉKEK SZERKESZTÉSE");
 		VS_Elonezet(p);
 	end;
 
@@ -3329,18 +3357,18 @@ Procedure VS_Valaszto();
 	var p, irany, elozo, t, tv, e, ev : byte;
 	begin;
 		GE::ClearScreen(0);
-		Ir_Kozep(20, "KET JATEKOS EGYMAS ELLEN");
-		Ir_Kozep(196, "VALASSZ PALYAT");
-		Ir(2, 48, "PALYA KEZDO PENZ:");
-		Ir(2, 80, "AR / BEVETEL");
-		Ir(2, 158, "VESZELYEK:");
-		Ir(36, 158, "PALYA:");
-		Ir(40, 170, "CEL:");
+		Ir_Kozep(20, "KÉT JÁTÉKOS EGYMÁS ELLEN");
+		Ir_Kozep(196, "VÁLASSZ PÁLYÁT");
+		Ir(2, 48, "PÁLYA KEZDÔ PÉNZ:");
+		Ir(2, 80, "ÁR / BEVÉTEL");
+		Ir(2, 158, "VESZÉLYEK:");
+		Ir(36, 158, "PÁLYA:");
+		Ir(40, 170, "CÉL:");
 		GE::FillRect(30, 72, 32, 74, $F0);
 		GE::FillRect(31, 73, 30, 72, 0);
-		Ir_Kozep(208, "E = ERTEKEK SZERKESZTESE");
-		Ir_Kozep(220, "FEL / LE = PALYA VALASZTAS");
-		Ir_Kozep(232, "TUZ = INDITAS   ESC = VISSZA");
+		Ir_Kozep(208, "E = ÉRTÉKEK SZERKESZTÉSE");
+		Ir_Kozep(220, "FEL / LE = PÁLYA VÁLASZTÁS");
+		Ir_Kozep(232, "TÛZ = INDÍTÁS   ESC = VISSZA");
 		p:=0;
 		VS_Elonezet(p);
 		Kod_Palya:=255;
@@ -3930,7 +3958,7 @@ Procedure Palya_Teljesitve();
 	var van, i, k, y : byte;
 	begin;
 		Digi_Le();
-		/* van-e következő pálya: ha igen, a kódja a "NEXT CODE: " után (Kov_Str 11..15) */
+		/* van-e következő pálya: ha igen, a kódja a "KÖVETKEZŐ KÓD: " után (Kov_Str 15..19) */
 		van:=0;
 		k:=Palya+1;
 		if (Versus=0) then			/* versusban nincs pályakód (csak egy játékos és co-op) */
@@ -3941,11 +3969,11 @@ Procedure Palya_Teljesitve();
 				k:=k*5;
 				if (Coop=1) then
 					begin;
-					for i:=0 to 5 do Kov_Str[i+11]:=Palya_KodCoop[k+i];	/* co-op: a co-op kód */
+					for i:=0 to 5 do Kov_Str[i+15]:=Palya_KodCoop[k+i];	/* co-op: a co-op kód */
 					end
 				else
 					begin;
-					for i:=0 to 5 do Kov_Str[i+11]:=Palya_Kod[k+i];
+					for i:=0 to 5 do Kov_Str[i+15]:=Palya_Kod[k+i];
 					end;
 				end;
 			end;
@@ -3956,22 +3984,22 @@ Procedure Palya_Teljesitve();
 			if (Versus=1) then
 				begin;
 				if (Gyoztes=2) then
-					Ir_Kozep(y, "PLAYER 2 WINS !")
+					Ir_Kozep(y, "A 2. JÁTÉKOS NYERT !")
 				else
-					Ir_Kozep(y, "PLAYER 1 WINS !");
+					Ir_Kozep(y, "AZ 1. JÁTÉKOS NYERT !");
 				end
 			else
-				Ir_Kozep(y, "LEVEL COMPLETED !");
+				Ir_Kozep(y, "PÁLYA TELJESÍTVE !");
 			y:=y+10;
-			Ir(18, y, "P1:");
+			Ir(18, y, "J1:");
 			HUD_Num3(Pumpa_db, Ir_X, y);
-			Ir(Ir_X+4, y, "P2:");
+			Ir(Ir_X+4, y, "J2:");
 			HUD_Num3(Pumpa_db2, Ir_X, y);
 			end
 		else
 			begin;
 			if (van=0) then y:=114;			/* két sor: függőlegesen középen */
-			Ir_Kozep(y, "LEVEL COMPLETED !");
+			Ir_Kozep(y, "PÁLYA TELJESÍTVE !");
 			end;
 		y:=y+10;
 		if (van=1) then
@@ -3986,7 +4014,7 @@ Procedure Palya_Teljesitve();
 			y:=y+10;
 			end;
 		if (van=0) then if (Ket_Jatekos=0) then y:=130;
-		Ir_Kozep(y, "PRESS SPACE TO CONTINUE");
+		Ir_Kozep(y, "TÛZ / SPACE: TOVÁBB");
 		Varakozas(75);					/* kb. 1,5 mp: a pumpa-lerakáshoz nyomva tartott tűz/SPACE ne ugorja át véletlenül (nincs színváltás) */
 		Space_Var();
 	end;
@@ -3995,13 +4023,10 @@ Procedure Palya_Teljesitve();
 Procedure Game_Over();
 	begin;
 		Digi_Le();
-		GE::FillRect(7, 106, 50, 40, 0);
-		Ir_Kozep(114, "GAME OVER !");
-		Ir_Kozep(130, "PRESS SPACE FOR MENU");
-		Szinez(7, 106, 50, 40);		/* a feliratok szürkére, sötét színrend (mint a pause) */
-		Sotet_Szinek();
+		Doboz(7, 106, 50, 40);			/* palettaváltás nélkül */
+		Ir_Kozep(114, "VÉGE A JÁTÉKNAK !");
+		Ir_Kozep(130, "TÛZ / SPACE: MENÜ");
 		Space_Var();
-		Normal_Szinek();
 		Jatek_Fut:=0;
 	end;
 
@@ -4016,13 +4041,10 @@ Procedure Palya_Bukas();
 			Game_Over()
 		else
 			begin;
-			GE::FillRect(7, 106, 50, 40, 0);
-			Ir_Kozep(114, "LEVEL FAILED !");
-			Ir_Kozep(130, "PRESS SPACE TO RETRY");
-			Szinez(7, 106, 50, 40);		/* a feliratok szürkére, sötét színrend (mint a pause) */
-			Sotet_Szinek();
+			Doboz(7, 106, 50, 40);		/* palettaváltás nélkül */
+			Ir_Kozep(114, "ELBUKTÁL !");
+			Ir_Kozep(130, "TÛZ / SPACE: ÚJRA");
 			Space_Var();
-			Normal_Szinek();
 			Palya_Ujra();
 			end;
 		end;
