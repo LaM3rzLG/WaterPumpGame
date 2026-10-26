@@ -201,7 +201,7 @@ for ($i = 0; $i -lt $bent.Count; $i++) {
   while ($j -lt $bent.Count -and $bent[$j].C -eq $bent[$i].C) { $j++ }
   if ($j -gt $i + 1) { continue }   # azonos cimen tobb cimke: a sorban utolso viszi a byte-okat
   $kov = if ($j -lt $bent.Count) { $bent[$j].C } else { $kodVeg }
-  if ($bent[$i].C -lt $alsoVeg -and $kov -gt $alsoVeg) { $kov = $alsoVeg }   # a lenti resz vege (a hezag nem kod)
+  if ($bent[$i].C -lt 0xC000 -and $kov -gt $alsoVeg) { $kov = [math]::Max($alsoVeg, $bent[$i].C) }   # a lenti resz vege (a hezag nem kod)
   $g = Gazda $bent[$i]
   $darabok += @{ u = $g[0]; n = $g[1]; c = $bent[$i].C; h = $kov - $bent[$i].C; f = $bent[$i].F; cn = $bent[$i].N }
 }
@@ -251,7 +251,7 @@ foreach ($r in ($ki | Where-Object { $_.t -ne 'sz' -or $_.e -lt 0x8000 -or $_.e 
   $jel = if ($r.baj) { 'HIBA: ATFEDES / NEM FER BELE' } elseif ($null -ne $r.h) { "szabad: $($hossz - $r.h)" } else { '' }
   '${0:X4}-${1:X4} {2,6}  {3}  {4}' -f $r.e, $r.v, $hossz, $r.n, $jel
 }
-"--- a kod bontasa ($($kodVeg - $kodKezd) byte):"
+"--- a kod bontasa ($(if ($alsoVeg -lt $kodVeg) { ($alsoVeg - $kodKezd) + ($kodVeg - 0xC000) } else { $kodVeg - $kodKezd }) byte):"
 $kodElemek | Group-Object { $_.u } | ForEach-Object { '  {0,-5} {1,6} byte  ({2} elem)' -f $_.Name, ($_.Group | ForEach-Object { $_.k + $_.a } | Measure-Object -Sum).Sum, $_.Count }
 "  a 10 legnagyobb:"
 $kodElemek | Sort-Object { -($_.k + $_.a) } | Select-Object -First 10 | ForEach-Object { '  {0,6}  {1,-5} {2}' -f ($_.k + $_.a), $_.u, $_.n }
