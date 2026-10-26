@@ -1,39 +1,58 @@
-# SPRITES.BIN = az U3 tartalma ($C000-tol): hangok, sprite-ok, betukeszlet, a jatekban hasznalt cimeken.
-# A jatek induláskor ezt tolti be ($8000-ra), majd az U3-ba masolja. A cimek a WaterPumpGame.ras "... at $cim" soraival egyeznek!
-# Hasznalat: powershell -File resources\make_sprites_bin.ps1   -> SPRITES.BIN a projekt gyokereben; kiirja a hosszt (Spr_Hossz a .ras-ban)
+# SPRITES.BIN = az U3 tetejenek tartalma: hangok, sprite-ok, betukeszlet, HEZAG NELKUL, a $FFFF-re vegzodve.
+# A jatek induláskor ezt tolti be ($8000-ra), majd az U3-ba masolja (Spr_Cim-tol, Spr_Hossz byte).
+# A szkript a WaterPumpGame.ras-ban atirja: a "Nev : array[1] of byte at $cim;" sorokat, a Spr_Cim-et es a Spr_Hossz-t.
+# Utana: palyak_bin.ps1 (a palyak kozvetlenul a sprite-ok ala kerulnek), majd forditas.
+# Hasznalat: powershell -File resources\make_sprites_bin.ps1   [-NemIr: csak kiirja a kiosztast]
+param([switch]$NemIr)
 $root = Split-Path $PSScriptRoot -Parent
 $list = @(
-  @("resources\sfx\explosion.bin",          0xC000),
-  @("resources\sfx\akna.bin",               0xCB00),
-  @("resources\sfx\tick.bin",               0xD000),
-  @("resources\tvc_sprites\Pumpa.bin",      0xD100),
-  @("resources\tvc_sprites\talaj1.bin",     0xD200),
-  @("resources\tvc_sprites\talaj2.bin",     0xD300),
-  @("resources\tvc_sprites\talaj3.bin",     0xD400),
-  @("resources\tvc_sprites\keret.bin",      0xD500),
-  @("resources\tvc_sprites\keret2.bin",     0xD600),
-  @("resources\tvc_sprites\enemy.bin",      0xD700),
-  @("resources\tvc_sprites\fal.bin",        0xD800),
-  @("resources\tvc_sprites\meteor.bin",     0xD900),
-  @("resources\tvc_sprites\bomba.bin",      0xDB00),
-  @("resources\tvc_sprites\bombaikon.bin",  0xDC00),
-  @("resources\tvc_sprites\akna.bin",       0xDD00),
-  @("resources\tvc_sprites\Pumpa2.bin",     0xE000),
-  @("resources\tvc_sprites\font.bin",       0xE100)
+  @("resources\sfx\explosion.bin",          "ExplosionSFX"),
+  @("resources\sfx\akna.bin",               "AknaSFX"),
+  @("resources\sfx\tick.bin",               "TickSFX"),
+  @("resources\tvc_sprites\Pumpa.bin",      "Pumpa_Data"),
+  @("resources\tvc_sprites\talaj1.bin",     "Talaj1_Data"),
+  @("resources\tvc_sprites\talaj2.bin",     "Talaj2_Data"),
+  @("resources\tvc_sprites\talaj3.bin",     "Talaj3_Data"),
+  @("resources\tvc_sprites\keret.bin",      "Keret_Data"),
+  @("resources\tvc_sprites\keret2.bin",     "Keret2_Data"),
+  @("resources\tvc_sprites\enemy.bin",      "Enemy_Data"),
+  @("resources\tvc_sprites\fal.bin",        "Fal_Data"),
+  @("resources\tvc_sprites\meteor.bin",     "Meteor_Data"),
+  @("resources\tvc_sprites\bomba.bin",      "Bomba_Data"),
+  @("resources\tvc_sprites\bombaikon.bin",  "BombaIkon_Data"),
+  @("resources\tvc_sprites\akna.bin",       "Akna_Data"),
+  @("resources\tvc_sprites\Pumpa2.bin",     "Pumpa2_Data"),
+  @("resources\tvc_sprites\font.bin",       "Font_Data")
 )
-$base = 0xC000
-$end = 0
-foreach ($e in $list) { $len = (Get-Item (Join-Path $root $e[0])).Length; $end = [math]::Max($end, $e[1] + $len) }
-$buf = New-Object byte[] ($end - $base)
-$hiba = 0
+$adat = @()
+$ossz = 0
+foreach ($e in $list) { $d = [IO.File]::ReadAllBytes((Join-Path $root $e[0])); $adat += ,$d; $ossz += $d.Length }
+$base = 0x10000 - $ossz
+$buf = New-Object byte[] $ossz
+$cimek = @{}
+$a = $base
 for ($i = 0; $i -lt $list.Count; $i++) {
-  $d = [IO.File]::ReadAllBytes((Join-Path $root $list[$i][0]))
-  $a = $list[$i][1]
-  $next = if ($i + 1 -lt $list.Count) { $list[$i+1][1] } else { $end }
-  if ($a + $d.Length -gt $next) { "HIBA: {0} ({1} bajt) atfed a kovetkezovel (`${2:X4})" -f $list[$i][0], $d.Length, $next; $hiba = 1 }
-  [Array]::Copy($d, 0, $buf, $a - $base, $d.Length)
-  "  `${0:X4}  {1,5}  {2}" -f $a, $d.Length, $list[$i][0]
+  [Array]::Copy($adat[$i], 0, $buf, $a - $base, $adat[$i].Length)
+  $cimek[$list[$i][1]] = $a
+  "  `${0:X4}  {1,5}  {2}" -f $a, $adat[$i].Length, $list[$i][0]
+  $a += $adat[$i].Length
 }
-if ($hiba -eq 1) { exit 1 }
+"SPRITES.BIN: {0} bajt (`${1:X4}..`$FFFF) -> Spr_Cim = `${1:X4}, Spr_Hossz = {0}" -f $ossz, $base
+if ($NemIr) { exit 0 }
 [IO.File]::WriteAllBytes((Join-Path $root "SPRITES.BIN"), $buf)
-"SPRITES.BIN: {0} bajt (`$C000..`${1:X4}) -> Spr_Hossz = {0}" -f $buf.Length, ($end - 1)
+# a .ras cimeinek atirasa
+$enc = New-Object Text.UTF8Encoding($false)
+$ras = Join-Path $root "WaterPumpGame.ras"
+$R = [IO.File]::ReadAllText($ras, $enc)
+foreach ($n in $cimek.Keys) {
+  $minta = "(?m)^(\s*$n\s*:\s*array\[1\] of byte at )\`$[0-9A-Fa-f]{4}"
+  if (-not [regex]::IsMatch($R, $minta)) { "HIBA: a .ras-ban nincs '$n : array[1] of byte at `$....' sor, a .ras NEM valtozott"; exit 1 }
+  $R = [regex]::Replace($R, $minta, ('${1}$' + ('{0:X4}' -f $cimek[$n])))
+}
+foreach ($p in @(@('Spr_Cim', ('${{1}}${0:X4}' -f $base)), @('Spr_Hossz', ('${{1}}{0}' -f $ossz)))) {
+  $minta = "(?m)^(\s*$($p[0])\s*:\s*integer\s*=\s*)[\`$0-9A-Fa-f]+"
+  if (-not [regex]::IsMatch($R, $minta)) { "HIBA: a .ras-ban nincs '$($p[0]) : integer = ...' sor, a .ras NEM valtozott"; exit 1 }
+  $R = [regex]::Replace($R, $minta, $p[1])
+}
+[IO.File]::WriteAllText($ras, $R, $enc)
+".ras: {0} sprite-cim + Spr_Cim + Spr_Hossz atirva. Kovetkezo lepes: palyak_bin.ps1" -f $cimek.Count

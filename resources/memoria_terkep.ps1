@@ -24,8 +24,7 @@ $Fix = @(
   @{ e = 0xBC00; v = 0xBFFF; n = 'Videó-RAM: a kép alatt'; t = 'vid'; l = 'vid'; o = 'Videó-RAM (a kép)' },
   @{ e = 0x8000; v = 0x9FFF; n = 'U2 RAM - átmeneti puffer (betöltéskor, a PÁLYÁK mentésekor)'; t = 'sz'; l = 'u2'; o = 'U2 RAM - puffer' },
   @{ e = 0xA000; v = 0xB833; n = 'MENU16.BIN (a 16 színű főmenü, U2)'; t = 'a'; l = 'u2'; o = 'MENU16.BIN' },
-  @{ e = 0xB834; v = 0xBFFF; n = 'U2 RAM - szabad'; t = 'sz'; l = 'u2'; o = 'U2 RAM - nem használt' },
-  @{ e = 0xFA00; v = 0xFDFF; n = 'SZOVEG.BIN (a játékszabály szövegei)'; t = 'a'; o = 'SZOVEG.BIN' }
+  @{ e = 0xB834; v = 0xBFFF; n = 'U2 RAM - szabad'; t = 'sz'; l = 'u2'; o = 'U2 RAM - nem használt' }
 )
 
 function Uj([int]$e, [int]$v, $n, $t, [int]$h = -1, $o = $null, $l = $null) {
@@ -54,7 +53,10 @@ foreach ($s in Get-Content $symFajl) {
 }
 if (-not $blokkVeg.ContainsKey($kodKezd)) { "HIBA: a $Nev.sym-ben nincs EndBlock19ef"; exit 1 }
 $kodVeg = $blokkVeg[$kodKezd]
-$reszek += Uj $kodKezd ($kodVeg - 1) "Kód ($Nev + GE + unit)" 'k' -1 'Kód'
+# U3-kód (2026-10-26): ha van U3_Also_Vege cimke, a kod ket darab: $19EF..U3_Also_Vege-1 es $C000..EndBlock-1
+$alsoVeg = if ($symCim.ContainsKey('U3_Also_Vege')) { $symCim['U3_Also_Vege'] } else { $kodVeg }
+$reszek += Uj $kodKezd ($alsoVeg - 1) "Kód ($Nev + GE + unit)" 'k' -1 'Kód'
+if ($alsoVeg -lt $kodVeg) { $reszek += Uj 0xC000 ($kodVeg - 1) "Kód az U3-ban (a forrás vége + főprogram)" 'k' -1 'Kód' }
 
 # --- az .asm: valtozok (equ), rekeszek (org + incbin), a GE tukrozo tablaja ---
 $valtozok = @()
@@ -106,7 +108,7 @@ foreach ($s in $rasSorok) {
     if (Test-Path $fp) { $m = (Get-Item $fp).Length }
     $cimke = (Split-Path $Matches[1] -Leaf) + " (SPRITES.BIN)"; $o = 'SPRITES.BIN (hangok, sprite-ok, betűk)'
   }
-  elseif ($vc -ge 0xEF00) { $cimke = "$vn (PALYAK.BIN)"; $o = 'PALYAK.BIN (pályaadatok)' }
+  elseif ($vn -match '^(Terkepek|Palya)') { $cimke = "$vn (PALYAK.BIN)"; $o = 'PALYAK.BIN (pályaadatok)' }
   $sajat[$vn] = 1
   $reszek += Uj $vc ($vc + $m - 1) $cimke $(if ($vc -ge 0xC000) { 'a' } else { 'r' }) -1 $o
 }
@@ -199,6 +201,7 @@ for ($i = 0; $i -lt $bent.Count; $i++) {
   while ($j -lt $bent.Count -and $bent[$j].C -eq $bent[$i].C) { $j++ }
   if ($j -gt $i + 1) { continue }   # azonos cimen tobb cimke: a sorban utolso viszi a byte-okat
   $kov = if ($j -lt $bent.Count) { $bent[$j].C } else { $kodVeg }
+  if ($bent[$i].C -lt $alsoVeg -and $kov -gt $alsoVeg) { $kov = $alsoVeg }   # a lenti resz vege (a hezag nem kod)
   $g = Gazda $bent[$i]
   $darabok += @{ u = $g[0]; n = $g[1]; c = $bent[$i].C; h = $kov - $bent[$i].C; f = $bent[$i].F; cn = $bent[$i].N }
 }
@@ -252,5 +255,6 @@ foreach ($r in ($ki | Where-Object { $_.t -ne 'sz' -or $_.e -lt 0x8000 -or $_.e 
 $kodElemek | Group-Object { $_.u } | ForEach-Object { '  {0,-5} {1,6} byte  ({2} elem)' -f $_.Name, ($_.Group | ForEach-Object { $_.k + $_.a } | Measure-Object -Sum).Sum, $_.Count }
 "  a 10 legnagyobb:"
 $kodElemek | Sort-Object { -($_.k + $_.a) } | Select-Object -First 10 | ForEach-Object { '  {0,6}  {1,-5} {2}' -f ($_.k + $_.a), $_.u, $_.n }
-"kod vege: `${0:X4} | hibas resz: $bajDb | kesz: tools\memoria_adat.js" -f $kodVeg
+if ($alsoVeg -lt $kodVeg) { "kod vege: lent `${0:X4} (szabad {1} a `$8000-ig) | U3 `${2:X4} (szabad {3} a `$D800-ig) | hibas resz: $bajDb | kesz: tools\memoria_adat.js" -f $alsoVeg, (0x8000 - $alsoVeg), $kodVeg, (0xD800 - $kodVeg) }
+else { "kod vege: `${0:X4} | hibas resz: $bajDb | kesz: tools\memoria_adat.js" -f $kodVeg }
 if ($bajDb) { exit 1 }

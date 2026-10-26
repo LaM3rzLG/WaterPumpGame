@@ -6,23 +6,23 @@ program WaterPumpGame;
 
 var
 		/* Sprite-képek (bináris grafikai adatok) */
-		/* A sprite- és hangadatok az U3-ban ($C000..$DCxx), 256 byte-os rekeszekben (a meteor 512): a játék MEM_48K_VID lapozással fut (ProgramInit) */
-		Pumpa_Data						:	array[1] of byte at $D100;	/* SPRITES.BIN: tvc_sprites\Pumpa.bin */
-		Talaj1_Data						:	array[1] of byte at $D200;	/* SPRITES.BIN: tvc_sprites\talaj1.bin */
-		Talaj2_Data						:	array[1] of byte at $D300;	/* SPRITES.BIN: tvc_sprites\talaj2.bin */
-		Talaj3_Data						:	array[1] of byte at $D400;	/* SPRITES.BIN: tvc_sprites\talaj3.bin */
-		Keret_Data						:	array[1] of byte at $D500;	/* SPRITES.BIN: tvc_sprites\keret.bin */
-		Keret2_Data						:	array[1] of byte at $D600;	/* SPRITES.BIN: tvc_sprites\keret2.bin */
-		Enemy_Data						:	array[1] of byte at $D700;	/* SPRITES.BIN: tvc_sprites\enemy.bin */
-		Fal_Data						:	array[1] of byte at $D800;	/* SPRITES.BIN: tvc_sprites\fal.bin */
-		Meteor_Data						:	array[1] of byte at $D900;	/* SPRITES.BIN: tvc_sprites\meteor.bin */
-		Bomba_Data						:	array[1] of byte at $DB00;	/* SPRITES.BIN: tvc_sprites\bomba.bin */
-ExplosionSFX				:	array[1] of byte at $C000;	/* SPRITES.BIN: sfx\explosion.bin */
-TickSFX						:	array[1] of byte at $D000;	/* SPRITES.BIN: sfx\tick.bin */
-BombaIkon_Data				:	array[1] of byte at $DC00;	/* SPRITES.BIN: tvc_sprites\bombaikon.bin */
-		Akna_Data						:	array[1] of byte at $DD00;	/* SPRITES.BIN: tvc_sprites\akna.bin */
-	AknaSFX							:	array[1] of byte at $CB00;	/* SPRITES.BIN: sfx\akna.bin */
-	Pumpa2_Data						:	array[1] of byte at $E000;	/* SPRITES.BIN: tvc_sprites\Pumpa2.bin */
+		/* U3 felülről lefelé, hézag nélkül: SPRITES.BIN (Spr_Cim..$FFFF, make_sprites_bin.ps1), alatta PALYAK.BIN (palyak_bin.ps1), alatta Pause_Buf ($D800-$DFFF); $C000-$D7FF szabad. A játék MEM_48K_VID lapozással fut */
+		Pumpa_Data						:	array[1] of byte at $F6F0;	/* SPRITES.BIN: tvc_sprites\Pumpa.bin */
+		Talaj1_Data						:	array[1] of byte at $F773;	/* SPRITES.BIN: tvc_sprites\talaj1.bin */
+		Talaj2_Data						:	array[1] of byte at $F786;	/* SPRITES.BIN: tvc_sprites\talaj2.bin */
+		Talaj3_Data						:	array[1] of byte at $F799;	/* SPRITES.BIN: tvc_sprites\talaj3.bin */
+		Keret_Data						:	array[1] of byte at $F7AC;	/* SPRITES.BIN: tvc_sprites\keret.bin */
+		Keret2_Data						:	array[1] of byte at $F80F;	/* SPRITES.BIN: tvc_sprites\keret2.bin */
+		Enemy_Data						:	array[1] of byte at $F872;	/* SPRITES.BIN: tvc_sprites\enemy.bin */
+		Fal_Data						:	array[1] of byte at $F8C5;	/* SPRITES.BIN: tvc_sprites\fal.bin */
+		Meteor_Data						:	array[1] of byte at $F8D8;	/* SPRITES.BIN: tvc_sprites\meteor.bin */
+		Bomba_Data						:	array[1] of byte at $FA5B;	/* SPRITES.BIN: tvc_sprites\bomba.bin */
+ExplosionSFX				:	array[1] of byte at $E761;	/* SPRITES.BIN: sfx\explosion.bin */
+TickSFX						:	array[1] of byte at $F69F;	/* SPRITES.BIN: sfx\tick.bin */
+BombaIkon_Data				:	array[1] of byte at $FAFE;	/* SPRITES.BIN: tvc_sprites\bombaikon.bin */
+		Akna_Data						:	array[1] of byte at $FB11;	/* SPRITES.BIN: tvc_sprites\akna.bin */
+	AknaSFX							:	array[1] of byte at $F252;	/* SPRITES.BIN: sfx\akna.bin */
+	Pumpa2_Data						:	array[1] of byte at $FC14;	/* SPRITES.BIN: tvc_sprites\Pumpa2.bin */
 		/* A sprite-objektumok: Pumpa (animált szivattyú), Talaj1 (üres talaj mező), Keret */
 		Pumpa							:	GE::Sprite;
 		Talaj1						 	:	GE::Sprite;
@@ -40,7 +40,7 @@ BombaIkon_Data				:	array[1] of byte at $DC00;	/* SPRITES.BIN: tvc_sprites\bomba
 		Exit_Barmi						:	byte = 0;	/* Exit_Kerdes: van-e bármi lenyomva (a billentyűzetmátrix sorainak VAGY-a; asm-ből írt -> var) */
 		Pause_Pos						:	integer = 0;	/* PAUSE: a felirat helyének képernyőcíme (asm-ből használt -> var) */
 		Pause_W, Pause_H, Pause_Irany	:	byte = 0;		/* PAUSE: szélesség (byte), magasság (sor), 0 = mentés / 1 = vissza */
-		Pause_Buf						:	array[2048] of byte at $E700;	/* a felirat alatti képterület mentése (PAUSE, EXIT kérdés; max 2048 byte) - az U3-ban, a font után (a játék végig MEM_48K_VID) */
+		Pause_Buf						:	array[2048] of byte at $D800;	/* a felirat alatti képterület mentése (PAUSE, EXIT kérdés; játékszabály-oldal; max 2048 byte) - az U3-ban, a pályaadatok alatt */
 		Szin_Pos						:	integer = 0;	/* Szinez: a téglalap képernyőcíme (asm-ből használt -> var) */
 		Szin_W, Szin_H					:	byte = 0;		/* Szinez: szélesség (byte), magasság (sor) */
 		Szin_Mod						:	byte = 0;		/* Szinez: 0 = csak a betű 3-asra, 1 = a háttér is feketére (0 -> 1) */
@@ -84,9 +84,12 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 		const METEOR_FAZ_DB				:	byte = 4;
 		const METEOR_FAZIS_MERET		:	byte = 96;	/* maszkolt fázis: 3 byte x 16 sor x 2 (maszk+adat) */
 
-		Font_Data						:	array[1] of byte at $E100;	/* SPRITES.BIN: tvc_sprites\font.bin */
+		Font_Data						:	array[1] of byte at $FC97;	/* SPRITES.BIN: tvc_sprites\font.bin */
 		Spr_Nev							:	array[13] of byte = (11,115,112,114,105,116,101,115,46,98,105,110,0);	/* 11, sprites.bin, 0 */
-		Spr_Hossz						:	integer = 9321;	/* a SPRITES.BIN hossza (make_sprites_bin.ps1 kiirja) */
+		Spr_Hossz						:	integer = 6303;	/* a SPRITES.BIN hossza (make_sprites_bin.ps1 kiirja) */
+		Spr_Cim							:	integer = $E761;	/* a SPRITES.BIN helye az U3-ban (make_sprites_bin.ps1 írja; a vége mindig $FFFF) */
+		U3_Nev							:	array[11] of byte = (9,117,51,107,111,100,46,98,105,110,0);	/* 9, u3kod.bin, 0 */
+		U3_Hossz						:	integer = 0;	/* az U3KOD.BIN hossza: az u3_boot_patch.ps1 írja be a lefordított programba */
 		Spr_Buf							:	pointer;
 		Pal_Nev							:	array[12] of byte = (10,112,97,108,121,97,107,46,98,105,110,0);	/* 10, palyak.bin, 0 */
 		Fajl_Nev						:	pointer;
@@ -125,46 +128,46 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 		/* A játéktér 30x18 mezős rácsa */
 		const TERKEP_MERET				:	integer = 18*30;	/* a Map[] mérete (540) */
 		Map								:	array	[TERKEP_MERET] of byte at $0BF0;	/* 3056..3595: a GE szerint szabad (nincs fájlművelet) -> nem foglal helyet a programban */
-		/* PALYAK (generalt, resources\palyak_bin.ps1 - kezzel NE szerkeszd): az adatok a PALYAK.BIN-ben, az U3-ban $EF00-tol; forras: resources\palyak\palyak_adat.txt */
+		/* PALYAK (generalt, resources\palyak_bin.ps1 - kezzel NE szerkeszd): az adatok a PALYAK.BIN-ben, az U3-ban a sprite-ok alatt, $E0E2-tol; forras: resources\palyak\palyak_adat.txt */
 		const PALYA_DB	:	byte = 11;
 		const INDULO_PALYA	:	byte = 1;
 		const PALYA2_DB	:	byte = 6;
 		Pal_Hossz	:	integer = 1663;
-		Terkepek	:	array[748] of byte at $EF00;
-		Palya_Kod	:	array[55] of byte at $F1EC;
-		Palya_KodCoop	:	array[55] of byte at $F223;
-		Palya_Cel	:	array[11] of integer at $F25A;
-		Palya_CelCoop	:	array[11] of integer at $F270;
-		Palya_PumpaAr	:	array[11] of integer at $F286;
-		Palya_FalAr	:	array[11] of integer at $F29C;
-		Palya_BombaAr	:	array[11] of integer at $F2B2;
-		Palya_Penz	:	array[11] of integer at $F2C8;
-		Palya_Termel	:	array[11] of integer at $F2DE;
-		Palya_Meteor	:	array[11] of byte at $F2F4;
-		Palya_MeteorTor	:	array[11] of byte at $F2FF;
-		Palya_MeteorVir	:	array[11] of byte at $F30A;
-		Palya_Virus	:	array[11] of byte at $F315;
-		Palya_Fal	:	array[11] of byte at $F320;
-		Palya_AknaAr	:	array[11] of integer at $F32B;
-		Palya_Akna	:	array[11] of byte at $F341;
-		Palya_Bomba	:	array[11] of byte at $F34C;
-		Terkepek2	:	array[408] of byte at $F357;
-		Palya2_Cel	:	array[6] of integer at $F4EF;
-		Palya2_PumpaAr	:	array[6] of integer at $F4FB;
-		Palya2_FalAr	:	array[6] of integer at $F507;
-		Palya2_BombaAr	:	array[6] of integer at $F513;
-		Palya2_Penz	:	array[6] of integer at $F51F;
-		Palya2_Termel	:	array[6] of integer at $F52B;
-		Palya2_Meteor	:	array[6] of byte at $F537;
-		Palya2_MeteorTor	:	array[6] of byte at $F53D;
-		Palya2_MeteorVir	:	array[6] of byte at $F543;
-		Palya2_Virus	:	array[6] of byte at $F549;
-		Palya2_Fal	:	array[6] of byte at $F54F;
-		Palya2_AknaAr	:	array[6] of integer at $F555;
-		Palya2_Akna	:	array[6] of byte at $F561;
-		Palya2_VirusAr	:	array[6] of integer at $F567;
-		Palya2_VirusLe	:	array[6] of byte at $F573;
-		Palya2_Bomba	:	array[6] of byte at $F579;
+		Terkepek	:	array[748] of byte at $E0E2;
+		Palya_Kod	:	array[55] of byte at $E3CE;
+		Palya_KodCoop	:	array[55] of byte at $E405;
+		Palya_Cel	:	array[11] of integer at $E43C;
+		Palya_CelCoop	:	array[11] of integer at $E452;
+		Palya_PumpaAr	:	array[11] of integer at $E468;
+		Palya_FalAr	:	array[11] of integer at $E47E;
+		Palya_BombaAr	:	array[11] of integer at $E494;
+		Palya_Penz	:	array[11] of integer at $E4AA;
+		Palya_Termel	:	array[11] of integer at $E4C0;
+		Palya_Meteor	:	array[11] of byte at $E4D6;
+		Palya_MeteorTor	:	array[11] of byte at $E4E1;
+		Palya_MeteorVir	:	array[11] of byte at $E4EC;
+		Palya_Virus	:	array[11] of byte at $E4F7;
+		Palya_Fal	:	array[11] of byte at $E502;
+		Palya_AknaAr	:	array[11] of integer at $E50D;
+		Palya_Akna	:	array[11] of byte at $E523;
+		Palya_Bomba	:	array[11] of byte at $E52E;
+		Terkepek2	:	array[408] of byte at $E539;
+		Palya2_Cel	:	array[6] of integer at $E6D1;
+		Palya2_PumpaAr	:	array[6] of integer at $E6DD;
+		Palya2_FalAr	:	array[6] of integer at $E6E9;
+		Palya2_BombaAr	:	array[6] of integer at $E6F5;
+		Palya2_Penz	:	array[6] of integer at $E701;
+		Palya2_Termel	:	array[6] of integer at $E70D;
+		Palya2_Meteor	:	array[6] of byte at $E719;
+		Palya2_MeteorTor	:	array[6] of byte at $E71F;
+		Palya2_MeteorVir	:	array[6] of byte at $E725;
+		Palya2_Virus	:	array[6] of byte at $E72B;
+		Palya2_Fal	:	array[6] of byte at $E731;
+		Palya2_AknaAr	:	array[6] of integer at $E737;
+		Palya2_Akna	:	array[6] of byte at $E743;
+		Palya2_VirusAr	:	array[6] of integer at $E749;
+		Palya2_VirusLe	:	array[6] of byte at $E755;
+		Palya2_Bomba	:	array[6] of byte at $E75B;
 		Palya						:	byte = 0;				/* az aktuális pálya sorszáma (0-tól) */
 		Cel_Akt					:	integer = 250;			/* az aktuális pálya célja: ennyi pumpa kell */
 		Meteor_Engedve			:	byte = 1;				/* az aktuális pályán lesz-e meteor */
@@ -194,6 +197,20 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 		/* Bomba border-sáv (raszter-időzítés, Bomba_Sav eljárás) */
 		Bomba_SavMagas					:	byte = 28;		/* a sáv magassága (~2 cm) */
 		Bomba_SavY						:	byte = 0;
+		/* Játékszabály: a fekete (1-es) palettán lefelé futó 24 soros színátmenetes raszter-sáv, megszakításból (Szab_IT_Be / Szab_IT_Ki) */
+		Szab_SavSzin					:	array[24] of byte = (0,0,1,1,5,5,4,4,5,5,68,68,68,68,5,5,4,4,5,5,1,1,0,0);
+		Szab_SavP						:	^byte;			/* a tábla eleje */
+		Szab_SavAkt						:	^byte;			/* az első kiírandó szín (fent becsúszáskor beljebb) */
+		Szab_SavY						:	byte = 0;		/* a sáv teteje (0..239) */
+		Szab_SavOff						:	byte = 23;		/* fent becsúszás: ennyi sor van még a képernyő fölött */
+		Szab_SavDb						:	byte = 1;		/* a kiírandó sorok száma */
+		Szab_SavLep						:	byte = 1;		/* 1 = a sáv képkockánként 1 sort lép lefelé, 0 = áll (főmenü: a pumpa sora) */
+		Szab_SavPort					:	byte = $61;		/* a kiírás portja: $61 = 1-es paletta, $00 = keret */
+		Szab_SavVeg						:	byte = 0;		/* a sáv után visszaírt szín */
+		Szab_SavFr						:	byte = 0;		/* álló sávnál (főmenü) képkocka-számláló: 4-enként a színek 1 sort lépnek kifelé */
+		Szab_SavCel						:	byte = 80;		/* főmenü: a keret-sáv célsora (Menu_Pumpa), a Szab_SavY gumiszerűen közelít hozzá */
+		/* Főmenü: keret-sáv a pumpa-mutató sorában (keret-kódolás: bit1 kék, bit3 piros, bit5 zöld, bit7 fényes) */
+		Menu_SavSzin					:	array[12] of byte = (0,0,32,160,168,170,170,168,160,32,0,0);
 		Pumpa_termel					:	integer = 2;
 		Pumpa_db						:	integer = 0;
 		Pumpa_db2						:	integer = 0;	/* a 2. játékos pumpáinak száma (versus; MÉG NINCS kiírva) */
@@ -574,17 +591,21 @@ Procedure Fajl_Betolt();
 		");
 	end;
 
-/* A jatek adatfajljainak betoltese: SPRITES.BIN ($C000) es PALYAK.BIN ($EF00) */
+/* A jatek adatfajljainak betoltese: SPRITES.BIN (Spr_Cim) es PALYAK.BIN (Terkepek) */
 Procedure Spr_Betolt();
 	begin
 		GE::SetBorder(GE::BORDER_YELLOW);
+		Fajl_Nev:=#U3_Nev;			/* a kód U3-as része (u3_boot_patch.ps1 vágja ki; a hosszát is ő írja be) */
+		Fajl_Hossz:=U3_Hossz;
+		Fajl_Cel:=$C000;
+		Fajl_Betolt();
 		Fajl_Nev:=#Spr_Nev;
 		Fajl_Hossz:=Spr_Hossz;
-		Fajl_Cel:=$C000;
+		Fajl_Cel:=Spr_Cim;
 		Fajl_Betolt();
 		Fajl_Nev:=#Pal_Nev;
 		Fajl_Hossz:=Pal_Hossz;
-		Fajl_Cel:=$EF00;
+		Fajl_Cel:=#Terkepek;
 		Fajl_Betolt();
 		Spr_Buf:=$9000;				/* a jatekszabaly az U2-ben marad (a $8000-at a palyamentes hasznalja) */
 		Fajl_Nev:=#Szab_Nev;
@@ -1561,7 +1582,7 @@ Procedure Keret_MoveDown();
 /* Rövid "tick" digi hang a pumpa lerakásakor (ha épp nem szól a bomba hangja); a hang végét a Frame_Sync állítja le */
 Procedure Tick_Hang();
 	begin;
-		if (Digi_Aktiv=7) then
+		if (Digi_Aktiv=0) then
 			begin;
 			GE::DigiSoundOn(GE::DIGI_FREQ_4_KHZ, GE::DIGI_TYPE_2x4BIT);
 			GE::PlayDigiSound(#TickSFX);
@@ -2478,6 +2499,168 @@ Procedure Szov_Kiir();
 			end;
 	end;
 
+/* Játékszabály raszter-sáv MEGSZAKÍTÁSBÓL: a $38-as JP a Szab_IT-re mutat. A raszter-IT a sáv tetején (Szab_SavY. sor)
+   jön, a rutin soronként (200 T) a Szab_SavSzin színeit írja az 1-es (fekete) palettába, majd 1 sorral lejjebb lép
+   (alul kimegy, fent becsúszik) és beállítja a következő IT-sort. A főprogram (szövegkiírás) közben fut tovább. */
+Procedure IT_Telepit();
+	begin
+		asm("
+			di
+			ld a,[Szab_SavPort]
+			ld (SzIT_Out+1),a
+			call SzIT_Poz
+			ld hl,Szab_IT
+			ld ($39),hl
+			ei
+			jp SzIT_Vege
+Szab_IT:
+			push af
+			push bc
+			push de
+			push hl
+			out ($7),a
+			ld hl,[Szab_SavAkt]
+			ld a,[Szab_SavDb]
+			ld c,a
+			ld b,8
+SzIT_Fin:
+			djnz SzIT_Fin
+SzIT_Sor:
+			ld a,(hl)
+SzIT_Out:
+			out ($61),a
+			inc hl
+			ld b,12
+SzIT_In:
+			djnz SzIT_In
+			nop
+			dec c
+			jp nz,SzIT_Sor
+			ld a,[Szab_SavPort]
+			ld c,a
+			ld a,[Szab_SavVeg]
+			out (c),a
+			ld a,[Szab_SavLep]
+			or a
+			jr nz,SzIT_Lep
+			ld hl,Szab_SavY
+			ld a,[Szab_SavCel]
+			sub (hl)
+			jr z,SzIT_Ott
+			sra a
+			sra a
+			jp m,SzIT_Neg
+			inc a
+SzIT_Neg:
+			add a,(hl)
+			ld (hl),a
+SzIT_Ott:
+			ld hl,Szab_SavFr
+			inc (hl)
+			ld a,(hl)
+			and 3
+			jr nz,SzIT_Ugr
+			ld hl,[Szab_SavAkt]
+			ld a,(hl)
+			ld d,h
+			ld e,l
+			inc hl
+			ld bc,5
+			ldir
+			ld (de),a
+			ld hl,[Szab_SavAkt]
+			ld bc,11
+			add hl,bc
+			ld a,(hl)
+			ld d,h
+			ld e,l
+			dec hl
+			ld bc,5
+			lddr
+			ld (de),a
+			jr SzIT_Ugr
+SzIT_Lep:
+			ld a,[Szab_SavOff]
+			or a
+			jr z,SzIT_Le
+			dec a
+			ld [Szab_SavOff],a
+			jr SzIT_Ugr
+SzIT_Le:
+			ld a,[Szab_SavY]
+			inc a
+			cp 240
+			jr c,SzIT_Y
+			ld a,23
+			ld [Szab_SavOff],a
+			xor a
+SzIT_Y:
+			ld [Szab_SavY],a
+SzIT_Ugr:
+			call SzIT_Poz
+			pop hl
+			pop de
+			pop bc
+			pop af
+			ei
+			ret
+SzIT_Poz:
+			ld a,[Szab_SavOff]
+			ld e,a
+			ld d,0
+			ld hl,[Szab_SavP]
+			add hl,de
+			ld [Szab_SavAkt],hl
+			ld a,24
+			sub e
+			ld [Szab_SavDb],a
+			ld a,[Szab_SavY]
+			ld [GE_LineNr],a
+			jp GE_SetRasterInterruptPos
+SzIT_Vege:
+		");
+	end;
+
+/* Játékszabály: a fekete paletta fut végig lefelé */
+Procedure Szab_IT_Be();
+	begin
+		Szab_SavP:=#Szab_SavSzin;
+		Szab_SavY:=0;
+		Szab_SavOff:=23;
+		Szab_SavLep:=1;
+		Szab_SavPort:=$61;
+		Szab_SavVeg:=0;
+		IT_Telepit();
+	end;
+
+/* Főmenü: álló keret-sáv a pumpa-mutató sorában (a Szab_SavY-t a Menu_Pumpa állítja) */
+Procedure Menu_IT_Be();
+	begin
+		Szab_SavP:=#Menu_SavSzin-12;		/* 12 soros: Off=12 -> Akt = a tábla, Db = 12 */
+		Szab_SavOff:=12;
+		Szab_SavLep:=0;
+		Szab_SavPort:=0;
+		Szab_SavVeg:=42;					/* szürke keret */
+		Szab_SavY:=Szab_SavCel;			/* a sáv a célsorról indul (messziről az előjeles lépés átfordulna) */
+		IT_Telepit();
+	end;
+
+/* A sáv le: a $38 vissza a GE kezelőjére, raszter-IT a 239. sorra, fekete paletta, szürke keret */
+Procedure Szab_IT_Ki();
+	begin
+		asm("
+			di
+			ld hl,GE_IT_HANLDER
+			ld ($39),hl
+			ld a,42
+			out ($0),a
+			xor a
+			out ($61),a
+			ei
+		");
+		GE::SetRasterInterruptPos(239);
+	end;
+
 /* Tűz/SPACE új lenyomására vár (előbb az elengedésre, hogy a nyomva tartott gomb ne lapozzon tovább) */
 Procedure Tuz_Var();
 	begin;
@@ -2504,36 +2687,38 @@ Procedure Szabaly_Kepernyo();
 	var c : byte;
 	begin;
 		Szab_Src:=$9000;
+		Digi_Le();
+		Szab_IT_Be();						/* a színes raszter-sáv a megszakításból fut, amíg ki nem lépünk */
 		c:=0;
 		while (c<>255) do
 			begin;
 			asm("
-				di
 				ld a,$B0
 				out ($2),a
 				ld hl,[Szab_Src]
-				ld de,$E700
+				ld de,Pause_Buf
 				ld bc,2048
 				ldir
 				ld a,$90
 				out ($2),a
-				ei
-			");
-			Szov_P:=$E700;
+			");								/* di nélkül: a sáv-megszakítás nem nyúl a $8000-$BFFF-hez */
+			Szov_P:=#Pause_Buf;
 			GE::ClearScreen(0);
 			Szov_Kiir();
 			c:=Szov_P[0];
 			Szov_P:=Szov_P+1;
 			asm("
 				ld hl,[Szov_P]
-				ld de,$1900
-				add hl,de
+				ld de,Pause_Buf
+				or a
+				sbc hl,de
 				ld de,[Szab_Src]
 				add hl,de
 				ld [Szab_Src],hl
 			");
 			Tuz_Var();
 			end;
+		Szab_IT_Ki();
 	end;
 
 /* U2-beli kep (Kep_Src, Kep_W bajt x Kep_H sor) kirakasa a kepernyo (x,y) helyere; soronkent egy pufferen at ($13A0): U2 es VID egyszerre nem latszik */
@@ -2581,6 +2766,7 @@ KepR_sor:
 /* Vissza 4 szinu modba (a jatek, a szintvalaszto, a jatekszabaly, a palyakod kepernyoje elott) */
 Procedure Mod4();
 	begin;
+		Szab_IT_Ki();						/* a főmenü keret-sávja le */
 		Menu16:=0;
 		GE::SetGraphMode(GE::GRAPHICS4);
 		Normal_Szinek();
@@ -2601,6 +2787,7 @@ Procedure Fomenu_Rajz();
 		Kep_H:=92;
 		Kep_Rajz(10, 81);
 		Menu16:=1;
+		Menu_IT_Be();						/* zöld keret-sáv a pumpa-mutató sorában */
 	end;
 
 /* A 16 szinu pumpa-mutato (faz 0..7) a sor (0..4) menupont ele */
@@ -2616,6 +2803,7 @@ Procedure Menu_Pumpa(sor, faz : byte);
 		Kep_H:=10;
 		y:=sor*20;
 		y:=y+81;
+		Szab_SavCel:=y-1;						/* a keret-sáv ide kúszik (a megszakítás: a távolság negyedével lép) */
 		Kep_Rajz(6, y);
 	end;
 
@@ -3036,7 +3224,7 @@ Procedure Ed_Jelol(m : byte);
 		Szin_Mod:=0;
 	end;
 
-/* A PALYAK.BIN mentese lemezre: U3 ($EF00) -> $8000 (U2), alap lapozas ($70) + a TVC megszakitas-kezelo a ROM fajlhivasok idejere */
+/* A PALYAK.BIN mentese lemezre: U3 (Terkepek) -> $8000 (U2), alap lapozas ($70) + a TVC megszakitas-kezelo a ROM fajlhivasok idejere */
 Procedure Pal_Elo();
 	begin;
 		Digi_Le();
@@ -3045,7 +3233,7 @@ Procedure Pal_Elo();
 			di
 			ld a,$B0
 			out ($2),a
-			ld hl,$EF00
+			ld hl,Terkepek
 			ld de,$8000
 			ld bc,[Pal_Hossz]
 			ldir
@@ -3341,6 +3529,23 @@ Procedure Start_Kepernyo();
 	end;
 
 /* METEOR - NEM BLOKKOLÓ. A főciklusból random időnként elindul egy zuhanás (Meteor_Indit), és amíg tart, a */
+/* ===== U3-HATÁR: innen a forrás végéig (a főprogrammal együtt) minden eljárás az U3-ba fordul ($C000-tól, max $D7FF).
+   Ide csak olyan eljárás kerülhet, ami a GE::MEM_48K_VID lapozás alatt fut (NEM hív ROM-ot, nem hívja a ProgramInit).
+   Az U3_Boot az indítórutin: a resources\u3_boot_patch.ps1 fordítás után a $1A03-as "jp block1"-et "jp U3_Boot"-ra írja,
+   így a ProgramInit (fájlbetöltés, U3 be) még lentről fut, utána ugrik a főprogramra (a "call ProgramInit" utánra).
+   EMULÁTORRA: a .cas egy blokk $19EF-től a kód végéig (a $8000-$BFFF nullákkal töltve); valós géphez loader kell. */
+Procedure U3_Hatar();
+	begin
+		asm("
+			ret
+U3_Boot:
+			call ProgramInit
+			jp block1+3
+U3_Also_Vege:
+			org $C000
+		");
+	end;
+
 /* A TELJES fal-réteg újrarajzolása a Map-ból (minden FalMap mező) */
 Procedure Fal_Mind_Kirak();
 	var gx, gy : byte;
@@ -3841,6 +4046,7 @@ Procedure Palya_Kovetkezo();
 begin
 	/* Egyszeri indítási beállítások */
 	ProgramInit;
+	U3_Hatar();			/* csak a határ-eljárás megtartásához (azonnal visszatér); az indítás: U3_Boot */
 
   while (true) do		/* külső ciklus: főmenü -> játék -> (GAME OVER) -> főmenü */
   begin
