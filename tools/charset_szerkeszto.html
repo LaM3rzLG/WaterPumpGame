@@ -15,8 +15,7 @@
   button { background:#343b44; color:var(--text); border:1px solid #4a525d; border-radius:4px; padding:5px 10px; font:inherit; cursor:pointer; }
   button:hover { background:#3f4752; }
   button.acc { background:#5a4418; border-color:#8a6a28; }
-  button.on { background:#2f5a2f; border-color:#4a8a4a; }
-  main { display:grid; grid-template-columns: minmax(0,1fr) 360px; gap:14px; padding:14px 16px; }
+  main { display:grid; grid-template-columns: minmax(0,1fr) 560px; gap:14px; padding:14px 16px; }
   .panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; }
   .panel h2 { font-size:14px; margin:0 0 8px; color:var(--dim); font-weight:600; }
   #set { display:flex; flex-wrap:wrap; gap:5px; }
@@ -24,35 +23,33 @@
   .ch.sel { border-color:var(--acc); }
   .ch canvas { image-rendering:pixelated; display:block; }
   .ch span { font:11px ui-monospace, Consolas, monospace; color:var(--dim); }
-  .ch.narrow span { color:#7fd07f; }
+  .ch span b { color:#7fb0e0; font-weight:400; }
   #edWrap { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
   #ed { image-rendering:pixelated; cursor:crosshair; border:1px solid var(--line); touch-action:none; }
-  .tools { display:flex; flex-direction:column; gap:6px; min-width:200px; }
+  .tools { display:flex; flex-direction:column; gap:6px; min-width:220px; }
   .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
-  .sw { width:34px; height:34px; border:2px solid #555; border-radius:4px; cursor:pointer; }
-  .sw.sel { border-color:var(--acc); box-shadow:0 0 0 2px var(--acc); }
   #prev { image-rendering:pixelated; border:1px solid var(--line); max-width:100%; }
   .info { color:var(--dim); font-size:12.5px; }
   .warn { color:#f08070; font-size:12.5px; }
   code { background:#15181c; padding:2px 6px; border-radius:3px; color:#f0d090; }
   #big { font:700 22px ui-monospace, Consolas, monospace; color:var(--acc); min-width:40px; }
+  #wv { font:700 18px ui-monospace, Consolas, monospace; min-width:28px; text-align:center; }
   textarea { width:100%; background:#15181c; color:var(--text); border:1px solid var(--line); border-radius:4px; font:13px ui-monospace, Consolas, monospace; padding:6px; }
-  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <header>
-  <h1>Betűkészlet-szerkesztő (TVC GRAPHICS4, változó szélességű betűk)</h1>
-  <label>Magasság (sor) <input type="number" id="hh" min="3" max="16"></label>
+  <h1>Betűkészlet-szerkesztő (TVC, pixelszélességű betűk)</h1>
+  <label>Magasság (sor) <input type="number" id="hh" min="3" max="15"></label>
   <button id="bSize">Magasság alkalmazása</button>
-  <button id="bAllN">Mind keskeny</button>
-  <button id="bAllW">Mind széles</button>
+  <button id="bAuto">Minden szélesség automatikusan</button>
   <span class="info" id="stat"></span>
 </header>
 <main>
   <div>
     <div class="panel">
-      <h2>A készlet (91 karakter, ASCII 32..122, kisbetűkkel) — kattints egyre; zöld felirat = keskeny (4 px)</h2>
+      <h2>A készlet (109 karakter: ASCII 32..122, utána a magyar ÁÉÍÓÖŐÚÜŰ áéíóöőúüű = kód 123..140) — kattints egyre; a kék szám a szélesség pixelben</h2>
       <div id="set"></div>
     </div>
     <div class="panel" style="margin-top:14px">
@@ -61,10 +58,11 @@
         <canvas id="ed"></canvas>
         <div class="tools">
           <div class="row"><span id="big"></span><span class="info" id="bigInfo"></span></div>
-          <div class="row"><button id="bNar">Keskeny (4 px)</button><button id="bWid">Széles (8 px)</button><span class="info">[N]</span></div>
-          <div class="row" id="pal"></div>
-          <div class="info">Bal gomb: a kiválasztott szín · Jobb gomb: háttér (szürke) · 1–4: szín</div>
-          <div class="row"><button id="bPrev">◀ Előző</button><button id="bNext">Következő ▶</button></div>
+          <div class="row"><span class="info">Szélesség (a betűköz is benne):</span></div>
+          <div class="row"><button id="bWm">−</button><span id="wv"></span><button id="bWp">+</button><button id="bWa">Automatikus</button><span class="info">[ ] billentyű</span></div>
+          <div class="info">A narancs vonal a szélesség: ami tőle jobbra van, nem kerül a játékba. Hagyj egy üres oszlopot a betű jobb oldalán (betűköz).</div>
+          <div class="info">Bal gomb: rajz (fekete) · Jobb gomb: törlés</div>
+          <div class="row"><button id="bPrev">◀ Előző</button><button id="bNext">Következő ▶</button><span class="info">PgUp/PgDn</span></div>
           <div class="row"><button id="bL">←</button><button id="bR">→</button><button id="bU">↑</button><button id="bD">↓</button><span class="info">eltolás</span></div>
           <div class="row"><button id="bFlip">Tükrözés ↔</button><button id="bClr">Törlés</button></div>
           <div class="row"><button id="bCopy">Másolás</button><button id="bPaste">Beillesztés</button><button id="bUndo">Vissza (Ctrl+Z)</button></div>
@@ -74,11 +72,13 @@
   </div>
   <div>
     <div class="panel">
-      <h2>Előnézet (a TVC sor szélessége: 64 byte = 256 px)</h2>
-      <textarea id="txt" rows="5">LEVEL:10   LIVES:
-CASH$:0956   PUMP:048/100
+      <h2>Előnézet — ahogy a játék kirakja (256 px széles sor)</h2>
+      <textarea id="txt" rows="6">LEVEL:10   LIVES:
 P1$:0956 PUMP:048/255 P2$:2132
-1....ONE PLAYER GAME
+EGY JATEKOS
+Pumpa - viznyero pumpa
+Fal - ezzel lehet blokkolni a virust
+ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP árvíztűrő tükörfúrógép
 Press space to continue</textarea>
       <div class="info" id="fit"></div>
       <div class="warn" id="digwarn"></div>
@@ -88,80 +88,95 @@ Press space to continue</textarea>
       <h2>Fájlok</h2>
       <div class="row" style="margin-bottom:8px">
         <button class="acc" id="bSaveBin">Mentés font.bin</button>
-        <button id="bSaveBmp">Mentés .bmp</button>
-      </div>
-      <div class="row" style="margin-bottom:8px">
         <button id="bLoadBin">Betöltés .bin</button>
-        <button id="bLoadBmp">Betöltés .bmp</button>
         <input type="file" id="fBin" accept=".bin" hidden>
-        <input type="file" id="fBmp" accept=".bmp,.png" hidden>
       </div>
-      <div class="row"><button id="bReset">Eredeti készlet visszatöltése</button></div>
-      <p class="info">A <code>font.bin</code> a projektbe: <code>resources\tvc_sprites\font.bin</code> (a játék a <code>Font_Data</code> incbin-nel az U3-ba, $E100-ra tölti; a .ras-ban semmit nem kell átírni). Formátum: 1 byte magasság + 91 byte szélesség (1/2) + kép (182 byte széles, soronként). A .bin betöltés a <code>font.bin</code>-t és a régi 59 karakteres <code>CharSetGR4.bin</code>-t is felismeri. A .bmp (728 px széles, 91 × 8 px) csak a rajzot viszi, a szélességeket nem. A munka automatikusan mentődik a böngészőbe.</p>
+      <div class="row"><button id="bReset">Alap készlet visszatöltése</button></div>
+      <p class="info">A <code>font.bin</code> helye: <code>resources\tvc_sprites\font.bin</code>. Utána: <code>make_sprites_bin.ps1</code> (kiírja az új <code>Spr_Hossz</code>-t - ha változott, a .ras-ban is át kell írni), fordítás, lemez.
+      Formátum: [0] = $80 + magasság, [1..109] = szélesség pixelben (0..8), utána a képek soronként (109 byte/sor, bit7 = bal pixel).
+      A 123..140 kód a magyar betűké (ÁÉÍÓÖŐÚÜŰáéíóöőúüű; a <code>make_szoveg_bin.ps1</code> így kódolja).
+      A betöltés a régi, 91 betűs és a 4 színű <code>font.bin</code>-t is átalakítja (az ékezetes betűk az alapbetű másolatát kapják). A munka automatikusan mentődik a böngészőbe.</p>
     </div>
   </div>
 </main>
 <script>
 (function () {
   'use strict';
-  var N = 91, W = 8;                            // ASCII 32..122, karakterhely 8 px (2 byte)
-  var COLS = ['#c0c0c0', '#000000', '#04ff04', '#0000ff'];
-  var RGB = [[192,192,192],[0,0,0],[4,255,4],[0,0,255]];
-  var KEY = 'waterpump_font_v2';
-  var ORIG = 'BwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAAIAAoABAgCAAwEAgAEAAIACAAAAAAAAAAAAAAAAAQHAAYABwAHAAMADwgHCA8IBwAHAAAAAAAAAAAAAAAHAAcABwAPAAcIDwAPCA8IBwgICA8IDwAJAAgACAgICAcADwAHAA8ABwgPCAgECAgICAgICAgPCAAAAAAAAAAAAAAAAAcADwAHCA8ADwgPCAcICAgPCA8ACQAIAAgICAgHAA8ABwAPAAcIDwgIBAgICAgICAgIDwgAAAgACgAPDAcIDAgFAAQABAAEAAoIAgAAAAAAAAAACAgICgAICAgIBQAIAAgAAAgICAgIAAAAAAIAAAAIAAgICAgICAgICAAICAgACAAIAAgIAgABAAoACAANCAwICAgICAgICAgIAAIACAQICAoIBQAFAAAIAAAAAAAAAAAAAAAACAgICAgACAgIAAgACAAICAIAAQAKAAgADQgMCAgICAgICAgICAACAAgECAgKCAUABQAACAAACAAAAAQICgABAAYACAAIAAIABwACAAAADwgAAAEACAgCAAAIAwAJAA8ADwABAAcACAgIAAAABAAPCAQAAQAKCA8IDwAIAAgIDwAPAAkIDwgCAAEADAAIAAoICggICAgICAgICAcAAgAIBAUACggCAAUAAQAAAAAAAAAAAAAAAAAPCA8ACAAICA8ADwAJCA8IAgABAAwACAAKCAoICAgICAgICAgHAAIACAQFAAoIAgAFAAEAAAAIAAAABAgHAAIACggAAAgAAgAPCA8IAAAAAAAAAgAICAIAAwAACA8IAAgICAIACAgHCAAACAAIAAAAAgACAAsACAgICAgACAgIAAgACAgICAIAAQAKAAgACggJCAgIDwAICA8AAAgCAAgEBQAPCAUAAgACAAAAAAAAAAAAAAAAAAgICAgIAAgICAAIAAgICAgCAAEACgAIAAoICQgICA8ACAgPAAAIAgAIBAUADwgFAAIAAgAAAAAAAAAPDAIIBAwJAAAABAAEAAcAAgAAAAAADAAEAAgIAgAMAAgIAQAACAgIBAAICAAICAAAAAQADwgEAAAACAAICAgICAAICAgACAAICAgIAgABAAkACAAICAkICAgIAAgICQAACAIACAQFAAUACAgCAAwAAAAAAAAAAAAAAAAACAgICAgACAgIAAgACAgICAIAAQAJAAgACAgJCAgICAAICAkAAAgCAAgEBQAFAAgIAgAMAAAACAAAAAQIDwAIDAYIAAACAAgACggCAAgAAAAMAAgABwAPCA8IBwABAA8ABwAEAAcADwAAAAgAAgAAAAgAAgAHAAgIDwAHCA8ADwgIAAcICAgPCA4ACAgPAAgICAgHAAgABwAICA8AAgAHCAIABQAICAIADwgAAAAAAAAAAAAAAAAICA8ABwgPAA8ICAAHCAgIDwgOAAgIDwAICAgIBwAIAAcACAgPAAIABwgCAAUACAgCAA8IAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAA==';                        // a font.bin (7 sor, minden karakter 2 byte széles)
-  var chh = 7, chars = [], wid = [], cur = 33, color = 1, clip = null, undoStack = [];
+  var N = 109, N0 = 91, W = 8;                    // N0 = ASCII 32..122, utána 18 magyar betű (kód 123..140)
+  var HU = 'ÁÉÍÓÖŐÚÜŰáéíóöőúüű';
+  var HU_BASE = [33, 37, 41, 47, 47, 47, 53, 53, 53, 65, 69, 73, 79, 79, 79, 85, 85, 85];   // az alapbetű indexe (A E I O O O U U U a e i o o o u u u)
+  var HU_ACC = 'aaaauda' + 'ud' + 'aaaauda' + 'ud';                                          // a = vessző, u = két pont, d = két vessző
+  var BG = '#c0c0c0', FG = '#000000';
+  var KEY = 'waterpump_font_1bit_v3';
+  var ORIG = 'hwQDBAcHBwYDBAQGBgIGAwcGBgYGBgYGBgYGAgIEBgQGBgYGBgYGBgYGBgUGBQYGBgYHBgYGBwYGBgYGBAQEBAQEBQUFBQUFBQUFBQUFBwUFBQUFBQUFBQcFBQUAQKBIEMQgQCCAAAAAAAAEcGBwcDD4ePhwcAAAAAAAcHBw8Hjw+Ph4iPjwkICIiHDwcPB4+ISIiIiI+AAAAAAAACBgMGBwcHBQcHBQQESQIHAgYDBwUFBEUFBwAECg/DjIUEBAQKggAAAACIigiIhQgIAIiIgAACAAgIiIiIiAiICAgIggEKCA2MiIiIiIgCCEiKhQUAgAAAAAAABQUEBQQECAUCAQUEBs0FBQUFBAIFBQRFBQEABAAEhQEGCAgCBwIAD4ABCIIAgwkPDwEHCIgABA+EAQqPjwgIjw8Jj4IBDAgKioiIiIiHAghFCoIFAQAAAAAAAAcGBAUHBgsHAgEGBAVLBQcFBgICBQUFQgICAAAABIOCCoAIAg+PgAAAAgiCAwCPgIiCCIeACAgAAgILCIiICIgICIiCAQoIComIjwiPAIIIRQ+FAgIAAAAAAAAFBQQFBAQJBQIBBQQFSQUEBQUBAgUFBUUCBAAEAA/BRMkABAQHAgAADAQIggwIgQCIhAiAiAAED4QACAiIiAiICAiIggEJCAiJiIgIiQCCCEUFCIIMAAAAAAAABQYDBgcEDwUHBgUHBEkCBAYFBgIHAgKFAgcAAAAEg4jGgAIICoIIAAwIBw+PhwEPBwQHDwAIAgAIAgcIjwePD4gHiI+OCI8IiIcIBwiPAgeCBQiCD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAEAAAAAAAAACAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  var chh = 7, chars = [], wid = [], cur = 33, clip = null, undoStack = [];
   var $ = function (id) { return document.getElementById(id); };
 
-  function blank() { return new Array(W * chh).fill(0); }
-  function label(i) { return i === 0 ? 'SP' : String.fromCharCode(32 + i); }
+  function blank(h) { return new Array(W * (h || chh)).fill(0); }
+  function label(i) { return i === 0 ? 'SP' : i < N0 ? String.fromCharCode(32 + i) : HU.charAt(i - N0); }
+  function charIndex(ch) {                       // szöveg-karakter -> betű-index (-1 = nincs a készletben)
+    var c = ch.charCodeAt(0); if (c >= 32 && c <= 122) return c - 32;
+    var k = HU.indexOf(ch); return k < 0 ? -1 : N0 + k;
+  }
+  // a hiányzó magyar betűk kezdőképe: az alapbetű másolata; ha fölötte van 2 üres sor, ékezet is kerül rá
+  function padHU(f) {
+    for (var k = f.chars.length - N0; k < N - N0; k++) {
+      var bi = HU_BASE[k], a = f.chars[bi].slice(), w = f.wid[bi], t = 0;
+      while (t < f.h && !a.slice(t * W, t * W + W).some(Boolean)) t++;
+      if (t >= 2 && t < f.h) {
+        var r = t - 2, cx = Math.max(1, Math.floor((w - 2) / 2)), ac = HU_ACC.charAt(k);
+        var px = ac === 'a' ? [cx + 1] : ac === 'u' ? [cx - 1, cx + 1] : [cx, cx + 2];
+        px.forEach(function (x) { if (x >= 0 && x < W) a[r * W + x] = 1; });
+      }
+      f.chars.push(a); f.wid.push(w);
+    }
+    return f;
+  }
 
   // ---- font.bin <-> karakterek ----
-  function decodeImg(bytes, off, stride, nChars, h, cwB) {
-    var out = [];
-    for (var i = 0; i < nChars; i++) out.push(new Array(W * h).fill(0));
-    for (var y = 0; y < h; y++) for (var i = 0; i < nChars; i++) for (var b = 0; b < cwB; b++) {
-      var v = bytes[off + y * stride + i * cwB + b] || 0;
-      for (var n = 0; n < 4; n++) out[i][y * W + b * 4 + n] = ((v >> (7 - n)) & 1) + 2 * ((v >> (3 - n)) & 1);
+  function decodeNew(b) {                        // [0]=$80+h, [1..n]=szélesség px, utána soronként n byte (n = 91 régi vagy 109)
+    var h = b[0] & 15, n = (b.length - 1) / (1 + h), w = [], c = [];
+    for (var i = 0; i < n; i++) { w.push(Math.min(8, b[1 + i])); c.push(blank(h)); }
+    for (var y = 0; y < h; y++) for (var i = 0; i < n; i++) { var v = b[1 + n + y * n + i] || 0; for (var x = 0; x < W; x++) c[i][y * W + x] = (v >> (7 - x)) & 1; }
+    return padHU({ h: h, wid: w, chars: c });
+  }
+  function decodeOld4(b) {                       // régi: [0]=h, [1..91]=1/2 byte, kép 182 byte/sor, 4 szín -> nem háttér = fekete
+    var h = b[0], w = [], c = [], N = N0;
+    for (var i = 0; i < N; i++) {
+      var a = blank(h), mx = -1;
+      for (var y = 0; y < h; y++) for (var x = 0; x < W; x++) {
+        var v = b[1 + N + y * N * 2 + i * 2 + (x >> 2)] || 0, p = x & 3;
+        if (((v >> (7 - p)) & 1) | ((v >> (3 - p)) & 1)) { a[y * W + x] = 1; if (x > mx) mx = x; }
+      }
+      c.push(a); w.push(mx < 0 ? 4 : Math.min(8, mx + 2));
     }
-    return out;
-  }
-  function decodeFont(b) {
-    var h = b[0], w = Array.prototype.slice.call(b, 1, 1 + N).map(function (v) { return v === 1 ? 1 : 2; });
-    return { h: h, wid: w, chars: decodeImg(b, 1 + N, N * 2, N, h, 2) };
-  }
-  function decodeOld(b) {                        // CharSetGR4.bin: 59 karakter (32..90), 118 byte x 7 sor
-    var h = b.length / 118, old = decodeImg(b, 0, 118, 59, h, 2), c = [];
-    for (var i = 0; i < N; i++) { var code = 32 + i, s = -1;
-      if (code <= 90) s = code - 32; else if (code >= 97) s = code - 64;
-      c.push(s >= 0 ? old[s].slice() : new Array(W * h).fill(0)); }
-    return { h: h, wid: new Array(N).fill(2), chars: c };
+    return padHU({ h: h, wid: w, chars: c });
   }
   function encode() {
-    var stride = N * 2, b = new Uint8Array(1 + N + stride * chh);
-    b[0] = chh; for (var i = 0; i < N; i++) b[1 + i] = wid[i];
-    for (var y = 0; y < chh; y++) for (var i = 0; i < N; i++) for (var bb = 0; bb < 2; bb++) {
-      var v = 0;
-      if (bb < wid[i]) for (var n = 0; n < 4; n++) { var c = chars[i][y * W + bb * 4 + n]; if (c & 1) v |= 0x80 >> n; if (c & 2) v |= 0x08 >> n; }
-      b[1 + N + y * stride + i * 2 + bb] = v;
+    var b = new Uint8Array(1 + N + N * chh);
+    b[0] = 0x80 + chh; for (var i = 0; i < N; i++) b[1 + i] = wid[i];
+    for (var y = 0; y < chh; y++) for (var i = 0; i < N; i++) {
+      var v = 0; for (var x = 0; x < wid[i]; x++) if (chars[i][y * W + x]) v |= 0x80 >> x;
+      b[1 + N + y * N + i] = v;
     }
     return b;
   }
   function setFont(f) { chh = f.h; wid = f.wid; chars = f.chars; undoStack = []; clip = null; }
   function resizeH(nh) {
-    chars = chars.map(function (c) { var a = new Array(W * nh).fill(0); for (var y = 0; y < Math.min(chh, nh); y++) for (var x = 0; x < W; x++) a[y * W + x] = c[y * W + x]; return a; });
+    chars = chars.map(function (c) { var a = blank(nh); for (var y = 0; y < Math.min(chh, nh); y++) for (var x = 0; x < W; x++) a[y * W + x] = c[y * W + x]; return a; });
     chh = nh; undoStack = [];
   }
+  function autoW(i) { var mx = -1; for (var y = 0; y < chh; y++) for (var x = 0; x < W; x++) if (chars[i][y * W + x] && x > mx) mx = x; return mx < 0 ? 4 : Math.min(8, mx + 2); }
 
   // ---- rajzolás ----
-  function drawChar(ctx, i, z, ox, oy, full) {
-    var w = full ? W : wid[i] * 4;
-    for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) { ctx.fillStyle = COLS[chars[i][y * W + x]]; ctx.fillRect(ox + x * z, oy + y * z, z, z); }
+  function drawChar(ctx, i, z, ox, oy, w) {
+    for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) { ctx.fillStyle = chars[i][y * W + x] ? FG : BG; ctx.fillRect(ox + x * z, oy + y * z, z, z); }
   }
   function buildSet() {
     var s = $('set'); s.innerHTML = '';
     for (var i = 0; i < N; i++) {
       var d = document.createElement('div'); d.className = 'ch'; d.dataset.i = i;
-      var cv = document.createElement('canvas'); var sp = document.createElement('span'); sp.textContent = label(i);
+      var cv = document.createElement('canvas'); var sp = document.createElement('span');
       d.appendChild(cv); d.appendChild(sp); s.appendChild(d);
       d.onclick = function () { select(+this.dataset.i); };
     }
@@ -169,43 +184,44 @@ Press space to continue</textarea>
     markSel();
   }
   function drawThumb(i) {
-    var d = $('set').children[i], cv = d.firstChild; cv.width = wid[i] * 4 * 4; cv.height = chh * 4;
-    drawChar(cv.getContext('2d'), i, 4, 0, 0, false); d.classList.toggle('narrow', wid[i] === 1);
+    var d = $('set').children[i], cv = d.firstChild; cv.width = Math.max(1, wid[i]) * 4; cv.height = chh * 4;
+    drawChar(cv.getContext('2d'), i, 4, 0, 0, wid[i]);
+    d.lastChild.innerHTML = label(i) + ' <b>' + wid[i] + '</b>';
   }
   function markSel() { Array.prototype.forEach.call($('set').children, function (d, k) { d.classList.toggle('sel', k === cur); }); }
   var Z = 40;
   function drawEd() {
     var cv = $('ed'); Z = Math.max(20, Math.min(48, Math.floor(400 / Math.max(W, chh))));
     cv.width = W * Z + 1; cv.height = chh * Z + 1;
-    var g = cv.getContext('2d'); drawChar(g, cur, Z, 0, 0, true);
-    if (wid[cur] === 1) { g.fillStyle = 'rgba(20,24,28,.72)'; g.fillRect(4 * Z, 0, 4 * Z, chh * Z); }
+    var g = cv.getContext('2d'); drawChar(g, cur, Z, 0, 0, W);
+    if (wid[cur] < W) { g.fillStyle = 'rgba(20,24,28,.72)'; g.fillRect(wid[cur] * Z, 0, (W - wid[cur]) * Z, chh * Z); }
     g.strokeStyle = 'rgba(80,80,80,.6)'; g.lineWidth = 1;
     for (var x = 0; x <= W; x++) { g.beginPath(); g.moveTo(x * Z + .5, 0); g.lineTo(x * Z + .5, chh * Z); g.stroke(); }
     for (var y = 0; y <= chh; y++) { g.beginPath(); g.moveTo(0, y * Z + .5); g.lineTo(W * Z, y * Z + .5); g.stroke(); }
-    g.strokeStyle = '#e0a040'; g.lineWidth = 2; g.beginPath(); g.moveTo(4 * Z + 1, 0); g.lineTo(4 * Z + 1, chh * Z); g.stroke();
+    g.strokeStyle = '#e0a040'; g.lineWidth = 3; g.beginPath(); g.moveTo(wid[cur] * Z + 1, 0); g.lineTo(wid[cur] * Z + 1, chh * Z); g.stroke();
     $('big').textContent = label(cur);
-    $('bigInfo').textContent = '#' + (32 + cur) + ' · ' + (wid[cur] * 4) + '×' + chh + ' px';
-    $('bNar').classList.toggle('on', wid[cur] === 1); $('bWid').classList.toggle('on', wid[cur] === 2);
+    $('bigInfo').textContent = '#' + (32 + cur) + ' · ' + wid[cur] + '×' + chh + ' px';
+    $('wv').textContent = wid[cur];
   }
-  function lineBytes(s) { var t = 0; for (var k = 0; k < s.length; k++) { var c = s.charCodeAt(k); if (c >= 32 && c <= 122) t += wid[c - 32]; } return t; }
+  function lineBytes(s) { var t = 0; for (var k = 0; k < s.length; k++) { var i = charIndex(s.charAt(k)); if (i >= 0) t += wid[i]; } return Math.ceil(t / 4); }
   function drawPrev() {
     var lines = $('txt').value.split('\n'), z = 2, lh = chh + 3;
     var cv = $('prev'); cv.width = 256 * z; cv.height = Math.max(1, lines.length) * lh * z;
-    var g = cv.getContext('2d'); g.fillStyle = COLS[0]; g.fillRect(0, 0, cv.width, cv.height);
+    var g = cv.getContext('2d'); g.fillStyle = BG; g.fillRect(0, 0, cv.width, cv.height);
     var worst = 0;
     lines.forEach(function (ln, r) {
       var x = 0; worst = Math.max(worst, lineBytes(ln));
       for (var k = 0; k < ln.length; k++) {
-        var c = ln.charCodeAt(k); if (c < 32 || c > 122) continue; var i = c - 32;
-        if (x + wid[i] > 64) break;
-        drawChar(g, i, z, x * 4 * z, r * lh * z, false); x += wid[i];
+        var i = charIndex(ln.charAt(k)); if (i < 0) continue;
+        if (x + wid[i] > 256) break;
+        drawChar(g, i, z, x * z, r * lh * z, wid[i]); x += wid[i];
       }
     });
     $('fit').textContent = 'A leghosszabb sor: ' + worst + ' / 64 byte' + (worst > 64 ? ' — NEM fér el!' : '');
     var dw = []; for (var d = 16; d <= 25; d++) dw.push(wid[d]);
-    $('digwarn').textContent = dw.every(function (v) { return v === dw[0]; }) ? '' : 'Figyelem: a számjegyek nem egyforma szélesek - a HUD-számok ugrálni fognak. Legyen mind keskeny vagy mind széles.';
+    $('digwarn').textContent = dw.every(function (v) { return v === dw[0]; }) ? '' : 'Figyelem: a számjegyek nem egyforma szélesek - a HUD-számok ugrálni fognak.';
   }
-  function stat() { var n = wid.filter(function (v) { return v === 1; }).length; $('stat').textContent = 'font.bin: ' + (1 + N + N * 2 * chh) + ' byte · ' + n + ' keskeny, ' + (N - n) + ' széles'; $('hh').value = chh; }
+  function stat() { $('stat').textContent = 'font.bin: ' + (1 + N + N * chh) + ' byte (max 1536)'; $('hh').value = chh; }
   function refreshAll() { buildSet(); drawEd(); drawPrev(); stat(); save(); }
   function refreshCur() { drawThumb(cur); drawEd(); drawPrev(); stat(); save(); }
   function select(i) { cur = (i + N) % N; markSel(); drawEd(); }
@@ -216,33 +232,37 @@ Press space to continue</textarea>
   function origBytes() { var s = atob(ORIG), b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; }
   function restore() {
     try { var o = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (o && o.chars && o.chars.length === N && o.wid && o.wid.length === N && o.h >= 3) { setFont({ h: o.h, wid: o.wid, chars: o.chars }); cur = o.cur | 0; return; } } catch (e) {}
-    setFont(decodeFont(origBytes()));
+      if (o && o.chars && (o.chars.length === N || o.chars.length === N0) && o.wid && o.wid.length === o.chars.length && o.h >= 3) { setFont(padHU({ h: o.h, wid: o.wid, chars: o.chars })); cur = o.cur | 0; return; } } catch (e) {}
+    setFont(decodeNew(origBytes()));
   }
 
   // ---- szerkesztés ----
   function pushUndo() { undoStack.push({ i: cur, d: chars[cur].slice(), w: wid[cur] }); if (undoStack.length > 100) undoStack.shift(); }
   var painting = false, paintCol = 1;
-  function cellAt(e) { var r = $('ed').getBoundingClientRect(); var x = Math.floor((e.clientX - r.left) / Z), y = Math.floor((e.clientY - r.top) / Z); return (x >= 0 && y >= 0 && x < wid[cur] * 4 && y < chh) ? y * W + x : -1; }
+  function cellAt(e) { var r = $('ed').getBoundingClientRect(); var x = Math.floor((e.clientX - r.left) / Z), y = Math.floor((e.clientY - r.top) / Z); return (x >= 0 && y >= 0 && x < W && y < chh) ? y * W + x : -1; }
   function paint(e) { var k = cellAt(e); if (k < 0 || chars[cur][k] === paintCol) return; chars[cur][k] = paintCol; refreshCur(); }
   $('ed').addEventListener('contextmenu', function (e) { e.preventDefault(); });
-  $('ed').addEventListener('pointerdown', function (e) { pushUndo(); painting = true; paintCol = (e.button === 2 || e.ctrlKey) ? 0 : color; $('ed').setPointerCapture(e.pointerId); paint(e); });
+  $('ed').addEventListener('pointerdown', function (e) { pushUndo(); painting = true; paintCol = (e.button === 2 || e.ctrlKey) ? 0 : 1; $('ed').setPointerCapture(e.pointerId); paint(e); });
   $('ed').addEventListener('pointermove', function (e) { if (painting) paint(e); });
   $('ed').addEventListener('pointerup', function () { painting = false; });
   function mod(f) { pushUndo(); chars[cur] = f(chars[cur]); refreshCur(); }
-  function shift(dx, dy) { var w = wid[cur] * 4; mod(function (c) { var a = c.slice();
-    for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) a[y * W + x] = 0;
-    for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) { var nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < w && ny < chh) a[ny * W + nx] = c[y * W + x]; } return a; }); }
+  function shift(dx, dy) { mod(function (c) { var a = blank();
+    for (var y = 0; y < chh; y++) for (var x = 0; x < W; x++) { var nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < W && ny < chh) a[ny * W + nx] = c[y * W + x]; } return a; }); }
   $('bL').onclick = function () { shift(-1, 0); }; $('bR').onclick = function () { shift(1, 0); };
   $('bU').onclick = function () { shift(0, -1); }; $('bD').onclick = function () { shift(0, 1); };
-  $('bFlip').onclick = function () { var w = wid[cur] * 4; mod(function (c) { var a = c.slice(); for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) a[y * W + x] = c[y * W + (w - 1 - x)]; return a; }); };
+  $('bFlip').onclick = function () { var w = Math.max(1, wid[cur] - 1); mod(function (c) { var a = c.slice(); for (var y = 0; y < chh; y++) for (var x = 0; x < w; x++) a[y * W + x] = c[y * W + (w - 1 - x)]; return a; }); };
   $('bClr').onclick = function () { mod(function () { return blank(); }); };
   $('bCopy').onclick = function () { clip = { d: chars[cur].slice(), w: wid[cur] }; };
   $('bPaste').onclick = function () { if (clip && clip.d.length === chars[cur].length) { pushUndo(); chars[cur] = clip.d.slice(); wid[cur] = clip.w; refreshCur(); } };
-  function setWid(w) { if (wid[cur] === w) return; pushUndo(); wid[cur] = w; refreshCur(); }
-  $('bNar').onclick = function () { setWid(1); }; $('bWid').onclick = function () { setWid(2); };
-  $('bAllN').onclick = function () { if (confirm('Minden karakter keskeny (4 px) legyen? A jobb oldali 4 px rajz megmarad a szerkesztőben, csak nem kerül a font.bin-be.')) { wid = wid.map(function () { return 1; }); refreshAll(); } };
-  $('bAllW').onclick = function () { wid = wid.map(function () { return 2; }); refreshAll(); };
+  function setWid(w) { w = Math.max(0, Math.min(8, w)); if (wid[cur] === w) return; pushUndo(); wid[cur] = w; refreshCur(); }
+  $('bWm').onclick = function () { setWid(wid[cur] - 1); }; $('bWp').onclick = function () { setWid(wid[cur] + 1); };
+  $('bWa').onclick = function () { setWid(autoW(cur)); };
+  $('bAuto').onclick = function () {
+    if (!confirm('Minden betű szélessége a rajzból (a legjobboldalibb pixel + 1 betűköz)? A számjegyek egyforma szélesek lesznek.')) return;
+    for (var i = 0; i < N; i++) wid[i] = autoW(i);
+    var m = 0; for (var d = 16; d <= 25; d++) m = Math.max(m, wid[d]); for (var d = 16; d <= 25; d++) wid[d] = m;
+    refreshAll();
+  };
   function undo() { var u = undoStack.pop(); if (!u) return; chars[u.i] = u.d; wid[u.i] = u.w; if (u.i !== cur) select(u.i); refreshCur(); }
   $('bUndo').onclick = undo;
   $('bPrev').onclick = function () { select(cur - 1); }; $('bNext').onclick = function () { select(cur + 1); };
@@ -250,66 +270,35 @@ Press space to continue</textarea>
     if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
     if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
     else if (e.key === 'PageUp') select(cur - 1); else if (e.key === 'PageDown') select(cur + 1);
-    else if (e.key >= '1' && e.key <= '4') setColor(+e.key - 1);
-    else if (e.key.toLowerCase() === 'n') setWid(wid[cur] === 1 ? 2 : 1);
+    else if (e.key === '[') setWid(wid[cur] - 1); else if (e.key === ']') setWid(wid[cur] + 1);
   });
-  function setColor(c) { color = c; Array.prototype.forEach.call($('pal').children, function (d, k) { d.classList.toggle('sel', k === c); }); }
-  COLS.forEach(function (c, k) { var d = document.createElement('div'); d.className = 'sw'; d.style.background = c; d.title = ['szürke (háttér)', 'fekete', 'zöld', 'kék'][k] + ' — billentyű: ' + (k + 1); d.onclick = function () { setColor(k); }; $('pal').appendChild(d); });
   $('txt').addEventListener('input', drawPrev);
   $('bSize').onclick = function () {
-    var nh = Math.max(3, Math.min(16, parseInt($('hh').value, 10) || chh));
+    var nh = Math.max(3, Math.min(15, parseInt($('hh').value, 10) || chh));
     if (nh === chh) return;
-    if (!confirm('Magasság: ' + chh + ' → ' + nh + ' sor. A rajzok felül igazítva megmaradnak, ami kilóg, levágódik. Mehet?')) { stat(); return; }
+    if (1 + N + N * nh > 1536) { alert('Túl magas: a font.bin legfeljebb 1536 byte lehet (a $E100-as helyen, a Pause_Buf előtt).'); stat(); return; }
+    if (!confirm('Magasság: ' + chh + ' → ' + nh + ' sor. A rajzok felül igazítva megmaradnak, ami kilóg, levágódik. Figyelem: a játékban a magasabb betű egy sorral többet ír a képernyőre. Mehet?')) { stat(); return; }
     resizeH(nh); refreshAll();
   };
 
   // ---- fájlok ----
   function download(name, data, type) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: type })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
   $('bSaveBin').onclick = function () { download('font.bin', encode(), 'application/octet-stream'); };
-  $('bSaveBmp').onclick = function () {
-    var w = N * W, h = chh, rs = (w * 3 + 3) & ~3, sz = 54 + rs * h, b = new Uint8Array(sz), dv = new DataView(b.buffer);
-    b[0] = 66; b[1] = 77; dv.setUint32(2, sz, true); dv.setUint32(10, 54, true); dv.setUint32(14, 40, true);
-    dv.setInt32(18, w, true); dv.setInt32(22, h, true); dv.setUint16(26, 1, true); dv.setUint16(28, 24, true); dv.setUint32(34, rs * h, true);
-    for (var y = 0; y < h; y++) for (var i = 0; i < N; i++) for (var x = 0; x < W; x++) {
-      var c = RGB[chars[i][y * W + x]], o = 54 + (h - 1 - y) * rs + (i * W + x) * 3; b[o] = c[2]; b[o + 1] = c[1]; b[o + 2] = c[0];
-    }
-    download('font.bmp', b, 'image/bmp');
-  };
   $('bLoadBin').onclick = function () { $('fBin').click(); };
   $('fBin').onchange = function () {
     var f = this.files[0]; if (!f) return; var r = new FileReader();
     r.onload = function () {
       var b = new Uint8Array(r.result);
-      if (b.length === 1 + N + N * 2 * b[0] && b[0] >= 3 && b[0] <= 16) setFont(decodeFont(b));
-      else if (b.length % 118 === 0 && b.length / 118 >= 3 && b.length / 118 <= 16) setFont(decodeOld(b));
-      else { alert('Ismeretlen fájl (' + b.length + ' byte): se font.bin, se a régi 59 karakteres CharSetGR4.bin.'); return; }
+      if ((b[0] & 0x80) && [N, N0].some(function (n) { return b.length === 1 + n + n * (b[0] & 15); }) && (b[0] & 15) >= 3) setFont(decodeNew(b));
+      else if (b.length === 1 + N0 + N0 * 2 * b[0] && b[0] >= 3 && b[0] <= 16) setFont(decodeOld4(b));
+      else { alert('Ismeretlen fájl (' + b.length + ' byte): se új, se régi font.bin.'); return; }
       refreshAll();
     };
     r.readAsArrayBuffer(f); this.value = '';
   };
-  $('bLoadBmp').onclick = function () { $('fBmp').click(); };
-  $('fBmp').onchange = function () {
-    var f = this.files[0]; if (!f) return; var img = new Image(), url = URL.createObjectURL(f);
-    img.onload = function () {
-      var w = img.width, h = img.height; URL.revokeObjectURL(url);
-      if (w !== N * W) { alert('A kép szélessége ' + w + ' px; ' + (N * W) + ' px kell (91 karakter × 8 px).'); return; }
-      if (h < 3 || h > 16) { alert('A kép magassága ' + h + ' px; 3..16 lehet.'); return; }
-      var c = document.createElement('canvas'); c.width = w; c.height = h; var g = c.getContext('2d'); g.drawImage(img, 0, 0);
-      var d = g.getImageData(0, 0, w, h).data, ch = [];
-      for (var i = 0; i < N; i++) { var a = [];
-        for (var y = 0; y < h; y++) for (var x = 0; x < W; x++) {
-          var o = (y * w + i * W + x) * 4, R = d[o], G = d[o + 1], B = d[o + 2], k;
-          if (R < 40 && G < 40 && B < 40) k = 1; else if (Math.abs(R - G) < 24 && Math.abs(G - B) < 24) k = 0; else if (G > R && G > B) k = 2; else k = 3;
-          a.push(k);
-        }
-        ch.push(a); }
-      setFont({ h: h, wid: wid.slice(), chars: ch }); refreshAll();
-    };
-    img.src = url; this.value = '';
-  };
-  $('bReset').onclick = function () { if (confirm('Visszatöltöm az eredeti készletet (8×7, minden karakter széles)? A mostani munka elvész (előtte mentsd el, ha kell).')) { setFont(decodeFont(origBytes())); refreshAll(); } };
+  $('bReset').onclick = function () { if (confirm('Visszatöltöm az alap készletet? A mostani munka elvész (előtte mentsd el, ha kell).')) { setFont(decodeNew(origBytes())); refreshAll(); } };
 
-  restore(); setColor(1); refreshAll(); select(cur);
+  restore(); refreshAll(); select(cur);
 })();
 </script>
 </body>

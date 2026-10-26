@@ -1,5 +1,5 @@
 # JATEKSZABALY (HOW TO USE) kepernyo szovegei: soronkent  x;y;SZOVEG  (x = byte-oszlop 0..63, y = pixelsor 0..239).
-# Csak ASCII nagybetu, szam, irasjel (a font 32..90); ekezet NINCS. Utana: powershell -File resources\make_szoveg_bin.ps1, majd make_dsk.ps1
+# ASCII 32..122: nagy- es kisbetu, szam, irasjel (a font 32..122); ekezet NINCS. Utana: powershell -File resources\make_szoveg_bin.ps1, majd make_dsk.ps1
 6;10;.....
 16;10;PUMP - VIZNYERO PUMPA
 6;21;.....

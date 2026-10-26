@@ -1,293 +1,70 @@
-# WaterPumpGame — projekt-memória (CLAUDE.md, RÖVIDÍTETT 2026-10-23)
+# WaterPumpGame — projekt-memória (CLAUDE.md, RÖVIDÍTETT 2026-10-25)
 
-Ez a fájl szándékosan RÖVID: minden munkamenet elején betöltődik, ezért a tokenfogyasztás
-miatt csak az aktuális állapot, a mérvadó leírás és a tanulságok vannak benne.
-**A teljes régi CLAUDE.md** (dátumozott napló, verziótörténet, elavult architektúra,
-10-02..10-05-ös részletes bejegyzések) a **`docs/NAPLO_archiv.md`**-ben van, változatlanul.
-**NE olvasd be automatikusan** - csak ha konkrét múltbeli döntés/indoklás kell: keress rá
-(grep) a kulcsszóra, és csak a releváns részt olvasd.
-Ahol lejjebb "a fájl végi bejegyzések" szerepel, az az archívum végét jelenti.
-**Érdemi változtatás után ezt a fájlt frissítsd** (aktuális állapot, rövid, tömör); a hosszú
-indoklást/naplót az archívum VÉGÉRE fűzd, ne ide.
-
-## ★ LEGFRISSEBB ÁLLAPOT (2026-10-03 este) — ÚJ MUNKAMENET: EZT OLVASD ELŐSZÖR
-A részletek a docs/NAPLO_archiv.md VÉGÉN lévő, 2026-10-02/03-as bejegyzésekben; a régebbi szakaszok történeti háttér (ha ellentmondanak, a legújabb bejegyzés a mérvadó). Projektmemória: `C:\Users\LG\.claude\projects\c--TVC-TRSE-Projects-WaterPumpGame\memory\` (watergame-status, watergame-design-prefs, watergame-level-workflow, tvc-memory-map-u3, watergame-multifile-loader-plan, trse-asm-integration-pitfalls, ...). Általános TRSE/GE tanulságok: a TVC-TRSE skill `references\gotchas-from-practice.md`; PC-s eszközök (szerkesztők, konverterek): a TVC-Utils skill.
-- **Főmenü:** számok nélkül, animált pumpa-mutató, joystick fel-le + tűz/SPACE: ONE PLAYER GAME, TWO PLAYER CO-OP, TWO PLAYER VERSUS MODE (-> `VS_Valaszto`: szintválasztó gyors asm-kisképpel, "PUMP GOAL:"), HOW TO USE (szövegei átírandók), HISCORE (nincs), LEVEL CODE (`Kod_Bevitel`: 5 betű, az 5. után automatikusan ellenőriz; csak egyjátékos és co-op kód).
-- **Vezérlés minden módban joystickkal:** az 1. pályasorról FEL = ikon-menü (y=30): pumpa / fal / bomba hézag nélkül, csak az ENGEDÉLYEZETT eszközök (`Ikon_Oszlop`, `Ikon_Ervenyes`); tűz = választ (jelölő), a pályán tűz = lerak. Billentyűk: P = pause, ESC/Q = kilépés-kérdés (ESC/Q igen, bármi más nem), R = újrakezdés (életbe kerül, versusban nem). P2: 2. joystick (+ WASD, billentyűs tűz E).
-- **HUD (egységes, nincs kék vonal):** P1$ | középen pumpa ár/bevétel | P2$; 2. sor pumpa:db (versusban /cél) | középen fal ár (ha engedélyezett); 3. sor bomba ár (ha nincs fal, a 2. sorba kerül); alul (nem versus) LIVES, LVL:nn, cél. Szint kiírása mindenhol 01-től.
-- **Meteor:** véletlenül 10..30 mp-enként; meteoros pályán az ikon-sor közepén "METEOR:nn" visszaszámláló, 0-nál ~2 mp villogó "METEOR !" (fekete doboz, szürke betű), aztán zuhan; pályánként: `MeteorTor` (a sziklát is rombolja), `MeteorVir` (vírust hoz a becsapódás közepére; ilyenkor a vírus azonnal terjedhet, és vírus nélküli pályán is él, saját kolónia-vetés nélkül).
-- **Feliratok:** LEVEL FAILED / GAME OVER / pause / exit: sötét színrend; LEVEL COMPLETED / PLAYER n WINS: normál színek, keretes doboz (`Doboz`), ~1,5 mp várakozás, zöld "NEXT CODE: XXXXX" (co-opban a co-op kód, versusban nincs).
-- **Pályák:** 11 egyjátékos/co-op + 6 versus (a szerkesztő 49 + 49-et enged, versus fülek 50-től); 1 bites tömörített térképek; kódok `Palya_Kod`/`Palya_KodCoop`. Import: `resources\palyak_import.ps1` (a szerkesztő headless kimenetével cseréli a két blokkot, védelemmel) - mérvadó projektfájl `waterpump_palyak.json`. A pályanév adata megvan (`Palya_Nev`), de NINCS kiírva.
-- **Memória:** `MEM_48K_VID`; kód vége **`$7827`** (~2 KB szabad); kb. 20 további pálya fér el - 49+49-hez a pályaadatokat az U3-ba kell vinni. U3: hangok, sprite-ok, font, `Pause_Buf` 2048 byte at $E700, `$DD00` szabad.
-- **TRSE fordító-összeomlások (0xC0000005) gyakoriak lettek:** okok/kerülőutak a 10-03-as bejegyzésekben és a skill gotchas-ban (sprite-mezőbe kifejezés, else-if, hosszú ékezetes sor végi komment, egyes feltételes értékadás-minták). Módszer: `tst_*.ras` másolatokon szűkíteni.
-- **★ FRISSÍTÉS 2026-10-05 (a legutóbbi munkamenet vége; részletek a docs/NAPLO_archiv.md végi 10-04/05-ös bejegyzésekben):**
-  - **A FELHASZNÁLÓ VISSZAIGAZOLTA (2026-10-05, tételesen): MŰKÖDIK** a pumpa 8. sora a térképen, P1 kék / P2 zöld minden módban, az új pumpa-animációk, a 14:32-es pályaimport, a joystickos ikon-menü, P2 = JOY 2 + tűz, az egységes HUD, a főmenü pumpa-mutatóval, a LEVEL CODE, a versus szintválasztó, pause és kilépés, a METEOR-visszaszámláló + villogó figyelmeztetés, a meteor sziklarombolása/vírushozása, a versus győzelmi szabály, a digi hangok. **Még dolgozunk rajta: a LEVEL COMPLETED doboz** (keret, zöld NEXT CODE) - ez NEM végleges.
-  - **Pumpa-grafika (VÉGLEGES nevek, átnevezve):** P1 = KÉK = `Pumpa.bin` <- `Pump1..8.bmp`; P2 = ZÖLD = `Pumpa2.bin` <- `Pump1b..8b.bmp` (a .bin-ek ÉS a BMP-k neve is megcserélve, a betöltő sorok újra egyenesek; a fordított .bin bájtazonos maradt). Konvertálás: `resources\bmp_to_talaj.ps1` fázisonként, fejléc (`01 02 08`) egyszer, 131 byte; utána a 8 fázis ASCII-képét meg kell mutatni. Egy játékosnál, a menüben, a HUD-ban és co-opban a kék látszik. A karos "új fajta" pumpa (`New_Pump` mappa, `Pumpa3.bin`) VÉGLEG ELVETVE.
-  - **Javítva:** a `WaterPump::PutAt` csak 7 sort másolt a 8-ból; most 8 (a nem használt `PutAtRaw` is).
-  - **VAS: a WaterVAS-irány ELVETVE (felhasználói döntés).** Az 52 KB-os `.cas` valós gépen "No memory" hibával állt le. A `WaterVAS.*`, `resources\watervas_build.ps1`, `resources\vas_u3.bin` megmaradt, de elavult és nem fordul - ne használd, ne javítsd kérés nélkül.
-  - Kód vége **`$7F38`** (10-05, a 16 fázisú AKNA után) - CSAK ~200 byte szabad `$8000`-ig! Új funkció előtt helyet kell felszabadítani (vagy jön a többfájlos betöltő / pályaadatok az U3-ba).
-- **★ VALÓS GÉP (2026-10-03 késő):** az 52 KB-os `WaterPumpGame.cas` vason NEM tölthető be. Teszthez: **`WaterVAS.ras/.cas`** (30 173 byte, hang + pályák benne) - GENERÁLT fájl, kézzel ne szerkeszd: `powershell -File resources\watervas_build.ps1` (a fő `.ras` minden változása / pályaimport után újra; fordít is). Az U3-adatok egy blokkban a kód után (`$7A00`), induláskor `$B0` lapozással másolódnak az U3-ba. 64K-s gép kell; a kód vége `$7A00` alatt maradjon. Vason MÉG NINCS visszaigazolva - új munkamenetben ezt kérdezd meg először. Részletek a docs/NAPLO_archiv.md végén.
-- **Memória (2026-10-05 este):**
-  - **Kód vége `$7F38`, kb. 200 byte szabad `$8000`-ig.** Új, kódhelyet igénylő funkció előtt helyet kell felszabadítani.
-  - **Ma elkészült (részletek a docs/NAPLO_archiv.md végi 10-05-ös bejegyzésekben):** M / Y = eszközváltás körbe + az ikon-sorból visszatérés a kiindulási oszlopba (VISSZAIGAZOLVA); magyar főmenü (ékezet nélkül); versus szintválasztó ikonsora; **AKNA** mint 4. eszköz (16 képes animáció, ~11 mp, kör alakú robbanás, a sziklát is rombolja, saját hang; pályaadat + szerkesztő-mezők); új `sprite4_szerkeszto.html` (4 színű sprite-szerkesztő - tudása a TVC-Utils skillben).
-  - **2026-10-22: a felhasználó szerint a jelenlegi `WaterPumpGame.ras` (10-05 20:06, akna 16 fázissal, magyar menü, versus ikonsor) A JÓ, működő változat** (emulátoron; valós gépen a 30 KB-os WaterVAS kell, az most nem fordul). A felhasználó a sprite-okat a Sprite4 szerkesztőben rajzolja; a SPRITE-LISTA a mérvadó (a konténer fázisai elavulhatnak), a játék a `resources\tvc_sprites\*.bin`-t olvassa.- **Utolsó mentett béta:** még mindig `WaterPump_Final_Betav1.4` (09-25) - minden azóta készült munka NINCS bétában; a 10-02/03-as változások nagy része gépen NINCS kipróbálva (a felhasználó folyamatosan tesztel).
-- **Build:** `C:\TVC\TRSE\trse.exe -cli op=project project=LG_TVC_Projects.trse input_file=WaterPumpGame.ras assemble=yes` (kimenet `Start-Process ... -RedirectStandardOutput`); `WaterPumpGame.sym` `EndBlock19ef` < `$8000`.
-- **Memóriatérkép (2026-10-22, a Befosasból átvéve):** build után `powershell -File resources\memoria_terkep.ps1` (`-Nev WaterPumpGame -Unit WaterPump` az alapérték) -> `tools\memoria_adat.js`; nézetek: `tools\memoria_terkep.html` (lapos) és `tools\memory_map_c64.html` (részletes). Parancs: `/memoria`. A rendszer / GE / verem határai a szkript `$Fix` listájában kézzel.
-- **Munkastílus:** magyarul, tömören; a lemez az igazság; `.bak_<név>` minden változtatás előtt; a CLAUDE.md-t frissíteni; kétértelmű kérésnél az értelmezést egy mondatban kimondani (memória `watergame-design-prefs`); a generált .asm-et új egész-aritmetikánál ellenőrizni.
+Szándékosan RÖVID (minden munkamenet elején betöltődik). A teljes korábbi szöveg és a dátumozott
+napló: **`docs/NAPLO_archiv.md`** (a végén a 2026-10-25-i teljes CLAUDE.md is). NE olvasd be egészben -
+grep-pel keress rá a kulcsszóra. Érdemi változás után ezt a fájlt frissítsd röviden; hosszú indoklás az
+archívum VÉGÉRE. Projektmemória: `C:\Users\LG\.claude\projects\c--TVC-TRSE-Projects-WaterPumpGame\memory\`.
+TVC/TRSE tudás: **TVC-TRSE skill** (mindig töltsd be); PC-s eszközök: **TVC-Utils skill**.
 
 ## A projekt
+- Videoton TV-Computer (Z80, 3 MHz), TRSE/Rascal, saját GE unit (`units\TVC\GE.tru`, 304 KB, NINCS a repóban).
+  Fő forrás: `WaterPumpGame.ras`; saját unit: `WaterPump.tru` (pumpa-kirakás `PutAt`, táblák).
+- Az eredeti játék: Commocore Aqualique 1.0 (C64). Viselkedési referencia (vírus/pumpa/gazdaság): a felhasználó
+  C64 TRSE-portja, `C:\Users\LG\Documents\-- DEY --\` (`aqualiquex.ras`, `units.tru`, `raster.tru`).
+- GE dokumentáció: `docs/GE_GameEngine_Dokumentacio.md`. Testvérprojekt: `tutorials_bertok\SpaceWar.ras`.
 
-- **Claude Code skill:** Ehhez a projekthez a **TVC-TRSE** skillt kell használni
-  (TVC/TRSE-specifikus szakértő asszisztens — Z80, GE unit, .ras fájlok, TVC
-  hardver). Minden TVC/TRSE-vel kapcsolatos kérdésnél/feladatnál ezt töltsd be.
-- **Platform:** Videoton TV-Computer (TVC), Z80 CPU, 3 MHz.
-- **Fejlesztőkörnyezet:** TRSE (Rascal nyelv), VS Code + SANE-TRSE extension
-  (`.vscode/tasks.json` → `Ctrl+Shift+B` = `SANE / TRSE: Build`, ez már helyesen
-  be van állítva default build task-nak).
-- **Fő forrásfájl:** [WaterPumpGame.ras](WaterPumpGame.ras)
-- **Motor:** saját `GE` (Game Engine) unit — `C:\TVC\TRSE\units\TVC\GE.tru`.
-  Teljes utasításreferencia: [docs/GE_GameEngine_Dokumentacio.md](docs/GE_GameEngine_Dokumentacio.md)
-  (osztályok, konstansok, minden GE::-eljárás, magyar nyelvű, TRSE-szintű — Z80
-  ASM belső részletek nélkül).
-- **Testvérprojekt (referencia minta forrása):** saját TVC/GE `SpaceWar.ras`
-  (`C:\TVC\TRSE\tutorials\TVC\tutorials_bertok\SpaceWar.ras`) — ugyanaz a szerző,
-  ugyanaz a motor. Az `Enemies` tömb + `EnemyMoveNr` forgó index pattern innen
-  lett átvéve a pumpa-pool ütemezéséhez.
-- **★ C64-es REFERENCIA-IMPLEMENTÁCIÓ (a vírus- és játéklogika mintája) —
-  `C:\Users\LG\Documents\-- DEY --\`** (a felhasználó saját C64 TRSE-portja
-  az Aqualique 1.0-ból; az asm részek NEM lényegesek, a Rascal logika igen).
-  Ha vírus/pumpa/meteor/fal/gazdaság-viselkedésben bizonytalanság van, EBBŐL
-  mazsolázunk:
-  - `aqualiquex.ras` — főciklus: kolónia-vetés (`if raster::newSecond`,
-    `noOfColonies < maxColonies` → `makeVirus`; utána `doVirusSpread:=true`),
-    meteor-esemény (50/50 a vírussal), fal-építés (`space` + `credits>=50`),
-    győzelem `noOfDrills<250`.
-  - `units.tru` — `makeVirus(x,y)` (drill-evés + fal blokkol + `putChar(virusStart)`),
-    char-tartományok (`virusStart 192`, `virusAnimFramesStart 202`,
-    `virusAnimFramesEnd 208`, drill `144..163`, fal `224..227`), `makeDrill`,
-    `removeDrill`, `refreshDrills(dfrom,dto)` (forgó ötödök), `rndom()`
-    (1-byte xorshift), gazdaság (`credits=2000`, drill `-100`).
-  - `raster.tru` — a raszter-IRQ 16-mintás vírus-ciklusa: `for i:=0 to 15`
-    véletlen `x,y`; NÖVEKVŐ vírus (`>=virusStart & <virusAnimFramesStart`) →
-    `putChar(tmp+1)`; KIFEJLETT (`>=202 & <=208`) → random villogó char +
-    (ha `doVirusSpread`) 3×3 (átlók!) `x+rnd%3-1` → `makeVirus`.
-  - **A jelenlegi TVC-vírusmodell EBBŐL van 1:1 lemodellezve** (raszter-időzítés
-    nélkül) — lásd "Enemy / Vírus — ENEMY_Szekcio".
-- **Az EREDETI játék, amit ez a projekt átír:** Commocore *Aqualique 1.0*
-  (C64) — https://commocore.itch.io/aqualique-10 . A játékmenet (pumpák
-  lerakása pénzért, hozam, terjedő vírus, fal-védekezés) innen jön; a TVC-s
-  megvalósítás technikailag más, a logika ugyanaz. A vírus részletes
-  működése a "Enemy / Vírus — tervezett működés" szakaszban.
+## Fordítás és futtatás
+- **Fordító ÁTMENETILEG a nightly:** `C:\TVC\TRSE_Nightly\trse.exe -cli op=project project=LG_TVC_Projects.trse input_file=WaterPumpGame.ras assemble=yes`
+  (kimenet: `Start-Process ... -RedirectStandardOutput`). A régi `C:\TVC\TRSE` is működik (a .ras-ban egy
+  `; kitolto sor` asm-megjegyzés van a régi exe összeomlása ellen). VS Code Build: a projekt
+  `.vscode\settings.json`-ja állítja a nightly-t (törölve = régi). Részletek, nightly-csapdák: skill `trse-compiler.md`.
+- Kód vége: `WaterPumpGame.sym` `EndBlock19ef` < `$8000`. **Jelenleg `$7E96`, kb. 360 byte szabad.**
+- Memóriatérkép: `/memoria` (vagy `powershell -File resources\memoria_terkep.ps1`).
+- **Futtatás csak lemezről** (a `.cas` gyorsbetöltésénél nincs fájleszköz, minden fájlnyitás hibás = piros keret):
+  `resources\make_dsk.ps1 -Files @("WaterPumpGame.cas=WATERPG.CAS","SPRITES.BIN=SPRITES.BIN","PALYAK_lemez.BIN=PALYAK.BIN","SZABALY.BIN=SZABALY.BIN","MENU16.BIN=MENU16.BIN")`
+  (RELATÍV útvonalakkal!). `PALYAK_lemez.BIN` = a játékbeli versus-szerkesztővel mentett pályaadat - ezt kell
+  használni, nem a generált `PALYAK.BIN`-t. Valós géphez: a `.dsk` kibontva a `WaterSDCARD\` mappába
+  (scratchpad `dsk_kibont.ps1`), a felhasználó a pendrive `E:\WP` mappájába másolja. 64K-s gép, SD-olvasó.
 
-## Játék koncepció ÉS AKTUÁLIS ÁLLAPOT (2026-09-14 este — AUTORITATÍV, a teljes WaterPumpGame.ras alapján ellenőrizve)
+## Fájlok és memória
+- Indításkor betöltött adatfájlok (saját asm `Fajl_Olvas`, a Lemmings ROM-hívássorával - a TVC unit olvasó
+  hívásai valós gépen NEM működnek): `SPRITES.BIN` -> U3 `$C000` (hangok, sprite-ok, font `$E100`; hossz =
+  `Spr_Hossz`, a `make_sprites_bin.ps1` kiírja - ha változik, a .ras-ban átírni!), `PALYAK.BIN` -> `$EF00`
+  (`Pal_Hossz`), `SZABALY.BIN` -> U2 `$9000` (4096 byte, oldalanként max 2048, `resources\szovegek\szabaly.txt` +
+  `make_szabaly_bin.ps1`; a régi `SZOVEG.BIN`/`jatekszabaly.txt` már NEM kell, `$FA00-$FDFF` szabad),
+  `MENU16.BIN` -> U2 `$A000` (16 színű főmenükép; cím = AQUALIQUE `Cim_C16`, a régi `Cim_C16_WaterPump`). Átmeneti puffer: `$8000` (U2; a pályamentés is).
+- Hiba betöltéskor: keret PIROS = nem nyílik, LILA = olvasási hiba (gombra vár).
+- U3 szabad: `$F57F-$F9FF` (1153 byte, a pályák nőhetnek ide), `$FE00-$FFFF`. U2 szabad: `$8000-$8FFF` (a `$9000-$9FFF` a SZABALY.BIN; játék
+  közben nem látszik; a `Kep_Rajz` mintája: pufferen át, `$13A0`). Videó-RAM: a kép alatt 1 KB (`$BC00`).
+- `MEM_48K_VID` (U0,U1,VID,U3) a játék alatt.
 
-> **Ez a szakasz a MÉRVADÓ, ha ellentmond egy korábbi (lejjebb következő,
-> dátumozott) bejegyzésnek.** A lenti "Verziótörténet"/"Jelenlegi
-> architektúra (state: WaterPump_fal_9.0...)"/"2026-09-11/12"-es szakaszok
-> egy MÁR RÉGEN felülírt, közbülső állapotot írnak le (a WaterPump.tru unit,
-> a Bomba, a Talaj2 bevezetése előttről) - történeti kontextusként hagytuk
-> meg őket, de a TÉNYLEGES kódhoz ez a szakasz + a "2026-09-14 (folyt. 4-13)"
-> bejegyzések (Bomba/Talaj2 teljes története) a mérvadók.
+## Szöveg és font (2026-10-26: font, szabály-képernyő, jelmagyarázat, AQUALIQUE főcím VISSZAIGAZOLVA, működik)
+- `Ir` / `Ir_Hossza`: pixelre arányos kiíró (betűnként 0..8 px szélesség a betűközzel), sorpuffer `$1460`,
+  1-es szín, byte-határon kezd, a végét byte-ra kerekíti. `font.bin` 1 bites: `$80+magasság`, 109 szélesség
+  (ASCII 32..122 + kód 123..140 = ÁÉÍÓÖŐÚÜŰáéíóöőúüű, 2026-10-25), soronként 109 byte; 873 byte
+  (`Spr_Hossz` 9321). A `make_szabaly_bin.ps1` az ékezeteseket 123..140-re kódolja; a .ras-beli string-literálokban NE legyen ékezet. Szerkesztő: `tools\charset_szerkeszto.html` (átírva).
+  A kisbetűket a felhasználó újrarajzolja. Az eredeti font: `font_eredeti.bin`.
+- Játékszabály (2026-10-26, visszaigazolva): főmenü 5. pont -> `Szabaly_Kepernyo` (1. oldal sztori; oldalanként U2 `Szab_Src` -> `Pause_Buf`,
+  `Szov_Kiir` 254/255 jelig, `Tuz_Var` lapoz) -> a jelmagyarázat is itt (4-5. oldal, `@IKON | szöveg` sorok, 253-as ikon-rekord, `Szov_Ikon`). A `szabaly.txt` SIMA SZÖVEG ("N. oldal", 1. sor cím, utolsó lábsor, CSUPA NAGY = fejezet);
+  a `make_szabaly_bin.ps1` tördel a font szélességeiből és hibát ír, ha egy oldal nem fér el.
 
-30×18 mezős rács (`Map` tömb, 540 elem) - **az EGYETLEN állapot-tömb**, nincs
-külön pool/tömb semmilyen játékelemhez. Kezdőképernyő: "SPACE-RE INDUL A
-JATEK" - SPACE-ig semmi nem fut (közben a Random generátor pörög = entrópia).
-A `Keret` sprite a mozgatható kurzor (`Keret_Mozog_Utem`(2) képkockánként lép
-egyet). **Space/F/B gombok NINCSENEK él-detektálva** (nyomva tartva minden
-képkockán újra lefutnak, ha van fedezet - ez SZÁNDÉKOS, nem hiba).
+## Játék - aktuális állapot (részletek: archívum, `Map` értékek, eszközök)
+- 30x18 `Map` (az egyetlen állapot-tömb). Pumpa (`WaterPump::PutAt`, 8 fázis, P1 kék `Pumpa.bin`, P2 zöld
+  `Pumpa2.bin`), fal, bomba, akna (4. eszköz), meteor (pályánként `MeteorTor`/`MeteorVir`), vírus (C64-modell).
+- Módok: egy játékos, co-op, versus (vírus-lerakás CSAK versusban, `Ikon_Sor(j)` rajzolja az ikonsort -
+  valós gépen visszaigazolva). Joystickos ikon-menü, M/Y eszközváltás, P pause, ESC/Q kilépés, R újrakezdés.
+- 11 egyjátékos/co-op + 6 versus pálya; import: `resources\palyak_import.ps1`, mérvadó `waterpump_palyak.json`.
+- Nyitott: LEVEL COMPLETED doboz nem végleges; HISCORE nincs; HOW TO USE szöveg; többfájlos betöltő
+  (címkép, pályák fájlba) - lásd memória `watergame-multifile-loader-plan`.
+- Utolsó mentett béta: `WaterPump_Final_Betav1.4` (09-25) - azóta minden munka bétán kívül.
 
-### `Map[]` érték-jelentések
-| Érték | Jelentés |
-|---|---|
-| `1..8` | Pumpa (`PumpaMap`=1, `PUMPA_FAZISOK`=8) - az animációs FÁZIS is IDE van kódolva |
-| `10` | Talaj1 (`Talaj1Map`) - sima, kezdeti talaj |
-| `11` | Fal (`FalMap`) - a vírus nem megy át rajta |
-| `12` | Talaj2 (`Talaj2Map`) - "roncsolt talaj" (bomba/meteor nyoma), ÉPÍTHETŐ, TARTÓS (nincs regenerálódás) |
-| `20+` | Vírus (`VirusMap`+fázis, 0..4) |
+## Teendők, amiket a felhasználó kért
+- **Az asm-et tartalmazó eljárásokat unitokba költöztetni** (17 eljárás, 729 asm-sor; csoportok: szöveg,
+  fájl/kép, képernyő-effekt, véletlen, játéklogika) - még nem kezdtük el.
+- **TVC known-bugs skill-oldal** (a SANE 82 hibájának TVC-re szűrése) - még nincs kész, új munkamenetben szólj.
 
-### Sprite-kirakás: KÉT PÁRHUZAMOS ÚT
-1. **`WaterPump::PutAt()`** (saját Z80 ASM unit, `WaterPump.tru`) -
-   **KIZÁRÓLAG a Pumpánál** (a felhasználó explicit kérése). Tábla-alapú
-   (`ScreenAddrTab` + `PumpaFazPtr_Tab`, egyszer felépítve `ProgramInit`-ben),
-   futásidőben nulla szorzás/SetPosition.
-2. **Bery/GE::Sprite** - MINDEN más: Talaj1/Talaj2/Fal/Enemy `.Put()`-tal
-   (nem maszkolt, saját `Mezo_ByteX_Tab`/`Mezo_SorCim_Tab` pozíciótáblákkal);
-   Keret/Meteor/Bomba `.Draw()`-val (maszkolt, `SaveBackground`/
-   `RestoreBackground` háttérpufferrel).
-   - A `WaterPump.tru`-ban van egy általánosított `PutAtRaw()` is (kész
-     Data-pointert kap, nem csak fázist) - ez KI LETT PRÓBÁLVA Enemy/Fal/
-     Talaj1 kirakására, de torz/hiányos grafikát adott, gyökérok
-     ismeretlen - JELENLEG SEHOL nincs hívva a projektben (lásd
-     "2026-09-14 (folyt. 3)").
-
-### Főciklus (2 fázisra bontva: SZÁMOLÁS vsync előtt, KIRAKÁS utána)
-1. Input (billentyű/joystick, Keret mozgás, Space=pumpa/F=fal/B=bomba)
-2. `PumpakSzamol()` - pumpa animációs fázis léptetése (csak Map-írás)
-3. `GE::WaitForSync()`
-4. `Meteor_Keret_Frissit()` (ha a meteor épp zuhan) VAGY `Keret_Frissit()`
-   (normál eset) - mindkettő hívja `PumpakKirak()`-ot
-5. Termelés (`Termel_Utem`=40), kolónia-vetés (~50 kép), vírus-lépés
-   (`Enemy_Utem`=1), meteor-trigger (random időzítés)
-
-### Játékelemek
-- **Pumpa** (Space, `Pumpa_price`=50): 8 fázisú animáció, lépésközös
-  (strided) `Map[]`-scan (`PUMPA_STEP`=7, `PUMPAK_CHUNK`=15/kép), rotáló
-  induló fázis lerakáskor (`Pumpa_Uj_Faz`).
-- **Fal** (F, `Tegla_price`=10): statikus, nem animált, blokkolja a vírust.
-- **Bomba** (B, `Bomba_price`=1000): KÉTFÁZISÚ `Bomba_Ledob()` - (1) BLOKKOLÓ
-  zuhanás-animáció a képernyő tetejétől a Keret soráig (`Bomba.MoveDownBy4()`,
-  saját `GE::WaitForSync()`-ciklus, a főciklustól függetlenül); (2) becsapódva
-  7×7 Manhattan-rombusz (≤3 táv., 25 mező) roncsolás → `Talaj2Map`.
-- **Meteor**: automatikus, véletlen időzítéssel induló, NEM blokkoló
-  (képkockánként lép a főciklusba ágyazva), 3×3 becsapódási zóna → `Talaj2Map`.
-- **Vírus** (Enemy): C64 `aqualiquex` 1:1 modell - kolónia-vetés,
-  növekedés (5 fázis), terjedés (3×3, átlósan is), pumpa-evés, fal blokkol.
-- **Gazdaság:** `Drill_Cash` kezdő 9000, `Pumpa_termel`=1/`Termel_Utem`=40
-  képkockánként. HUD: `CASH$:` (4 jegy), `PUMP:` (3 jegy); a `POZX:`/`POZY:`
-  kijelző ki van kommentelve (nem törölve, könnyen visszakapcsolható).
-
-### Kulcs GE-felismerés (2026-09-14, korábban nem dokumentált)
-**`Sprite.RestoreBackground()` a `LastPosition` mezőt használja célként
-(NEM a `Position`-t!)** - ezt kizárólag `UpdateLastPos()` állítja be. Minden
-mozgó sprite ciklusban (Restore→Move→Save→Draw) `UpdateLastPos()` KÖTELEZŐ a
-Draw UTÁN, különben a sprite "csíkot húz" (minden korábbi pozíciója a
-képernyőn marad). Lásd "2026-09-14 (folyt. 7)" a teljes diagnózisért.
-
-## Hangolható paraméterek (ha akadozik/villog vagy éppen lassúnak tűnik)
-
-> **MINDEN alábbi értéket a felhasználó aktívan piszkál build-ek között — a
-> `.ras` var blokk az EGYEDÜLI igazság.** Az alábbi "kb." értékek csak
-> nagyságrendet mutatnak (2026-08-30-i pillanatkép zárójelben).
-
-| Név | Típus/hely | Hatás |
-|---|---|---|
-| `MAX_PUMPAK` | `const byte`, var blokk (100) | max. egyidejű pumpák; a `Pumpak` tömb mérete |
-| `PUMPAK_CHUNK` | `const byte` (20) | hány pumpa anim frissül képkockánként — **fő perf-hangoló**, villog/akad → csökkentsd |
-| `PUMPA_FAZISOK` | `const byte` (8) | a `Pumpa.bin` fázisainak száma — ne bántsd grafika-csere nélkül |
-| `Drill_Cash` (kezdő) | `integer` (látott: 500–9999) | játékos kezdőtőkéje (HUD 0–9999) |
-| `Pumpa_price` | `integer` (látott: 50–100) | egy pumpa ára |
-| `Tegla_price` | `integer` (25) | egy fal-tégla ára (F gomb) |
-| `Bomba_price` | `integer` (1000) | egy bomba ára (B gomb) — rombusz alakú, 7x7 dobozban, Manhattan-táv.<=3 roncsolás |
-| `Pumpa_termel` | **`integer`** (látott: 2–100) | egy pumpa hozama ütemenként (byte-ban túlcsordulna!) |
-| `Termel_Utem` | `integer` (~50) | ennyi képkockánként termelnek a pumpák (~50 = 1 mp) |
-| `Keret_Mozog_Utem` | `byte` (látott: 2–6) | a Keret ennyi képkockánként léphet egyet — nagyobb = lassabb kurzor |
-| `ENEMY_PROBA_DB` | `const byte` (**6**; C64: 16) | `Enemyk_Mukodnek` hívásonként ennyi véletlen mező-minta = **max ennyi virus-`Enemy_Kirak` (SW sprite Put) képkockánként**. **Fő RASZTER-BUDGET szabályzó** (nem C64-fidelity — nálunk kevés az idő a sprite kirakásra). Akad/szakad → csökkentsd; van tartalék + lassú a vírus → óvatosan emeld |
-| `ENEMY_MAX_KOLONIA` | `const byte` (10, C64: `maxColonies`) | ennyi VETETT kolónia után új nem jön, csak terjedés (`Enemy_Terjedhet:=1`) |
-| `Enemy_Utem` | `byte` (1) | ennyi frame-enként fut `Enemyk_Mukodnek` (C64-modell = 1, minden frame). Nagyobb = lassabb vírus |
-| `ENEMY_MAX_FAZIS` | `const byte` (4) | az `enemy.bin` utolsó fázisának indexe (5 fázis = 0..4) |
-
-## TRSE nyelvi tanulságok (ezen projekt során derült ki)
-
-- **`Storing writetype index not supported yet` — INDEXELT tömb-elembe nem
-  írható közvetlenül egy `GE::Sprite`-MEZŐ értéke** (sem pointer, sem integer
-  mező). Pl. `arr[i] := Pumpa.AnimSet`, `arr[i] := Pumpa.Position`,
-  `arr[i] := arr[i] + Pumpa.Size` mind elhasal (2026-09-08, `array of integer`
-  tömbön). **Megkerülés: a mezőt előbb egy SIMA skalárba/const-ba mosd**
-  (`tmp := Pumpa.Position; arr[i] := tmp;` ill. `const PUMPA_FAZIS_MERET=16`),
-  utána a skalár/const már mehet indexelt tömbbe. SKALÁR lvalue-nál nincs
-  gond: `Pumpa.Data := arr[i]`, `Pumpa_Faz0_Cim := Pumpa.AnimSet` fordul.
-  Ugyanez a hiba jött elő az `array[N] of GE::Sprite` + `Pumpak[i].Data :=`
-  esetén is — ott a metódus (`InitAnimation`/`Animation`) volt a kerülőút.
-  Byte-tömb indexelt írása (`Pumpa_Aktiv[i]:=1`) MEGY.
-- **Nincs implicit globális változó.** Minden változót deklarálni kell a `var`
-  blokkban — a korábbi (2026 márciusi) build azért fordult, mert akkor még
-  léteztek a deklarációk, amik időközben kimaradtak. Ha "Could not find
-  variable" hibát kapsz, hiányzó deklaráció az ok.
-- **Tömbméretként csak `const`-tal deklarált érték használható**
-  (`const MAX_PUMPAK : byte = 100; ... array[MAX_PUMPAK] of ...`) — plain
-  `byte = szám` változó tömbméretként valószínűleg nem fordul.
-- **`Function`/`Procedure`** paraméterek lehetnek `global` nélkül is (helyi,
-  stack-szerű átadás) — nem csak a GE unit `global`-os mintája létezik.
-- **`if-then` egyetlen utasítással** `begin/end` nélkül is írható, `else`-vel
-  együtt is (`if (x) then Foo() else Bar();`).
-- **Összetett `if` feltétel (`A and B`) KÖTELEZŐEN külső zárójelpárba.**
-  `if (A) and (B) then` → fordítási hiba: `Expected THEN or DO after
-  conditional` (a parser az első `(A)` után lezártnak veszi a feltételt).
-  Helyesen: `if ((A) and (B)) then`. (Ugyanez a minta a működő joystick-
-  ellenőrzéseknél: `if (GE::Joystick(...) and (Keret_X_Pos > 1)) then`.)
-- **`and` láncolása NEM megy: zárójelpáronként csak EGY `and`.**
-  `if ((A) and (B) and (C)) then` → `Expected 'RPAREN' but found 'AND'`.
-  Három feltételre vagy mélyen egymásba ágyazott zárójel
-  (`if (((A) and (B)) and (C)) then` — nem tesztelt), vagy — a bevált út —
-  **két egymásba ágyazott `if`**:
-  `if ((A) and (B)) then if (C) then begin ... end;` (így csinálja a
-  `DrillLerak` a mező-üres + fedezet + pool-nem-tele hármas feltételt).
-- A **`not(összetett_kifejezés)`** használata bizonytalan/nem tesztelt —
-  helyette De Morgan-azonossággal (`<>` és `or`) írtuk át a feltételeket, ez
-  biztosan működik.
-- **`GE::Sprite` mezők közvetlenül elérhetők/írhatók** (pl. `Pumpa.Data`,
-  `Pumpa.AnimSet`, `Pumpa.Size`) — ez tette lehetővé a kézi animációs
-  fázisválasztást a beépített `Animation()` megkerülésével. **Ez a bevált
-  többfázisú minta** (Pumpa ÉS Enemy is így megy, működik):
-  1. a `.bin` = fejléc (`típus, szél, mag`) + N fázis egymás után, fázisonként
-     `szél*mag` byte;
-  2. `Sprite.Init(#Data,0,0,False)`; `Sprite.AnimSet := #Data + 3` (header
-     átugrása);
-  3. rajzoláskor `Sprite.Data := Sprite.AnimSet + faz * Sprite.Size;` majd
-     `SetPosition` + `Put`. (`faz * Sprite.Size` byte×spritemező szorzat is
-     rendben fordul/fut.)
-- **Integer aritmetika paraméteres/lokális kontextusban rendben van.** A
-  `HUD_Num4` (`maradek/1000`, `d*1000`, stb.), a `Pumpak_Termelnek` szorzata
-  (`termeny*Pumpa_termel`) és az `Enemy_Kirak` fázis-pointere mind `integer`
-  lokálisokkal/paraméterekkel dolgozik, és a 6.0 build hibátlanul lefordult +
-  fut. `/` = egész osztás (a `mod`-ot továbbra is `a-(a/b)*b` alakkal írjuk).
-  **Vegyes byte/integer szorzatnál** (pl. `Pumpa_db(byte) * Pumpa_termel`)
-  előbb integer lokálisba tettük az egyik operandust, hogy biztosan ne
-  csorduljon túl — ez bevált óvatossági minta.
-- **A TRSE-nek VAN CLI/headless fordítási módja** (2026-09-12, felhasználó
-  által megerősítve — a korábbi CLAUDE.md-megjegyzés, hogy nincs, TÉVES volt):
-  `trse.exe -cli op=project project=<...>.trse input_file=<...>.tru/.ras
-  assemble=yes`. Egyetlen `.tru` unit ÖNMAGÁBAN is fordítható vele (nem kell
-  hozzá a teljes `.ras`) — ilyenkor a csak a fő fájlból hívott globálisokra
-  (pl. `PutAt`/`Idx`/`Data`/`ScreenAddrTab`, ha épp a `WaterPump.tru`-t
-  fordítod önmagában) automatikusan jön egy ÁRTALMATLAN "Warning: Unused
-  variables" - ez nem hiba, csak azt jelzi, hogy ebben a fordításban semmi
-  sem hivatkozik rájuk. Hasznos gyors szintaxis-ellenőrzésre a teljes projekt
-  (és a hozzá tartozó VS Code build task) nélkül is.
-- **Nincs implicit forward deklaráció.** Egy eljárás/függvény csak akkor
-  hívhat meg egy másikat, ha az a fájlban KORÁBBAN van deklarálva (top-down
-  sorrend) — nincs automatikus előre-hivatkozás. Ha át kell rendezni a
-  hívási gráfot (pl. A most hívja B-t, de eddig A volt előrébb), a hívott
-  eljárást kell előrébb mozgatni a fájlban, nem elég csak a hívást
-  beszúrni. (A `forward` kulcsszó létezik a nyelvben explicit előre-
-  deklarációhoz, de ezt a projektben még nem próbáltuk ki.)
-- **`case <tömb-indexelt rekordmező> of` build hibát ad: `Could not find
-  variable 'data'`** (2026-09-11) — `case PumpaScreen[data].Van of ...`
-  (ahol `data` a ciklus lokális integer indexe) nem fordult, annak ellenére,
-  hogy ugyanez a kifejezés `if (PumpaScreen[data].Van=1) then` formában
-  korábban rendben lefordult/futott. **Megkerülés: a `case` kifejezését is
-  előbb egy sima skalárba kell "mosni"** (`van:=PumpaScreen[data].Van; case
-  van of ...`), utána fordul. Ugyanaz az alapelv, mint a "Storing writetype
-  index" workaround-nál: a `case`/tömb-index kombináció (legalábbis
-  integer-indexelt rekordtömbnél) nem megbízható közvetlenül, skalár
-  közbeiktatásával viszont igen.
-- **`const`, amire KIZÁRÓLAG nyers `asm()`-szövegből hivatkozunk (sehol
-  nincs valódi Rascal-szintű használata), a TELJES PROJEKT build-jének
-  optimalizálója KISZEDI** (2026-09-12, `WaterPump.tru`). Az egyetlen unitot
-  önmagában fordító `-cli op=project ... input_file=<egy .tru>` mód ezt NEM
-  szűri (ott simán lefordul, még "unused" figyelmeztetést sem kap a const
-  neve) — ezért tűnhet elsőre jónak egy ilyen önálló teszt-build után, de a
-  TELJES projekt (a `.ras`-t is behúzó) fordítása/assemblálása utólag
-  `Symbol '<Unit>_<Nev>' undefined` hibával elhasal, mert a végső `.asm`-ből
-  a const címkéje/EQU-ja teljesen hiányzik. **Megoldás: NE `const`, hanem
-  sima `var`-ként dekláráld**, ha egy értékre csak `asm()`-ből hivatkozol
-  (nincs rá valódi Rascal kifejezés) — egy VAR mindig valódi, memóriába írt
-  globális, amit a whole-program dead-code-elimination sosem szed ki
-  (ellenőrizve: a `GE::ScreenAddr` maga is pontosan emiatt `var`, nem
-  `const`, a `GE.tru`-ban - lásd "WaterPump.tru" szakasz). A `WaterPump_Idx`/
-  `WaterPump_Data`/`WaterPump_ScreenAddrTab` (mind VAR) ugyanígy kaptak
-  "Warning: Unused variables" figyelmeztetést az önálló unit-build alatt, DE
-  az csak figyelmeztetés maradt (nem lettek kiszedve) - a kiszedés
-  kifejezetten a `const`-okra vonatkozó, teljes-projekt szintű viselkedés.
-- **A TRSE fordító (`trse.exe`) ismerten instabil bizonyos mintákon —
-  hibaüzenet helyett teljesen ÖSSZEOMOLHAT** (exit code `3221225477` /
-  `0xC0000005`, access violation, VS Code taskként futtatva). Ha ezt látod,
-  az NEM feltétlenül a kódod logikai hibája, hanem a fordító saját bugja
-  lehet. Egy konkrét, ebben a projektben megfigyelt kiváltó minta: **egy
-  globális `boolean` változó, amit az egyik eljárás ÍR, egy másik eljárás
-  pedig OLVAS** (procedúrahatáron át kommunikáló boolean jelző) — ez
-  reprodukálhatóan összeomlasztotta a fordítót; helyette lokális
-  boolean-okkal és a logika egy eljárásba való összevonásával oldottuk meg
-  (lásd "Keret rajzolása" fent). Ha egy build erre a kilépőkódra fut, első
-  körben ezt a mintát érdemes gyanúsítani/kizárni, mielőtt mélyebb
-  debuggolásba kezdenél.
+## Munkastílus
+Magyarul, tömören; a lemez az igazság; `.bak_<név>` minden változtatás előtt; kétértelmű kérésnél az
+értelmezést egy mondatban kimondani; a felhasználó tesztel (emulátor: WinTVC/TMC20 - a TMC20 pumpa-lerakáskori
+képszétesése emulátorhiba); a CLAUDE.md-t frissíteni. A régi "ez a minta omlasztja össze a fordítót"
+tanulságok (globális boolean stb.) valószínűleg a régi exe mutató-hibája voltak (skill `trse-compiler.md`).

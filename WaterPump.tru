@@ -75,7 +75,6 @@ var
 	   (lasd a GE.tru sajat X/Y/ImagePtr stb. deklaraciojat, ugyanigy). */
 	Idx						: integer;
 	Faz						: byte;
-	DataPtr					: integer;
 
 	/* A pumpa-kep ismert merete (ugyanaz, mint korabban a fo .ras-ban
 	   volt): PUMPA_FAZISOK db fazis, fazisonkent PUMPA_FAZIS_MERET byte. */
@@ -234,88 +233,5 @@ var
 		");
 	end;
 
-	/* FIGYELEM (2026-09-14): a fo .ras-ban ideiglenesen kiprobaltuk ezt
-	   Enemy/Fal/Talaj1 kirakasara is - a build hibatlanul lefordult, DE
-	   FUTASKOR torz/hianyos grafikat adott (a virus- es pumpa-kepek
-	   egy resze "OK", mas resze szetesett/rossz mintat mutatott a
-	   kepernyon). A gyokerok MEG NINCS kideritve (a forras ES a
-	   generalt .asm is helyesnek nezett ki manualis atnezesre - lasd
-	   CLAUDE.md 2026-09-14 bejegyzes) - jelenleg EZ AZ ELJARAS NINCS
-	   HASZNALATBAN a projektben (a fo .ras visszaallt a Bery/GE::Sprite
-	   Put-ra Enemy/Fal/Talaj1-nel, a WaterPump::PutAt() marad az
-	   EGYETLEN hasznalt kirako, kizarolag a pumpahoz). Ha legkozelebb
-	   valaki ujra hasznalni akarja: ELOSZOR egy kis, onallo teszttel
-	   kell bebizonyitani, hogy tobb, egymast koveto PutAtRaw hivas
-	   (kulonbozo Idx/DataPtr ertekekkel, gyors egymasutanban, egy
-	   frame-en belul TOBBSZOR) helyesen viselkedik, mielott a jatekba
-	   visszakerulne.
-
-	   ALTALANOS valtozat: NEM a PumpaFazPtr_Tab-bol nezi ki a fazis-
-	   pointert, hanem KESZEN (mar kiszamolt Data-pointerkent) kapja -
-	   igy BARMELY 8x8, GRAPHICS4, NEM MASZKOLT, 16 byte/fazis sprite-ra
-	   hasznalhato (nemcsak a Pumpara), pl. Enemy (5 fazisu, sajat
-	   fazis-tablaval a fo .ras-ban), vagy egyfazisu "belyegzo" sprite-ok
-	   (Talaj1/Fal), ahol a hivo egyszeruen a "#Sprite_Data+3" cimet adja
-	   at (nincs is kulon fazistabla). Ugyanaz a ket-tablas lookup +
-	   kitekert blit, mint a PutAt()-ban, csak a masodik (fazis->pointer)
-	   lookup lepes hianyzik - azt mar a HIVO vegezte el (vagy nincs is
-	   ra szukseg egyfazisu sprite-nal). */
-	procedure PutAtRaw(Idx : global integer; DataPtr : global integer);
-	begin
-		asm("
-			ld hl,[WaterPump_Idx]
-			add hl,hl
-			ld bc,WaterPump_ScreenAddrTab
-			add hl,bc
-			ld e,(hl)
-			inc hl
-			ld d,(hl)
-			ld hl,[WaterPump_DataPtr]
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-			ex de,hl
-			ld bc,62
-			add hl,bc
-			ex de,hl
-			ldi
-			ldi
-		");
-	end;
 
 end.

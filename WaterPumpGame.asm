@@ -9,340 +9,340 @@
     db    0,0,0,0,0       ; BASIC header length is 20 bytes with this 5 zero bytes, and the code starting address is 6659 ($1A03)
     ; assembly code start
 ;    jp    $1A03            ; <- this is the decimal 6659 ($1A03) memory address.
-AKNA_FAZISOK EQU $10
-AKNA_MAX EQU $08
-ENEMY_FAZ_DB EQU $05
-ENEMY_MAX_FAZIS EQU $04
-ENEMY_MAX_KOLONIA EQU $0a
-ENEMY_PROBA_DB EQU $06
-FALSE EQU $00
-GE_BACK_SCREEN_ADDR EQU $c000
-GE_BORDER_BLACK EQU $00
-GE_BORDER_BLACK2 EQU $80
-GE_BORDER_BLUE EQU $82
-GE_BORDER_CYAN EQU $a2
-GE_BORDER_DARKBLUE EQU $02
-GE_BORDER_DARKCYAN EQU $22
 GE_BORDER_DARKGREEN EQU $20
-GE_BORDER_DARKMAGENTA EQU $0a
-GE_BORDER_DARKRED EQU $08
-GE_BORDER_DARKYELLOW EQU $28
-GE_BORDER_GRAY EQU $2a
-GE_BORDER_GREEN EQU $a0
+GE_JOY2_RIGHT EQU $2009
+GE_MEM_DEFAULT EQU $70
+TVC_JOY_UP EQU $02
+INDULO_PALYA EQU $01
+GE_SCROLL_UP_LEFT EQU $08
+GE_KEYBOARD_4 EQU $b55
+GE_KEY_B EQU $106
+GE_SCROLL_DOWN EQU $05
+GE_KEY_ESC EQU $807
+TVC_GRAPHICS16 EQU $02
+GE_JOY_UP EQU $02
+GE_GRAPHICS16 EQU $02
+GE_MEM_VID_ON EQU $50
+TVC_SOUND_HI_PORT EQU $05
 GE_BORDER_MAGENTA EQU $8a
+GE_SOUND_HI_PORT EQU $05
+METEOR_Y_RND EQU $82
+ENEMY_FAZ_DB EQU $05
+TVC_GR16_DARKCYAN EQU $05
+GE_BORDER_GREEN EQU $a0
+GE_KEYBOARD_2 EQU $b53
+GE_KEY_5 EQU $100
+TVC_PALETTE_DARK_BLUE EQU $01
+GE_JOY2_FIRE EQU $809
+GE_KEY_9 EQU $401
+TVC_PORT_3_MEM_MIRROR EQU $b11
+TVC_TEXT_STYLE_DEFAULT EQU $00
+METEOR_X_RND EQU $3a
+METEOR_FAZ_DB EQU $04
+TVC_BORDER_DARKGREEN EQU $20
+TVC_GR16_CYAN EQU $0d
+GE_PALETTE_CYAN EQU $51
+TVC_PALETTE_MAGENTA EQU $45
+TVC_GRAPH_MODE_PORT EQU $06
+GE_KEY_UUE EQU $2005
+GE_GR4_COLOR0 EQU $00
+FALSE EQU $00
+TVC_GR16_GRAY EQU $07
+GE_KEY_LOCK EQU $2006
+TVC_PALETTE_YELLOW EQU $54
+GE_GR16_COLOR_WHITE EQU $ff
+GE_SLOT_1_JOY3_PORT EQU $22
+TVC_SYS_LINE_STYLE EQU $b4c
+GE_BORDER_DARKYELLOW EQU $28
+GE_BORDER_DARKMAGENTA EQU $0a
+GE_SLOT_2_JOY3_PORT EQU $32
+GE_KEYBOARD_3 EQU $b54
+GE_PALETTE_DARKMAGENTA EQU $05
+TVC_BORDER_DARKBLUE EQU $02
+GE_KEYBOARD_1 EQU $b52
+WATERPUMP_PUMPA_FAZIS_MERET EQU $10
+GE_GR16_COLOR_DARKYELLOW EQU $3c
+TVC_TEXT_STYLE_TRANSPARENT EQU $02
+GE_KEY_1 EQU $4000
+GE_JOY2_LEFT EQU $4009
+TVC_FILE_BUFFER_TYPE EQU $b6b
+GE_KEY_3 EQU $200
+GE_GR16_COLOR_DARKGREEN EQU $30
+GE_KEY_F EQU $8004
+TVC_BORDER_BLUE EQU $82
+METEOR_FAZIS_MERET EQU $60
+GE_SLOT_3_BASE_ADDR EQU $d0
+TVC_LINE_MODE_DEFAULT EQU $00
+TVC_SYS_TIMER EQU $b1d
+GE_SCROLL_LEFT EQU $07
+GE_KEY_OO EQU $2001
+GE_SCROLL_UP_RIGHT EQU $02
+GE_JOY2_ACC EQU $1009
+GE_KEY_8 EQU $201
+GE_PORT_5_MEM_MIRROR EQU $b12
+GE_PALETTE_DARKBLUE EQU $01
+GE_MIRROR_TABLE EQU $1700
+GE_BORDER_DARKBLUE EQU $02
+GE_CRTC_VSYNC_POS EQU $07
+TVC_MEM_FULL_64K EQU $02
+TVC_GR16_MAGENTA EQU $0b
+GE_BORDER_DARKRED EQU $08
+GE_KEY_L EQU $405
+GE_BORDER_BLACK2 EQU $80
+GE_KEY_EQUAL EQU $4007
+GE_KEY_2 EQU $400
+GE_KEY_CARET EQU $101
+GE_KEY_O EQU $403
+GE_SLOT_1_BASE_ADDR EQU $70
+GE_JOY2_STATE EQU $b5a
+GE_KEY_A EQU $4004
+GE_PALETTE_DARKGREEN EQU $10
 GE_BORDER_RED EQU $88
+GE_KEYBOARD_6 EQU $b57
+GE_GR16_COLOR_DARKCYAN EQU $33
+GE_BORDER_CYAN EQU $a2
+TVC_SOUND_LO_PORT EQU $04
+GE_GAMECARD_JOY_DOWN EQU $02
+GE_PALETTE_GRAY EQU $15
+GE_SLOT_3_JOY4_PORT EQU $43
+TRUE EQU $01
+GE_KEY_D EQU $204
+GE_KEY_H EQU $1004
+GE_KEY_M EQU $8007
+GE_SLOT_2_JOY4_PORT EQU $33
+TVC_PALETTE_DARK_RED EQU $04
+TVC_MEM_DEFAULT EQU $00
+GE_GAMECARD_JOY_RIGHT EQU $08
+TVC_GR16_GREEN EQU $0c
+GE_KEY_I EQU $203
+TVC_SILENT_SOUND EQU $fff
+GE_SOUND_VOLUME_PORT EQU $06
+GE_JOY1_UP EQU $208
+GE_KEY_AT EQU $2002
+AKNA_FAZISOK EQU $10
+GE_GR16_COLOR_YELLOW EQU $fc
+TVC_PALETTE_GREEN EQU $50
+TVC_SOUND_VOLUME_PORT EQU $06
+MEZO_BX_DB EQU $1f
+TVC_PALETTE_GRAY EQU $15
 GE_BORDER_WHITE EQU $aa
 GE_BORDER_YELLOW EQU $a8
-GE_CRTC_DATA_PORT EQU $71
-GE_CRTC_REG_PORT EQU $70
-GE_CRTC_VSYNC_POS EQU $07
-GE_DIGI_FREQ_2_KHZ EQU $9e
-GE_DIGI_FREQ_4_KHZ EQU $ce
-GE_DIGI_FREQ_8_KHZ EQU $e8
-GE_DIGI_TYPE_1X4BIT EQU $00
-GE_DIGI_TYPE_2X4BIT EQU $01
-GE_DIRECT_TO_SCREEN EQU $00
-GE_EXT_SLOT_COUNT EQU $04
-GE_GAMECARD_JOY_DOWN EQU $02
-GE_GAMECARD_JOY_FIRE EQU $10
-GE_GAMECARD_JOY_LEFT EQU $04
-GE_GAMECARD_JOY_RIGHT EQU $08
-GE_GAMECARD_JOY_UP EQU $01
-GE_GR16_COLOR_BLACK EQU $00
-GE_GR16_COLOR_BLACK2 EQU $c0
-GE_GR16_COLOR_BLUE EQU $c3
-GE_GR16_COLOR_CYAN EQU $f3
-GE_GR16_COLOR_DARKBLUE EQU $03
-GE_GR16_COLOR_DARKCYAN EQU $33
-GE_GR16_COLOR_DARKGREEN EQU $30
-GE_GR16_COLOR_DARKMAGENTA EQU $0f
-GE_GR16_COLOR_DARKRED EQU $0c
-GE_GR16_COLOR_DARKYELLOW EQU $3c
-GE_GR16_COLOR_GRAY EQU $3f
-GE_GR16_COLOR_GREEN EQU $f0
-GE_GR16_COLOR_MAGENTA EQU $cf
-GE_GR16_COLOR_RED EQU $cc
-GE_GR16_COLOR_WHITE EQU $ff
-GE_GR16_COLOR_YELLOW EQU $fc
-GE_GR4_COLOR0 EQU $00
-GE_GR4_COLOR1 EQU $f0
-GE_GR4_COLOR2 EQU $0f
-GE_GR4_COLOR3 EQU $ff
-GE_GRAPHICS16 EQU $02
-GE_GRAPHICS2 EQU $00
-GE_GRAPHICS4 EQU $01
-GE_GRAPH_MODE_PORT EQU $06
-GE_IMAGE_CLASS_SIZE EQU $0b
-GE_JOY1_ACC EQU $1008
-GE_JOY1_DOWN EQU $408
-GE_JOY1_FIRE EQU $808
-GE_JOY1_LEFT EQU $4008
-GE_JOY1_RIGHT EQU $2008
-GE_JOY1_STATE EQU $b59
-GE_JOY1_UP EQU $208
-GE_JOY2_ACC EQU $1009
-GE_JOY2_DOWN EQU $409
-GE_JOY2_FIRE EQU $809
-GE_JOY2_LEFT EQU $4009
-GE_JOY2_RIGHT EQU $2009
-GE_JOY2_STATE EQU $b5a
-GE_JOY2_UP EQU $209
-GE_JOY_DOWN EQU $04
-GE_JOY_FIRE EQU $08
-GE_JOY_LEFT EQU $40
-GE_JOY_RIGHT EQU $20
-GE_JOY_UP EQU $02
-GE_KEYBOARD_0 EQU $b51
-GE_KEYBOARD_1 EQU $b52
-GE_KEYBOARD_2 EQU $b53
-GE_KEYBOARD_3 EQU $b54
-GE_KEYBOARD_4 EQU $b55
-GE_KEYBOARD_5 EQU $b56
-GE_KEYBOARD_6 EQU $b57
-GE_KEYBOARD_7 EQU $b58
-GE_KEYBOARD_ROW_SEL_PORT EQU $03
-GE_KEY_$ EQU $802
-GE_KEY_0 EQU $800
-GE_KEY_1 EQU $4000
-GE_KEY_2 EQU $400
-GE_KEY_3 EQU $200
-GE_KEY_4 EQU $8000
-GE_KEY_5 EQU $100
-GE_KEY_6 EQU $1000
-GE_KEY_7 EQU $8001
-GE_KEY_8 EQU $201
-GE_KEY_9 EQU $401
-GE_KEY_A EQU $4004
-GE_KEY_AA EQU $805
-GE_KEY_ALT EQU $107
-GE_KEY_AT EQU $2002
-GE_KEY_B EQU $106
-GE_KEY_BACKSLASH EQU $804
-GE_KEY_BRACKET1 EQU $1003
-GE_KEY_BRACKET2 EQU $103
-GE_KEY_C EQU $206
-GE_KEY_CARET EQU $101
-GE_KEY_COMMA EQU $207
-GE_KEY_CTRL EQU $1007
-GE_KEY_D EQU $204
-GE_KEY_DEL EQU $105
-GE_KEY_DOT EQU $407
-GE_KEY_E EQU $202
-GE_KEY_EE EQU $4005
-GE_KEY_EQUAL EQU $4007
-GE_KEY_ESC EQU $807
-GE_KEY_F EQU $8004
-GE_KEY_G EQU $104
-GE_KEY_H EQU $1004
-GE_KEY_I EQU $203
-GE_KEY_II EQU $2000
-GE_KEY_INS EQU $108
-GE_KEY_J EQU $8005
-GE_KEY_K EQU $205
-GE_KEY_L EQU $405
-GE_KEY_LESS EQU $2004
-GE_KEY_LOCK EQU $2006
-GE_KEY_M EQU $8007
-GE_KEY_N EQU $1006
-GE_KEY_O EQU $403
-GE_KEY_OE EQU $4001
-GE_KEY_OO EQU $2001
-GE_KEY_OOE EQU $803
-GE_KEY_P EQU $4003
-GE_KEY_Q EQU $4002
-GE_KEY_R EQU $8002
-GE_KEY_READ_PORT EQU $58
-GE_KEY_RET EQU $1005
-GE_KEY_S EQU $404
-GE_KEY_SHIFT EQU $806
-GE_KEY_SPACE EQU $2007
-GE_KEY_STAR EQU $1001
-GE_KEY_T EQU $102
-GE_KEY_U EQU $8003
-GE_KEY_UE EQU $801
-GE_KEY_UU EQU $2003
-GE_KEY_UUE EQU $2005
-GE_KEY_V EQU $8006
-GE_KEY_W EQU $402
-GE_KEY_X EQU $406
-GE_KEY_Y EQU $4006
-GE_KEY_Z EQU $1002
-GE_LOOP_BACKWARD EQU $02
-GE_LOOP_FORWARD EQU $00
-GE_LOOP_PINGPONG EQU $01
-GE_MAX_VOLUME EQU $0f
-GE_MEM_48K_VID EQU $90
-GE_MEM_DEFAULT EQU $70
-GE_MEM_FULL_64K EQU $b0
-GE_MEM_VID_ON EQU $50
-GE_MIRROR_TABLE EQU $1700
-GE_MIRROR_TABLE_HI EQU $17
-GE_PALETTE_BLACK EQU $00
-GE_PALETTE_BLACK2 EQU $40
-GE_PALETTE_BLUE EQU $41
-GE_PALETTE_CYAN EQU $51
-GE_PALETTE_DARKBLUE EQU $01
-GE_PALETTE_DARKCYAN EQU $11
-GE_PALETTE_DARKGREEN EQU $10
-GE_PALETTE_DARKMAGENTA EQU $05
-GE_PALETTE_DARKRED EQU $04
-GE_PALETTE_DARKYELLOW EQU $14
-GE_PALETTE_GRAY EQU $15
-GE_PALETTE_GREEN EQU $50
-GE_PALETTE_MAGENTA EQU $45
 GE_PALETTE_RED EQU $44
 GE_PALETTE_WHITE EQU $55
-GE_PALETTE_YELLOW EQU $54
-GE_PORT_3_MEM_MIRROR EQU $b11
-GE_PORT_5_MEM_MIRROR EQU $b12
-GE_PORT_6_MEM_MIRROR EQU $b13
-GE_SCREEN_ADDR EQU $8000
-GE_SCREEN_HEIGHT EQU $f0
-GE_SCREEN_SIZE EQU $3c00
-GE_SCREEN_WIDTH EQU $40
-GE_SCROLL_DOWN EQU $05
-GE_SCROLL_DOWN_LEFT EQU $06
-GE_SCROLL_DOWN_RIGHT EQU $04
-GE_SCROLL_LEFT EQU $07
-GE_SCROLL_RIGHT EQU $03
-GE_SCROLL_UP EQU $01
-GE_SCROLL_UP_LEFT EQU $08
-GE_SCROLL_UP_RIGHT EQU $02
-GE_SILENT_SOUND EQU $fff
-GE_SLOT_0_BASE_ADDR EQU $40
-GE_SLOT_0_JOY3_PORT EQU $12
-GE_SLOT_0_JOY4_PORT EQU $13
-GE_SLOT_1_BASE_ADDR EQU $70
-GE_SLOT_1_JOY3_PORT EQU $22
-GE_SLOT_1_JOY4_PORT EQU $23
-GE_SLOT_2_BASE_ADDR EQU $a0
-GE_SLOT_2_JOY3_PORT EQU $32
-GE_SLOT_2_JOY4_PORT EQU $33
-GE_SLOT_3_BASE_ADDR EQU $d0
-GE_SLOT_3_JOY3_PORT EQU $42
-GE_SLOT_3_JOY4_PORT EQU $43
-GE_SLOT_RAM_AREA_SIZE EQU $30
-GE_SOUND_HI_PORT EQU $05
-GE_SOUND_IT_50HZ EQU $4d
-GE_SOUND_LO_PORT EQU $04
-GE_SOUND_VOLUME_PORT EQU $06
-GE_SPRITE_CLASS_SIZE EQU $27
-GE_SYS_BORDER_COLOR EQU $b4f
-GE_SYS_BORDER_PORT EQU $00
-GE_SYS_GRAPH_MODE EQU $b13
-GE_SYS_IT_PORT EQU $07
-GE_USE_BACK_SCREEN EQU $01
-IKON_Y EQU $1e
-INDULO_PALYA EQU $01
-METEOR_ANIM_UTEM EQU $03
-METEOR_FAZIS_MERET EQU $60
-METEOR_FAZ_DB EQU $04
-METEOR_FIGY_IDO EQU $64
-METEOR_LE_PX EQU $03
-METEOR_START_Y EQU $1a
-METEOR_X_MIN EQU $02
-METEOR_X_RND EQU $3a
-METEOR_Y_MIN EQU $46
-METEOR_Y_RND EQU $82
-MEZO_BX_DB EQU $1f
-MEZO_SY_DB EQU $13
-PALYA2_DB EQU $06
-PALYA_DB EQU $0b
-PUMPAK_CHUNK EQU $0f
-PUMPA_FAZISOK EQU $08
-PUMPA_FAZIS_MERET EQU $10
-PUMPA_STEP EQU $07
+GE_BORDER_BLUE EQU $82
 TERKEP_MERET EQU $21c
-TRUE EQU $01
+GE_KEY_T EQU $102
+GE_KEY_Q EQU $4002
+GE_SCROLL_UP EQU $01
 TVC_BORDER_BLACK EQU $00
-TVC_BORDER_BLACK2 EQU $80
-TVC_BORDER_BLUE EQU $82
-TVC_BORDER_CYAN EQU $a2
-TVC_BORDER_DARKBLUE EQU $02
-TVC_BORDER_DARKCYAN EQU $22
-TVC_BORDER_DARKGREEN EQU $20
-TVC_BORDER_DARKMAGENTA EQU $0a
-TVC_BORDER_DARKRED EQU $08
-TVC_BORDER_DARKYELLOW EQU $28
-TVC_BORDER_GRAY EQU $2a
-TVC_BORDER_GREEN EQU $a0
-TVC_BORDER_MAGENTA EQU $8a
-TVC_BORDER_RED EQU $88
-TVC_BORDER_WHITE EQU $aa
-TVC_BORDER_YELLOW EQU $a8
-TVC_FILE_BUFFER_TYPE EQU $b6b
-TVC_GR16_BLACK EQU $00
-TVC_GR16_BLACK2 EQU $08
-TVC_GR16_BLUE EQU $09
-TVC_GR16_CYAN EQU $0d
-TVC_GR16_DARKBLUE EQU $01
-TVC_GR16_DARKCYAN EQU $05
-TVC_GR16_DARKGREEN EQU $04
-TVC_GR16_DARKMAGENTA EQU $03
-TVC_GR16_DARKRED EQU $02
-TVC_GR16_DARKYELLOW EQU $06
-TVC_GR16_GRAY EQU $07
-TVC_GR16_GREEN EQU $0c
-TVC_GR16_MAGENTA EQU $0b
-TVC_GR16_RED EQU $0a
-TVC_GR16_WHITE EQU $0f
-TVC_GR16_YELLOW EQU $0e
-TVC_GRAPHICS16 EQU $02
-TVC_GRAPHICS2 EQU $00
-TVC_GRAPHICS4 EQU $01
-TVC_GRAPH_MODE_PORT EQU $06
-TVC_JOY_DOWN EQU $04
-TVC_JOY_FIRE EQU $08
-TVC_JOY_LEFT EQU $40
-TVC_JOY_RIGHT EQU $20
-TVC_JOY_UP EQU $02
-TVC_LINE_MODE_AND EQU $02
-TVC_LINE_MODE_DEFAULT EQU $00
-TVC_LINE_MODE_OR EQU $01
+GE_KEY_P EQU $4003
 TVC_LINE_MODE_XOR EQU $03
-TVC_MAX_VOLUME EQU $0f
-TVC_MEM_48K_VID EQU $03
-TVC_MEM_DEFAULT EQU $00
-TVC_MEM_FULL_64K EQU $02
-TVC_MEM_VID_ON EQU $01
-TVC_PALETTE_BLACK EQU $00
-TVC_PALETTE_BLACK2 EQU $40
-TVC_PALETTE_BLUE EQU $41
-TVC_PALETTE_CYAN EQU $51
-TVC_PALETTE_DARK_BLUE EQU $01
-TVC_PALETTE_DARK_CYAN EQU $11
-TVC_PALETTE_DARK_GREEN EQU $10
-TVC_PALETTE_DARK_MAGENTA EQU $05
-TVC_PALETTE_DARK_RED EQU $04
-TVC_PALETTE_DARK_YELLOW EQU $14
-TVC_PALETTE_GRAY EQU $15
-TVC_PALETTE_GREEN EQU $50
-TVC_PALETTE_MAGENTA EQU $45
-TVC_PALETTE_RED EQU $44
+GE_KEY_LESS EQU $2004
+ENEMY_PROBA_DB EQU $06
+GE_GR16_COLOR_BLUE EQU $c3
+TVC_BORDER_DARKYELLOW EQU $28
 TVC_PALETTE_WHITE EQU $55
-TVC_PALETTE_YELLOW EQU $54
-TVC_PORT_3_MEM_MIRROR EQU $b11
+GE_KEY_J EQU $8005
+GE_KEY_BRACKET1 EQU $1003
+GE_GR4_COLOR3 EQU $ff
+METEOR_LE_PX EQU $03
+TVC_BORDER_DARKMAGENTA EQU $0a
+GE_SLOT_RAM_AREA_SIZE EQU $30
+GE_SLOT_2_BASE_ADDR EQU $a0
+GE_JOY2_DOWN EQU $409
+TVC_BORDER_BLACK2 EQU $80
+GE_DIRECT_TO_SCREEN EQU $00
 TVC_PORT_5_MEM_MIRROR EQU $b12
-TVC_PORT_6_MEM_MIRROR EQU $b13
-TVC_SILENT_SOUND EQU $fff
-TVC_SOUND_HI_PORT EQU $05
-TVC_SOUND_LO_PORT EQU $04
-TVC_SOUND_VOLUME_PORT EQU $06
-TVC_SYS_BORDER_COLOR EQU $b4f
-TVC_SYS_BORDER_PORT EQU $00
-TVC_SYS_GRAPH_MODE EQU $b13
-TVC_SYS_INK_COLOR EQU $b4d
+GE_PALETTE_BLUE EQU $41
+TVC_PALETTE_DARK_GREEN EQU $10
+PUMPAK_CHUNK EQU $0f
+GE_PALETTE_GREEN EQU $50
+GE_KEY_OE EQU $4001
+GE_KEY_DOT EQU $407
+GE_GR16_COLOR_BLACK EQU $00
+GE_PALETTE_DARKRED EQU $04
+TVC_PALETTE_BLACK2 EQU $40
+TVC_GR16_BLACK EQU $00
+GE_SLOT_3_JOY3_PORT EQU $42
+GE_KEY_INS EQU $108
 TVC_SYS_LINE_MODE EQU $b4b
-TVC_SYS_LINE_STYLE EQU $b4c
-TVC_SYS_PAPER_COLOR EQU $b4e
-TVC_SYS_TEXT_STYLE_FLAG EQU $b50
-TVC_SYS_TIMER EQU $b1d
-TVC_TEXT_STYLE_DEFAULT EQU $00
-TVC_TEXT_STYLE_INVISIBLE EQU $03
-TVC_TEXT_STYLE_NO_INK EQU $01
-TVC_TEXT_STYLE_TRANSPARENT EQU $02
 WATERPUMP_PUMPA_FAZISOK EQU $08
-WATERPUMP_PUMPA_FAZIS_MERET EQU $10
+TVC_PALETTE_DARK_CYAN EQU $11
+GE_KEY_ALT EQU $107
+GE_KEY_X EQU $406
+GE_USE_BACK_SCREEN EQU $01
+TVC_GR16_DARKYELLOW EQU $06
+GE_MEM_FULL_64K EQU $b0
+GE_KEY_W EQU $402
+GE_KEY_COMMA EQU $207
+GE_KEY_Y EQU $4006
+GE_KEY_SHIFT EQU $806
+GE_PALETTE_DARKYELLOW EQU $14
+GE_CRTC_REG_PORT EQU $70
+GE_PALETTE_YELLOW EQU $54
+GE_GR16_COLOR_DARKMAGENTA EQU $0f
+TVC_BORDER_GRAY EQU $2a
+TVC_JOY_RIGHT EQU $20
+GE_MIRROR_TABLE_HI EQU $17
+TVC_GR16_DARKBLUE EQU $01
+GE_JOY2_UP EQU $209
+TVC_JOY_FIRE EQU $08
+TVC_PALETTE_RED EQU $44
+TVC_BORDER_DARKCYAN EQU $22
+GE_KEY_READ_PORT EQU $58
+GE_GR4_COLOR2 EQU $0f
+GE_IMAGE_CLASS_SIZE EQU $0b
+GE_GRAPHICS4 EQU $01
+TVC_GR16_DARKGREEN EQU $04
+GE_GR4_COLOR1 EQU $f0
+ENEMY_MAX_FAZIS EQU $04
+GE_GRAPH_MODE_PORT EQU $06
+GE_KEY_SPACE EQU $2007
+PALYA_DB EQU $0b
+GE_SCREEN_WIDTH EQU $40
+TVC_SYS_TEXT_STYLE_FLAG EQU $b50
+TVC_LINE_MODE_OR EQU $01
+GE_SCROLL_DOWN_LEFT EQU $06
+GE_GRAPHICS2 EQU $00
+GE_GR16_COLOR_BLACK2 EQU $c0
+TVC_BORDER_MAGENTA EQU $8a
+GE_BACK_SCREEN_ADDR EQU $c000
+TVC_BORDER_CYAN EQU $a2
+GE_BORDER_BLACK EQU $00
+GE_KEY_R EQU $8002
+GE_GAMECARD_JOY_FIRE EQU $10
+GE_SCREEN_SIZE EQU $3c00
+GE_KEY_BACKSLASH EQU $804
+GE_GAMECARD_JOY_UP EQU $01
+GE_PALETTE_DARKCYAN EQU $11
+GE_KEY_U EQU $8003
+TVC_PALETTE_BLUE EQU $41
+GE_SLOT_1_JOY4_PORT EQU $23
+GE_SOUND_LO_PORT EQU $04
+TVC_SYS_INK_COLOR EQU $b4d
+GE_KEY_OOE EQU $803
+GE_MEM_48K_VID EQU $90
+TVC_GRAPHICS2 EQU $00
+METEOR_ANIM_UTEM EQU $03
+GE_EXT_SLOT_COUNT EQU $04
+GE_DIGI_TYPE_2X4BIT EQU $01
+GE_KEY_E EQU $202
+GE_JOY1_DOWN EQU $408
+GE_KEY_K EQU $205
+GE_KEY_G EQU $104
+TVC_PALETTE_BLACK EQU $00
+GE_SLOT_0_BASE_ADDR EQU $40
+GE_KEYBOARD_ROW_SEL_PORT EQU $03
+GE_GR16_COLOR_DARKRED EQU $0c
+TVC_BORDER_YELLOW EQU $a8
+GE_PALETTE_BLACK EQU $00
+GE_KEY_V EQU $8006
+MEZO_SY_DB EQU $13
+TVC_MAX_VOLUME EQU $0f
+GE_SYS_BORDER_PORT EQU $00
+TVC_GR16_RED EQU $0a
+GE_SYS_IT_PORT EQU $07
+IKON_Y EQU $1e
+GE_SPRITE_CLASS_SIZE EQU $27
+TVC_JOY_LEFT EQU $40
+GE_MAX_VOLUME EQU $0f
+TVC_SYS_BORDER_PORT EQU $00
+GE_KEY_UU EQU $2003
+GE_GR16_COLOR_CYAN EQU $f3
+TVC_GR16_BLUE EQU $09
+GE_KEY_AA EQU $805
+TVC_PORT_6_MEM_MIRROR EQU $b13
+AKNA_MAX EQU $08
+GE_GR16_COLOR_DARKBLUE EQU $03
+GE_KEY_N EQU $1006
+GE_PALETTE_MAGENTA EQU $45
+TVC_BORDER_WHITE EQU $aa
+PUMPA_FAZISOK EQU $08
+GE_KEYBOARD_5 EQU $b56
+GE_GR16_COLOR_GRAY EQU $3f
+GE_GR16_COLOR_MAGENTA EQU $cf
+GE_KEY_BRACKET2 EQU $103
+TVC_PALETTE_DARK_YELLOW EQU $14
+GE_BORDER_GRAY EQU $2a
+GE_JOY_RIGHT EQU $20
+GE_SYS_BORDER_COLOR EQU $b4f
+GE_DIGI_FREQ_8_KHZ EQU $e8
+GE_SYS_GRAPH_MODE EQU $b13
+GE_JOY1_FIRE EQU $808
+TVC_LINE_MODE_AND EQU $02
+GE_SLOT_0_JOY4_PORT EQU $13
+GE_KEY_CTRL EQU $1007
+GE_KEY_6 EQU $1000
+GE_JOY1_RIGHT EQU $2008
+METEOR_X_MIN EQU $02
+TVC_BORDER_RED EQU $88
+GE_GR16_COLOR_RED EQU $cc
+GE_BORDER_DARKCYAN EQU $22
+GE_SCROLL_DOWN_RIGHT EQU $04
+TVC_SYS_BORDER_COLOR EQU $b4f
+GE_SCREEN_HEIGHT EQU $f0
+PUMPA_FAZIS_MERET EQU $10
+GE_PALETTE_BLACK2 EQU $40
+GE_KEY_UE EQU $801
+GE_KEY_4 EQU $8000
+GE_CRTC_DATA_PORT EQU $71
+GE_GAMECARD_JOY_LEFT EQU $04
+TVC_GR16_YELLOW EQU $0e
+TVC_GR16_DARKRED EQU $02
+GE_KEY_0 EQU $800
+METEOR_FIGY_IDO EQU $64
+TVC_GR16_BLACK2 EQU $08
+TVC_GRAPHICS4 EQU $01
+GE_SOUND_IT_50HZ EQU $4d
+GE_SCREEN_ADDR EQU $8000
+TVC_BORDER_DARKRED EQU $08
+GE_JOY_FIRE EQU $08
+TVC_PALETTE_CYAN EQU $51
+GE_KEY_Z EQU $1002
+METEOR_Y_MIN EQU $46
+GE_GR16_COLOR_GREEN EQU $f0
+TVC_BORDER_GREEN EQU $a0
+GE_KEY_RET EQU $1005
+TVC_GR16_WHITE EQU $0f
+GE_JOY1_LEFT EQU $4008
+GE_JOY_LEFT EQU $40
+GE_KEY_C EQU $206
+GE_KEYBOARD_0 EQU $b51
+GE_DIGI_FREQ_2_KHZ EQU $9e
+TVC_SYS_GRAPH_MODE EQU $b13
+GE_KEY_STAR EQU $1001
+GE_LOOP_PINGPONG EQU $01
+GE_KEY_7 EQU $8001
+GE_SCROLL_RIGHT EQU $03
+GE_KEY_II EQU $2000
+GE_KEY_$ EQU $802
+PALYA2_DB EQU $06
+TVC_JOY_DOWN EQU $04
+GE_KEYBOARD_7 EQU $b58
+GE_PORT_3_MEM_MIRROR EQU $b11
+GE_LOOP_BACKWARD EQU $02
+GE_SILENT_SOUND EQU $fff
+GE_KEY_DEL EQU $105
+METEOR_START_Y EQU $1a
+GE_SLOT_0_JOY3_PORT EQU $12
+PUMPA_STEP EQU $07
+TVC_TEXT_STYLE_NO_INK EQU $01
+GE_DIGI_FREQ_4_KHZ EQU $ce
+TVC_GR16_DARKMAGENTA EQU $03
+TVC_MEM_48K_VID EQU $03
+GE_JOY_DOWN EQU $04
+GE_JOY1_STATE EQU $b59
+GE_KEY_EE EQU $4005
+GE_LOOP_FORWARD EQU $00
+GE_KEY_S EQU $404
+ENEMY_MAX_KOLONIA EQU $0a
+GE_PORT_6_MEM_MIRROR EQU $b13
+GE_JOY1_ACC EQU $1008
+TVC_MEM_VID_ON EQU $01
+TVC_TEXT_STYLE_INVISIBLE EQU $03
+GE_DIGI_TYPE_1X4BIT EQU $00
+TVC_SYS_PAPER_COLOR EQU $b4e
+TVC_PALETTE_DARK_MAGENTA EQU $05
 StartBlock19ef:
 	jp block1
 TVC_Mode equ $e48
@@ -545,16 +545,17 @@ BombaIkon:
 	Font_Data equ $e100
 Spr_Nev:	db $b, $73, $70, $72, $69, $74, $65, $73
 	db $2e, $62, $69, $6e, $0
-Spr_Hossz:	dw	$2656
+Spr_Hossz:	dw	$2469
 Spr_Buf: dw  0
 Pal_Nev:	db $a, $70, $61, $6c, $79, $61, $6b, $2e
 	db $62, $69, $6e, $0
 Fajl_Nev: dw  0
-Szov_Nev:	db $a, $73, $7a, $6f, $76, $65, $67, $2e
-	db $62, $69, $6e, $0
 Szov_P: dw  0
 Men_Nev:	db $a, $6d, $65, $6e, $75, $31, $36, $2e
 	db $62, $69, $6e, $0
+Szab_Nev:	db $b, $73, $7a, $61, $62, $61, $6c, $79
+	db $2e, $62, $69, $6e, $0
+Szab_Src:	dw	$00
 Kep_Src:	dw	$00
 Kep_Dst:	dw	$00
 Kep_W:	db	$00
@@ -562,6 +563,7 @@ Kep_H:	db	$00
 Menu16:	db	$00
 Fajl_Hossz:	dw	0
 Fajl_Cel:	dw	0
+Fajl_Hiba:	db	$00
 	; Declaring string asmz80
 LvlStr:		db	"LVL:"
 	db	0
@@ -717,6 +719,11 @@ Ir_Szoveg: dw  0
 Ir_Cim:	dw	$00
 Ir_Szel:	db	$00
 Ir_Hossz:	db	$00
+Ir_Px:	db	$00
+Ir_Bdb:	db	$00
+Ir_H:	db	$00
+Ir_Sor0:	dw	$00
+Ir_Dst:	dw	$00
 JegyStr:	db $30, $0
 Jegy_Sz:	db	$02
 Cash_X:	db	0
@@ -726,6 +733,159 @@ Pump2_X:	db	0
 Lives_X:	db	0
 Ossz_X:	db	0
 Cel_X:	db	0
+	
+; //	if (X > 63) then
+; //	  X := 63;
+; //	if (Y > 239) then
+; //	  Y := 239;
+; //	if (Width = 0) then
+; //		Width := 1;
+; //	if (Height = 0) then
+; //		Height := 1;
+; //	if (X + Width > 64) then
+; //		Width := 64 - X;
+; //	if (Y + Height > 240) then
+; //		Height := 240 - Y;
+; //	
+; // Draw filled rectangle 	================================================
+; //	            K E Y B O A R D
+; //=================================================*
+; //Waiting for any key pressing.<br/>
+; //Return to pressed key code.<br/>
+; //<br/>
+; //Example: if (TVC::ReadKey() = 13) then Start();<br/>
+; //<br/>
+; //Uses the System ROM (firmware) function.<br/>
+; 
+
+	; ***********  Defining procedure : TVC_ReadKey
+	;    Procedure type : User-defined procedure
+ ; Temp vars section
+	; Declaring string asmz80
+ProgramInit_stringassignstr102:		db	"0"
+	db	0
+	; Declaring string asmz80
+MapToScreen_stringassignstr577:		db	"P1$:"
+	db	0
+	; Declaring string asmz80
+MapToScreen_stringassignstr617:		db	"P2$:"
+	db	0
+	; Declaring string asmz80
+MapToScreen_stringassignstr620:		db	"P2$:"
+	db	0
+	; Declaring string asmz80
+Pause_Kezel_stringassignstr1521:		db	"GAME PAUSED"
+	db	0
+	; Declaring string asmz80
+Pause_Kezel_stringassignstr1524:		db	"GAME PAUSED"
+	db	0
+	; Declaring string asmz80
+Exit_Kerdes_stringassignstr2006:		db	"EXIT TO MENU ?"
+	db	0
+	; Declaring string asmz80
+Exit_Kerdes_stringassignstr2008:		db	"ESC/Q = YES"
+	db	0
+	; Declaring string asmz80
+Exit_Kerdes_stringassignstr2010:		db	"OTHER KEY = NO"
+	db	0
+	; Declaring string asmz80
+Kod_Bevitel_stringassignstr3322:		db	"PALYAKOD"
+	db	0
+	; Declaring string asmz80
+Kod_Bevitel_stringassignstr4045:		db	"HIBAS KOD"
+	db	0
+	; Declaring string asmz80
+VS_Szerk_stringassignstr4132:		db	"RETURN = OK ES MENTES   "
+	db	0
+	; Declaring string asmz80
+VS_Szerk_stringassignstr4393:		db	"      MENTES...         "
+	db	0
+	; Declaring string asmz80
+VS_Szerk_stringassignstr4395:		db	"E = ERTEKEK SZERKESZTESE"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4398:		db	"KET JATEKOS EGYMAS ELLEN"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4400:		db	"VALASSZ PALYAT"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4402:		db	"PALYA KEZDO PENZ:"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4404:		db	"AR / BEVETEL"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4406:		db	"VESZELYEK:"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4408:		db	"PALYA:"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4410:		db	"CEL:"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4412:		db	"E = ERTEKEK SZERKESZTESE"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4414:		db	"FEL / LE = PALYA VALASZTAS"
+	db	0
+	; Declaring string asmz80
+VS_Valaszto_stringassignstr4416:		db	"TUZ = INDITAS   ESC = VISSZA"
+	db	0
+	; Declaring string asmz80
+Meteor_Felirat_stringassignstr5392:		db	"METEOR !"
+	db	0
+	; Declaring string asmz80
+Meteor_Kijelzo_stringassignstr5404:		db	"METEOR:"
+	db	0
+	; Declaring string asmz80
+Meteor_Kijelzo_stringassignstr5406:		db	"METEOR:"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5897:		db	"PLAYER 2 WINS !"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5900:		db	"PLAYER 1 WINS !"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5903:		db	"LEVEL COMPLETED !"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5905:		db	"P1:"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5907:		db	"P2:"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5915:		db	"LEVEL COMPLETED !"
+	db	0
+	; Declaring string asmz80
+Palya_Teljesitve_stringassignstr5940:		db	"PRESS SPACE TO CONTINUE"
+	db	0
+	; Declaring string asmz80
+Game_Over_stringassignstr5943:		db	"GAME OVER !"
+	db	0
+	; Declaring string asmz80
+Game_Over_stringassignstr5945:		db	"PRESS SPACE FOR MENU"
+	db	0
+	; Declaring string asmz80
+Palya_Bukas_stringassignstr5979:		db	"LEVEL FAILED !"
+	db	0
+	; Declaring string asmz80
+Palya_Bukas_stringassignstr5981:		db	"PRESS SPACE TO RETRY"
+	db	0
+	; Declaring string asmz80
+MainProgram_stringassignstr7212:		db	"METEOR !"
+	db	0
+ ; Temp vars section ends
+TVC_ReadKey:
+			rst $30 				; system call
+			db $91 					; KBD_CHIN function code
+			ld A,C					; code of pressed key
+			
+	ret
+end_procedure_TVC_ReadKey:
 	;================================================
 ; //		File I/O sytem ROM functions
 ; //=================================================*
@@ -742,174 +902,16 @@ Cel_X:	db	0
 
 	; ***********  Defining procedure : TVC_CreateFile
 	;    Procedure type : User-defined procedure
- ; Temp vars section
-	; Declaring string asmz80
-ProgramInit_stringassignstr88:		db	"0"
-	db	0
-	; Declaring string asmz80
-MapToScreen_stringassignstr679:		db	"P1$:"
-	db	0
-	; Declaring string asmz80
-MapToScreen_stringassignstr719:		db	"P2$:"
-	db	0
-	; Declaring string asmz80
-MapToScreen_stringassignstr722:		db	"P2$:"
-	db	0
-	; Declaring string asmz80
-Pause_Kezel_stringassignstr1878:		db	"GAME PAUSED"
-	db	0
-	; Declaring string asmz80
-Pause_Kezel_stringassignstr1881:		db	"GAME PAUSED"
-	db	0
-	; Declaring string asmz80
-Exit_Kerdes_stringassignstr4691:		db	"EXIT TO MENU ?"
-	db	0
-	; Declaring string asmz80
-Exit_Kerdes_stringassignstr4693:		db	"ESC/Q = YES"
-	db	0
-	; Declaring string asmz80
-Exit_Kerdes_stringassignstr4695:		db	"OTHER KEY = NO"
-	db	0
-	; Declaring string asmz80
-Kod_Bevitel_stringassignstr6775:		db	"PALYAKOD"
-	db	0
-	; Declaring string asmz80
-Kod_Bevitel_stringassignstr10431:		db	"HIBAS KOD"
-	db	0
-	; Declaring string asmz80
-VS_Szerk_stringassignstr10521:		db	"RETURN = OK ES MENTES   "
-	db	0
-	; Declaring string asmz80
-VS_Szerk_stringassignstr10923:		db	"      MENTES...         "
-	db	0
-	; Declaring string asmz80
-VS_Szerk_stringassignstr10925:		db	"E = ERTEKEK SZERKESZTESE"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10928:		db	"KET JATEKOS EGYMAS ELLEN"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10930:		db	"VALASSZ PALYAT"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10932:		db	"PALYA KEZDO PENZ:"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10934:		db	"AR / BEVETEL"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10936:		db	"VESZELYEK:"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10938:		db	"PALYA:"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10940:		db	"CEL:"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10942:		db	"E = ERTEKEK SZERKESZTESE"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10944:		db	"FEL / LE = PALYA VALASZTAS"
-	db	0
-	; Declaring string asmz80
-VS_Valaszto_stringassignstr10946:		db	"TUZ = INDITAS   ESC = VISSZA"
-	db	0
-	; Declaring string asmz80
-Meteor_Felirat_stringassignstr13992:		db	"METEOR !"
-	db	0
-	; Declaring string asmz80
-Meteor_Kijelzo_stringassignstr14004:		db	"METEOR:"
-	db	0
-	; Declaring string asmz80
-Meteor_Kijelzo_stringassignstr14006:		db	"METEOR:"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14603:		db	"PLAYER 2 WINS !"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14606:		db	"PLAYER 1 WINS !"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14609:		db	"LEVEL COMPLETED !"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14611:		db	"P1:"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14613:		db	"P2:"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14622:		db	"LEVEL COMPLETED !"
-	db	0
-	; Declaring string asmz80
-Palya_Teljesitve_stringassignstr14648:		db	"PRESS SPACE TO CONTINUE"
-	db	0
-	; Declaring string asmz80
-Game_Over_stringassignstr14651:		db	"GAME OVER !"
-	db	0
-	; Declaring string asmz80
-Game_Over_stringassignstr14653:		db	"PRESS SPACE FOR MENU"
-	db	0
-	; Declaring string asmz80
-Palya_Bukas_stringassignstr14690:		db	"LEVEL FAILED !"
-	db	0
-	; Declaring string asmz80
-Palya_Bukas_stringassignstr14692:		db	"PRESS SPACE TO RETRY"
-	db	0
-	; Declaring string asmz80
-MainProgram_stringassignstr18079:		db	"METEOR !"
-	db	0
- ; Temp vars section ends
-TVC_CreateFile_block2:
+TVC_CreateFile_block3:
 TVC_CreateFile:
-			xor	A													// A := 0
-			ld	(TVC_FILE_BUFFER_TYPE),A  // BUFFER_TYPE := 0 (non buffered)
+			xor	A													; A := 0
+			ld	(TVC_FILE_BUFFER_TYPE),A  ; BUFFER_TYPE := 0 (non buffered)
 			ld  DE,[TVC_FileName]
-			rst $30 											// system function call
-			db  $53 											// CAS_CRTE function code
+			rst $30 											; system function call
+			db  $53 											; CAS_CRTE function code
 			
 	ret
 end_procedure_TVC_CreateFile:
-	
-; // file create*
-; //Open file for reading<br/>
-; //Params:
-; //<ul>
-; //<li>FileName: name of the file (max length: 16 chars)</li>
-; //</ul>
-; //Result:
-; //<ul>
-; //<li>true: success</li>
-; //<li>false: failed</li>
-; //</ul>
-; //<br/>
-; //Example: OpenFile("Picture.bin");<br/>
-; //<br/>
-; //Uses the System ROM (firmware) function.
-; 
-
-	; ***********  Defining procedure : TVC_OpenFile
-	;    Procedure type : User-defined procedure
-TVC_OpenFile_block3:
-TVC_OpenFile:
-			ld	A,123
-			ld (TVC_FILE_BUFFER_TYPE),A // BUFFER_TYPE := 123 (random value)
-			ld  DE,[TVC_FileName]
-			rst $30 										// system function call
-			db  $D3 										// CAS_OPEN function code		
-			// Check BUFFER_TYPE system variable
-			// if the file open is successful then BUFFER_TYPE set to 0 (not buffered) or 17 (buffered) or 255 (buffered)
-			ld  A,(TVC_FILE_BUFFER_TYPE)
-			cp  123											// BUFFER_TYPE = 1?
-			jp  nz,file_open_success		// if BUFFER_TYPE <> 1 then jump to true result
-			xor A												// A := 0 (False) -> False result
-			ret													// return to the caller
-	file_open_success:
-			ld A,1											// True result
-			
-	ret
-end_procedure_TVC_OpenFile:
 	;*
 ; //Close file<br/>
 ; //<br/>
@@ -921,42 +923,11 @@ end_procedure_TVC_OpenFile:
 	; ***********  Defining procedure : TVC_CloseFile
 	;    Procedure type : User-defined procedure
 TVC_CloseFile:
-			rst $30 									// system function call
-			db  $54 									// CAS_CLOSE function code
+			rst $30 									; system function call
+			db  $54 									; CAS_CLOSE function code
 			
 	ret
 end_procedure_TVC_CloseFile:
-	;*
-; //Read a data block from file<br/>
-; //Params:
-; //<ul>
-; //<li>BlockData: 	 buffer for reading data</li>
-; //<li>BlockLength: number of bytes to read</li>
-; //</ul>
-; //Result:
-; //<ul>
-; //<li>0: success</li>
-; //<li>otherwise: the number of bytes not readed from the file, in case of any error</li>
-; //</ul>
-; //<br/>
-; //Example: BlockRead(#Data, 16384);<br/>
-; //<br/>
-; //Uses the System ROM (firmware) function.
-; 
-
-	; ***********  Defining procedure : TVC_BlockRead
-	;    Procedure type : User-defined procedure
-TVC_BlockRead_block5:
-TVC_BlockRead:
-			ld  DE,[TVC_BlockData]
-			ld  BC,[TVC_BlockLength]		
-			rst $30		// system function call
-			db  $D2 	// CAS_BKIN function code
-			ld  H,B
-			ld  L,C		// HL = result = the number of bytes not readed from the file, in case of error
-			
-	ret
-end_procedure_TVC_BlockRead:
 	;*
 ; //Write a data block to created file<br/>
 ; //Params:
@@ -979,20 +950,20 @@ end_procedure_TVC_BlockRead:
 
 	; ***********  Defining procedure : TVC_BlockWrite
 	;    Procedure type : User-defined procedure
-TVC_BlockWrite_block6:
+TVC_BlockWrite_block5:
 TVC_BlockWrite:
 			ld  DE,[TVC_BlockData]
 			ld  BC,[TVC_BlockLength]
-			rst $30		// system function call
-			db  $52 	// CAS_BKOUT function code
+			rst $30		; system function call
+			db  $52 	; CAS_BKOUT function code
 			ld  H,B
-			ld  L,C		// HL = result = the number of bytes not written to the file, in case of error
+			ld  L,C		; HL = result = the number of bytes not written to the file, in case of error
 			
 	ret
 end_procedure_TVC_BlockWrite:
 	; ***********  Defining procedure : GE_Sprite_Init
 	;    Procedure type : User-defined procedure
-GE_Sprite_Init_block7:
+GE_Sprite_Init_block6:
 GE_Sprite_Init:
           ;// Init Sprite class
           ld  IX,[GE_Sprite_this]			;// IX -> Sprite class
@@ -1551,7 +1522,7 @@ end_procedure_GE_Sprite_MoveDownBy4:
 
 	; ***********  Defining procedure : GE_SetMemory
 	;    Procedure type : User-defined procedure
-GE_SetMemory_block15:
+GE_SetMemory_block14:
 GE_SetMemory:
 	    ld  A,[GE_Mode]
 			ld  ($3),A
@@ -1680,7 +1651,7 @@ end_procedure_GE_DisableTVCITHandler:
 
 	; ***********  Defining procedure : GE_Init
 	;    Procedure type : User-defined procedure
-GE_Init_block18:
+GE_Init_block17:
 GE_Init:
 	
 	    ;// init ScreenAddr
@@ -1738,7 +1709,7 @@ end_procedure_GE_Init:
 
 	; ***********  Defining procedure : GE_SetGraphics
 	;    Procedure type : User-defined procedure
-GE_SetGraphics_block19:
+GE_SetGraphics_block18:
 GE_SetGraphics:
 			ld  A,[GE_Mode]
 			ld 	C,A 							;// C = graphics mode code
@@ -1778,7 +1749,7 @@ end_procedure_GE_SetGraphics:
 
 	; ***********  Defining procedure : GE_SetGraphMode
 	;    Procedure type : User-defined procedure
-GE_SetGraphMode_block20:
+GE_SetGraphMode_block19:
 GE_SetGraphMode:
 			ld  A,[GE_Mode]   						;// A = the Mode param
 			ld  C,A           						;// C = the Mode param
@@ -1792,14 +1763,14 @@ GE_SetGraphMode:
 end_procedure_GE_SetGraphMode:
 	; ***********  Defining procedure : GE_SetPalette
 	;    Procedure type : User-defined procedure
-GE_SetPalette_block21:
+GE_SetPalette_block20:
 GE_SetPalette:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[GE_Nr]
 	or a
-	jr c, GE_SetPalette_edblock25
-GE_SetPalette_localsuccess27: ;keep:
+	jr c, GE_SetPalette_edblock24
+GE_SetPalette_localsuccess26: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -1807,8 +1778,8 @@ GE_SetPalette_localsuccess27: ;keep:
 	ld b,a
 	ld a,$3
 	cp b
-	jr c,GE_SetPalette_edblock25
-GE_SetPalette_localsuccess28: ;keep:
+	jr c,GE_SetPalette_edblock24
+GE_SetPalette_localsuccess27: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -1816,8 +1787,8 @@ GE_SetPalette_localsuccess28: ;keep:
 	ld b,a
 	ld a,$55
 	cp b
-	jr c,GE_SetPalette_edblock25
-GE_SetPalette_ctb23: ;Main true block ;keep :
+	jr c,GE_SetPalette_edblock24
+GE_SetPalette_ctb22: ;Main true block ;keep :
 				ld A,[GE_Nr]
 				ld C,$60
 				add A,C
@@ -1825,7 +1796,7 @@ GE_SetPalette_ctb23: ;Main true block ;keep :
 				ld A,[GE_Color]	;// A = Color code
 				out (C),A				;// send Color code to desired palette port
 				
-GE_SetPalette_edblock25:
+GE_SetPalette_edblock24:
 	ret
 end_procedure_GE_SetPalette:
 	;*
@@ -1886,7 +1857,7 @@ end_procedure_GE_SetPalette:
 
 	; ***********  Defining procedure : GE_SetBorder
 	;    Procedure type : User-defined procedure
-GE_SetBorder_block30:
+GE_SetBorder_block29:
 GE_SetBorder:
 		
     ld A,[GE_Color]
@@ -1955,7 +1926,7 @@ end_procedure_GE_WaitForSync:
 
 	; ***********  Defining procedure : GE_SetRasterInterruptPos
 	;    Procedure type : User-defined procedure
-GE_SetRasterInterruptPos_block32:
+GE_SetRasterInterruptPos_block31:
 GE_SetRasterInterruptPos:
 			ld  A,[GE_LineNr]
 		  ld  C,A       ;// C = LineNr
@@ -2030,7 +2001,7 @@ end_procedure_GE_SetRasterInterruptPos:
 
 	; ***********  Defining procedure : GE_ClearScreen
 	;    Procedure type : User-defined procedure
-GE_ClearScreen_block33:
+GE_ClearScreen_block32:
 GE_ClearScreen:
 				;// save memory mapping
 				ld  A,($3)				;// A = current memory mapping from system variable
@@ -2057,7 +2028,7 @@ GE_ClearScreen:
 end_procedure_GE_ClearScreen:
 	; ***********  Defining procedure : GE_FillRect
 	;    Procedure type : User-defined procedure
-GE_FillRect_block34:
+GE_FillRect_block33:
 GE_FillRect:
 				// calc left top pos. on the screen
 				ld  A,[GE_Y]      ;// A = param Y
@@ -2178,7 +2149,7 @@ end_procedure_GE_GetKeyboard:
 
 	; ***********  Defining procedure : GE_Pressed
 	;    Procedure type : User-defined procedure
-GE_Pressed_block36:
+GE_Pressed_block35:
 GE_Pressed:
       ld  DE,[GE_KeyCode]		;// KeyCode = hi byte: key code; lo byte: number of keyboard matrix row
       ld  HL,GE_KEYBOARD_0	;// HL -> keyboard matrix row 0
@@ -2261,7 +2232,7 @@ GE_GetJoysticks:
 end_procedure_GE_GetJoysticks:
 	; ***********  Defining procedure : GE_Joystick
 	;    Procedure type : User-defined procedure
-GE_Joystick_block38:
+GE_Joystick_block37:
 GE_Joystick:
 	    ld  A,[GE_Nr]
 	    cp  1
@@ -2313,7 +2284,7 @@ GE_Joystick:
 end_procedure_GE_Joystick:
 	; ***********  Defining procedure : GE_DigiSoundOn
 	;    Procedure type : User-defined procedure
-GE_DigiSoundOn_block39:
+GE_DigiSoundOn_block38:
 GE_DigiSoundOn:
       ;//! xor	A
 			halt												;// wait for cursor-interrupt for screen refresh syncronization
@@ -2509,7 +2480,7 @@ end_procedure_GE_DigiSoundOff:
 
 	; ***********  Defining procedure : GE_PlayDigiSound
 	;    Procedure type : User-defined procedure
-GE_PlayDigiSound_block41:
+GE_PlayDigiSound_block40:
 GE_PlayDigiSound:
 	    ;// halt                      ;// waiting for a sound interrupt	
       di												;// disable interrupts because will use shadow registers
@@ -2729,7 +2700,7 @@ end_procedure_Random_RandomByte:
 	;    Procedure type : User-defined procedure
 localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapx:	db	0
 localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapy:	db	0
-WaterPump_BuildScreenAddrTab_block46:
+WaterPump_BuildScreenAddrTab_block45:
 WaterPump_BuildScreenAddrTab:
 	; generic assign 
 	ld hl,$00
@@ -2737,10 +2708,10 @@ WaterPump_BuildScreenAddrTab:
 	ld [WaterPump_BuildIdx],hl
 	ld a, $1
 	ld [localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapy], a
-WaterPump_BuildScreenAddrTab_forloop47:
+WaterPump_BuildScreenAddrTab_forloop46:
 	ld a, $1
 	ld [localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapx], a
-WaterPump_BuildScreenAddrTab_forloop61:
+WaterPump_BuildScreenAddrTab_forloop60:
 	; generic assign 
 	; Swapping nodes
 	; Generic mul
@@ -2810,20 +2781,20 @@ WaterPump_BuildScreenAddrTab_forloop61:
 	ld hl,[WaterPump_BuildIdx]
 	add  hl,de
 	ld [WaterPump_BuildIdx],hl
-WaterPump_BuildScreenAddrTab_loopstart62:
+WaterPump_BuildScreenAddrTab_loopstart61:
 	ld a,[localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapx]
 	add a,1
 	ld [localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapx],a
 	cp $1e+1
-	jp nz,WaterPump_BuildScreenAddrTab_forloop61
-WaterPump_BuildScreenAddrTab_loopend63:
-WaterPump_BuildScreenAddrTab_loopstart48:
+	jp nz,WaterPump_BuildScreenAddrTab_forloop60
+WaterPump_BuildScreenAddrTab_loopend62:
+WaterPump_BuildScreenAddrTab_loopstart47:
 	ld a,[localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapy]
 	add a,1
 	ld [localVariable_WaterPump_BuildScreenAddrTab_WaterPump_mapy],a
 	cp $12+1
-	jp nz,WaterPump_BuildScreenAddrTab_forloop47
-WaterPump_BuildScreenAddrTab_loopend49:
+	jp nz,WaterPump_BuildScreenAddrTab_forloop46
+WaterPump_BuildScreenAddrTab_loopend48:
 	ret
 end_procedure_WaterPump_BuildScreenAddrTab:
 	; EGYSZER hivando (indulaskor): a pumpa-kep alapcimebol (Pumpa.AnimSet
@@ -2838,7 +2809,7 @@ localVariable_WaterPump_BuildPumpaFazTab_WaterPump_v:	db	0
 localVariable_WaterPump_BuildPumpaFazTab_WaterPump_temp:	dw	0
 localVariable_WaterPump_BuildPumpaFazTab_WaterPump_Alap:	dw	0
 localVariable_WaterPump_BuildPumpaFazTab_WaterPump_Kezdo:	db	0
-WaterPump_BuildPumpaFazTab_block70:
+WaterPump_BuildPumpaFazTab_block66:
 WaterPump_BuildPumpaFazTab:
 	; generic assign 
 	; Variable is 16-bit
@@ -2853,16 +2824,16 @@ WaterPump_BuildPumpaFazTab:
 	ld a,[localVariable_WaterPump_BuildPumpaFazTab_WaterPump_Kezdo]
 	add  a, $8
 	ld [localVariable_WaterPump_BuildPumpaFazTab_WaterPump_v], a
-WaterPump_BuildPumpaFazTab_while71:
-WaterPump_BuildPumpaFazTab_loopstart75:
+WaterPump_BuildPumpaFazTab_while67:
+WaterPump_BuildPumpaFazTab_loopstart71:
 	; Binary clause core: LESS
 	; Compare two vars optimization
 	ld a,[localVariable_WaterPump_BuildPumpaFazTab_WaterPump_v]
 	ld b,a
 	ld a,[localVariable_WaterPump_BuildPumpaFazTab_WaterPump_f]
 	cp b
-	jr nc,WaterPump_BuildPumpaFazTab_edblock74
-WaterPump_BuildPumpaFazTab_ctb72: ;Main true block ;keep :
+	jr nc,WaterPump_BuildPumpaFazTab_edblock70
+WaterPump_BuildPumpaFazTab_ctb68: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_WaterPump_BuildPumpaFazTab_WaterPump_temp]
@@ -2891,9 +2862,9 @@ WaterPump_BuildPumpaFazTab_ctb72: ;Main true block ;keep :
 	ld a,[localVariable_WaterPump_BuildPumpaFazTab_WaterPump_f]
 	add  a,$1
 	ld [localVariable_WaterPump_BuildPumpaFazTab_WaterPump_f], a
-	jr WaterPump_BuildPumpaFazTab_while71
-WaterPump_BuildPumpaFazTab_edblock74:
-WaterPump_BuildPumpaFazTab_loopend76:
+	jr WaterPump_BuildPumpaFazTab_while67
+WaterPump_BuildPumpaFazTab_edblock70:
+WaterPump_BuildPumpaFazTab_loopend72:
 	ret
 end_procedure_WaterPump_BuildPumpaFazTab:
 	; A TENYLEGES, kepkockankenti gyors kirako: MAP-index (0..539) alapjan
@@ -2908,7 +2879,7 @@ end_procedure_WaterPump_BuildPumpaFazTab:
 ; //	   tolteni BC=62-t. 
 	; ***********  Defining procedure : WaterPump_PutAt
 	;    Procedure type : User-defined procedure
-WaterPump_PutAt_block79:
+WaterPump_PutAt_block75:
 WaterPump_PutAt:
 			ld hl,[WaterPump_Idx]
 			add hl,hl
@@ -2976,7 +2947,7 @@ WaterPump_PutAt:
 end_procedure_WaterPump_PutAt:
 	; ***********  Defining procedure : Ir
 	;    Procedure type : User-defined procedure
-Ir_block80:
+Ir_block76:
 Ir:
 			ld a,[Ir_Y]
 			ld l,a
@@ -2994,53 +2965,90 @@ Ir:
 			ld d,0
 			add hl,de
 			ld [Ir_Cim],hl
-Ir_Kov:
+			ld [Ir_Dst],hl
 			ld hl,[Ir_Szoveg]
+			call Ir_PxSzel
+			ld [Ir_Bdb],a
+			ld a,[Font_Data]
+			and 15
+			ld [Ir_H],a
+			ld hl,Font_Data+110
+			ld [Ir_Sor0],hl
+			ld a,[Ir_H]
+			ld b,a
+IrSorCiklus:
+			push bc
+			ld hl,$1460
+			ld b,34
+			xor a
+Ir_Torol:
+			ld (hl),a
+			inc hl
+			djnz Ir_Torol
+			ld [Ir_Px],a
+			ld hl,[Ir_Szoveg]
+Ir_Kar:
 			ld a,(hl)
 			or a
-			jp z,Ir_Vege
+			jr z,Ir_Kiir
 			inc hl
-			ld [Ir_Szoveg],hl
 			cp 32
-			jr c,Ir_Kov
-			cp 123
-			jr nc,Ir_Kov
+			jr c,Ir_Kar
+			cp 141
+			jr nc,Ir_Kar
 			sub 32
+			push hl
 			ld e,a
 			ld d,0
 			ld hl,Font_Data+1
 			add hl,de
 			ld a,(hl)
 			or a
-			jr nz,Ir_SzelOk
-			inc a
-Ir_SzelOk:
+			jr z,Ir_KarVege
 			ld [Ir_Szel],a
-			ld hl,Font_Data+92
+			ld hl,[Ir_Sor0]
 			add hl,de
-			add hl,de
-			ld de,[Ir_Cim]
-			ld a,[Font_Data]
+			ld d,(hl)
+			ld e,0
+			ld a,[Ir_Px]
+			ld c,a
+			and 7
+			jr z,Ir_NemTol
 			ld b,a
-Ir_Sor:
-			push bc
-			push hl
-			push de
-			ld a,[Ir_Szel]
+Ir_Tol:
+			srl d
+			rr e
+			djnz Ir_Tol
+Ir_NemTol:
+			ld a,c
+			rrca
+			rrca
+			rrca
+			and 31
 			ld c,a
 			ld b,0
-			ldir
-			pop de
-			pop hl
-			ld bc,182
+			ld hl,$1460
 			add hl,bc
-			ex de,hl
-			ld bc,64
-			add hl,bc
-			ex de,hl
-			pop bc
-			djnz Ir_Sor
+			ld a,(hl)
+			or d
+			ld (hl),a
+			inc hl
+			ld a,(hl)
+			or e
+			ld (hl),a
 			ld a,[Ir_Szel]
+			ld c,a
+			ld a,[Ir_Px]
+			add a,c
+			ld [Ir_Px],a
+Ir_KarVege:
+			pop hl
+			jr Ir_Kar
+Ir_Kiir:
+			call IrKiirRut
+			pop bc
+			djnz IrSorCiklus
+			ld a,[Ir_Bdb]
 			ld e,a
 			ld d,0
 			ld hl,[Ir_Cim]
@@ -3049,27 +3057,52 @@ Ir_Sor:
 			ld a,[Ir_X]
 			add a,e
 			ld [Ir_X],a
-			jp Ir_Kov
-Ir_Vege:
-		
-	ret
-end_procedure_Ir:
-	; Egy szöveg szélessége byte-ban (a betűk szélességének összege) -> Ir_Hossz 
-	; ***********  Defining procedure : Ir_Hossza
-	;    Procedure type : User-defined procedure
-Ir_Hossza_block81:
-Ir_Hossza:
-			ld hl,[Ir_Szoveg]
+			jp Ir_Vege
+IrKiirRut:
+			ld a,[Ir_Bdb]
+			or a
+			jr z,IrSorVege
+			ld b,a
+			ld hl,$1460
+			ld de,[Ir_Dst]
+Ir_Byte:
+			ld a,(hl)
+			and $F0
+			ld (de),a
+			inc de
+			dec b
+			jr z,IrSorVege
+			ld a,(hl)
+			rlca
+			rlca
+			rlca
+			rlca
+			and $F0
+			ld (de),a
+			inc de
+			inc hl
+			djnz Ir_Byte
+IrSorVege:
+			ld hl,[Ir_Dst]
+			ld de,64
+			add hl,de
+			ld [Ir_Dst],hl
+			ld hl,[Ir_Sor0]
+			ld de,109
+			add hl,de
+			ld [Ir_Sor0],hl
+			ret
+Ir_PxSzel:
 			ld c,0
-Ir_HKov:
+Ir_PKov:
 			ld a,(hl)
 			or a
-			jr z,Ir_HVege
+			jr z,Ir_PVege
 			inc hl
 			cp 32
-			jr c,Ir_HKov
-			cp 123
-			jr nc,Ir_HKov
+			jr c,Ir_PKov
+			cp 141
+			jr nc,Ir_PKov
 			sub 32
 			push hl
 			ld e,a
@@ -3077,16 +3110,33 @@ Ir_HKov:
 			ld hl,Font_Data+1
 			add hl,de
 			ld a,(hl)
-			or a
-			jr nz,Ir_HOk
-			inc a
-Ir_HOk:
 			add a,c
 			ld c,a
 			pop hl
-			jr Ir_HKov
-Ir_HVege:
-			ld a,c
+			jr Ir_PKov
+Ir_PVege:
+			ld l,c
+			ld h,0
+			inc hl
+			inc hl
+			inc hl
+			srl h
+			rr l
+			srl h
+			rr l
+			ld a,l
+			ret
+Ir_Vege:
+		
+	ret
+end_procedure_Ir:
+	; Egy szöveg szélessége byte-ban (a betűk szélességének összege) -> Ir_Hossz 
+	; ***********  Defining procedure : Ir_Hossza
+	;    Procedure type : User-defined procedure
+Ir_Hossza_block77:
+Ir_Hossza:
+			ld hl,[Ir_Szoveg]
+			call Ir_PxSzel
 			ld [Ir_Hossz],a
 		
 	ret
@@ -3097,7 +3147,7 @@ end_procedure_Ir_Hossza:
 localVariable_Ir_Kozep_x:	db	0
 localVariable_Ir_Kozep_y:	db	0
 localVariable_Ir_Kozep_varPrefixed_p: dw  0
-Ir_Kozep_block82:
+Ir_Kozep_block78:
 Ir_Kozep:
 	; generic assign 
 	ld a,[Ir_Y]
@@ -3142,7 +3192,7 @@ end_procedure_Ir_Kozep:
 	;    Procedure type : User-defined procedure
 localVariable_Ir_Jegy_varPrefixed_d:	db	0
 localVariable_Ir_Jegy_sor:	db	0
-Ir_Jegy_block83:
+Ir_Jegy_block79:
 Ir_Jegy:
 	; Storing to array  
 	ld a,[localVariable_Ir_Jegy_varPrefixed_d]
@@ -3158,26 +3208,68 @@ Ir_Jegy:
 	call Ir
 	ret
 end_procedure_Ir_Jegy:
+	; Fajl_Nev olvasasa a Spr_Buf-ba, a Lemmings betoltojenek ROM-hivasaival; hiba: keret piros = nem nyilik, lila = olvasasi hiba 
+	; ***********  Defining procedure : Fajl_Olvas
+	;    Procedure type : User-defined procedure
+Fajl_Olvas:
+			xor a
+			ld [Fajl_Hiba],a
+			ld ($0B0A),a
+			ld de,[Fajl_Nev]
+			rst $30
+			db $D3
+			jr z,Fajl_Olvas_nyitva
+			ld a,1
+			ld [Fajl_Hiba],a
+			jr Fajl_Olvas_vege
+Fajl_Olvas_nyitva:
+			ld de,[Spr_Buf]
+			ld bc,[Fajl_Hossz]
+			rst $30
+			db $D2
+			or a
+			jr z,Fajl_Olvas_zar
+			ld a,2
+			ld [Fajl_Hiba],a
+Fajl_Olvas_zar:
+			xor a
+			rst $30
+			db $D4
+Fajl_Olvas_vege:
+		
+	; Binary clause core: NOTEQUALS
+	; Compare with pure num / var optimization
+	ld a,[Fajl_Hiba]
+	or a
+	jr z, Fajl_Olvas_edblock84
+Fajl_Olvas_ctb82: ;Main true block ;keep :
+	ld a, $8a
+	ld [GE_Color], a
+	call GE_SetBorder
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[Fajl_Hiba]
+	cp $1
+	jr nz,Fajl_Olvas_edblock96
+Fajl_Olvas_ctb94: ;Main true block ;keep :
+	ld a, $88
+	ld [GE_Color], a
+	call GE_SetBorder
+Fajl_Olvas_edblock96:
+	call TVC_ReadKey
+	ld a, $a8
+	ld [GE_Color], a
+	call GE_SetBorder
+Fajl_Olvas_edblock84:
+	ret
+end_procedure_Fajl_Olvas:
 	; Egy fajl betoltese lemezrol a $8000-es pufferbe, majd masolas az U3-ba (Fajl_Nev, Fajl_Hossz, Fajl_Cel); a GE::Init ELOTT, alap lapozassal 
 	; ***********  Defining procedure : Fajl_Betolt
 	;    Procedure type : User-defined procedure
 Fajl_Betolt:
 	ld hl,$8000
 	ld [Spr_Buf],hl
-	; Loading pointer
-	ld hl,[Fajl_Nev]
-	ld [TVC_FileName],hl
-	call TVC_OpenFile
-	; Loading pointer
-	ld hl,[Spr_Buf]
-	ld [TVC_BlockData],hl
-	; generic assign 
-	; Variable is 16-bit
-	ld hl,[Fajl_Hossz]
-	; Loading pointer
-	ld [TVC_BlockLength],hl
-	call TVC_BlockRead
-	call TVC_CloseFile
+	call Fajl_Olvas
 			di
 			ld a,($3)
 			push af
@@ -3224,31 +3316,25 @@ Spr_Betolt:
 	; Loading pointer
 	ld [Fajl_Cel],hl
 	call Fajl_Betolt
-	ld hl,Szov_Nev
+	ld hl,$9000
+	ld [Spr_Buf],hl
+	; a jatekszabaly az U2-ben marad (a $8000-at a palyamentes hasznalja) 
+	ld hl,Szab_Nev
 	ld [Fajl_Nev],hl
 	; generic assign 
-	ld hl,$400
+	ld hl,$1000
 	; Loading pointer
 	ld [Fajl_Hossz],hl
-	; generic assign 
-	ld hl,$fa00
-	; Loading pointer
-	ld [Fajl_Cel],hl
-	call Fajl_Betolt
+	call Fajl_Olvas
 	ld hl,$a000
 	ld [Spr_Buf],hl
 	ld hl,Men_Nev
-	ld [TVC_FileName],hl
-	call TVC_OpenFile
-	; Loading pointer
-	ld hl,[Spr_Buf]
-	ld [TVC_BlockData],hl
+	ld [Fajl_Nev],hl
 	; generic assign 
 	ld hl,$1834
 	; Loading pointer
-	ld [TVC_BlockLength],hl
-	call TVC_BlockRead
-	call TVC_CloseFile
+	ld [Fajl_Hossz],hl
+	call Fajl_Olvas
 	ret
 end_procedure_Spr_Betolt:
 	; Játék indításakor egyszer lefutó beállítások 
@@ -3259,7 +3345,7 @@ localVariable_ProgramInit_xx:	db	0
 localVariable_ProgramInit_yy:	db	0
 localVariable_ProgramInit_varPrefixed_p:	dw	0
 localVariable_ProgramInit_varPrefixed_a:	dw	0
-ProgramInit_block86:
+ProgramInit_block100:
 ProgramInit:
 	call Spr_Betolt
 	ld a, $1
@@ -3296,7 +3382,7 @@ ProgramInit:
 	call GE_SetMemory
 	; U0,U1,VID,U3: a játék VÉGIG így fut - a sprite- és hangadatok az U3-ban ($C000..) vannak; a GE nem hív ROM-ot 
 	; Assigning a string : Ir_Szoveg
-	ld hl,ProgramInit_stringassignstr88
+	ld hl,ProgramInit_stringassignstr102
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -3429,16 +3515,16 @@ ProgramInit:
 	; 8x8 bombaikon, nem maszkolt, bélyegző  POZÍCIÓ-TÁBLÁK Talaj1/Fal/Enemy-hez (a fő .ras oldalán, Bery/GE::Sprite Put úton maradnak)  rács-X (1..30) -> képernyő byte-X = x*2 
 	ld a, $1
 	ld [localVariable_ProgramInit_xx], a
-ProgramInit_while89:
-ProgramInit_loopstart93:
+ProgramInit_while103:
+ProgramInit_loopstart107:
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_ProgramInit_xx]
 	ld b,a
 	ld a,$1e
 	cp b
-	jr c,ProgramInit_edblock92
-ProgramInit_ctb90: ;Main true block ;keep :
+	jr c,ProgramInit_edblock106
+ProgramInit_ctb104: ;Main true block ;keep :
 	; Storing to array  
 	; Swapping nodes
 	; Generic mul
@@ -3462,22 +3548,22 @@ ProgramInit_ctb90: ;Main true block ;keep :
 	ld a,[localVariable_ProgramInit_xx]
 	add  a,$1
 	ld [localVariable_ProgramInit_xx], a
-	jr ProgramInit_while89
-ProgramInit_edblock92:
-ProgramInit_loopend94:
+	jr ProgramInit_while103
+ProgramInit_edblock106:
+ProgramInit_loopend108:
 	; rács-Y (1..18) -> a képsor kezdő címe 
 	ld a, $1
 	ld [localVariable_ProgramInit_yy], a
-ProgramInit_while99:
-ProgramInit_loopstart103:
+ProgramInit_while113:
+ProgramInit_loopstart117:
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_ProgramInit_yy]
 	ld b,a
 	ld a,$12
 	cp b
-	jr c,ProgramInit_edblock102
-ProgramInit_ctb100: ;Main true block ;keep :
+	jr c,ProgramInit_edblock116
+ProgramInit_ctb114: ;Main true block ;keep :
 	; Storing to array  
 	ld a,$0
 	ld [Pumpa+$f],a
@@ -3532,9 +3618,9 @@ ProgramInit_ctb100: ;Main true block ;keep :
 	ld a,[localVariable_ProgramInit_yy]
 	add  a,$1
 	ld [localVariable_ProgramInit_yy], a
-	jr ProgramInit_while99
-ProgramInit_edblock102:
-ProgramInit_loopend104:
+	jr ProgramInit_while113
+ProgramInit_edblock116:
+ProgramInit_loopend118:
 	; A WaterPump unit saját tábláinak felépítése (EGYSZER) --- BuildScreenAddrTab 
 	call WaterPump_BuildScreenAddrTab
 	; generic assign 
@@ -3616,14 +3702,14 @@ ProgramInit_loopend104:
 	ld [localVariable_ProgramInit_varPrefixed_a],hl
 	ld a, $0
 	ld [localVariable_ProgramInit_varPrefixed_f], a
-ProgramInit_while109:
-ProgramInit_loopstart113:
+ProgramInit_while123:
+ProgramInit_loopstart127:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
 	cp $5
-	jr nc,ProgramInit_edblock112
-ProgramInit_ctb110: ;Main true block ;keep :
+	jr nc,ProgramInit_edblock126
+ProgramInit_ctb124: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
@@ -3672,9 +3758,9 @@ ProgramInit_ctb110: ;Main true block ;keep :
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
 	add  a,$1
 	ld [localVariable_ProgramInit_varPrefixed_f], a
-	jr ProgramInit_while109
-ProgramInit_edblock112:
-ProgramInit_loopend114:
+	jr ProgramInit_while123
+ProgramInit_edblock126:
+ProgramInit_loopend128:
 	; meteor fázis-pointerek: AnimSet + faz*160 (MASZKOLT -> W*H*2 / fázis) 
 	; generic assign 
 	ld de,$14
@@ -3689,14 +3775,14 @@ ProgramInit_loopend114:
 	ld [localVariable_ProgramInit_varPrefixed_a],hl
 	ld a, $0
 	ld [localVariable_ProgramInit_varPrefixed_f], a
-ProgramInit_while119:
-ProgramInit_loopstart123:
+ProgramInit_while133:
+ProgramInit_loopstart137:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
 	cp $4
-	jr nc,ProgramInit_edblock122
-ProgramInit_ctb120: ;Main true block ;keep :
+	jr nc,ProgramInit_edblock136
+ProgramInit_ctb134: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
@@ -3745,9 +3831,9 @@ ProgramInit_ctb120: ;Main true block ;keep :
 	ld a,[localVariable_ProgramInit_varPrefixed_f]
 	add  a,$1
 	ld [localVariable_ProgramInit_varPrefixed_f], a
-	jr ProgramInit_while119
-ProgramInit_edblock122:
-ProgramInit_loopend124:
+	jr ProgramInit_while133
+ProgramInit_edblock136:
+ProgramInit_loopend138:
 	; generic assign 
 	; Swapping nodes
 	; Generic mul
@@ -3844,7 +3930,7 @@ localVariable_MapReset_t:	db	0
 localVariable_MapReset_bit:	db	0
 localVariable_MapReset_data:	dw	0
 localVariable_MapReset_ti:	dw	0
-MapReset_block131:
+MapReset_block145:
 MapReset:
 	; generic assign 
 	; Variable is 16-bit
@@ -3872,8 +3958,8 @@ MapReset:
 	ld hl,$00
 	; Loading pointer
 	ld [localVariable_MapReset_data],hl
-MapReset_while133:
-MapReset_loopstart137:
+MapReset_while147:
+MapReset_loopstart151:
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
 	ld hl,$21c
@@ -3883,14 +3969,14 @@ MapReset_loopstart137:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jp nc,MapReset_edblock136
-MapReset_ctb134: ;Main true block ;keep :
+	jp nc,MapReset_edblock150
+MapReset_ctb148: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MapReset_eblock203
-MapReset_ctb202: ;Main true block ;keep :
+	jr nz,MapReset_eblock204
+MapReset_ctb203: ;Main true block ;keep :
 	; két játékos (versus) pálya 
 	; generic assign 
 	; Variable is 16-bit
@@ -3900,8 +3986,8 @@ MapReset_ctb202: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	ld [localVariable_MapReset_varPrefixed_b], a
-	jr MapReset_edblock204
-MapReset_eblock203:
+	jr MapReset_edblock205
+MapReset_eblock204:
 	; generic assign 
 	; Variable is 16-bit
 	ld de,[localVariable_MapReset_ti]
@@ -3910,17 +3996,17 @@ MapReset_eblock203:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	ld [localVariable_MapReset_varPrefixed_b], a
-MapReset_edblock204:
+MapReset_edblock205:
 	ld a, $0
 	ld [localVariable_MapReset_bit], a
-MapReset_while209:
-MapReset_loopstart213:
+MapReset_while208:
+MapReset_loopstart212:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_MapReset_bit]
 	cp $8
-	jr nc,MapReset_edblock212
-MapReset_ctb210: ;Main true block ;keep :
+	jr nc,MapReset_edblock211
+MapReset_ctb209: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
 	ld hl,$21c
@@ -3930,8 +4016,8 @@ MapReset_ctb210: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nc,MapReset_edblock242
-MapReset_ctb240: ;Main true block ;keep :
+	jr nc,MapReset_edblock218
+MapReset_ctb216: ;Main true block ;keep :
 	; MSB elöl: 1 = Talaj3 (blokkolt), 0 = Talaj1 
 	; generic assign 
 	; RHS is pure numeric optimisation
@@ -3941,8 +4027,8 @@ MapReset_ctb240: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	or a
-	jr z, MapReset_eblock255
-MapReset_ctb254: ;Main true block ;keep :
+	jr z, MapReset_eblock222
+MapReset_ctb221: ;Main true block ;keep :
 	; Storing to array  
 	; Variable is 16-bit
 	ld de,[localVariable_MapReset_data]
@@ -3950,8 +4036,8 @@ MapReset_ctb254: ;Main true block ;keep :
 	add hl,de
 	ld a,[Talaj3Map]
 	ld [hl],a 
-	jr MapReset_edblock256
-MapReset_eblock255:
+	jr MapReset_edblock223
+MapReset_eblock222:
 	; Storing to array  
 	; Variable is 16-bit
 	ld de,[localVariable_MapReset_data]
@@ -3959,8 +4045,8 @@ MapReset_eblock255:
 	add hl,de
 	ld a,[Talaj1Map]
 	ld [hl],a 
-MapReset_edblock256:
-MapReset_edblock242:
+MapReset_edblock223:
+MapReset_edblock218:
 	; generic assign 
 	; Node is integer : 
 	ld a,[localVariable_MapReset_varPrefixed_b]
@@ -3977,9 +4063,9 @@ MapReset_edblock242:
 	ld a,[localVariable_MapReset_bit]
 	add  a,$1
 	ld [localVariable_MapReset_bit], a
-	jr MapReset_while209
-MapReset_edblock212:
-MapReset_loopend214:
+	jr MapReset_while208
+MapReset_edblock211:
+MapReset_loopend213:
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$01
@@ -3987,9 +4073,9 @@ MapReset_loopend214:
 	ld hl,[localVariable_MapReset_ti]
 	add  hl,de
 	ld [localVariable_MapReset_ti],hl
-	jp MapReset_while133
-MapReset_edblock136:
-MapReset_loopend138:
+	jp MapReset_while147
+MapReset_edblock150:
+MapReset_loopend152:
 	ret
 end_procedure_MapReset:
 	; Egy byte kiírása a HUD-ra MINDIG 2 számjeggyel, vezető nullával (pl. 9 -> "09"), az x helytől; utána Ir_X a következő szabad oszlop 
@@ -3999,7 +4085,7 @@ localVariable_HUD_Num2_t:	db	0
 localVariable_HUD_Num2_ertek:	db	0
 localVariable_HUD_Num2_x:	db	0
 localVariable_HUD_Num2_sor:	db	0
-HUD_Num2_block261:
+HUD_Num2_block226:
 HUD_Num2:
 	; generic assign 
 	ld a,[localVariable_HUD_Num2_x]
@@ -4053,7 +4139,7 @@ end_procedure_HUD_Num2:
 localVariable_Level_OSD_x:	db	0
 localVariable_Level_OSD_varPrefixed_l:	db	0
 localVariable_Level_OSD_varPrefixed_b:	db	0
-Level_OSD_block263:
+Level_OSD_block228:
 Level_OSD:
 	ld hl,LvlStr
 	ld [Ir_Szoveg],hl
@@ -4073,8 +4159,8 @@ Level_OSD:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jp nz,Level_OSD_eblock266
-Level_OSD_ctb265: ;Main true block ;keep :
+	jp nz,Level_OSD_eblock231
+Level_OSD_ctb230: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Level_OSD_x]
 	ld [localVariable_Level_OSD_varPrefixed_l], a
@@ -4121,8 +4207,8 @@ Level_OSD_ctb265: ;Main true block ;keep :
 	ld a,[localVariable_Level_OSD_x]
 	add  a, b
 	ld [localVariable_Level_OSD_x], a
-	jp Level_OSD_edblock267
-Level_OSD_eblock266:
+	jp Level_OSD_edblock232
+Level_OSD_eblock231:
 	; generic assign 
 	ld a,[localVariable_Level_OSD_x]
 	ld b,a
@@ -4141,7 +4227,7 @@ Level_OSD_eblock266:
 	call div_16x8
 	ld a,l
 	ld [localVariable_Level_OSD_x], a
-Level_OSD_edblock267:
+Level_OSD_edblock232:
 	; generic assign 
 	ld a,[localVariable_Level_OSD_x]
 	ld [Ir_X], a
@@ -4172,7 +4258,7 @@ localVariable_HUD_Num4_varPrefixed_b:	db	0
 localVariable_HUD_Num4_ertek:	dw	0
 localVariable_HUD_Num4_x:	db	0
 localVariable_HUD_Num4_sor:	db	0
-HUD_Num4_block272:
+HUD_Num4_block237:
 HUD_Num4:
 	; generic assign 
 	ld a,[localVariable_HUD_Num4_x]
@@ -4314,7 +4400,7 @@ localVariable_HUD_Num3_varPrefixed_b:	db	0
 localVariable_HUD_Num3_ertek:	dw	0
 localVariable_HUD_Num3_x:	db	0
 localVariable_HUD_Num3_sor:	db	0
-HUD_Num3_block276:
+HUD_Num3_block241:
 HUD_Num3:
 	; generic assign 
 	ld a,[localVariable_HUD_Num3_x]
@@ -4418,7 +4504,7 @@ end_procedure_HUD_Num3:
 	;    Procedure type : User-defined procedure
 localVariable_Elet_OSD_varPrefixed_i:	db	0
 localVariable_Elet_OSD_varPrefixed_ix:	db	0
-Elet_OSD_block279:
+Elet_OSD_block244:
 Elet_OSD:
 	; generic assign 
 	ld a,[Lives_X]
@@ -4452,16 +4538,16 @@ Elet_OSD:
 	ld [Pumpa+$10],a
 	ld a, $0
 	ld [localVariable_Elet_OSD_varPrefixed_i], a
-Elet_OSD_while280:
-Elet_OSD_loopstart284:
+Elet_OSD_while245:
+Elet_OSD_loopstart249:
 	; Binary clause core: LESS
 	; Compare two vars optimization
 	ld a,[Eletek]
 	ld b,a
 	ld a,[localVariable_Elet_OSD_varPrefixed_i]
 	cp b
-	jr nc,Elet_OSD_edblock283
-Elet_OSD_ctb281: ;Main true block ;keep :
+	jr nc,Elet_OSD_edblock248
+Elet_OSD_ctb246: ;Main true block ;keep :
 	; Storing to array  
 	ld a,[localVariable_Elet_OSD_varPrefixed_ix]
 	ld [Pumpa+$f],a
@@ -4479,9 +4565,9 @@ Elet_OSD_ctb281: ;Main true block ;keep :
 	ld a,[localVariable_Elet_OSD_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Elet_OSD_varPrefixed_i], a
-	jr Elet_OSD_while280
-Elet_OSD_edblock283:
-Elet_OSD_loopend285:
+	jr Elet_OSD_while245
+Elet_OSD_edblock248:
+Elet_OSD_loopend250:
 	ret
 end_procedure_Elet_OSD:
 	; ***********  Defining procedure : Ikon_Oszlop
@@ -4490,7 +4576,7 @@ localVariable_Ikon_Oszlop_varPrefixed_r:	db	0
 localVariable_Ikon_Oszlop_s:	db	0
 localVariable_Ikon_Oszlop_j:	db	0
 localVariable_Ikon_Oszlop_varPrefixed_e:	db	0
-Ikon_Oszlop_block288:
+Ikon_Oszlop_block253:
 Ikon_Oszlop:
 	ld a, $0
 	ld [localVariable_Ikon_Oszlop_s], a
@@ -4498,55 +4584,55 @@ Ikon_Oszlop:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	or a
-	jr c, Ikon_Oszlop_edblock292
-	jr z, Ikon_Oszlop_edblock292
-Ikon_Oszlop_ctb290: ;Main true block ;keep :
+	jr c, Ikon_Oszlop_edblock257
+	jr z, Ikon_Oszlop_edblock257
+Ikon_Oszlop_ctb255: ;Main true block ;keep :
 	; a hely sorszama: a tiltott eszkozok helye kimarad 
 	ld a, $1
 	ld [localVariable_Ikon_Oszlop_s], a
-Ikon_Oszlop_edblock292:
+Ikon_Oszlop_edblock257:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $1
-	jr c, Ikon_Oszlop_edblock298
-	jr z, Ikon_Oszlop_edblock298
-Ikon_Oszlop_ctb296: ;Main true block ;keep :
+	jr c, Ikon_Oszlop_edblock263
+	jr z, Ikon_Oszlop_edblock263
+Ikon_Oszlop_ctb261: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[Fal_Engedve]
 	ld b,a
 	ld a,[localVariable_Ikon_Oszlop_s]
 	add  a, b
 	ld [localVariable_Ikon_Oszlop_s], a
-Ikon_Oszlop_edblock298:
+Ikon_Oszlop_edblock263:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $2
-	jr c, Ikon_Oszlop_edblock304
-	jr z, Ikon_Oszlop_edblock304
-Ikon_Oszlop_ctb302: ;Main true block ;keep :
+	jr c, Ikon_Oszlop_edblock269
+	jr z, Ikon_Oszlop_edblock269
+Ikon_Oszlop_ctb267: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[Bomba_Engedve]
 	ld b,a
 	ld a,[localVariable_Ikon_Oszlop_s]
 	add  a, b
 	ld [localVariable_Ikon_Oszlop_s], a
-Ikon_Oszlop_edblock304:
+Ikon_Oszlop_edblock269:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $3
-	jr c, Ikon_Oszlop_edblock310
-	jr z, Ikon_Oszlop_edblock310
-Ikon_Oszlop_ctb308: ;Main true block ;keep :
+	jr c, Ikon_Oszlop_edblock275
+	jr z, Ikon_Oszlop_edblock275
+Ikon_Oszlop_ctb273: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[Akna_Engedve]
 	ld b,a
 	ld a,[localVariable_Ikon_Oszlop_s]
 	add  a, b
 	ld [localVariable_Ikon_Oszlop_s], a
-Ikon_Oszlop_edblock310:
+Ikon_Oszlop_edblock275:
 	; generic assign 
 	ld a,[localVariable_Ikon_Oszlop_s]
 	ld b,a
@@ -4562,79 +4648,79 @@ Ikon_Oszlop_edblock310:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_j]
 	cp $2
-	jr nz,Ikon_Oszlop_edblock316
-Ikon_Oszlop_ctb314: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock281
+Ikon_Oszlop_ctb279: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_r]
 	ld b,a
 	ld a,$1f
 	sub  b
 	ld [localVariable_Ikon_Oszlop_varPrefixed_r], a
-Ikon_Oszlop_edblock316:
+Ikon_Oszlop_edblock281:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $1
-	jr nz,Ikon_Oszlop_edblock322
-Ikon_Oszlop_ctb320: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock287
+Ikon_Oszlop_ctb285: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Fal_Engedve]
 	or a
-	jr nz,Ikon_Oszlop_edblock334
-Ikon_Oszlop_ctb332: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock299
+Ikon_Oszlop_ctb297: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Ikon_Oszlop_varPrefixed_r], a
-Ikon_Oszlop_edblock334:
-Ikon_Oszlop_edblock322:
+Ikon_Oszlop_edblock299:
+Ikon_Oszlop_edblock287:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $2
-	jr nz,Ikon_Oszlop_edblock340
-Ikon_Oszlop_ctb338: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock304
+Ikon_Oszlop_ctb302: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Bomba_Engedve]
 	or a
-	jr nz,Ikon_Oszlop_edblock352
-Ikon_Oszlop_ctb350: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock316
+Ikon_Oszlop_ctb314: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Ikon_Oszlop_varPrefixed_r], a
-Ikon_Oszlop_edblock352:
-Ikon_Oszlop_edblock340:
+Ikon_Oszlop_edblock316:
+Ikon_Oszlop_edblock304:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $3
-	jr nz,Ikon_Oszlop_edblock358
-Ikon_Oszlop_ctb356: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock321
+Ikon_Oszlop_ctb319: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Akna_Engedve]
 	or a
-	jr nz,Ikon_Oszlop_edblock370
-Ikon_Oszlop_ctb368: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock333
+Ikon_Oszlop_ctb331: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Ikon_Oszlop_varPrefixed_r], a
-Ikon_Oszlop_edblock370:
-Ikon_Oszlop_edblock358:
+Ikon_Oszlop_edblock333:
+Ikon_Oszlop_edblock321:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_e]
 	cp $4
-	jr nz,Ikon_Oszlop_edblock376
-Ikon_Oszlop_ctb374: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock338
+Ikon_Oszlop_ctb336: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[VirusLe_Engedve]
 	or a
-	jr nz,Ikon_Oszlop_edblock388
-Ikon_Oszlop_ctb386: ;Main true block ;keep :
+	jr nz,Ikon_Oszlop_edblock350
+Ikon_Oszlop_ctb348: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Ikon_Oszlop_varPrefixed_r], a
-Ikon_Oszlop_edblock388:
-Ikon_Oszlop_edblock376:
+Ikon_Oszlop_edblock350:
+Ikon_Oszlop_edblock338:
 	ld a,[localVariable_Ikon_Oszlop_varPrefixed_r]
 	ret
 	ret
@@ -4644,7 +4730,7 @@ end_procedure_Ikon_Oszlop:
 localVariable_Ikon_Kep_x:	db	0
 localVariable_Ikon_Kep_y:	db	0
 localVariable_Ikon_Kep_varPrefixed_d:	dw	0
-Ikon_Kep_block391:
+Ikon_Kep_block352:
 Ikon_Kep:
 	; Variable is 16-bit
 	ld hl,[localVariable_Ikon_Kep_varPrefixed_d]
@@ -4673,7 +4759,7 @@ localVariable_Ikon_Rajz_x:	db	0
 localVariable_Ikon_Rajz_varPrefixed_d:	dw	0
 localVariable_Ikon_Rajz_j:	db	0
 localVariable_Ikon_Rajz_varPrefixed_e:	db	0
-Ikon_Rajz_block392:
+Ikon_Rajz_block353:
 Ikon_Rajz:
 	; generic assign 
 	; generic assign 
@@ -4710,15 +4796,15 @@ Ikon_Rajz:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Rajz_j]
 	cp $2
-	jr nz,Ikon_Rajz_edblock397
-Ikon_Rajz_localsuccess399: ;keep:
+	jr nz,Ikon_Rajz_edblock358
+Ikon_Rajz_localsuccess360: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	or a
-	jr nz,Ikon_Rajz_edblock397
-Ikon_Rajz_ctb395: ;Main true block ;keep :
+	jr nz,Ikon_Rajz_edblock358
+Ikon_Rajz_ctb356: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -4727,13 +4813,13 @@ Ikon_Rajz_ctb395: ;Main true block ;keep :
 	add hl,de
 	; Loading pointer
 	ld [localVariable_Ikon_Rajz_varPrefixed_d],hl
-Ikon_Rajz_edblock397:
+Ikon_Rajz_edblock358:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Rajz_varPrefixed_e]
 	cp $1
-	jr nz,Ikon_Rajz_edblock404
-Ikon_Rajz_ctb402: ;Main true block ;keep :
+	jr nz,Ikon_Rajz_edblock365
+Ikon_Rajz_ctb363: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -4742,13 +4828,13 @@ Ikon_Rajz_ctb402: ;Main true block ;keep :
 	add hl,de
 	; Loading pointer
 	ld [localVariable_Ikon_Rajz_varPrefixed_d],hl
-Ikon_Rajz_edblock404:
+Ikon_Rajz_edblock365:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Rajz_varPrefixed_e]
 	cp $2
-	jr nz,Ikon_Rajz_edblock410
-Ikon_Rajz_ctb408: ;Main true block ;keep :
+	jr nz,Ikon_Rajz_edblock371
+Ikon_Rajz_ctb369: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -4757,13 +4843,13 @@ Ikon_Rajz_ctb408: ;Main true block ;keep :
 	add hl,de
 	; Loading pointer
 	ld [localVariable_Ikon_Rajz_varPrefixed_d],hl
-Ikon_Rajz_edblock410:
+Ikon_Rajz_edblock371:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Rajz_varPrefixed_e]
 	cp $3
-	jr nz,Ikon_Rajz_edblock416
-Ikon_Rajz_ctb414: ;Main true block ;keep :
+	jr nz,Ikon_Rajz_edblock377
+Ikon_Rajz_ctb375: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$c3
@@ -4772,13 +4858,13 @@ Ikon_Rajz_ctb414: ;Main true block ;keep :
 	add hl,de
 	; Loading pointer
 	ld [localVariable_Ikon_Rajz_varPrefixed_d],hl
-Ikon_Rajz_edblock416:
+Ikon_Rajz_edblock377:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Rajz_varPrefixed_e]
 	cp $4
-	jr nz,Ikon_Rajz_edblock422
-Ikon_Rajz_ctb420: ;Main true block ;keep :
+	jr nz,Ikon_Rajz_edblock383
+Ikon_Rajz_ctb381: ;Main true block ;keep :
 	; generic assign 
 	ld de,$3
 	ld hl,Enemy_FazPtr_Tab
@@ -4791,7 +4877,7 @@ Ikon_Rajz_ctb420: ;Main true block ;keep :
 	ld l,a
 	; Loading pointer
 	ld [localVariable_Ikon_Rajz_varPrefixed_d],hl
-Ikon_Rajz_edblock422:
+Ikon_Rajz_edblock383:
 	; generic assign 
 	ld a,[localVariable_Ikon_Rajz_x]
 	ld [localVariable_Ikon_Kep_x], a
@@ -4810,14 +4896,14 @@ end_procedure_Ikon_Rajz:
 	;    Procedure type : User-defined procedure
 localVariable_Jelolo_Rajz_x:	db	0
 localVariable_Jelolo_Rajz_j:	db	0
-Jelolo_Rajz_block425:
+Jelolo_Rajz_block386:
 Jelolo_Rajz:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jelolo_Rajz_j]
 	cp $1
-	jp nz,Jelolo_Rajz_eblock428
-Jelolo_Rajz_ctb427: ;Main true block ;keep :
+	jp nz,Jelolo_Rajz_eblock389
+Jelolo_Rajz_ctb388: ;Main true block ;keep :
 	; generic assign 
 	ld a, $1
 	ld [localVariable_Ikon_Oszlop_j], a
@@ -4857,8 +4943,8 @@ Jelolo_Rajz_ctb427: ;Main true block ;keep :
 	ld hl,Jelol1
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_UpdateLastPos
-	jp Jelolo_Rajz_edblock429
-Jelolo_Rajz_eblock428:
+	jp Jelolo_Rajz_edblock390
+Jelolo_Rajz_eblock389:
 	; generic assign 
 	ld a, $2
 	ld [localVariable_Ikon_Oszlop_j], a
@@ -4898,9 +4984,79 @@ Jelolo_Rajz_eblock428:
 	ld hl,Jelol2
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_UpdateLastPos
-Jelolo_Rajz_edblock429:
+Jelolo_Rajz_edblock390:
 	ret
 end_procedure_Jelolo_Rajz:
+	; A j. jatekos eszkoz-ikonjai a 0. sorban (csak az engedelyezettek, hezag nelkul) + a jelolo 
+	; ***********  Defining procedure : Ikon_Sor
+	;    Procedure type : User-defined procedure
+localVariable_Ikon_Sor_j:	db	0
+Ikon_Sor_block399:
+Ikon_Sor:
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Ikon_Rajz_j], a
+	ld a, $0
+	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
+	call Ikon_Rajz
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[Fal_Engedve]
+	cp $1
+	jr nz,Ikon_Sor_edblock403
+Ikon_Sor_ctb401: ;Main true block ;keep :
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Ikon_Rajz_j], a
+	ld a, $1
+	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
+	call Ikon_Rajz
+Ikon_Sor_edblock403:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[Bomba_Engedve]
+	cp $1
+	jr nz,Ikon_Sor_edblock409
+Ikon_Sor_ctb407: ;Main true block ;keep :
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Ikon_Rajz_j], a
+	ld a, $2
+	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
+	call Ikon_Rajz
+Ikon_Sor_edblock409:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[Akna_Engedve]
+	cp $1
+	jr nz,Ikon_Sor_edblock415
+Ikon_Sor_ctb413: ;Main true block ;keep :
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Ikon_Rajz_j], a
+	ld a, $3
+	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
+	call Ikon_Rajz
+Ikon_Sor_edblock415:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[VirusLe_Engedve]
+	cp $1
+	jr nz,Ikon_Sor_edblock421
+Ikon_Sor_ctb419: ;Main true block ;keep :
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Ikon_Rajz_j], a
+	ld a, $4
+	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
+	call Ikon_Rajz
+Ikon_Sor_edblock421:
+	; generic assign 
+	ld a,[localVariable_Ikon_Sor_j]
+	ld [localVariable_Jelolo_Rajz_j], a
+	call Jelolo_Rajz
+	ret
+end_procedure_Ikon_Sor:
 	; Árak középen, soronként középre igazítva: pumpa ikon : ár / bevétel (y=4), fal ikon : ár (y=14), bomba ikon : ár (y=24); a 0. sor (a pálya fölött) = eszköz-választó ikonok + jelölő (P1 bal, P2 jobb) - csak pályabetöltéskor 
 	; ***********  Defining procedure : Arak_OSD
 	;    Procedure type : User-defined procedure
@@ -4908,7 +5064,7 @@ localVariable_Arak_OSD_ax:	db	0
 localVariable_Arak_OSD_w:	db	0
 localVariable_Arak_OSD_bx:	db	0
 localVariable_Arak_OSD_sor:	db	0
-Arak_OSD_block438:
+Arak_OSD_block424:
 Arak_OSD:
 	ld hl,ColonStr
 	ld [Ir_Szoveg],hl
@@ -5022,98 +5178,18 @@ Arak_OSD:
 	call HUD_Num3
 	; az eszköz-ikonok a 0. sorban: a fal és a bomba csak ha az adott pályán engedélyezett 
 	ld a, $1
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $0
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Fal_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock443
-Arak_OSD_ctb441: ;Main true block ;keep :
-	ld a, $1
-	ld [localVariable_Ikon_Rajz_j], a
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock443:
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Bomba_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock449
-Arak_OSD_ctb447: ;Main true block ;keep :
-	ld a, $1
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $2
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock449:
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Akna_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock455
-Arak_OSD_ctb453: ;Main true block ;keep :
-	ld a, $1
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $3
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock455:
-	ld a, $1
-	ld [localVariable_Jelolo_Rajz_j], a
-	call Jelolo_Rajz
+	ld [localVariable_Ikon_Sor_j], a
+	call Ikon_Sor
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Arak_OSD_edblock461
-Arak_OSD_ctb459: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock429
+Arak_OSD_ctb427: ;Main true block ;keep :
 	ld a, $2
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $0
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Fal_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock485
-Arak_OSD_ctb483: ;Main true block ;keep :
-	ld a, $2
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $1
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock485:
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Bomba_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock491
-Arak_OSD_ctb489: ;Main true block ;keep :
-	ld a, $2
-	ld [localVariable_Ikon_Rajz_j], a
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock491:
-	; Binary clause core: EQUALS
-	; Compare with pure num / var optimization
-	ld a,[Akna_Engedve]
-	cp $1
-	jr nz,Arak_OSD_edblock497
-Arak_OSD_ctb495: ;Main true block ;keep :
-	ld a, $2
-	ld [localVariable_Ikon_Rajz_j], a
-	ld a, $3
-	ld [localVariable_Ikon_Rajz_varPrefixed_e], a
-	call Ikon_Rajz
-Arak_OSD_edblock497:
-	ld a, $2
-	ld [localVariable_Jelolo_Rajz_j], a
-	call Jelolo_Rajz
-Arak_OSD_edblock461:
+	ld [localVariable_Ikon_Sor_j], a
+	call Ikon_Sor
+Arak_OSD_edblock429:
 	ld hl,ColonStr
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -5159,8 +5235,8 @@ Arak_OSD_edblock461:
 	; Compare with pure num / var optimization
 	ld a,[Fal_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock504
-Arak_OSD_ctb502: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock436
+Arak_OSD_ctb434: ;Main true block ;keep :
 	; a fal ára csak ha a pályán építhető fal 
 	; generic assign 
 	; Generic 16-bit binop
@@ -5202,7 +5278,7 @@ Arak_OSD_ctb502: ;Main true block ;keep :
 	ld a, $e
 	ld [localVariable_HUD_Num4_sor], a
 	call HUD_Num4
-Arak_OSD_edblock504:
+Arak_OSD_edblock436:
 	; a bomba, az akna es a virus ara egy sorban (y=24), egymas mellett, egyutt kozepre; ha nincs fal es csak egy elem van, a pumpa ala (y=14) 
 	; generic assign 
 	ld a,[Akna_Engedve]
@@ -5222,18 +5298,18 @@ Arak_OSD_edblock504:
 	; Compare with pure num / var optimization
 	ld a,[Fal_Engedve]
 	or a
-	jr nz,Arak_OSD_edblock510
-Arak_OSD_ctb508: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock442
+Arak_OSD_ctb440: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Arak_OSD_ax]
 	cp $1
-	jr nz,Arak_OSD_edblock522
-Arak_OSD_ctb520: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock454
+Arak_OSD_ctb452: ;Main true block ;keep :
 	ld a, $e
 	ld [localVariable_Arak_OSD_sor], a
-Arak_OSD_edblock522:
-Arak_OSD_edblock510:
+Arak_OSD_edblock454:
+Arak_OSD_edblock442:
 	ld a, $42
 	ld [localVariable_Arak_OSD_bx], a
 	; generic assign 
@@ -5245,41 +5321,41 @@ Arak_OSD_edblock510:
 	; Compare with pure num / var optimization
 	ld a,[Bomba_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock528
-Arak_OSD_ctb526: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock459
+Arak_OSD_ctb457: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[localVariable_Arak_OSD_ax]
 	ld b,a
 	ld a,[localVariable_Arak_OSD_bx]
 	sub  b
 	ld [localVariable_Arak_OSD_bx], a
-Arak_OSD_edblock528:
+Arak_OSD_edblock459:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Akna_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock534
-Arak_OSD_ctb532: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock465
+Arak_OSD_ctb463: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[localVariable_Arak_OSD_ax]
 	ld b,a
 	ld a,[localVariable_Arak_OSD_bx]
 	sub  b
 	ld [localVariable_Arak_OSD_bx], a
-Arak_OSD_edblock534:
+Arak_OSD_edblock465:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[VirusLe_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock540
-Arak_OSD_ctb538: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock471
+Arak_OSD_ctb469: ;Main true block ;keep :
 	; 'a:=a + expression'  optimization 
 	ld a,[localVariable_Arak_OSD_ax]
 	ld b,a
 	ld a,[localVariable_Arak_OSD_bx]
 	sub  b
 	ld [localVariable_Arak_OSD_bx], a
-Arak_OSD_edblock540:
+Arak_OSD_edblock471:
 	; generic assign 
 	ld a,$2
 	ld c,a
@@ -5301,8 +5377,8 @@ Arak_OSD_edblock540:
 	; Compare with pure num / var optimization
 	ld a,[Bomba_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock546
-Arak_OSD_ctb544: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock477
+Arak_OSD_ctb475: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -5355,13 +5431,13 @@ Arak_OSD_ctb544: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	add  a,$2
 	ld [localVariable_Arak_OSD_bx], a
-Arak_OSD_edblock546:
+Arak_OSD_edblock477:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Akna_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock552
-Arak_OSD_ctb550: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock483
+Arak_OSD_ctb481: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$c3
@@ -5414,13 +5490,13 @@ Arak_OSD_ctb550: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	add  a,$2
 	ld [localVariable_Arak_OSD_bx], a
-Arak_OSD_edblock552:
+Arak_OSD_edblock483:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[VirusLe_Engedve]
 	cp $1
-	jr nz,Arak_OSD_edblock558
-Arak_OSD_ctb556: ;Main true block ;keep :
+	jr nz,Arak_OSD_edblock489
+Arak_OSD_ctb487: ;Main true block ;keep :
 	; generic assign 
 	ld de,$3
 	ld hl,Enemy_FazPtr_Tab
@@ -5468,7 +5544,7 @@ Arak_OSD_ctb556: ;Main true block ;keep :
 	ld a,[localVariable_Arak_OSD_sor]
 	ld [localVariable_HUD_Num4_sor], a
 	call HUD_Num4
-Arak_OSD_edblock558:
+Arak_OSD_edblock489:
 	ret
 end_procedure_Arak_OSD:
 	; A pénz (Drill_Cash) kiírása a HUD-ra, 4 jegyen (1. sor bal oldalt) 
@@ -5496,8 +5572,8 @@ Cash2_OSD:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Cash2_OSD_edblock566
-Cash2_OSD_ctb564: ;Main true block ;keep :
+	jr nz,Cash2_OSD_edblock497
+Cash2_OSD_ctb495: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash2]
@@ -5509,14 +5585,14 @@ Cash2_OSD_ctb564: ;Main true block ;keep :
 	ld a, $4
 	ld [localVariable_HUD_Num4_sor], a
 	call HUD_Num4
-Cash2_OSD_edblock566:
+Cash2_OSD_edblock497:
 	ret
 end_procedure_Cash2_OSD:
 	; A lerakott pumpák száma a HUD-ra, 3 jegyen (co-op: a két játékos ÖSSZEGE, max 255) 
 	; ***********  Defining procedure : Pump_OSD
 	;    Procedure type : User-defined procedure
 localVariable_Pump_OSD_s:	dw	0
-Pump_OSD_block569:
+Pump_OSD_block500:
 Pump_OSD:
 	; generic assign 
 	; Variable is 16-bit
@@ -5533,8 +5609,8 @@ Pump_OSD:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Pump_OSD_edblock573
-Pump_OSD_ctb571: ;Main true block ;keep :
+	jr nz,Pump_OSD_edblock504
+Pump_OSD_ctb502: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Pumpa_db2]
@@ -5546,13 +5622,13 @@ Pump_OSD_ctb571: ;Main true block ;keep :
 	ld a, $e
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-Pump_OSD_edblock573:
+Pump_OSD_edblock504:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jr nz,Pump_OSD_edblock579
-Pump_OSD_ctb577: ;Main true block ;keep :
+	jr nz,Pump_OSD_edblock510
+Pump_OSD_ctb508: ;Main true block ;keep :
 	; két játékos: a 2. játékos pumpái  egy játékos és co-op: a (közös) összeg a pálya alatt, a cél előtt 
 	; generic assign 
 	; Variable is 16-bit
@@ -5577,7 +5653,7 @@ Pump_OSD_ctb577: ;Main true block ;keep :
 	ld a, $e0
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-Pump_OSD_edblock579:
+Pump_OSD_edblock510:
 	ret
 end_procedure_Pump_OSD:
 	; A teljes térkép egyszeri kirajzolása induláskor 
@@ -5586,7 +5662,7 @@ end_procedure_Pump_OSD:
 localVariable_MapToScreen_mapx:	db	0
 localVariable_MapToScreen_mapy:	db	0
 localVariable_MapToScreen_data:	dw	0
-MapToScreen_block582:
+MapToScreen_block513:
 MapToScreen:
 	; generic assign 
 	ld hl,$00
@@ -5594,10 +5670,10 @@ MapToScreen:
 	ld [localVariable_MapToScreen_data],hl
 	ld a, $1
 	ld [localVariable_MapToScreen_mapy], a
-MapToScreen_forloop583:
+MapToScreen_forloop514:
 	ld a, $1
 	ld [localVariable_MapToScreen_mapx], a
-MapToScreen_forloop633:
+MapToScreen_forloop558:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[Talaj1Map]
@@ -5609,8 +5685,8 @@ MapToScreen_forloop633:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr nz,MapToScreen_edblock661
-MapToScreen_ctb659: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock565
+MapToScreen_ctb563: ;Main true block ;keep :
 	; Storing to array  
 	; Swapping nodes
 	; Generic mul
@@ -5646,7 +5722,7 @@ MapToScreen_ctb659: ;Main true block ;keep :
 	ld hl,Talaj1
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_Put
-MapToScreen_edblock661:
+MapToScreen_edblock565:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[Talaj3Map]
@@ -5658,8 +5734,8 @@ MapToScreen_edblock661:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr nz,MapToScreen_edblock671
-MapToScreen_ctb669: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock572
+MapToScreen_ctb570: ;Main true block ;keep :
 	; Storing to array  
 	; Swapping nodes
 	; Generic mul
@@ -5695,7 +5771,7 @@ MapToScreen_ctb669: ;Main true block ;keep :
 	ld hl,Talaj3
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_Put
-MapToScreen_edblock671:
+MapToScreen_edblock572:
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$01
@@ -5703,27 +5779,27 @@ MapToScreen_edblock671:
 	ld hl,[localVariable_MapToScreen_data]
 	add  hl,de
 	ld [localVariable_MapToScreen_data],hl
-MapToScreen_loopstart634:
+MapToScreen_loopstart559:
 	ld a,[localVariable_MapToScreen_mapx]
 	add a,1
 	ld [localVariable_MapToScreen_mapx],a
 	cp $1e+1
-	jp nz,MapToScreen_forloop633
-MapToScreen_loopend635:
-MapToScreen_loopstart584:
+	jp nz,MapToScreen_forloop558
+MapToScreen_loopend560:
+MapToScreen_loopstart515:
 	ld a,[localVariable_MapToScreen_mapy]
 	add a,1
 	ld [localVariable_MapToScreen_mapy],a
 	cp $12+1
-	jp nz,MapToScreen_forloop583
-MapToScreen_loopend585:
+	jp nz,MapToScreen_forloop514
+MapToScreen_loopend516:
 	; HUD (minden módban ugyanaz, a 2. játékos részei csak két játékosnál): 1. sor "P1$:0990 ... P2$:0450", 2. sor "[pumpa]:023 ... [pumpa]:017", középen az árak; a pálya alatt (nem versus) LIVES, LVL, cél "[pumpa]:össz/cél"; a feliratok helye láncolva (Ir_X) 
 	ld a, $2
 	ld [Ir_X], a
 	ld a, $4
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,MapToScreen_stringassignstr679
+	ld hl,MapToScreen_stringassignstr577
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -5770,8 +5846,8 @@ MapToScreen_loopend585:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MapToScreen_edblock683
-MapToScreen_ctb681: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock581
+MapToScreen_ctb579: ;Main true block ;keep :
 	; versus: a pálya célja a pumpaszám mögött ("[pumpa]:009/200"), mindkét játékosnál 
 	; generic assign 
 	ld a,[Pump_X]
@@ -5806,16 +5882,16 @@ MapToScreen_ctb681: ;Main true block ;keep :
 	ld a, $e
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-MapToScreen_edblock683:
+MapToScreen_edblock581:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jp nz,MapToScreen_edblock691
-MapToScreen_ctb689: ;Main true block ;keep :
+	jp nz,MapToScreen_edblock589
+MapToScreen_ctb587: ;Main true block ;keep :
 	; a 2. játékos: jobbra igazítva, a jobb szél a 62. byte 
 	; Assigning a string : Ir_Szoveg
-	ld hl,MapToScreen_stringassignstr719
+	ld hl,MapToScreen_stringassignstr617
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -5844,7 +5920,7 @@ MapToScreen_ctb689: ;Main true block ;keep :
 	ld a, $4
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,MapToScreen_stringassignstr722
+	ld hl,MapToScreen_stringassignstr620
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -5884,8 +5960,8 @@ MapToScreen_ctb689: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MapToScreen_edblock727
-MapToScreen_ctb725: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock625
+MapToScreen_ctb623: ;Main true block ;keep :
 	; versus: + "/" + 3 jegyű cél 
 	ld hl,SlashStr
 	ld [Ir_Szoveg],hl
@@ -5910,13 +5986,13 @@ MapToScreen_ctb725: ;Main true block ;keep :
 	pop af
 	sub  b
 	ld [Pump2_X], a
-MapToScreen_edblock727:
+MapToScreen_edblock625:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	or a
-	jr nz,MapToScreen_edblock735
-MapToScreen_ctb733: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock631
+MapToScreen_ctb629: ;Main true block ;keep :
 	; Generic 16-bit binop
 	ld de,$03
 	; Variable is 16-bit
@@ -5926,7 +6002,7 @@ MapToScreen_ctb733: ;Main true block ;keep :
 	ld [Pumpa+$2],a
 	ld a,h
 	ld [Pumpa+$2+1],a
-MapToScreen_edblock735:
+MapToScreen_edblock631:
 	; versus: a 2. játékos saját pumpája 
 	; Storing to array  
 	ld a,[Pump2_X]
@@ -5954,8 +6030,8 @@ MapToScreen_edblock735:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MapToScreen_edblock741
-MapToScreen_ctb739: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock636
+MapToScreen_ctb634: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Pump2_X]
 	push af
@@ -5989,15 +6065,15 @@ MapToScreen_ctb739: ;Main true block ;keep :
 	ld a, $e
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-MapToScreen_edblock741:
+MapToScreen_edblock636:
 	call Cash2_OSD
-MapToScreen_edblock691:
+MapToScreen_edblock589:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jp nz,MapToScreen_edblock749
-MapToScreen_ctb747: ;Main true block ;keep :
+	jp nz,MapToScreen_edblock642
+MapToScreen_ctb640: ;Main true block ;keep :
 	; alsó sor, jobb oldal: cél "[pumpa]:023/225" (co-op: a két játékos pumpáinak összege) 
 	ld a, $2
 	ld [Lives_X], a
@@ -6110,7 +6186,7 @@ MapToScreen_ctb747: ;Main true block ;keep :
 	ld a, $e0
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-MapToScreen_edblock749:
+MapToScreen_edblock642:
 	call Level_OSD
 	; LVL a pálya alatt 
 	call Cash_OSD
@@ -6120,11 +6196,11 @@ MapToScreen_edblock749:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jr nz,MapToScreen_edblock759
-MapToScreen_ctb757: ;Main true block ;keep :
+	jr nz,MapToScreen_edblock652
+MapToScreen_ctb650: ;Main true block ;keep :
 	; árak középen + eszköz-választó ikonok  a pályanév NINCS kiírva (a felhasználó döntése, 2026-10-03; a helyén a meteor-figyelmeztetés villog). A Palya_Nev/Palya2_Nev adat megvan, a Nev_Kiir eljárás a .bak_meteorfigy-ben 
 	call Elet_OSD
-MapToScreen_edblock759:
+MapToScreen_edblock652:
 	ret
 end_procedure_MapToScreen:
 	; ***********  Defining procedure : Enemy_Kirak
@@ -6133,7 +6209,7 @@ localVariable_Enemy_Kirak_varPrefixed_p:	dw	0
 localVariable_Enemy_Kirak_x:	db	0
 localVariable_Enemy_Kirak_y:	db	0
 localVariable_Enemy_Kirak_faz:	db	0
-Enemy_Kirak_block762:
+Enemy_Kirak_block655:
 Enemy_Kirak:
 	; generic assign 
 	ld a,[localVariable_Enemy_Kirak_y]
@@ -6198,7 +6274,7 @@ end_procedure_Enemy_Kirak:
 localVariable_Fal_Kirak_varPrefixed_p:	dw	0
 localVariable_Fal_Kirak_x:	db	0
 localVariable_Fal_Kirak_y:	db	0
-Fal_Kirak_block763:
+Fal_Kirak_block656:
 Fal_Kirak:
 	; generic assign 
 	ld a,[localVariable_Fal_Kirak_y]
@@ -6246,7 +6322,7 @@ end_procedure_Fal_Kirak:
 localVariable_Talaj2_Kirak_varPrefixed_p:	dw	0
 localVariable_Talaj2_Kirak_x:	db	0
 localVariable_Talaj2_Kirak_y:	db	0
-Talaj2_Kirak_block764:
+Talaj2_Kirak_block657:
 Talaj2_Kirak:
 	; generic assign 
 	ld a,[localVariable_Talaj2_Kirak_y]
@@ -6299,28 +6375,28 @@ localVariable_Enemyk_Ujrarajzol_varPrefixed_f:	db	0
 localVariable_Enemyk_Ujrarajzol_mi:	dw	0
 localVariable_Enemyk_Ujrarajzol_kx:	db	0
 localVariable_Enemyk_Ujrarajzol_ky:	db	0
-Enemyk_Ujrarajzol_block765:
+Enemyk_Ujrarajzol_block658:
 Enemyk_Ujrarajzol:
 	ld a, $0
 	ld [localVariable_Enemyk_Ujrarajzol_dy], a
-Enemyk_Ujrarajzol_while766:
-Enemyk_Ujrarajzol_loopstart770:
+Enemyk_Ujrarajzol_while659:
+Enemyk_Ujrarajzol_loopstart663:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Ujrarajzol_dy]
 	cp $3
-	jp nc,Enemyk_Ujrarajzol_edblock769
-Enemyk_Ujrarajzol_ctb767: ;Main true block ;keep :
+	jp nc,Enemyk_Ujrarajzol_edblock662
+Enemyk_Ujrarajzol_ctb660: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Enemyk_Ujrarajzol_dx], a
-Enemyk_Ujrarajzol_while888:
-Enemyk_Ujrarajzol_loopstart892:
+Enemyk_Ujrarajzol_while736:
+Enemyk_Ujrarajzol_loopstart740:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Ujrarajzol_dx]
 	cp $3
-	jp nc,Enemyk_Ujrarajzol_edblock891
-Enemyk_Ujrarajzol_ctb889: ;Main true block ;keep :
+	jp nc,Enemyk_Ujrarajzol_edblock739
+Enemyk_Ujrarajzol_ctb737: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Enemyk_Ujrarajzol_kx]
@@ -6346,8 +6422,8 @@ Enemyk_Ujrarajzol_ctb889: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Ujrarajzol_cx]
 	cp $1
-	jp c, Enemyk_Ujrarajzol_edblock952
-Enemyk_Ujrarajzol_localsuccess977: ;keep:
+	jp c, Enemyk_Ujrarajzol_edblock746
+Enemyk_Ujrarajzol_localsuccess747: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -6355,14 +6431,14 @@ Enemyk_Ujrarajzol_localsuccess977: ;keep:
 	ld b,a
 	ld a,$1e
 	cp b
-	jp c,Enemyk_Ujrarajzol_edblock952
-Enemyk_Ujrarajzol_ctb950: ;Main true block ;keep :
+	jp c,Enemyk_Ujrarajzol_edblock746
+Enemyk_Ujrarajzol_ctb744: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Ujrarajzol_cy]
 	cp $1
-	jp c, Enemyk_Ujrarajzol_edblock982
-Enemyk_Ujrarajzol_localsuccess992: ;keep:
+	jp c, Enemyk_Ujrarajzol_edblock752
+Enemyk_Ujrarajzol_localsuccess753: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -6370,8 +6446,8 @@ Enemyk_Ujrarajzol_localsuccess992: ;keep:
 	ld b,a
 	ld a,$12
 	cp b
-	jp c,Enemyk_Ujrarajzol_edblock982
-Enemyk_Ujrarajzol_ctb980: ;Main true block ;keep :
+	jp c,Enemyk_Ujrarajzol_edblock752
+Enemyk_Ujrarajzol_ctb750: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	; Swapping nodes
@@ -6417,8 +6493,8 @@ Enemyk_Ujrarajzol_ctb980: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr c, Enemyk_Ujrarajzol_edblock998
-Enemyk_Ujrarajzol_localsuccess1000: ;keep:
+	jr c, Enemyk_Ujrarajzol_edblock759
+Enemyk_Ujrarajzol_localsuccess760: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -6433,8 +6509,8 @@ Enemyk_Ujrarajzol_localsuccess1000: ;keep:
 	ld a,[VirusMap]
 	add  a, $4
 	cp c
-	jr c,Enemyk_Ujrarajzol_edblock998
-Enemyk_Ujrarajzol_ctb996: ;Main true block ;keep :
+	jr c,Enemyk_Ujrarajzol_edblock759
+Enemyk_Ujrarajzol_ctb757: ;Main true block ;keep :
 	; csak vírus (20..24), a 2. játékos pumpái (31..) nem 
 	; generic assign 
 	; Variable is 16-bit
@@ -6459,23 +6535,23 @@ Enemyk_Ujrarajzol_ctb996: ;Main true block ;keep :
 	ld a,[localVariable_Enemyk_Ujrarajzol_varPrefixed_f]
 	ld [localVariable_Enemy_Kirak_faz], a
 	call Enemy_Kirak
-Enemyk_Ujrarajzol_edblock998:
-Enemyk_Ujrarajzol_edblock982:
-Enemyk_Ujrarajzol_edblock952:
+Enemyk_Ujrarajzol_edblock759:
+Enemyk_Ujrarajzol_edblock752:
+Enemyk_Ujrarajzol_edblock746:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Enemyk_Ujrarajzol_dx]
 	add  a,$1
 	ld [localVariable_Enemyk_Ujrarajzol_dx], a
-	jp Enemyk_Ujrarajzol_while888
-Enemyk_Ujrarajzol_edblock891:
-Enemyk_Ujrarajzol_loopend893:
+	jp Enemyk_Ujrarajzol_while736
+Enemyk_Ujrarajzol_edblock739:
+Enemyk_Ujrarajzol_loopend741:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Enemyk_Ujrarajzol_dy]
 	add  a,$1
 	ld [localVariable_Enemyk_Ujrarajzol_dy], a
-	jp Enemyk_Ujrarajzol_while766
-Enemyk_Ujrarajzol_edblock769:
-Enemyk_Ujrarajzol_loopend771:
+	jp Enemyk_Ujrarajzol_while659
+Enemyk_Ujrarajzol_edblock662:
+Enemyk_Ujrarajzol_loopend664:
 	ret
 end_procedure_Enemyk_Ujrarajzol:
 	; ***********  Defining procedure : Keret_Erint
@@ -6485,7 +6561,7 @@ localVariable_Keret_Erint_cy:	db	0
 localVariable_Keret_Erint_varPrefixed_r:	db	0
 localVariable_Keret_Erint_x:	db	0
 localVariable_Keret_Erint_y:	db	0
-Keret_Erint_block1002:
+Keret_Erint_block762:
 Keret_Erint:
 	ld a, $0
 	ld [localVariable_Keret_Erint_varPrefixed_r], a
@@ -6505,8 +6581,8 @@ Keret_Erint:
 	ld b,a
 	ld a,[localVariable_Keret_Erint_cx]
 	cp b
-	jr c, Keret_Erint_edblock1006
-Keret_Erint_localsuccess1015: ;keep:
+	jr c, Keret_Erint_edblock766
+Keret_Erint_localsuccess775: ;keep:
 	; ; logical AND, second requirement
 	; Swapped comparison expressions
 	; Binary clause core: GREATEREQUAL
@@ -6517,16 +6593,16 @@ Keret_Erint_localsuccess1015: ;keep:
 	ld a,[Keret_X_Pos]
 	add  a, $2
 	cp b
-	jr c, Keret_Erint_edblock1006
-Keret_Erint_ctb1004: ;Main true block ;keep :
+	jr c, Keret_Erint_edblock766
+Keret_Erint_ctb764: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Keret_Y_Pos]
 	ld b,a
 	ld a,[localVariable_Keret_Erint_cy]
 	cp b
-	jr c, Keret_Erint_edblock1020
-Keret_Erint_localsuccess1022: ;keep:
+	jr c, Keret_Erint_edblock780
+Keret_Erint_localsuccess781: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
@@ -6536,27 +6612,27 @@ Keret_Erint_localsuccess1022: ;keep:
 	ld a,[Keret_Y_Pos]
 	add  a, $2
 	cp b
-	jr c, Keret_Erint_edblock1020
-Keret_Erint_ctb1018: ;Main true block ;keep :
+	jr c, Keret_Erint_edblock780
+Keret_Erint_ctb778: ;Main true block ;keep :
 	ld a, $1
 	ld [Keret_Sereles], a
 	ld [localVariable_Keret_Erint_varPrefixed_r], a
-Keret_Erint_edblock1020:
-Keret_Erint_edblock1006:
+Keret_Erint_edblock780:
+Keret_Erint_edblock766:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Keret_Erint_edblock1027
-Keret_Erint_ctb1025: ;Main true block ;keep :
+	jr nz,Keret_Erint_edblock786
+Keret_Erint_ctb784: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Keret2_X_Pos]
 	ld b,a
 	ld a,[localVariable_Keret_Erint_cx]
 	cp b
-	jr c, Keret_Erint_edblock1054
-Keret_Erint_localsuccess1063: ;keep:
+	jr c, Keret_Erint_edblock812
+Keret_Erint_localsuccess813: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
@@ -6566,16 +6642,16 @@ Keret_Erint_localsuccess1063: ;keep:
 	ld a,[Keret2_X_Pos]
 	add  a, $2
 	cp b
-	jr c, Keret_Erint_edblock1054
-Keret_Erint_ctb1052: ;Main true block ;keep :
+	jr c, Keret_Erint_edblock812
+Keret_Erint_ctb810: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Keret2_Y_Pos]
 	ld b,a
 	ld a,[localVariable_Keret_Erint_cy]
 	cp b
-	jr c, Keret_Erint_edblock1068
-Keret_Erint_localsuccess1070: ;keep:
+	jr c, Keret_Erint_edblock818
+Keret_Erint_localsuccess819: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
@@ -6585,14 +6661,14 @@ Keret_Erint_localsuccess1070: ;keep:
 	ld a,[Keret2_Y_Pos]
 	add  a, $2
 	cp b
-	jr c, Keret_Erint_edblock1068
-Keret_Erint_ctb1066: ;Main true block ;keep :
+	jr c, Keret_Erint_edblock818
+Keret_Erint_ctb816: ;Main true block ;keep :
 	ld a, $1
 	ld [Keret2_Sereles], a
 	ld [localVariable_Keret_Erint_varPrefixed_r], a
-Keret_Erint_edblock1068:
-Keret_Erint_edblock1054:
-Keret_Erint_edblock1027:
+Keret_Erint_edblock818:
+Keret_Erint_edblock812:
+Keret_Erint_edblock786:
 	ld a,[localVariable_Keret_Erint_varPrefixed_r]
 	ret
 	ret
@@ -6669,8 +6745,8 @@ Keret2_Kirak:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Keret2_Kirak_edblock1080
-Keret2_Kirak_ctb1078: ;Main true block ;keep :
+	jr nz,Keret2_Kirak_edblock829
+Keret2_Kirak_ctb827: ;Main true block ;keep :
 	; ONE PLAYER GAME: nincs 2. Keret 
 	; Storing to array  
 	; Swapping nodes
@@ -6718,7 +6794,7 @@ Keret2_Kirak_ctb1078: ;Main true block ;keep :
 	ld hl,Keret2
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_UpdateLastPos
-Keret2_Kirak_edblock1080:
+Keret2_Kirak_edblock829:
 	; generic assign 
 	ld a,[Keret2_X_Pos]
 	ld [Keret2_Elozo_X_Pos], a
@@ -6735,12 +6811,12 @@ Keret2_Le:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Keret2_Le_edblock1091
-Keret2_Le_ctb1089: ;Main true block ;keep :
+	jr nz,Keret2_Le_edblock840
+Keret2_Le_ctb838: ;Main true block ;keep :
 	ld hl,Keret2
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
-Keret2_Le_edblock1091:
+Keret2_Le_edblock840:
 	ret
 end_procedure_Keret2_Le:
 	; ***********  Defining procedure : Eszkoz_Valt
@@ -6748,7 +6824,7 @@ end_procedure_Keret2_Le:
 localVariable_Eszkoz_Valt_regi:	db	0
 localVariable_Eszkoz_Valt_j:	db	0
 localVariable_Eszkoz_Valt_varPrefixed_e:	db	0
-Eszkoz_Valt_block1094:
+Eszkoz_Valt_block843:
 Eszkoz_Valt:
 	; generic assign 
 	ld a,[Eszkoz1]
@@ -6757,20 +6833,20 @@ Eszkoz_Valt:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Valt_j]
 	cp $2
-	jr nz,Eszkoz_Valt_edblock1098
-Eszkoz_Valt_ctb1096: ;Main true block ;keep :
+	jr nz,Eszkoz_Valt_edblock847
+Eszkoz_Valt_ctb845: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Eszkoz2]
 	ld [localVariable_Eszkoz_Valt_regi], a
-Eszkoz_Valt_edblock1098:
+Eszkoz_Valt_edblock847:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[localVariable_Eszkoz_Valt_regi]
 	ld b,a
 	ld a,[localVariable_Eszkoz_Valt_varPrefixed_e]
 	cp b
-	jr z, Eszkoz_Valt_edblock1104
-Eszkoz_Valt_ctb1102: ;Main true block ;keep :
+	jr z, Eszkoz_Valt_edblock853
+Eszkoz_Valt_ctb851: ;Main true block ;keep :
 	call Keret2_Le
 	ld hl,Keret
 	ld [GE_Sprite_this],hl
@@ -6779,8 +6855,8 @@ Eszkoz_Valt_ctb1102: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Valt_j]
 	cp $1
-	jr nz,Eszkoz_Valt_eblock1117
-Eszkoz_Valt_ctb1116: ;Main true block ;keep :
+	jr nz,Eszkoz_Valt_eblock866
+Eszkoz_Valt_ctb865: ;Main true block ;keep :
 	ld hl,Jelol1
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
@@ -6788,22 +6864,22 @@ Eszkoz_Valt_ctb1116: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Eszkoz_Valt_varPrefixed_e]
 	ld [Eszkoz1], a
-	jr Eszkoz_Valt_edblock1118
-Eszkoz_Valt_eblock1117:
+	jr Eszkoz_Valt_edblock867
+Eszkoz_Valt_eblock866:
 	ld hl,Jelol2
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
 	; generic assign 
 	ld a,[localVariable_Eszkoz_Valt_varPrefixed_e]
 	ld [Eszkoz2], a
-Eszkoz_Valt_edblock1118:
+Eszkoz_Valt_edblock867:
 	; generic assign 
 	ld a,[localVariable_Eszkoz_Valt_j]
 	ld [localVariable_Jelolo_Rajz_j], a
 	call Jelolo_Rajz
 	call Keret_SpriteKirak
 	call Keret2_Kirak
-Eszkoz_Valt_edblock1104:
+Eszkoz_Valt_edblock853:
 	ret
 end_procedure_Eszkoz_Valt:
 	; A j. játékos a következő ENGEDÉLYEZETT eszközre vált, körbe: pumpa, [fal], [bomba] (M = 1. játékos, Y = 2. játékos) 
@@ -6812,7 +6888,7 @@ end_procedure_Eszkoz_Valt:
 localVariable_Eszkoz_Kovetkezo_uj:	db	0
 localVariable_Eszkoz_Kovetkezo_k:	db	0
 localVariable_Eszkoz_Kovetkezo_j:	db	0
-Eszkoz_Kovetkezo_block1123:
+Eszkoz_Kovetkezo_block870:
 Eszkoz_Kovetkezo:
 	; generic assign 
 	ld a,[Eszkoz1]
@@ -6821,22 +6897,22 @@ Eszkoz_Kovetkezo:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_j]
 	cp $2
-	jr nz,Eszkoz_Kovetkezo_edblock1127
-Eszkoz_Kovetkezo_ctb1125: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock874
+Eszkoz_Kovetkezo_ctb872: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Eszkoz2]
 	ld [localVariable_Eszkoz_Kovetkezo_uj], a
-Eszkoz_Kovetkezo_edblock1127:
+Eszkoz_Kovetkezo_edblock874:
 	ld a, $0
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_while1130:
-Eszkoz_Kovetkezo_loopstart1134:
+Eszkoz_Kovetkezo_while877:
+Eszkoz_Kovetkezo_loopstart881:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_k]
 	or a
-	jr nz,Eszkoz_Kovetkezo_edblock1133
-Eszkoz_Kovetkezo_ctb1131: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock880
+Eszkoz_Kovetkezo_ctb878: ;Main true block ;keep :
 	; a következő engedélyezett eszköz (a pumpa mindig az, így véget ér) 
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
@@ -6845,64 +6921,64 @@ Eszkoz_Kovetkezo_ctb1131: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	cp $4
-	jr c, Eszkoz_Kovetkezo_edblock1177
-	jr z, Eszkoz_Kovetkezo_edblock1177
-Eszkoz_Kovetkezo_ctb1175: ;Main true block ;keep :
+	jr c, Eszkoz_Kovetkezo_edblock924
+	jr z, Eszkoz_Kovetkezo_edblock924
+Eszkoz_Kovetkezo_ctb922: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Eszkoz_Kovetkezo_uj], a
-Eszkoz_Kovetkezo_edblock1177:
+Eszkoz_Kovetkezo_edblock924:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
 	or a
-	jr nz,Eszkoz_Kovetkezo_edblock1183
-Eszkoz_Kovetkezo_ctb1181: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock929
+Eszkoz_Kovetkezo_ctb927: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_edblock1183:
+Eszkoz_Kovetkezo_edblock929:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
 	cp $1
-	jr nz,Eszkoz_Kovetkezo_edblock1189
-Eszkoz_Kovetkezo_ctb1187: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock934
+Eszkoz_Kovetkezo_ctb932: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Fal_Engedve]
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_edblock1189:
+Eszkoz_Kovetkezo_edblock934:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
 	cp $2
-	jr nz,Eszkoz_Kovetkezo_edblock1195
-Eszkoz_Kovetkezo_ctb1193: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock939
+Eszkoz_Kovetkezo_ctb937: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Bomba_Engedve]
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_edblock1195:
+Eszkoz_Kovetkezo_edblock939:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
 	cp $3
-	jr nz,Eszkoz_Kovetkezo_edblock1201
-Eszkoz_Kovetkezo_ctb1199: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock944
+Eszkoz_Kovetkezo_ctb942: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Akna_Engedve]
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_edblock1201:
+Eszkoz_Kovetkezo_edblock944:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Eszkoz_Kovetkezo_uj]
 	cp $4
-	jr nz,Eszkoz_Kovetkezo_edblock1207
-Eszkoz_Kovetkezo_ctb1205: ;Main true block ;keep :
+	jr nz,Eszkoz_Kovetkezo_edblock949
+Eszkoz_Kovetkezo_ctb947: ;Main true block ;keep :
 	; generic assign 
 	ld a,[VirusLe_Engedve]
 	ld [localVariable_Eszkoz_Kovetkezo_k], a
-Eszkoz_Kovetkezo_edblock1207:
-	jr Eszkoz_Kovetkezo_while1130
-Eszkoz_Kovetkezo_edblock1133:
-Eszkoz_Kovetkezo_loopend1135:
+Eszkoz_Kovetkezo_edblock949:
+	jr Eszkoz_Kovetkezo_while877
+Eszkoz_Kovetkezo_edblock880:
+Eszkoz_Kovetkezo_loopend882:
 	; generic assign 
 	ld a,[localVariable_Eszkoz_Kovetkezo_j]
 	ld [localVariable_Eszkoz_Valt_j], a
@@ -6917,7 +6993,7 @@ end_procedure_Eszkoz_Kovetkezo:
 localVariable_Pumpa_Torol_mp:	dw	0
 localVariable_Pumpa_Torol_x:	db	0
 localVariable_Pumpa_Torol_y:	db	0
-Pumpa_Torol_block1210:
+Pumpa_Torol_block951:
 Pumpa_Torol:
 	; generic assign 
 	; Generic 16-bit binop
@@ -6965,8 +7041,8 @@ Pumpa_Torol:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr c, Pumpa_Torol_edblock1215
-Pumpa_Torol_localsuccess1223: ;keep:
+	jr c, Pumpa_Torol_edblock956
+Pumpa_Torol_localsuccess964: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Compare two vars optimization
@@ -6981,8 +7057,8 @@ Pumpa_Torol_localsuccess1223: ;keep:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp c
-	jr nc,Pumpa_Torol_edblock1215
-Pumpa_Torol_ctb1213: ;Main true block ;keep :
+	jr nc,Pumpa_Torol_edblock956
+Pumpa_Torol_ctb954: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Binary clause INTEGER: GREATER
 	ld hl,$00
@@ -6992,9 +7068,9 @@ Pumpa_Torol_ctb1213: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpa_Torol_edblock1228
-	jr z, Pumpa_Torol_edblock1228
-Pumpa_Torol_ctb1226: ;Main true block ;keep :
+	jr c, Pumpa_Torol_edblock969
+	jr z, Pumpa_Torol_edblock969
+Pumpa_Torol_ctb967: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$01
@@ -7003,9 +7079,9 @@ Pumpa_Torol_ctb1226: ;Main true block ;keep :
 	xor a ; clear carry
 	sbc hl,de
 	ld [Pumpa_db],hl
-Pumpa_Torol_edblock1228:
+Pumpa_Torol_edblock969:
 	call Pump_OSD
-Pumpa_Torol_edblock1215:
+Pumpa_Torol_edblock956:
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Pumpa2Map]
@@ -7017,8 +7093,8 @@ Pumpa_Torol_edblock1215:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr c, Pumpa_Torol_edblock1234
-Pumpa_Torol_localsuccess1242: ;keep:
+	jr c, Pumpa_Torol_edblock974
+Pumpa_Torol_localsuccess982: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Compare two vars optimization
@@ -7033,8 +7109,8 @@ Pumpa_Torol_localsuccess1242: ;keep:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp c
-	jr nc,Pumpa_Torol_edblock1234
-Pumpa_Torol_ctb1232: ;Main true block ;keep :
+	jr nc,Pumpa_Torol_edblock974
+Pumpa_Torol_ctb972: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Binary clause INTEGER: GREATER
 	ld hl,$00
@@ -7044,9 +7120,9 @@ Pumpa_Torol_ctb1232: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpa_Torol_edblock1247
-	jr z, Pumpa_Torol_edblock1247
-Pumpa_Torol_ctb1245: ;Main true block ;keep :
+	jr c, Pumpa_Torol_edblock987
+	jr z, Pumpa_Torol_edblock987
+Pumpa_Torol_ctb985: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$01
@@ -7055,10 +7131,10 @@ Pumpa_Torol_ctb1245: ;Main true block ;keep :
 	xor a ; clear carry
 	sbc hl,de
 	ld [Pumpa_db2],hl
-Pumpa_Torol_edblock1247:
+Pumpa_Torol_edblock987:
 	; a 2. játékos pumpája 
 	call Pump_OSD
-Pumpa_Torol_edblock1234:
+Pumpa_Torol_edblock974:
 	ret
 end_procedure_Pumpa_Torol:
 	; AKNA lepes (vsync ELOTT, asm): Akna_Utem kepkockankent minden akna egy lepest lep, a 16. utan robban; a mar nem letezo aknat kiveszi a listabol 
@@ -7221,7 +7297,7 @@ localVariable_PumpakSzamol_varPrefixed_i:	db	0
 localVariable_PumpakSzamol_faz:	db	0
 localVariable_PumpakSzamol_varPrefixed_m:	db	0
 localVariable_PumpakSzamol_varPrefixed_b:	db	0
-PumpakSzamol_block1253:
+PumpakSzamol_block992:
 PumpakSzamol:
 	; generic assign 
 	; Generic 16-bit binop
@@ -7315,14 +7391,14 @@ PumpakSzamol:
 	ld [localVariable_PumpakSzamol_idx],hl
 	ld a, $0
 	ld [localVariable_PumpakSzamol_varPrefixed_i], a
-PumpakSzamol_while1256:
-PumpakSzamol_loopstart1260:
+PumpakSzamol_while995:
+PumpakSzamol_loopstart999:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_PumpakSzamol_varPrefixed_i]
 	cp $f
-	jp nc,PumpakSzamol_edblock1259
-PumpakSzamol_ctb1257: ;Main true block ;keep :
+	jp nc,PumpakSzamol_edblock998
+PumpakSzamol_ctb996: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld de,[localVariable_PumpakSzamol_idx]
@@ -7339,8 +7415,8 @@ PumpakSzamol_ctb1257: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_PumpakSzamol_varPrefixed_m]
 	cp b
-	jr c, PumpakSzamol_edblock1333
-PumpakSzamol_localsuccess1335: ;keep:
+	jr c, PumpakSzamol_edblock1069
+PumpakSzamol_localsuccess1070: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATER
 	; Compare two vars optimization
@@ -7350,22 +7426,22 @@ PumpakSzamol_localsuccess1335: ;keep:
 	ld a,[PumpaMap]
 	add  a, $8
 	cp b
-	jr c, PumpakSzamol_edblock1333
-	jr z, PumpakSzamol_edblock1333
-PumpakSzamol_ctb1331: ;Main true block ;keep :
+	jr c, PumpakSzamol_edblock1069
+	jr z, PumpakSzamol_edblock1069
+PumpakSzamol_ctb1067: ;Main true block ;keep :
 	; a pumpa-tartomány alapja: 1. (PumpaMap) vagy 2. játékos (Pumpa2Map) 
 	; generic assign 
 	ld a,[PumpaMap]
 	ld [localVariable_PumpakSzamol_varPrefixed_b], a
-PumpakSzamol_edblock1333:
+PumpakSzamol_edblock1069:
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Pumpa2Map]
 	ld b,a
 	ld a,[localVariable_PumpakSzamol_varPrefixed_m]
 	cp b
-	jr c, PumpakSzamol_edblock1340
-PumpakSzamol_localsuccess1342: ;keep:
+	jr c, PumpakSzamol_edblock1075
+PumpakSzamol_localsuccess1076: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATER
 	; Compare two vars optimization
@@ -7375,19 +7451,19 @@ PumpakSzamol_localsuccess1342: ;keep:
 	ld a,[Pumpa2Map]
 	add  a, $8
 	cp b
-	jr c, PumpakSzamol_edblock1340
-	jr z, PumpakSzamol_edblock1340
-PumpakSzamol_ctb1338: ;Main true block ;keep :
+	jr c, PumpakSzamol_edblock1075
+	jr z, PumpakSzamol_edblock1075
+PumpakSzamol_ctb1073: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Pumpa2Map]
 	ld [localVariable_PumpakSzamol_varPrefixed_b], a
-PumpakSzamol_edblock1340:
+PumpakSzamol_edblock1075:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_PumpakSzamol_varPrefixed_b]
 	or a
-	jp z, PumpakSzamol_edblock1347
-PumpakSzamol_ctb1345: ;Main true block ;keep :
+	jp z, PumpakSzamol_edblock1081
+PumpakSzamol_ctb1079: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_PumpakSzamol_varPrefixed_b]
 	ld b,a
@@ -7400,11 +7476,11 @@ PumpakSzamol_ctb1345: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $8
-	jr c, PumpakSzamol_edblock1373
-PumpakSzamol_ctb1371: ;Main true block ;keep :
+	jr c, PumpakSzamol_edblock1086
+PumpakSzamol_ctb1084: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_PumpakSzamol_faz], a
-PumpakSzamol_edblock1373:
+PumpakSzamol_edblock1086:
 	; Storing to array  
 	ld a,[localVariable_PumpakSzamol_faz]
 	ld b,a
@@ -7430,8 +7506,8 @@ PumpakSzamol_edblock1373:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, PumpakSzamol_edblock1379
-PumpakSzamol_localsuccess1381: ;keep:
+	jr c, PumpakSzamol_edblock1091
+PumpakSzamol_localsuccess1092: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Binary clause INTEGER: LESSEQUAL
@@ -7443,11 +7519,11 @@ PumpakSzamol_localsuccess1381: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c,PumpakSzamol_edblock1379
-PumpakSzamol_ctb1377: ;Main true block ;keep :
+	jr c,PumpakSzamol_edblock1091
+PumpakSzamol_ctb1089: ;Main true block ;keep :
 	ld a, $1
 	ld [Keret_Pumpa_Valt], a
-PumpakSzamol_edblock1379:
+PumpakSzamol_edblock1091:
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	; Variable is 16-bit
@@ -7461,8 +7537,8 @@ PumpakSzamol_edblock1379:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, PumpakSzamol_edblock1386
-PumpakSzamol_localsuccess1388: ;keep:
+	jr c, PumpakSzamol_edblock1097
+PumpakSzamol_localsuccess1098: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Binary clause INTEGER: LESSEQUAL
@@ -7474,12 +7550,12 @@ PumpakSzamol_localsuccess1388: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c,PumpakSzamol_edblock1386
-PumpakSzamol_ctb1384: ;Main true block ;keep :
+	jr c,PumpakSzamol_edblock1097
+PumpakSzamol_ctb1095: ;Main true block ;keep :
 	ld a, $1
 	ld [Keret2_Pumpa_Valt], a
-PumpakSzamol_edblock1386:
-PumpakSzamol_edblock1347:
+PumpakSzamol_edblock1097:
+PumpakSzamol_edblock1081:
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$07
@@ -7496,8 +7572,8 @@ PumpakSzamol_edblock1347:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, PumpakSzamol_edblock1393
-PumpakSzamol_ctb1391: ;Main true block ;keep :
+	jr c, PumpakSzamol_edblock1103
+PumpakSzamol_ctb1101: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$21c
@@ -7506,14 +7582,14 @@ PumpakSzamol_ctb1391: ;Main true block ;keep :
 	xor a ; clear carry
 	sbc hl,de
 	ld [localVariable_PumpakSzamol_idx],hl
-PumpakSzamol_edblock1393:
+PumpakSzamol_edblock1103:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_PumpakSzamol_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_PumpakSzamol_varPrefixed_i], a
-	jp PumpakSzamol_while1256
-PumpakSzamol_edblock1259:
-PumpakSzamol_loopend1261:
+	jp PumpakSzamol_while995
+PumpakSzamol_edblock998:
+PumpakSzamol_loopend1000:
 	ret
 end_procedure_PumpakSzamol:
 	; KIRAKÁSI fázis (vsync UTÁN, a rajzolási fázisban hívandó) 
@@ -7523,7 +7599,7 @@ localVariable_PumpakKirak_idx:	dw	0
 localVariable_PumpakKirak_varPrefixed_i:	db	0
 localVariable_PumpakKirak_faz:	db	0
 localVariable_PumpakKirak_varPrefixed_m:	db	0
-PumpakKirak_block1396:
+PumpakKirak_block1105:
 PumpakKirak:
 	; generic assign 
 	; Variable is 16-bit
@@ -7532,14 +7608,14 @@ PumpakKirak:
 	ld [localVariable_PumpakKirak_idx],hl
 	ld a, $0
 	ld [localVariable_PumpakKirak_varPrefixed_i], a
-PumpakKirak_while1397:
-PumpakKirak_loopstart1401:
+PumpakKirak_while1106:
+PumpakKirak_loopstart1110:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_PumpakKirak_varPrefixed_i]
 	cp $f
-	jp nc,PumpakKirak_edblock1400
-PumpakKirak_ctb1398: ;Main true block ;keep :
+	jp nc,PumpakKirak_edblock1109
+PumpakKirak_ctb1107: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld de,[localVariable_PumpakKirak_idx]
@@ -7556,8 +7632,8 @@ PumpakKirak_ctb1398: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_PumpakKirak_varPrefixed_m]
 	cp b
-	jr c, PumpakKirak_edblock1434
-PumpakKirak_localsuccess1436: ;keep:
+	jr c, PumpakKirak_edblock1143
+PumpakKirak_localsuccess1144: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATER
 	; Compare two vars optimization
@@ -7567,9 +7643,9 @@ PumpakKirak_localsuccess1436: ;keep:
 	ld a,[PumpaMap]
 	add  a, $8
 	cp b
-	jr c, PumpakKirak_edblock1434
-	jr z, PumpakKirak_edblock1434
-PumpakKirak_ctb1432: ;Main true block ;keep :
+	jr c, PumpakKirak_edblock1143
+	jr z, PumpakKirak_edblock1143
+PumpakKirak_ctb1141: ;Main true block ;keep :
 	; képindex a WaterPump fázistáblájában: 0..7 = 1. játékos, 8..15 = 2. játékos 
 	; generic assign 
 	ld a,[PumpaMap]
@@ -7577,15 +7653,15 @@ PumpakKirak_ctb1432: ;Main true block ;keep :
 	ld a,[localVariable_PumpakKirak_varPrefixed_m]
 	sub  b
 	ld [localVariable_PumpakKirak_faz], a
-PumpakKirak_edblock1434:
+PumpakKirak_edblock1143:
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[Pumpa2Map]
 	ld b,a
 	ld a,[localVariable_PumpakKirak_varPrefixed_m]
 	cp b
-	jr c, PumpakKirak_edblock1441
-PumpakKirak_localsuccess1443: ;keep:
+	jr c, PumpakKirak_edblock1149
+PumpakKirak_localsuccess1150: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATER
 	; Compare two vars optimization
@@ -7595,9 +7671,9 @@ PumpakKirak_localsuccess1443: ;keep:
 	ld a,[Pumpa2Map]
 	add  a, $8
 	cp b
-	jr c, PumpakKirak_edblock1441
-	jr z, PumpakKirak_edblock1441
-PumpakKirak_ctb1439: ;Main true block ;keep :
+	jr c, PumpakKirak_edblock1149
+	jr z, PumpakKirak_edblock1149
+PumpakKirak_ctb1147: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Pumpa2Map]
 	ld b,a
@@ -7609,13 +7685,13 @@ PumpakKirak_ctb1439: ;Main true block ;keep :
 	pop af
 	add  a, b
 	ld [localVariable_PumpakKirak_faz], a
-PumpakKirak_edblock1441:
+PumpakKirak_edblock1149:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_PumpakKirak_faz]
 	cp $ff
-	jr z, PumpakKirak_edblock1448
-PumpakKirak_ctb1446: ;Main true block ;keep :
+	jr z, PumpakKirak_edblock1155
+PumpakKirak_ctb1153: ;Main true block ;keep :
 	; co-op: P2_Kep = 0 (az 1. játékos képe), versus: 8 
 	; generic assign 
 	; Variable is 16-bit
@@ -7626,7 +7702,7 @@ PumpakKirak_ctb1446: ;Main true block ;keep :
 	ld a,[localVariable_PumpakKirak_faz]
 	ld [WaterPump_Faz], a
 	call WaterPump_PutAt
-PumpakKirak_edblock1448:
+PumpakKirak_edblock1155:
 	; EGY kirakó mindkét játékos pumpájára 
 	; 16 bit BINOP
 	; RHS is pure 
@@ -7644,8 +7720,8 @@ PumpakKirak_edblock1448:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, PumpakKirak_edblock1454
-PumpakKirak_ctb1452: ;Main true block ;keep :
+	jr c, PumpakKirak_edblock1160
+PumpakKirak_ctb1158: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$21c
@@ -7654,14 +7730,14 @@ PumpakKirak_ctb1452: ;Main true block ;keep :
 	xor a ; clear carry
 	sbc hl,de
 	ld [localVariable_PumpakKirak_idx],hl
-PumpakKirak_edblock1454:
+PumpakKirak_edblock1160:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_PumpakKirak_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_PumpakKirak_varPrefixed_i], a
-	jp PumpakKirak_while1397
-PumpakKirak_edblock1400:
-PumpakKirak_loopend1402:
+	jp PumpakKirak_while1106
+PumpakKirak_edblock1109:
+PumpakKirak_loopend1111:
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_PumpakKirak_idx]
@@ -7680,7 +7756,7 @@ localVariable_Keret_Frissit_vir:	db	0
 localVariable_Keret_Frissit_vv:	db	0
 localVariable_Keret_Frissit_kell2:	db	0
 localVariable_Keret_Frissit_vv2:	db	0
-Keret_Frissit_block1457:
+Keret_Frissit_block1162:
 Keret_Frissit:
 	; generic assign 
 	; Generic 16-bit binop
@@ -7724,33 +7800,33 @@ Keret_Frissit:
 	ld b,a
 	ld a,[Keret_X_Pos]
 	cp b
-	jr z, Keret_Frissit_edblock1462
-Keret_Frissit_ctb1460: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1167
+Keret_Frissit_ctb1165: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_mozgott], a
-Keret_Frissit_edblock1462:
+Keret_Frissit_edblock1167:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Keret_Elozo_Y_Pos]
 	ld b,a
 	ld a,[Keret_Y_Pos]
 	cp b
-	jr z, Keret_Frissit_edblock1468
-Keret_Frissit_ctb1466: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1173
+Keret_Frissit_ctb1171: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_mozgott], a
-Keret_Frissit_edblock1468:
+Keret_Frissit_edblock1173:
 	ld a, $0
 	ld [localVariable_Keret_Frissit_pumpavan], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret_Pumpa_Valt]
 	cp $1
-	jr nz,Keret_Frissit_edblock1474
-Keret_Frissit_ctb1472: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1179
+Keret_Frissit_ctb1177: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_pumpavan], a
-Keret_Frissit_edblock1474:
+Keret_Frissit_edblock1179:
 	; csak ha a Keret alatti/melletti pumpa ebben a képkockában új fázist kap 
 	ld a, $0
 	ld [Keret_Pumpa_Valt], a
@@ -7766,47 +7842,47 @@ Keret_Frissit_edblock1474:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_mozgott]
 	or a
-	jr z, Keret_Frissit_edblock1480
-Keret_Frissit_ctb1478: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1185
+Keret_Frissit_ctb1183: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_kell], a
-Keret_Frissit_edblock1480:
+Keret_Frissit_edblock1185:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_mozgott]
 	or a
-	jr z, Keret_Frissit_edblock1486
-Keret_Frissit_ctb1484: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1191
+Keret_Frissit_ctb1189: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_vv], a
-Keret_Frissit_edblock1486:
+Keret_Frissit_edblock1191:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_pumpavan]
 	or a
-	jr z, Keret_Frissit_edblock1492
-Keret_Frissit_ctb1490: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1197
+Keret_Frissit_ctb1195: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_kell], a
-Keret_Frissit_edblock1492:
+Keret_Frissit_edblock1197:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_vir]
 	cp $1
-	jr nz,Keret_Frissit_edblock1498
-Keret_Frissit_ctb1496: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1203
+Keret_Frissit_ctb1201: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_kell], a
-Keret_Frissit_edblock1498:
+Keret_Frissit_edblock1203:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_vir]
 	cp $1
-	jr nz,Keret_Frissit_edblock1504
-Keret_Frissit_ctb1502: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1209
+Keret_Frissit_ctb1207: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_vv], a
-Keret_Frissit_edblock1504:
+Keret_Frissit_edblock1209:
 	; 2. Keret: ugyanezek a feltételek; ha az (alatta lévő) Keret újrarajzolódik, a 2. Keret is (z-sorrend) 
 	; generic assign 
 	ld a,[localVariable_Keret_Frissit_kell]
@@ -7819,85 +7895,85 @@ Keret_Frissit_edblock1504:
 	ld b,a
 	ld a,[Keret2_X_Pos]
 	cp b
-	jr z, Keret_Frissit_edblock1510
-Keret_Frissit_ctb1508: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1215
+Keret_Frissit_ctb1213: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_vv2], a
-Keret_Frissit_edblock1510:
+Keret_Frissit_edblock1215:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Keret2_Elozo_Y_Pos]
 	ld b,a
 	ld a,[Keret2_Y_Pos]
 	cp b
-	jr z, Keret_Frissit_edblock1516
-Keret_Frissit_ctb1514: ;Main true block ;keep :
+	jr z, Keret_Frissit_edblock1221
+Keret_Frissit_ctb1219: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_vv2], a
-Keret_Frissit_edblock1516:
+Keret_Frissit_edblock1221:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret2_Sereles]
 	cp $1
-	jr nz,Keret_Frissit_edblock1522
-Keret_Frissit_ctb1520: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1227
+Keret_Frissit_ctb1225: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_vv2], a
-Keret_Frissit_edblock1522:
+Keret_Frissit_edblock1227:
 	ld a, $0
 	ld [Keret2_Sereles], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_vv2]
 	cp $1
-	jr nz,Keret_Frissit_edblock1528
-Keret_Frissit_ctb1526: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1233
+Keret_Frissit_ctb1231: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_kell2], a
-Keret_Frissit_edblock1528:
+Keret_Frissit_edblock1233:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret2_Pumpa_Valt]
 	cp $1
-	jr nz,Keret_Frissit_edblock1534
-Keret_Frissit_ctb1532: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1239
+Keret_Frissit_ctb1237: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Keret_Frissit_kell2], a
-Keret_Frissit_edblock1534:
+Keret_Frissit_edblock1239:
 	ld a, $0
 	ld [Keret2_Pumpa_Valt], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_kell2]
 	cp $1
-	jr nz,Keret_Frissit_edblock1540
-Keret_Frissit_ctb1538: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1245
+Keret_Frissit_ctb1243: ;Main true block ;keep :
 	call Keret2_Le
-Keret_Frissit_edblock1540:
+Keret_Frissit_edblock1245:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_kell]
 	cp $1
-	jr nz,Keret_Frissit_edblock1546
-Keret_Frissit_ctb1544: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1251
+Keret_Frissit_ctb1249: ;Main true block ;keep :
 	; felső réteg le 
 	ld hl,Keret
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
-Keret_Frissit_edblock1546:
+Keret_Frissit_edblock1251:
 	call PumpakKirak
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_kell]
 	cp $1
-	jr nz,Keret_Frissit_edblock1552
-Keret_Frissit_ctb1550: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1257
+Keret_Frissit_ctb1255: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_vv]
 	cp $1
-	jr nz,Keret_Frissit_edblock1564
-Keret_Frissit_ctb1562: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1269
+Keret_Frissit_ctb1267: ;Main true block ;keep :
 	; A RestoreBackground által elkent vírus-mezők helyreállítása a valós fázisukra 
 	; generic assign 
 	ld a,[Keret_X_Pos]
@@ -7906,14 +7982,14 @@ Keret_Frissit_ctb1562: ;Main true block ;keep :
 	ld a,[Keret_Y_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_ky], a
 	call Enemyk_Ujrarajzol
-Keret_Frissit_edblock1564:
-Keret_Frissit_edblock1552:
+Keret_Frissit_edblock1269:
+Keret_Frissit_edblock1257:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_vv2]
 	cp $1
-	jr nz,Keret_Frissit_edblock1570
-Keret_Frissit_ctb1568: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1274
+Keret_Frissit_ctb1272: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Keret2_X_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_kx], a
@@ -7921,13 +7997,13 @@ Keret_Frissit_ctb1568: ;Main true block ;keep :
 	ld a,[Keret2_Y_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_ky], a
 	call Enemyk_Ujrarajzol
-Keret_Frissit_edblock1570:
+Keret_Frissit_edblock1274:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_kell]
 	cp $1
-	jr nz,Keret_Frissit_edblock1576
-Keret_Frissit_ctb1574: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1280
+Keret_Frissit_ctb1278: ;Main true block ;keep :
 	call Keret_XY_Calc
 	call Keret_SpriteKirak
 	; generic assign 
@@ -7936,15 +8012,15 @@ Keret_Frissit_ctb1574: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Keret_Y_Pos]
 	ld [Keret_Elozo_Y_Pos], a
-Keret_Frissit_edblock1576:
+Keret_Frissit_edblock1280:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Keret_Frissit_kell2]
 	cp $1
-	jr nz,Keret_Frissit_edblock1582
-Keret_Frissit_ctb1580: ;Main true block ;keep :
+	jr nz,Keret_Frissit_edblock1286
+Keret_Frissit_ctb1284: ;Main true block ;keep :
 	call Keret2_Kirak
-Keret_Frissit_edblock1582:
+Keret_Frissit_edblock1286:
 	ret
 end_procedure_Keret_Frissit:
 	; Rövid "tick" digi hang a pumpa lerakásakor (ha épp nem szól a bomba hangja); a hang végét a Frame_Sync állítja le 
@@ -7954,9 +8030,9 @@ Tick_Hang:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Digi_Aktiv]
-	or a
-	jr nz,Tick_Hang_edblock1589
-Tick_Hang_ctb1587: ;Main true block ;keep :
+	cp $7
+	jr nz,Tick_Hang_edblock1293
+Tick_Hang_ctb1291: ;Main true block ;keep :
 	ld a, $ce
 	ld [GE_Frequency], a
 	ld a, $1
@@ -7967,7 +8043,7 @@ Tick_Hang_ctb1587: ;Main true block ;keep :
 	call GE_PlayDigiSound
 	ld a, $1
 	ld [Digi_Aktiv], a
-Tick_Hang_edblock1589:
+Tick_Hang_edblock1293:
 	ret
 end_procedure_Tick_Hang:
 	; pumpa lerakása a (px,py) mezőre; j = 1: az 1. játékos pénzéből/pumpája, j = 2: a 2. játékosé (versus) 
@@ -7977,7 +8053,7 @@ localVariable_DrillLerak_penz:	dw	0
 localVariable_DrillLerak_px:	db	0
 localVariable_DrillLerak_py:	db	0
 localVariable_DrillLerak_j:	db	0
-DrillLerak_block1592:
+DrillLerak_block1296:
 DrillLerak:
 	; generic assign 
 	; Generic 16-bit binop
@@ -8022,14 +8098,14 @@ DrillLerak:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_DrillLerak_j]
 	cp $2
-	jr nz,DrillLerak_edblock1597
-DrillLerak_ctb1595: ;Main true block ;keep :
+	jr nz,DrillLerak_edblock1301
+DrillLerak_ctb1299: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash2]
 	; Loading pointer
 	ld [localVariable_DrillLerak_penz],hl
-DrillLerak_edblock1597:
+DrillLerak_edblock1301:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[Talaj1Map]
@@ -8041,9 +8117,9 @@ DrillLerak_edblock1597:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jp nz,DrillLerak_localfailed1655
-	jp DrillLerak_ctb1601
-DrillLerak_localfailed1655: ;keep:
+	jp nz,DrillLerak_localfailed1354
+	jp DrillLerak_ctb1305
+DrillLerak_localfailed1354: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
@@ -8056,8 +8132,8 @@ DrillLerak_localfailed1655: ;keep:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jp nz,DrillLerak_edblock1603
-DrillLerak_ctb1601: ;Main true block ;keep :
+	jp nz,DrillLerak_edblock1307
+DrillLerak_ctb1305: ;Main true block ;keep :
 	; hang: a rajz után (a DigiSoundOn szinkronra vár) 
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
@@ -8069,8 +8145,8 @@ DrillLerak_ctb1601: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jp c, DrillLerak_edblock1660
-DrillLerak_ctb1658: ;Main true block ;keep :
+	jp c, DrillLerak_edblock1359
+DrillLerak_ctb1357: ;Main true block ;keep :
 	call Keret2_Le
 	; a 2. Keret (felül) is le 
 	ld hl,Keret
@@ -8081,8 +8157,8 @@ DrillLerak_ctb1658: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_DrillLerak_j]
 	cp $2
-	jr nz,DrillLerak_eblock1687
-DrillLerak_ctb1686: ;Main true block ;keep :
+	jr nz,DrillLerak_eblock1363
+DrillLerak_ctb1362: ;Main true block ;keep :
 	; Storing to array  
 	ld a,[Pumpa_Uj_Faz]
 	ld b,a
@@ -8116,8 +8192,8 @@ DrillLerak_ctb1686: ;Main true block ;keep :
 	call Cash2_OSD
 	; co-op: a 2. játékos pénze 
 	call Pump_OSD
-	jr DrillLerak_edblock1688
-DrillLerak_eblock1687:
+	jr DrillLerak_edblock1364
+DrillLerak_eblock1363:
 	; co-op: a közös pumpaszám 
 	; Storing to array  
 	ld a,[Pumpa_Uj_Faz]
@@ -8152,13 +8228,13 @@ DrillLerak_eblock1687:
 	call Cash_OSD
 	; pénz-kijelző frissítése 
 	call Pump_OSD
-DrillLerak_edblock1688:
+DrillLerak_edblock1364:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_DrillLerak_j]
 	cp $2
-	jr nz,DrillLerak_eblock1695
-DrillLerak_ctb1694: ;Main true block ;keep :
+	jr nz,DrillLerak_eblock1369
+DrillLerak_ctb1368: ;Main true block ;keep :
 	; a 2. játékos képe (versus: 8..15, co-op: az 1. játékosé) 
 	; generic assign 
 	; Variable is 16-bit
@@ -8172,8 +8248,8 @@ DrillLerak_ctb1694: ;Main true block ;keep :
 	add  a, b
 	ld [WaterPump_Faz], a
 	call WaterPump_PutAt
-	jr DrillLerak_edblock1696
-DrillLerak_eblock1695:
+	jr DrillLerak_edblock1370
+DrillLerak_eblock1369:
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[MapPos]
@@ -8183,7 +8259,7 @@ DrillLerak_eblock1695:
 	ld a,[Pumpa_Uj_Faz]
 	ld [WaterPump_Faz], a
 	call WaterPump_PutAt
-DrillLerak_edblock1696:
+DrillLerak_edblock1370:
 	; 'a:=a + const'  optimization 
 	ld a,[Pumpa_Uj_Faz]
 	add  a,$1
@@ -8191,17 +8267,17 @@ DrillLerak_edblock1696:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $8
-	jr c, DrillLerak_edblock1704
-DrillLerak_ctb1702: ;Main true block ;keep :
+	jr c, DrillLerak_edblock1376
+DrillLerak_ctb1374: ;Main true block ;keep :
 	ld a, $0
 	ld [Pumpa_Uj_Faz], a
-DrillLerak_edblock1704:
+DrillLerak_edblock1376:
 	call Keret_SpriteKirak
 	call Keret2_Kirak
 	; a 2. Keret fölé 
 	call Tick_Hang
-DrillLerak_edblock1660:
-DrillLerak_edblock1603:
+DrillLerak_edblock1359:
+DrillLerak_edblock1307:
 	ret
 end_procedure_DrillLerak:
 	; fal (akna = 0) vagy akna (akna = 1) a (px,py) mezőre; j = 1/2: kinek a pénzéből 
@@ -8213,7 +8289,7 @@ localVariable_TeglaLerak_px:	db	0
 localVariable_TeglaLerak_py:	db	0
 localVariable_TeglaLerak_j:	db	0
 localVariable_TeglaLerak_akna:	db	0
-TeglaLerak_block1707:
+TeglaLerak_block1378:
 TeglaLerak:
 	; generic assign 
 	; Generic 16-bit binop
@@ -8258,14 +8334,14 @@ TeglaLerak:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_TeglaLerak_j]
 	cp $2
-	jr nz,TeglaLerak_edblock1712
-TeglaLerak_ctb1710: ;Main true block ;keep :
+	jr nz,TeglaLerak_edblock1383
+TeglaLerak_ctb1381: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash2]
 	; Loading pointer
 	ld [localVariable_TeglaLerak_penz],hl
-TeglaLerak_edblock1712:
+TeglaLerak_edblock1383:
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Tegla_price]
@@ -8275,32 +8351,32 @@ TeglaLerak_edblock1712:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_TeglaLerak_akna]
 	cp $1
-	jr nz,TeglaLerak_edblock1718
-TeglaLerak_ctb1716: ;Main true block ;keep :
+	jr nz,TeglaLerak_edblock1389
+TeglaLerak_ctb1387: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Akna_price]
 	; Loading pointer
 	ld [localVariable_TeglaLerak_ar],hl
-TeglaLerak_edblock1718:
+TeglaLerak_edblock1389:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_TeglaLerak_akna]
 	cp $1
-	jr nz,TeglaLerak_edblock1724
-TeglaLerak_ctb1722: ;Main true block ;keep :
+	jr nz,TeglaLerak_edblock1395
+TeglaLerak_ctb1393: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[Akna_Db]
 	cp $8
-	jr c, TeglaLerak_edblock1736
-TeglaLerak_ctb1734: ;Main true block ;keep :
+	jr c, TeglaLerak_edblock1407
+TeglaLerak_ctb1405: ;Main true block ;keep :
 	; generic assign 
 	ld hl,$7530
 	; Loading pointer
 	ld [localVariable_TeglaLerak_ar],hl
-TeglaLerak_edblock1736:
-TeglaLerak_edblock1724:
+TeglaLerak_edblock1407:
+TeglaLerak_edblock1395:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[Talaj1Map]
@@ -8312,9 +8388,9 @@ TeglaLerak_edblock1724:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jp nz,TeglaLerak_localfailed1782
-	jp TeglaLerak_ctb1740
-TeglaLerak_localfailed1782: ;keep:
+	jp nz,TeglaLerak_localfailed1448
+	jp TeglaLerak_ctb1410
+TeglaLerak_localfailed1448: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
@@ -8327,8 +8403,8 @@ TeglaLerak_localfailed1782: ;keep:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jp nz,TeglaLerak_edblock1742
-TeglaLerak_ctb1740: ;Main true block ;keep :
+	jp nz,TeglaLerak_edblock1412
+TeglaLerak_ctb1410: ;Main true block ;keep :
 	; a 2. Keret fölé 
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
@@ -8340,8 +8416,8 @@ TeglaLerak_ctb1740: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jp c, TeglaLerak_edblock1787
-TeglaLerak_ctb1785: ;Main true block ;keep :
+	jp c, TeglaLerak_edblock1453
+TeglaLerak_ctb1451: ;Main true block ;keep :
 	call Keret2_Le
 	; a 2. Keret (felül) is le 
 	ld hl,Keret
@@ -8351,8 +8427,8 @@ TeglaLerak_ctb1785: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_TeglaLerak_akna]
 	cp $1
-	jr nz,TeglaLerak_eblock1808
-TeglaLerak_ctb1807: ;Main true block ;keep :
+	jr nz,TeglaLerak_eblock1457
+TeglaLerak_ctb1456: ;Main true block ;keep :
 	; Storing to array  
 	; Variable is 16-bit
 	ld de,[MapPos]
@@ -8369,8 +8445,8 @@ TeglaLerak_ctb1807: ;Main true block ;keep :
 	ld [WaterPump_Faz], a
 	call WaterPump_PutAt
 	call Akna_Hozzaad
-	jr TeglaLerak_edblock1809
-TeglaLerak_eblock1808:
+	jr TeglaLerak_edblock1458
+TeglaLerak_eblock1457:
 	; Storing to array  
 	; Variable is 16-bit
 	ld de,[MapPos]
@@ -8385,13 +8461,13 @@ TeglaLerak_eblock1808:
 	ld a,[localVariable_TeglaLerak_py]
 	ld [localVariable_Fal_Kirak_y], a
 	call Fal_Kirak
-TeglaLerak_edblock1809:
+TeglaLerak_edblock1458:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_TeglaLerak_j]
 	cp $2
-	jr nz,TeglaLerak_eblock1816
-TeglaLerak_ctb1815: ;Main true block ;keep :
+	jr nz,TeglaLerak_eblock1463
+TeglaLerak_ctb1462: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -8402,8 +8478,8 @@ TeglaLerak_ctb1815: ;Main true block ;keep :
 	sbc hl,de
 	ld [Drill_Cash2],hl
 	call Cash2_OSD
-	jr TeglaLerak_edblock1817
-TeglaLerak_eblock1816:
+	jr TeglaLerak_edblock1464
+TeglaLerak_eblock1463:
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -8414,11 +8490,11 @@ TeglaLerak_eblock1816:
 	sbc hl,de
 	ld [Drill_Cash],hl
 	call Cash_OSD
-TeglaLerak_edblock1817:
+TeglaLerak_edblock1464:
 	call Keret_SpriteKirak
 	call Keret2_Kirak
-TeglaLerak_edblock1787:
-TeglaLerak_edblock1742:
+TeglaLerak_edblock1453:
+TeglaLerak_edblock1412:
 	ret
 end_procedure_TeglaLerak:
 	; BOMBA (B gomb, ha van rá Bomba_price fedezet)  Fehér border-sáv a képkockában (közvetlenül GE::WaitForSync() UTÁN hívandó!) 
@@ -8463,29 +8539,29 @@ Digi_Le:
 	; Compare with pure num / var optimization
 	ld a,[Digi_Aktiv]
 	cp $1
-	jr nz,Digi_Le_edblock1827
-Digi_Le_ctb1825: ;Main true block ;keep :
+	jr nz,Digi_Le_edblock1472
+Digi_Le_ctb1470: ;Main true block ;keep :
 	call GE_DigiSoundOff
 	ld a, $ef
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
 	ld a, $0
 	ld [Digi_Aktiv], a
-Digi_Le_edblock1827:
+Digi_Le_edblock1472:
 	ret
 end_procedure_Digi_Le:
 	; Képkocka-szinkron a főciklusban: digi hang alatt WaitForDigiSoundSync (+ a hang végén leállítás), egyébként WaitForSync 
 	; ***********  Defining procedure : Frame_Sync
 	;    Procedure type : User-defined procedure
 localVariable_Frame_Sync_v:	db	0
-Frame_Sync_block1830:
+Frame_Sync_block1475:
 Frame_Sync:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Digi_Aktiv]
 	cp $1
-	jr nz,Frame_Sync_eblock1833
-Frame_Sync_ctb1832: ;Main true block ;keep :
+	jr nz,Frame_Sync_eblock1478
+Frame_Sync_ctb1477: ;Main true block ;keep :
 	call GE_WaitForDigiSoundSync
 	ld a, $0
 	ld [localVariable_Frame_Sync_v], a
@@ -8493,23 +8569,23 @@ Frame_Sync_ctb1832: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	call GE_Is2x4bitDigiSoundPlaying
 	or a
-	jr z, Frame_Sync_edblock1853
-Frame_Sync_ctb1851: ;Main true block ;keep :
+	jr z, Frame_Sync_edblock1498
+Frame_Sync_ctb1496: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Frame_Sync_v], a
-Frame_Sync_edblock1853:
+Frame_Sync_edblock1498:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Frame_Sync_v]
 	or a
-	jr nz,Frame_Sync_edblock1859
-Frame_Sync_ctb1857: ;Main true block ;keep :
+	jr nz,Frame_Sync_edblock1503
+Frame_Sync_ctb1501: ;Main true block ;keep :
 	call Digi_Le
-Frame_Sync_edblock1859:
-	jr Frame_Sync_edblock1834
-Frame_Sync_eblock1833:
+Frame_Sync_edblock1503:
+	jr Frame_Sync_edblock1479
+Frame_Sync_eblock1478:
 	call GE_WaitForSync
-Frame_Sync_edblock1834:
+Frame_Sync_edblock1479:
 	ret
 end_procedure_Frame_Sync:
 	; PAUSE: a "GAME PAUSED" felirat alatti képterület mentése (Pause_Irany=0) / visszaírása (1): Pause_H sor, soronként Pause_W byte, Pause_Pos képernyőcímtől 
@@ -8605,7 +8681,7 @@ localVariable_Doboz_x:	db	0
 localVariable_Doboz_y:	db	0
 localVariable_Doboz_w:	db	0
 localVariable_Doboz_varPrefixed_h:	db	0
-Doboz_block1865:
+Doboz_block1508:
 Doboz:
 	; generic assign 
 	ld a,[localVariable_Doboz_x]
@@ -8710,7 +8786,7 @@ localVariable_Szinez_x:	db	0
 localVariable_Szinez_y:	db	0
 localVariable_Szinez_w:	db	0
 localVariable_Szinez_varPrefixed_h:	db	0
-Szinez_block1866:
+Szinez_block1509:
 Szinez:
 	; generic assign 
 	; Variable is 16-bit
@@ -8815,14 +8891,14 @@ Normal_Szinek:
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	cp $1
-	jr nz,Normal_Szinek_edblock1873
-Normal_Szinek_ctb1871: ;Main true block ;keep :
+	jr nz,Normal_Szinek_edblock1516
+Normal_Szinek_ctb1514: ;Main true block ;keep :
 	ld a, $3
 	ld [GE_Nr], a
 	ld a, $1
 	ld [GE_Color], a
 	call GE_SetPalette
-Normal_Szinek_edblock1873:
+Normal_Szinek_edblock1516:
 	ld a, $2a
 	ld [GE_Color], a
 	call GE_SetBorder
@@ -8832,12 +8908,12 @@ end_procedure_Normal_Szinek:
 	; ***********  Defining procedure : Pause_Kezel
 	;    Procedure type : User-defined procedure
 localVariable_Pause_Kezel_x:	db	0
-Pause_Kezel_block1876:
+Pause_Kezel_block1519:
 Pause_Kezel:
 	call Digi_Le
 	; a szóló hang le (a várakozás sima WaitForSync) 
 	; Assigning a string : Ir_Szoveg
-	ld hl,Pause_Kezel_stringassignstr1878
+	ld hl,Pause_Kezel_stringassignstr1521
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -8910,7 +8986,7 @@ Pause_Kezel:
 	ld a, $74
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Pause_Kezel_stringassignstr1881
+	ld hl,Pause_Kezel_stringassignstr1524
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -8928,14 +9004,14 @@ Pause_Kezel:
 	; a felirat betűi 1-es színről 3-asra (szürke) 
 	ld a, $1
 	ld [Start_Wait], a
-Pause_Kezel_while1882:
-Pause_Kezel_loopstart1886:
+Pause_Kezel_while1525:
+Pause_Kezel_loopstart1529:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	or a
-	jr z, Pause_Kezel_edblock1885
-Pause_Kezel_ctb1883: ;Main true block ;keep :
+	jr z, Pause_Kezel_edblock1528
+Pause_Kezel_ctb1526: ;Main true block ;keep :
 	; 1: a P felengedésére vár, 2: új P-re, 3: annak felengedésére 
 	call GE_WaitForSync
 	call GE_GetKeyboard
@@ -8943,8 +9019,8 @@ Pause_Kezel_ctb1883: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jr nz,Pause_Kezel_edblock1947
-Pause_Kezel_ctb1945: ;Main true block ;keep :
+	jr nz,Pause_Kezel_edblock1587
+Pause_Kezel_ctb1585: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -8953,18 +9029,18 @@ Pause_Kezel_ctb1945: ;Main true block ;keep :
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr nz,Pause_Kezel_edblock1959
-Pause_Kezel_ctb1957: ;Main true block ;keep :
+	jr nz,Pause_Kezel_edblock1592
+Pause_Kezel_ctb1590: ;Main true block ;keep :
 	ld a, $2
 	ld [Start_Wait], a
-Pause_Kezel_edblock1959:
-Pause_Kezel_edblock1947:
+Pause_Kezel_edblock1592:
+Pause_Kezel_edblock1587:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $2
-	jr nz,Pause_Kezel_edblock1965
-Pause_Kezel_ctb1963: ;Main true block ;keep :
+	jr nz,Pause_Kezel_edblock1597
+Pause_Kezel_ctb1595: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -8973,18 +9049,18 @@ Pause_Kezel_ctb1963: ;Main true block ;keep :
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Pause_Kezel_edblock1977
-Pause_Kezel_ctb1975: ;Main true block ;keep :
+	jr z, Pause_Kezel_edblock1602
+Pause_Kezel_ctb1600: ;Main true block ;keep :
 	ld a, $3
 	ld [Start_Wait], a
-Pause_Kezel_edblock1977:
-Pause_Kezel_edblock1965:
+Pause_Kezel_edblock1602:
+Pause_Kezel_edblock1597:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $3
-	jr nz,Pause_Kezel_edblock1983
-Pause_Kezel_ctb1981: ;Main true block ;keep :
+	jr nz,Pause_Kezel_edblock1607
+Pause_Kezel_ctb1605: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -8993,15 +9069,15 @@ Pause_Kezel_ctb1981: ;Main true block ;keep :
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr nz,Pause_Kezel_edblock1995
-Pause_Kezel_ctb1993: ;Main true block ;keep :
+	jr nz,Pause_Kezel_edblock1612
+Pause_Kezel_ctb1610: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-Pause_Kezel_edblock1995:
-Pause_Kezel_edblock1983:
-	jr Pause_Kezel_while1882
-Pause_Kezel_edblock1885:
-Pause_Kezel_loopend1887:
+Pause_Kezel_edblock1612:
+Pause_Kezel_edblock1607:
+	jr Pause_Kezel_while1525
+Pause_Kezel_edblock1528:
+Pause_Kezel_loopend1530:
 	ld a, $1
 	ld [Pause_Irany], a
 	call Pause_Csere
@@ -9023,38 +9099,38 @@ localVariable_Terulet_Rombol_mp:	dw	0
 localVariable_Terulet_Rombol_px:	db	0
 localVariable_Terulet_Rombol_py:	db	0
 localVariable_Terulet_Rombol_kor:	db	0
-Terulet_Rombol_block1998:
+Terulet_Rombol_block1614:
 Terulet_Rombol:
 	ld a, $0
 	ld [localVariable_Terulet_Rombol_dy], a
-Terulet_Rombol_while1999:
-Terulet_Rombol_loopstart2003:
+Terulet_Rombol_while1615:
+Terulet_Rombol_loopstart1619:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_dy]
 	cp $7
-	jp nc,Terulet_Rombol_edblock2002
-Terulet_Rombol_ctb2000: ;Main true block ;keep :
+	jp nc,Terulet_Rombol_edblock1618
+Terulet_Rombol_ctb1616: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_dy]
 	cp $3
-	jr nc,Terulet_Rombol_eblock3305
-Terulet_Rombol_ctb3304: ;Main true block ;keep :
+	jr nc,Terulet_Rombol_eblock1861
+Terulet_Rombol_ctb1860: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Terulet_Rombol_dy]
 	ld b,a
 	ld a,$3
 	sub  b
 	ld [localVariable_Terulet_Rombol_tavy], a
-	jr Terulet_Rombol_edblock3306
-Terulet_Rombol_eblock3305:
+	jr Terulet_Rombol_edblock1862
+Terulet_Rombol_eblock1861:
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Terulet_Rombol_dy]
 	sub  $3
 	ld [localVariable_Terulet_Rombol_tavy], a
-Terulet_Rombol_edblock3306:
+Terulet_Rombol_edblock1862:
 	; generic assign 
 	ld a,[localVariable_Terulet_Rombol_tavy]
 	ld b,a
@@ -9065,8 +9141,8 @@ Terulet_Rombol_edblock3306:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_kor]
 	cp $1
-	jr nz,Terulet_Rombol_edblock3314
-Terulet_Rombol_ctb3312: ;Main true block ;keep :
+	jr nz,Terulet_Rombol_edblock1868
+Terulet_Rombol_ctb1866: ;Main true block ;keep :
 	; rombusz: soronként 1-gyel keskenyebb 
 	; generic assign 
 	ld a,[localVariable_Terulet_Rombol_tavy]
@@ -9077,7 +9153,7 @@ Terulet_Rombol_ctb3312: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	ld [localVariable_Terulet_Rombol_fel], a
-Terulet_Rombol_edblock3314:
+Terulet_Rombol_edblock1868:
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Terulet_Rombol_py]
@@ -9091,54 +9167,54 @@ Terulet_Rombol_edblock3314:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $1
-	jp c, Terulet_Rombol_edblock3320
-Terulet_Rombol_ctb3318: ;Main true block ;keep :
+	jp c, Terulet_Rombol_edblock1873
+Terulet_Rombol_ctb1871: ;Main true block ;keep :
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Terulet_Rombol_gy]
 	ld b,a
 	ld a,$12
 	cp b
-	jp c,Terulet_Rombol_edblock3964
-Terulet_Rombol_ctb3962: ;Main true block ;keep :
+	jp c,Terulet_Rombol_edblock1878
+Terulet_Rombol_ctb1876: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Terulet_Rombol_dx], a
-Terulet_Rombol_while4283:
-Terulet_Rombol_loopstart4287:
+Terulet_Rombol_while1880:
+Terulet_Rombol_loopstart1884:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_dx]
 	cp $7
-	jp nc,Terulet_Rombol_edblock4286
-Terulet_Rombol_ctb4284: ;Main true block ;keep :
+	jp nc,Terulet_Rombol_edblock1883
+Terulet_Rombol_ctb1881: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_dx]
 	cp $3
-	jr nc,Terulet_Rombol_eblock4447
-Terulet_Rombol_ctb4446: ;Main true block ;keep :
+	jr nc,Terulet_Rombol_eblock1889
+Terulet_Rombol_ctb1888: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Terulet_Rombol_dx]
 	ld b,a
 	ld a,$3
 	sub  b
 	ld [localVariable_Terulet_Rombol_tavx], a
-	jr Terulet_Rombol_edblock4448
-Terulet_Rombol_eblock4447:
+	jr Terulet_Rombol_edblock1890
+Terulet_Rombol_eblock1889:
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Terulet_Rombol_dx]
 	sub  $3
 	ld [localVariable_Terulet_Rombol_tavx], a
-Terulet_Rombol_edblock4448:
+Terulet_Rombol_edblock1890:
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Terulet_Rombol_tavx]
 	ld b,a
 	ld a,[localVariable_Terulet_Rombol_fel]
 	cp b
-	jp c,Terulet_Rombol_edblock4456
-Terulet_Rombol_ctb4454: ;Main true block ;keep :
+	jp c,Terulet_Rombol_edblock1896
+Terulet_Rombol_ctb1894: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Terulet_Rombol_px]
@@ -9152,16 +9228,16 @@ Terulet_Rombol_ctb4454: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $1
-	jp c, Terulet_Rombol_edblock4532
-Terulet_Rombol_ctb4530: ;Main true block ;keep :
+	jp c, Terulet_Rombol_edblock1901
+Terulet_Rombol_ctb1899: ;Main true block ;keep :
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Terulet_Rombol_gx]
 	ld b,a
 	ld a,$1e
 	cp b
-	jp c,Terulet_Rombol_edblock4570
-Terulet_Rombol_ctb4568: ;Main true block ;keep :
+	jp c,Terulet_Rombol_edblock1906
+Terulet_Rombol_ctb1904: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	; Swapping nodes
@@ -9215,19 +9291,19 @@ Terulet_Rombol_ctb4568: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Terulet_Rombol_kor]
 	cp $1
-	jr nz,Terulet_Rombol_edblock4590
-Terulet_Rombol_ctb4588: ;Main true block ;keep :
+	jr nz,Terulet_Rombol_edblock1912
+Terulet_Rombol_ctb1910: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Terulet_Rombol_varPrefixed_m], a
-Terulet_Rombol_edblock4590:
+Terulet_Rombol_edblock1912:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Talaj3Map]
 	ld b,a
 	ld a,[localVariable_Terulet_Rombol_varPrefixed_m]
 	cp b
-	jr z, Terulet_Rombol_edblock4596
-Terulet_Rombol_ctb4594: ;Main true block ;keep :
+	jr z, Terulet_Rombol_edblock1917
+Terulet_Rombol_ctb1915: ;Main true block ;keep :
 	; az akna a sziklát is rombolja 
 	; Storing to array  
 	; Variable is 16-bit
@@ -9243,26 +9319,26 @@ Terulet_Rombol_ctb4594: ;Main true block ;keep :
 	ld a,[localVariable_Terulet_Rombol_gy]
 	ld [localVariable_Talaj2_Kirak_y], a
 	call Talaj2_Kirak
-Terulet_Rombol_edblock4596:
-Terulet_Rombol_edblock4570:
-Terulet_Rombol_edblock4532:
-Terulet_Rombol_edblock4456:
+Terulet_Rombol_edblock1917:
+Terulet_Rombol_edblock1906:
+Terulet_Rombol_edblock1901:
+Terulet_Rombol_edblock1896:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Terulet_Rombol_dx]
 	add  a,$1
 	ld [localVariable_Terulet_Rombol_dx], a
-	jp Terulet_Rombol_while4283
-Terulet_Rombol_edblock4286:
-Terulet_Rombol_loopend4288:
-Terulet_Rombol_edblock3964:
-Terulet_Rombol_edblock3320:
+	jp Terulet_Rombol_while1880
+Terulet_Rombol_edblock1883:
+Terulet_Rombol_loopend1885:
+Terulet_Rombol_edblock1878:
+Terulet_Rombol_edblock1873:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Terulet_Rombol_dy]
 	add  a,$1
 	ld [localVariable_Terulet_Rombol_dy], a
-	jp Terulet_Rombol_while1999
-Terulet_Rombol_edblock2002:
-Terulet_Rombol_loopend2004:
+	jp Terulet_Rombol_while1615
+Terulet_Rombol_edblock1618:
+Terulet_Rombol_loopend1620:
 	ret
 end_procedure_Terulet_Rombol:
 	; Az akna (Akna_Idx) felrobban: kör alakú rombolás + rövid hang; nincs villanás, a játék nem áll meg 
@@ -9272,7 +9348,7 @@ localVariable_Akna_Robbant_x:	db	0
 localVariable_Akna_Robbant_y:	db	0
 localVariable_Akna_Robbant_varPrefixed_m:	db	0
 localVariable_Akna_Robbant_t:	dw	0
-Akna_Robbant_block4599:
+Akna_Robbant_block1919:
 Akna_Robbant:
 	ld a, $0
 	ld [Akna_Robban], a
@@ -9295,8 +9371,8 @@ Akna_Robbant:
 	ld b,a
 	ld a,[localVariable_Akna_Robbant_varPrefixed_m]
 	cp b
-	jp c, Akna_Robbant_edblock4603
-Akna_Robbant_localsuccess4613: ;keep:
+	jp c, Akna_Robbant_edblock1923
+Akna_Robbant_localsuccess1933: ;keep:
 	; ; logical AND, second requirement
 	; Swapped comparison expressions
 	; Binary clause core: GREATER
@@ -9307,14 +9383,14 @@ Akna_Robbant_localsuccess4613: ;keep:
 	ld a,[AknaMap]
 	add  a, $10
 	cp b
-	jp c, Akna_Robbant_edblock4603
-	jp z, Akna_Robbant_edblock4603
-Akna_Robbant_ctb4601: ;Main true block ;keep :
+	jp c, Akna_Robbant_edblock1923
+	jp z, Akna_Robbant_edblock1923
+Akna_Robbant_ctb1921: ;Main true block ;keep :
 	; még ott van (közben nem semmisítette meg bomba/meteor/vírus) 
 	ld a, $1
 	ld [localVariable_Akna_Robbant_y], a
-Akna_Robbant_while4615:
-Akna_Robbant_loopstart4619:
+Akna_Robbant_while1935:
+Akna_Robbant_loopstart1939:
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	ld hl,$1e
@@ -9324,8 +9400,8 @@ Akna_Robbant_loopstart4619:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Akna_Robbant_edblock4618
-Akna_Robbant_ctb4616: ;Main true block ;keep :
+	jr c, Akna_Robbant_edblock1938
+Akna_Robbant_ctb1936: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$1e
@@ -9338,9 +9414,9 @@ Akna_Robbant_ctb4616: ;Main true block ;keep :
 	ld a,[localVariable_Akna_Robbant_y]
 	add  a,$1
 	ld [localVariable_Akna_Robbant_y], a
-	jr Akna_Robbant_while4615
-Akna_Robbant_edblock4618:
-Akna_Robbant_loopend4620:
+	jr Akna_Robbant_while1935
+Akna_Robbant_edblock1938:
+Akna_Robbant_loopend1940:
 	; generic assign 
 	ld a,[localVariable_Akna_Robbant_t]
 	ld [localVariable_Akna_Robbant_x], a
@@ -9374,7 +9450,7 @@ Akna_Robbant_loopend4620:
 	call GE_PlayDigiSound
 	ld a, $1
 	ld [Digi_Aktiv], a
-Akna_Robbant_edblock4603:
+Akna_Robbant_edblock1923:
 	ret
 end_procedure_Akna_Robbant:
 	; bomba a (px,py) mezőre; j = 1/2: kinek a pénzéből (mindent rombol, bárkié) 
@@ -9387,7 +9463,7 @@ localVariable_Bomba_Ledob_penz:	dw	0
 localVariable_Bomba_Ledob_px:	db	0
 localVariable_Bomba_Ledob_py:	db	0
 localVariable_Bomba_Ledob_j:	db	0
-Bomba_Ledob_block4623:
+Bomba_Ledob_block1942:
 Bomba_Ledob:
 	; generic assign 
 	; Variable is 16-bit
@@ -9398,14 +9474,14 @@ Bomba_Ledob:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Bomba_Ledob_j]
 	cp $2
-	jr nz,Bomba_Ledob_edblock4627
-Bomba_Ledob_ctb4625: ;Main true block ;keep :
+	jr nz,Bomba_Ledob_edblock1946
+Bomba_Ledob_ctb1944: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash2]
 	; Loading pointer
 	ld [localVariable_Bomba_Ledob_penz],hl
-Bomba_Ledob_edblock4627:
+Bomba_Ledob_edblock1946:
 	; a 2. Keret fölé 
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
@@ -9417,8 +9493,8 @@ Bomba_Ledob_edblock4627:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jp c, Bomba_Ledob_edblock4633
-Bomba_Ledob_ctb4631: ;Main true block ;keep :
+	jp c, Bomba_Ledob_edblock1952
+Bomba_Ledob_ctb1950: ;Main true block ;keep :
 	call Digi_Le
 	; egy korábbi, még szóló hang leállítása  1) Zuhanás-animáció 
 	; Storing to array  
@@ -9492,16 +9568,16 @@ Bomba_Ledob_ctb4631: ;Main true block ;keep :
 	ld a, $0
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
-Bomba_Ledob_while4664:
-Bomba_Ledob_loopstart4668:
+Bomba_Ledob_while1983:
+Bomba_Ledob_loopstart1987:
 	; Binary clause core: LESS
 	; Compare two vars optimization
 	ld a,[localVariable_Bomba_Ledob_celY]
 	ld b,a
 	ld a,[localVariable_Bomba_Ledob_noseY]
 	cp b
-	jr nc,Bomba_Ledob_edblock4667
-Bomba_Ledob_ctb4665: ;Main true block ;keep :
+	jr nc,Bomba_Ledob_edblock1986
+Bomba_Ledob_ctb1984: ;Main true block ;keep :
 	call Frame_Sync
 	; generic assign 
 	ld de,$10
@@ -9540,9 +9616,9 @@ Bomba_Ledob_ctb4665: ;Main true block ;keep :
 	pop af
 	add  a, b
 	ld [localVariable_Bomba_Ledob_noseY], a
-	jr Bomba_Ledob_while4664
-Bomba_Ledob_edblock4667:
-Bomba_Ledob_loopend4669:
+	jr Bomba_Ledob_while1983
+Bomba_Ledob_edblock1986:
+Bomba_Ledob_loopend1988:
 	ld a, $ef
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
@@ -9553,14 +9629,14 @@ Bomba_Ledob_loopend4669:
 	call Frame_Sync
 	ld a, $0
 	ld [localVariable_Bomba_Ledob_vil], a
-Bomba_Ledob_while4672:
-Bomba_Ledob_loopstart4676:
+Bomba_Ledob_while1990:
+Bomba_Ledob_loopstart1994:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Bomba_Ledob_vil]
 	cp $3
-	jr nc,Bomba_Ledob_edblock4675
-Bomba_Ledob_ctb4673: ;Main true block ;keep :
+	jr nc,Bomba_Ledob_edblock1993
+Bomba_Ledob_ctb1991: ;Main true block ;keep :
 	call Frame_Sync
 	ld a, $0
 	ld [GE_Nr], a
@@ -9582,9 +9658,9 @@ Bomba_Ledob_ctb4673: ;Main true block ;keep :
 	ld a,[localVariable_Bomba_Ledob_vil]
 	add  a,$1
 	ld [localVariable_Bomba_Ledob_vil], a
-	jr Bomba_Ledob_while4672
-Bomba_Ledob_edblock4675:
-Bomba_Ledob_loopend4677:
+	jr Bomba_Ledob_while1990
+Bomba_Ledob_edblock1993:
+Bomba_Ledob_loopend1995:
 	; a robbanás előtt az eredeti színek vissza (a felhő már a normál palettával látszik) 
 	ld a, $0
 	ld [GE_Nr], a
@@ -9630,8 +9706,8 @@ Bomba_Ledob_loopend4677:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Bomba_Ledob_j]
 	cp $2
-	jr nz,Bomba_Ledob_eblock4682
-Bomba_Ledob_ctb4681: ;Main true block ;keep :
+	jr nz,Bomba_Ledob_eblock1999
+Bomba_Ledob_ctb1998: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -9641,8 +9717,8 @@ Bomba_Ledob_ctb4681: ;Main true block ;keep :
 	xor a ; clear carry
 	sbc hl,de
 	ld [Drill_Cash2],hl
-	jr Bomba_Ledob_edblock4683
-Bomba_Ledob_eblock4682:
+	jr Bomba_Ledob_edblock2000
+Bomba_Ledob_eblock1999:
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -9652,20 +9728,20 @@ Bomba_Ledob_eblock4682:
 	xor a ; clear carry
 	sbc hl,de
 	ld [Drill_Cash],hl
-Bomba_Ledob_edblock4683:
+Bomba_Ledob_edblock2000:
 	call Cash_OSD
 	call Cash2_OSD
 	call Keret_XY_Calc
 	call Keret_SpriteKirak
 	call Keret2_Kirak
-Bomba_Ledob_edblock4633:
+Bomba_Ledob_edblock1952:
 	ret
 end_procedure_Bomba_Ledob:
 	; KILÉPÉS (ESC vagy Q, minden módban): "EXIT TO MENU ?" a képernyő közepén, a pause színrendjével; ESC/Q = igen (Jatek_Fut:=0 -> főmenü), BÁRMI MÁS (billentyű vagy joystick) = nem (a doboz alatti kép vissza, megy tovább a játék). A végén megvárja, hogy minden gomb felengedődjön (ne tüzeljen tovább a játékban) 
 	; ***********  Defining procedure : Exit_Kerdes
 	;    Procedure type : User-defined procedure
 localVariable_Exit_Kerdes_v:	db	0
-Exit_Kerdes_block4688:
+Exit_Kerdes_block2003:
 Exit_Kerdes:
 	call Digi_Le
 	ld a, $32
@@ -9723,21 +9799,21 @@ Exit_Kerdes:
 	ld a, $6e
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Exit_Kerdes_stringassignstr4691
+	ld hl,Exit_Kerdes_stringassignstr2006
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $7a
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Exit_Kerdes_stringassignstr4693
+	ld hl,Exit_Kerdes_stringassignstr2008
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $86
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Exit_Kerdes_stringassignstr4695
+	ld hl,Exit_Kerdes_stringassignstr2010
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -9753,14 +9829,14 @@ Exit_Kerdes:
 	call Sotet_Szinek
 	ld a, $1
 	ld [Start_Wait], a
-Exit_Kerdes_while4696:
-Exit_Kerdes_loopstart4700:
+Exit_Kerdes_while2011:
+Exit_Kerdes_loopstart2015:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	or a
-	jp z, Exit_Kerdes_edblock4699
-Exit_Kerdes_ctb4697: ;Main true block ;keep :
+	jp z, Exit_Kerdes_edblock2014
+Exit_Kerdes_ctb2012: ;Main true block ;keep :
 	; 1: minden gomb felengedésére vár, 2: a döntésre, 3: a döntés gombjának felengedésére 
 	call GE_WaitForSync
 	call GE_GetKeyboard
@@ -9779,11 +9855,11 @@ Exit_Kerdes_barmi:
 	; Compare with pure num / var optimization
 	ld a,[Exit_Barmi]
 	or a
-	jr z, Exit_Kerdes_edblock4833
-Exit_Kerdes_ctb4831: ;Main true block ;keep :
+	jr z, Exit_Kerdes_edblock2121
+Exit_Kerdes_ctb2119: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Exit_Kerdes_v], a
-Exit_Kerdes_edblock4833:
+Exit_Kerdes_edblock2121:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -9792,11 +9868,11 @@ Exit_Kerdes_edblock4833:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Exit_Kerdes_edblock4839
-Exit_Kerdes_ctb4837: ;Main true block ;keep :
+	jr z, Exit_Kerdes_edblock2126
+Exit_Kerdes_ctb2124: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Exit_Kerdes_v], a
-Exit_Kerdes_edblock4839:
+Exit_Kerdes_edblock2126:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -9805,76 +9881,76 @@ Exit_Kerdes_edblock4839:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Exit_Kerdes_edblock4845
-Exit_Kerdes_ctb4843: ;Main true block ;keep :
+	jr z, Exit_Kerdes_edblock2131
+Exit_Kerdes_ctb2129: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Exit_Kerdes_v], a
-Exit_Kerdes_edblock4845:
+Exit_Kerdes_edblock2131:
 	; 3: minden felengedve 
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jr nz,Exit_Kerdes_eblock4850
-Exit_Kerdes_ctb4849: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_eblock2135
+Exit_Kerdes_ctb2134: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Exit_Kerdes_v]
 	or a
-	jr nz,Exit_Kerdes_edblock4908
-Exit_Kerdes_ctb4906: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_edblock2141
+Exit_Kerdes_ctb2139: ;Main true block ;keep :
 	ld a, $2
 	ld [Start_Wait], a
-Exit_Kerdes_edblock4908:
-	jr Exit_Kerdes_edblock4851
-Exit_Kerdes_eblock4850:
+Exit_Kerdes_edblock2141:
+	jr Exit_Kerdes_edblock2136
+Exit_Kerdes_eblock2135:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $2
-	jr nz,Exit_Kerdes_eblock4914
-Exit_Kerdes_ctb4913: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_eblock2146
+Exit_Kerdes_ctb2145: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Exit_Kerdes_v]
 	cp $1
-	jr nz,Exit_Kerdes_edblock4940
-Exit_Kerdes_ctb4938: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_edblock2152
+Exit_Kerdes_ctb2150: ;Main true block ;keep :
 	ld a, $0
 	ld [Jatek_Fut], a
 	; igen: vissza a főmenübe (a főprogram kezeli) 
 	ld a, $3
 	ld [Start_Wait], a
-Exit_Kerdes_edblock4940:
+Exit_Kerdes_edblock2152:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Exit_Kerdes_v]
 	cp $2
-	jr nz,Exit_Kerdes_edblock4946
-Exit_Kerdes_ctb4944: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_edblock2157
+Exit_Kerdes_ctb2155: ;Main true block ;keep :
 	ld a, $1
 	ld [Pause_Irany], a
 	call Pause_Csere
 	; nem: a doboz alatti kép vissza 
 	ld a, $3
 	ld [Start_Wait], a
-Exit_Kerdes_edblock4946:
-	jr Exit_Kerdes_edblock4915
-Exit_Kerdes_eblock4914:
+Exit_Kerdes_edblock2157:
+	jr Exit_Kerdes_edblock2147
+Exit_Kerdes_eblock2146:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Exit_Kerdes_v]
 	or a
-	jr nz,Exit_Kerdes_edblock4953
-Exit_Kerdes_ctb4951: ;Main true block ;keep :
+	jr nz,Exit_Kerdes_edblock2163
+Exit_Kerdes_ctb2161: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-Exit_Kerdes_edblock4953:
-Exit_Kerdes_edblock4915:
-Exit_Kerdes_edblock4851:
-	jp Exit_Kerdes_while4696
-Exit_Kerdes_edblock4699:
-Exit_Kerdes_loopend4701:
+Exit_Kerdes_edblock2163:
+Exit_Kerdes_edblock2147:
+Exit_Kerdes_edblock2136:
+	jp Exit_Kerdes_while2011
+Exit_Kerdes_edblock2014:
+Exit_Kerdes_loopend2016:
 	call Normal_Szinek
 	ret
 end_procedure_Exit_Kerdes:
@@ -9885,28 +9961,28 @@ localVariable_Ikon_Ervenyes_varPrefixed_r:	db	0
 localVariable_Ikon_Ervenyes_varPrefixed_db:	db	0
 localVariable_Ikon_Ervenyes_j:	db	0
 localVariable_Ikon_Ervenyes_x:	db	0
-Ikon_Ervenyes_block4956:
+Ikon_Ervenyes_block2165:
 Ikon_Ervenyes:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Ikon_Ervenyes_j]
 	cp $1
-	jr nz,Ikon_Ervenyes_eblock4959
-Ikon_Ervenyes_ctb4958: ;Main true block ;keep :
+	jr nz,Ikon_Ervenyes_eblock2168
+Ikon_Ervenyes_ctb2167: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Ikon_Ervenyes_x]
 	sub  $1
 	ld [localVariable_Ikon_Ervenyes_varPrefixed_e], a
-	jr Ikon_Ervenyes_edblock4960
-Ikon_Ervenyes_eblock4959:
+	jr Ikon_Ervenyes_edblock2169
+Ikon_Ervenyes_eblock2168:
 	; generic assign 
 	ld a,[localVariable_Ikon_Ervenyes_x]
 	ld b,a
 	ld a,$1e
 	sub  b
 	ld [localVariable_Ikon_Ervenyes_varPrefixed_e], a
-Ikon_Ervenyes_edblock4960:
+Ikon_Ervenyes_edblock2169:
 	; generic assign 
 	ld a,$2
 	ld c,a
@@ -9953,11 +10029,11 @@ Ikon_Ervenyes_edblock4960:
 	ld b,a
 	ld a,[localVariable_Ikon_Ervenyes_varPrefixed_e]
 	cp b
-	jr nc,Ikon_Ervenyes_edblock4968
-Ikon_Ervenyes_ctb4966: ;Main true block ;keep :
+	jr nc,Ikon_Ervenyes_edblock2177
+Ikon_Ervenyes_ctb2175: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Ikon_Ervenyes_varPrefixed_r], a
-Ikon_Ervenyes_edblock4968:
+Ikon_Ervenyes_edblock2177:
 	ld a,[localVariable_Ikon_Ervenyes_varPrefixed_r]
 	ret
 	ret
@@ -9974,14 +10050,14 @@ localVariable_Jatekos_Mozog_t:	db	0
 localVariable_Jatekos_Mozog_k:	db	0
 localVariable_Jatekos_Mozog_v:	db	0
 localVariable_Jatekos_Mozog_j:	db	0
-Jatekos_Mozog_block4971:
+Jatekos_Mozog_block2180:
 Jatekos_Mozog:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_j]
 	cp $1
-	jr nz,Jatekos_Mozog_eblock4974
-Jatekos_Mozog_ctb4973: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_eblock2183
+Jatekos_Mozog_ctb2182: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Keret_X_Pos]
 	ld [localVariable_Jatekos_Mozog_x], a
@@ -9995,8 +10071,8 @@ Jatekos_Mozog_ctb4973: ;Main true block ;keep :
 	ld [localVariable_Jatekos_Mozog_xmin], a
 	ld a, $9
 	ld [localVariable_Jatekos_Mozog_xmax], a
-	jr Jatekos_Mozog_edblock4975
-Jatekos_Mozog_eblock4974:
+	jr Jatekos_Mozog_edblock2184
+Jatekos_Mozog_eblock2183:
 	; generic assign 
 	ld a,[Keret2_X_Pos]
 	ld [localVariable_Jatekos_Mozog_x], a
@@ -10010,36 +10086,36 @@ Jatekos_Mozog_eblock4974:
 	ld [localVariable_Jatekos_Mozog_xmin], a
 	ld a, $1e
 	ld [localVariable_Jatekos_Mozog_xmax], a
-Jatekos_Mozog_edblock4975:
+Jatekos_Mozog_edblock2184:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_y]
 	or a
-	jp nz,Jatekos_Mozog_eblock4982
-Jatekos_Mozog_ctb4981: ;Main true block ;keep :
+	jp nz,Jatekos_Mozog_eblock2191
+Jatekos_Mozog_ctb2190: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Bal]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5320
-Jatekos_Mozog_ctb5318: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2435
+Jatekos_Mozog_ctb2433: ;Main true block ;keep :
 	; ikon-menü  balra a következő ENGEDÉLYEZETT ikonra (a tiltott fal/bomba helyét átugorja) 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [localVariable_Jatekos_Mozog_t], a
 	ld a, $0
 	ld [localVariable_Jatekos_Mozog_k], a
-Jatekos_Mozog_while5367:
-Jatekos_Mozog_loopstart5371:
+Jatekos_Mozog_while2437:
+Jatekos_Mozog_loopstart2441:
 	; Binary clause core: GREATER
 	; Compare two vars optimization
 	ld a,[localVariable_Jatekos_Mozog_xmin]
 	ld b,a
 	ld a,[localVariable_Jatekos_Mozog_t]
 	cp b
-	jr c, Jatekos_Mozog_edblock5370
-	jr z, Jatekos_Mozog_edblock5370
-Jatekos_Mozog_ctb5368: ;Main true block ;keep :
+	jr c, Jatekos_Mozog_edblock2440
+	jr z, Jatekos_Mozog_edblock2440
+Jatekos_Mozog_ctb2438: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_t]
 	sub $2
@@ -10048,8 +10124,8 @@ Jatekos_Mozog_ctb5368: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_k]
 	or a
-	jr nz,Jatekos_Mozog_edblock5396
-Jatekos_Mozog_ctb5394: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2447
+Jatekos_Mozog_ctb2445: ;Main true block ;keep :
 	; generic assign 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_j]
@@ -10062,41 +10138,41 @@ Jatekos_Mozog_ctb5394: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5408
-Jatekos_Mozog_ctb5406: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2452
+Jatekos_Mozog_ctb2450: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_t]
 	ld [localVariable_Jatekos_Mozog_x], a
 	ld a, $1
 	ld [localVariable_Jatekos_Mozog_k], a
-Jatekos_Mozog_edblock5408:
-Jatekos_Mozog_edblock5396:
-	jr Jatekos_Mozog_while5367
-Jatekos_Mozog_edblock5370:
-Jatekos_Mozog_loopend5372:
-Jatekos_Mozog_edblock5320:
+Jatekos_Mozog_edblock2452:
+Jatekos_Mozog_edblock2447:
+	jr Jatekos_Mozog_while2437
+Jatekos_Mozog_edblock2440:
+Jatekos_Mozog_loopend2442:
+Jatekos_Mozog_edblock2435:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Jobb]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5414
-Jatekos_Mozog_ctb5412: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2457
+Jatekos_Mozog_ctb2455: ;Main true block ;keep :
 	; jobbra ugyanígy 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [localVariable_Jatekos_Mozog_t], a
 	ld a, $0
 	ld [localVariable_Jatekos_Mozog_k], a
-Jatekos_Mozog_while5461:
-Jatekos_Mozog_loopstart5465:
+Jatekos_Mozog_while2459:
+Jatekos_Mozog_loopstart2463:
 	; Binary clause core: LESS
 	; Compare two vars optimization
 	ld a,[localVariable_Jatekos_Mozog_xmax]
 	ld b,a
 	ld a,[localVariable_Jatekos_Mozog_t]
 	cp b
-	jr nc,Jatekos_Mozog_edblock5464
-Jatekos_Mozog_ctb5462: ;Main true block ;keep :
+	jr nc,Jatekos_Mozog_edblock2462
+Jatekos_Mozog_ctb2460: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_t]
 	add  a,$2
@@ -10105,8 +10181,8 @@ Jatekos_Mozog_ctb5462: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_k]
 	or a
-	jr nz,Jatekos_Mozog_edblock5490
-Jatekos_Mozog_ctb5488: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2469
+Jatekos_Mozog_ctb2467: ;Main true block ;keep :
 	; generic assign 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_j]
@@ -10119,25 +10195,25 @@ Jatekos_Mozog_ctb5488: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5502
-Jatekos_Mozog_ctb5500: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2474
+Jatekos_Mozog_ctb2472: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_t]
 	ld [localVariable_Jatekos_Mozog_x], a
 	ld a, $1
 	ld [localVariable_Jatekos_Mozog_k], a
-Jatekos_Mozog_edblock5502:
-Jatekos_Mozog_edblock5490:
-	jr Jatekos_Mozog_while5461
-Jatekos_Mozog_edblock5464:
-Jatekos_Mozog_loopend5466:
-Jatekos_Mozog_edblock5414:
+Jatekos_Mozog_edblock2474:
+Jatekos_Mozog_edblock2469:
+	jr Jatekos_Mozog_while2459
+Jatekos_Mozog_edblock2462:
+Jatekos_Mozog_loopend2464:
+Jatekos_Mozog_edblock2457:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Le]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5508
-Jatekos_Mozog_ctb5506: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2479
+Jatekos_Mozog_ctb2477: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Jatekos_Mozog_y], a
 	; generic assign 
@@ -10147,113 +10223,113 @@ Jatekos_Mozog_ctb5506: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_j]
 	cp $2
-	jr nz,Jatekos_Mozog_edblock5520
-Jatekos_Mozog_ctb5518: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2484
+Jatekos_Mozog_ctb2482: ;Main true block ;keep :
 	; vissza abba az oszlopba, ahonnan feljött 
 	; generic assign 
 	ld a,[Vissza2_X]
 	ld [localVariable_Jatekos_Mozog_x], a
-Jatekos_Mozog_edblock5520:
-Jatekos_Mozog_edblock5508:
-	jp Jatekos_Mozog_edblock4983
-Jatekos_Mozog_eblock4982:
+Jatekos_Mozog_edblock2484:
+Jatekos_Mozog_edblock2479:
+	jp Jatekos_Mozog_edblock2192
+Jatekos_Mozog_eblock2191:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Bal]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5527
-Jatekos_Mozog_ctb5525: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2490
+Jatekos_Mozog_ctb2488: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_x]
 	cp $1
-	jr c, Jatekos_Mozog_edblock5539
-	jr z, Jatekos_Mozog_edblock5539
-Jatekos_Mozog_ctb5537: ;Main true block ;keep :
+	jr c, Jatekos_Mozog_edblock2495
+	jr z, Jatekos_Mozog_edblock2495
+Jatekos_Mozog_ctb2493: ;Main true block ;keep :
 	; pálya 
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	sub $1
 	ld [localVariable_Jatekos_Mozog_x], a
-Jatekos_Mozog_edblock5539:
-Jatekos_Mozog_edblock5527:
+Jatekos_Mozog_edblock2495:
+Jatekos_Mozog_edblock2490:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Jobb]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5545
-Jatekos_Mozog_ctb5543: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2500
+Jatekos_Mozog_ctb2498: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_x]
 	cp $1e
-	jr nc,Jatekos_Mozog_edblock5557
-Jatekos_Mozog_ctb5555: ;Main true block ;keep :
+	jr nc,Jatekos_Mozog_edblock2505
+Jatekos_Mozog_ctb2503: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	add  a,$1
 	ld [localVariable_Jatekos_Mozog_x], a
-Jatekos_Mozog_edblock5557:
-Jatekos_Mozog_edblock5545:
+Jatekos_Mozog_edblock2505:
+Jatekos_Mozog_edblock2500:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Le]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5563
-Jatekos_Mozog_ctb5561: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2510
+Jatekos_Mozog_ctb2508: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_y]
 	cp $12
-	jr nc,Jatekos_Mozog_edblock5575
-Jatekos_Mozog_ctb5573: ;Main true block ;keep :
+	jr nc,Jatekos_Mozog_edblock2515
+Jatekos_Mozog_ctb2513: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_y]
 	add  a,$1
 	ld [localVariable_Jatekos_Mozog_y], a
-Jatekos_Mozog_edblock5575:
-Jatekos_Mozog_edblock5563:
+Jatekos_Mozog_edblock2515:
+Jatekos_Mozog_edblock2510:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Joy_Fel]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5581
-Jatekos_Mozog_ctb5579: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2520
+Jatekos_Mozog_ctb2518: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_y]
 	cp $1
-	jr c, Jatekos_Mozog_eblock5618
-	jr z, Jatekos_Mozog_eblock5618
-Jatekos_Mozog_ctb5617: ;Main true block ;keep :
+	jr c, Jatekos_Mozog_eblock2524
+	jr z, Jatekos_Mozog_eblock2524
+Jatekos_Mozog_ctb2523: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Mozog_y]
 	sub $1
 	ld [localVariable_Jatekos_Mozog_y], a
-	jr Jatekos_Mozog_edblock5619
-Jatekos_Mozog_eblock5618:
+	jr Jatekos_Mozog_edblock2525
+Jatekos_Mozog_eblock2524:
 	ld a, $0
 	ld [localVariable_Jatekos_Mozog_y], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_j]
 	cp $1
-	jr nz,Jatekos_Mozog_edblock5639
-Jatekos_Mozog_ctb5637: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2531
+Jatekos_Mozog_ctb2529: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [Vissza1_X], a
-Jatekos_Mozog_edblock5639:
+Jatekos_Mozog_edblock2531:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_j]
 	cp $2
-	jr nz,Jatekos_Mozog_edblock5645
-Jatekos_Mozog_ctb5643: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_edblock2536
+Jatekos_Mozog_ctb2534: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [Vissza2_X], a
-Jatekos_Mozog_edblock5645:
+Jatekos_Mozog_edblock2536:
 	; generic assign 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_j]
@@ -10263,37 +10339,37 @@ Jatekos_Mozog_edblock5645:
 	ld [localVariable_Ikon_Oszlop_varPrefixed_e], a
 	call Ikon_Oszlop
 	ld [localVariable_Jatekos_Mozog_x], a
-Jatekos_Mozog_edblock5619:
-Jatekos_Mozog_edblock5581:
-Jatekos_Mozog_edblock4983:
+Jatekos_Mozog_edblock2525:
+Jatekos_Mozog_edblock2520:
+Jatekos_Mozog_edblock2192:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Mozog_j]
 	cp $1
-	jr nz,Jatekos_Mozog_eblock5650
-Jatekos_Mozog_ctb5649: ;Main true block ;keep :
+	jr nz,Jatekos_Mozog_eblock2540
+Jatekos_Mozog_ctb2539: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [Keret_X_Pos], a
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_y]
 	ld [Keret_Y_Pos], a
-	jr Jatekos_Mozog_edblock5651
-Jatekos_Mozog_eblock5650:
+	jr Jatekos_Mozog_edblock2541
+Jatekos_Mozog_eblock2540:
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_x]
 	ld [Keret2_X_Pos], a
 	; generic assign 
 	ld a,[localVariable_Jatekos_Mozog_y]
 	ld [Keret2_Y_Pos], a
-Jatekos_Mozog_edblock5651:
+Jatekos_Mozog_edblock2541:
 	ret
 end_procedure_Jatekos_Mozog:
 	; A lerakott pumpák termelése 
 	; ***********  Defining procedure : Pumpak_Termelnek
 	;    Procedure type : User-defined procedure
 localVariable_Pumpak_Termelnek_termeny:	dw	0
-Pumpak_Termelnek_block5656:
+Pumpak_Termelnek_block2546:
 Pumpak_Termelnek:
 	; Binary clause core: GREATER
 	; Binary clause INTEGER: GREATER
@@ -10304,9 +10380,9 @@ Pumpak_Termelnek:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpak_Termelnek_edblock5660
-	jr z, Pumpak_Termelnek_edblock5660
-Pumpak_Termelnek_ctb5658: ;Main true block ;keep :
+	jr c, Pumpak_Termelnek_edblock2550
+	jr z, Pumpak_Termelnek_edblock2550
+Pumpak_Termelnek_ctb2548: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Pumpa_db]
@@ -10342,16 +10418,16 @@ Pumpak_Termelnek_ctb5658: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpak_Termelnek_edblock5674
-	jr z, Pumpak_Termelnek_edblock5674
-Pumpak_Termelnek_ctb5672: ;Main true block ;keep :
+	jr c, Pumpak_Termelnek_edblock2564
+	jr z, Pumpak_Termelnek_edblock2564
+Pumpak_Termelnek_ctb2562: ;Main true block ;keep :
 	; generic assign 
 	ld hl,$270f
 	; Loading pointer
 	ld [Drill_Cash],hl
-Pumpak_Termelnek_edblock5674:
+Pumpak_Termelnek_edblock2564:
 	call Cash_OSD
-Pumpak_Termelnek_edblock5660:
+Pumpak_Termelnek_edblock2550:
 	; co-op: kiírva 
 	; Binary clause core: GREATER
 	; Binary clause INTEGER: GREATER
@@ -10362,9 +10438,9 @@ Pumpak_Termelnek_edblock5660:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpak_Termelnek_edblock5680
-	jr z, Pumpak_Termelnek_edblock5680
-Pumpak_Termelnek_ctb5678: ;Main true block ;keep :
+	jr c, Pumpak_Termelnek_edblock2569
+	jr z, Pumpak_Termelnek_edblock2569
+Pumpak_Termelnek_ctb2567: ;Main true block ;keep :
 	; a 2. játékos (versus) saját termelése, saját pénzbe (még nincs kiírva) 
 	; generic assign 
 	; Variable is 16-bit
@@ -10401,16 +10477,16 @@ Pumpak_Termelnek_ctb5678: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Pumpak_Termelnek_edblock5694
-	jr z, Pumpak_Termelnek_edblock5694
-Pumpak_Termelnek_ctb5692: ;Main true block ;keep :
+	jr c, Pumpak_Termelnek_edblock2583
+	jr z, Pumpak_Termelnek_edblock2583
+Pumpak_Termelnek_ctb2581: ;Main true block ;keep :
 	; generic assign 
 	ld hl,$270f
 	; Loading pointer
 	ld [Drill_Cash2],hl
-Pumpak_Termelnek_edblock5694:
+Pumpak_Termelnek_edblock2583:
 	call Cash2_OSD
-Pumpak_Termelnek_edblock5680:
+Pumpak_Termelnek_edblock2569:
 	ret
 end_procedure_Pumpak_Termelnek:
 	; ***********  Defining procedure : Enemy_Terjed_Ide
@@ -10418,7 +10494,7 @@ end_procedure_Pumpak_Termelnek:
 localVariable_Enemy_Terjed_Ide_mp:	dw	0
 localVariable_Enemy_Terjed_Ide_x:	db	0
 localVariable_Enemy_Terjed_Ide_y:	db	0
-Enemy_Terjed_Ide_block5697:
+Enemy_Terjed_Ide_block2585:
 Enemy_Terjed_Ide:
 	; generic assign 
 	; Generic 16-bit binop
@@ -10465,8 +10541,8 @@ Enemy_Terjed_Ide:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr z, Enemy_Terjed_Ide_edblock5702
-Enemy_Terjed_Ide_localsuccess5710: ;keep:
+	jr z, Enemy_Terjed_Ide_edblock2590
+Enemy_Terjed_Ide_localsuccess2598: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
@@ -10479,8 +10555,8 @@ Enemy_Terjed_Ide_localsuccess5710: ;keep:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr z, Enemy_Terjed_Ide_edblock5702
-Enemy_Terjed_Ide_ctb5700: ;Main true block ;keep :
+	jr z, Enemy_Terjed_Ide_edblock2590
+Enemy_Terjed_Ide_ctb2588: ;Main true block ;keep :
 	; FAL blokkol 
 	; generic assign 
 	ld a,[localVariable_Enemy_Terjed_Ide_x]
@@ -10507,8 +10583,8 @@ Enemy_Terjed_Ide_ctb5700: ;Main true block ;keep :
 	ld [localVariable_Keret_Erint_y], a
 	call Keret_Erint
 	or a
-	jr nz,Enemy_Terjed_Ide_edblock5715
-Enemy_Terjed_Ide_ctb5713: ;Main true block ;keep :
+	jr nz,Enemy_Terjed_Ide_edblock2603
+Enemy_Terjed_Ide_ctb2601: ;Main true block ;keep :
 	; 0. fázisú vírus 
 	; generic assign 
 	ld a,[localVariable_Enemy_Terjed_Ide_x]
@@ -10519,8 +10595,8 @@ Enemy_Terjed_Ide_ctb5713: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Enemy_Kirak_faz], a
 	call Enemy_Kirak
-Enemy_Terjed_Ide_edblock5715:
-Enemy_Terjed_Ide_edblock5702:
+Enemy_Terjed_Ide_edblock2603:
+Enemy_Terjed_Ide_edblock2590:
 	ret
 end_procedure_Enemy_Terjed_Ide:
 	; ***********  Defining procedure : Virus_Lerak
@@ -10530,7 +10606,7 @@ localVariable_Virus_Lerak_penz:	dw	0
 localVariable_Virus_Lerak_px:	db	0
 localVariable_Virus_Lerak_py:	db	0
 localVariable_Virus_Lerak_j:	db	0
-Virus_Lerak_block5718:
+Virus_Lerak_block2605:
 Virus_Lerak:
 	; generic assign 
 	; Generic 16-bit binop
@@ -10583,23 +10659,23 @@ Virus_Lerak:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Virus_Lerak_j]
 	cp $2
-	jr nz,Virus_Lerak_edblock5723
-Virus_Lerak_ctb5721: ;Main true block ;keep :
+	jr nz,Virus_Lerak_edblock2610
+Virus_Lerak_ctb2608: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash2]
 	; Loading pointer
 	ld [localVariable_Virus_Lerak_penz],hl
-Virus_Lerak_edblock5723:
+Virus_Lerak_edblock2610:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[Talaj1Map]
 	ld b,a
 	ld a,[localVariable_Virus_Lerak_varPrefixed_m]
 	cp b
-	jr nz,Virus_Lerak_localfailed5753
-	jr Virus_Lerak_ctb5727
-Virus_Lerak_localfailed5753: ;keep:
+	jr nz,Virus_Lerak_localfailed2638
+	jr Virus_Lerak_ctb2614
+Virus_Lerak_localfailed2638: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
@@ -10607,8 +10683,8 @@ Virus_Lerak_localfailed5753: ;keep:
 	ld b,a
 	ld a,[localVariable_Virus_Lerak_varPrefixed_m]
 	cp b
-	jr nz,Virus_Lerak_edblock5729
-Virus_Lerak_ctb5727: ;Main true block ;keep :
+	jr nz,Virus_Lerak_edblock2616
+Virus_Lerak_ctb2614: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	; Variable is 16-bit
@@ -10619,8 +10695,8 @@ Virus_Lerak_ctb5727: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, Virus_Lerak_edblock5758
-Virus_Lerak_ctb5756: ;Main true block ;keep :
+	jr c, Virus_Lerak_edblock2643
+Virus_Lerak_ctb2641: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Virus_Lerak_px]
 	ld [localVariable_Enemy_Terjed_Ide_x], a
@@ -10634,8 +10710,8 @@ Virus_Lerak_ctb5756: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Virus_Lerak_j]
 	cp $2
-	jr nz,Virus_Lerak_eblock5771
-Virus_Lerak_ctb5770: ;Main true block ;keep :
+	jr nz,Virus_Lerak_eblock2647
+Virus_Lerak_ctb2646: ;Main true block ;keep :
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -10646,8 +10722,8 @@ Virus_Lerak_ctb5770: ;Main true block ;keep :
 	sbc hl,de
 	ld [Drill_Cash2],hl
 	call Cash2_OSD
-	jr Virus_Lerak_edblock5772
-Virus_Lerak_eblock5771:
+	jr Virus_Lerak_edblock2648
+Virus_Lerak_eblock2647:
 	; 16 bit BINOP
 	; RHS is pure 
 	; Variable is 16-bit
@@ -10658,9 +10734,9 @@ Virus_Lerak_eblock5771:
 	sbc hl,de
 	ld [Drill_Cash],hl
 	call Cash_OSD
-Virus_Lerak_edblock5772:
-Virus_Lerak_edblock5758:
-Virus_Lerak_edblock5729:
+Virus_Lerak_edblock2648:
+Virus_Lerak_edblock2643:
+Virus_Lerak_edblock2616:
 	ret
 end_procedure_Virus_Lerak:
 	; ***********  Defining procedure : Jatekos_Tuz
@@ -10672,33 +10748,33 @@ localVariable_Jatekos_Tuz_j:	db	0
 localVariable_Jatekos_Tuz_px:	db	0
 localVariable_Jatekos_Tuz_py:	db	0
 localVariable_Jatekos_Tuz_volt:	db	0
-Jatekos_Tuz_block5777:
+Jatekos_Tuz_block2651:
 Jatekos_Tuz:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_py]
 	or a
-	jp nz,Jatekos_Tuz_eblock5780
-Jatekos_Tuz_ctb5779: ;Main true block ;keep :
+	jp nz,Jatekos_Tuz_eblock2654
+Jatekos_Tuz_ctb2653: ;Main true block ;keep :
 	; a tiltott eszköz oszlopa 255 (Ikon_Oszlop), így csak engedélyezett választható 
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_volt]
 	or a
-	jr nz,Jatekos_Tuz_edblock5954
-Jatekos_Tuz_ctb5952: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2806
+Jatekos_Tuz_ctb2804: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Jatekos_Tuz_varPrefixed_e], a
 	ld a, $0
 	ld [localVariable_Jatekos_Tuz_varPrefixed_i], a
-Jatekos_Tuz_while6001:
-Jatekos_Tuz_loopstart6005:
+Jatekos_Tuz_while2808:
+Jatekos_Tuz_loopstart2812:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_i]
 	cp $5
-	jr nc,Jatekos_Tuz_edblock6004
-Jatekos_Tuz_ctb6002: ;Main true block ;keep :
+	jr nc,Jatekos_Tuz_edblock2811
+Jatekos_Tuz_ctb2809: ;Main true block ;keep :
 	; generic assign 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_j]
@@ -10714,42 +10790,42 @@ Jatekos_Tuz_ctb6002: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_Jatekos_Tuz_k]
 	cp b
-	jr nz,Jatekos_Tuz_edblock6018
-Jatekos_Tuz_ctb6016: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2818
+Jatekos_Tuz_ctb2816: ;Main true block ;keep :
 	; előbb változóba: a "fv(...)=px" feltételnél a fordító a B-ben tartott px-et a hívás alatt elrontja 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_i]
 	ld [localVariable_Jatekos_Tuz_varPrefixed_e], a
-Jatekos_Tuz_edblock6018:
+Jatekos_Tuz_edblock2818:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Jatekos_Tuz_varPrefixed_i], a
-	jr Jatekos_Tuz_while6001
-Jatekos_Tuz_edblock6004:
-Jatekos_Tuz_loopend6006:
+	jr Jatekos_Tuz_while2808
+Jatekos_Tuz_edblock2811:
+Jatekos_Tuz_loopend2813:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $1
-	jr nz,Jatekos_Tuz_edblock6024
-Jatekos_Tuz_ctb6022: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2823
+Jatekos_Tuz_ctb2821: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Fal_Engedve]
 	or a
-	jr nz,Jatekos_Tuz_edblock6036
-Jatekos_Tuz_ctb6034: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2828
+Jatekos_Tuz_ctb2826: ;Main true block ;keep :
 	ld a, $ff
 	ld [localVariable_Jatekos_Tuz_varPrefixed_e], a
-Jatekos_Tuz_edblock6036:
-Jatekos_Tuz_edblock6024:
+Jatekos_Tuz_edblock2828:
+Jatekos_Tuz_edblock2823:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $ff
-	jr z, Jatekos_Tuz_edblock6042
-Jatekos_Tuz_ctb6040: ;Main true block ;keep :
+	jr z, Jatekos_Tuz_edblock2833
+Jatekos_Tuz_ctb2831: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_j]
 	ld [localVariable_Eszkoz_Valt_j], a
@@ -10757,10 +10833,10 @@ Jatekos_Tuz_ctb6040: ;Main true block ;keep :
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	ld [localVariable_Eszkoz_Valt_varPrefixed_e], a
 	call Eszkoz_Valt
-Jatekos_Tuz_edblock6042:
-Jatekos_Tuz_edblock5954:
-	jp Jatekos_Tuz_edblock5781
-Jatekos_Tuz_eblock5780:
+Jatekos_Tuz_edblock2833:
+Jatekos_Tuz_edblock2806:
+	jp Jatekos_Tuz_edblock2655
+Jatekos_Tuz_eblock2654:
 	; generic assign 
 	ld a,[Eszkoz1]
 	ld [localVariable_Jatekos_Tuz_varPrefixed_e], a
@@ -10768,18 +10844,18 @@ Jatekos_Tuz_eblock5780:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_j]
 	cp $2
-	jr nz,Jatekos_Tuz_edblock6049
-Jatekos_Tuz_ctb6047: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2839
+Jatekos_Tuz_ctb2837: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Eszkoz2]
 	ld [localVariable_Jatekos_Tuz_varPrefixed_e], a
-Jatekos_Tuz_edblock6049:
+Jatekos_Tuz_edblock2839:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	or a
-	jr nz,Jatekos_Tuz_edblock6055
-Jatekos_Tuz_ctb6053: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2844
+Jatekos_Tuz_ctb2842: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_px]
 	ld [localVariable_DrillLerak_px], a
@@ -10790,13 +10866,13 @@ Jatekos_Tuz_ctb6053: ;Main true block ;keep :
 	ld a,[localVariable_Jatekos_Tuz_j]
 	ld [localVariable_DrillLerak_j], a
 	call DrillLerak
-Jatekos_Tuz_edblock6055:
+Jatekos_Tuz_edblock2844:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $1
-	jr nz,Jatekos_Tuz_edblock6061
-Jatekos_Tuz_ctb6059: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2849
+Jatekos_Tuz_ctb2847: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_px]
 	ld [localVariable_TeglaLerak_px], a
@@ -10809,19 +10885,19 @@ Jatekos_Tuz_ctb6059: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_TeglaLerak_akna], a
 	call TeglaLerak
-Jatekos_Tuz_edblock6061:
+Jatekos_Tuz_edblock2849:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $2
-	jr nz,Jatekos_Tuz_edblock6067
-Jatekos_Tuz_ctb6065: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2854
+Jatekos_Tuz_ctb2852: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_volt]
 	or a
-	jr nz,Jatekos_Tuz_edblock6079
-Jatekos_Tuz_ctb6077: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2859
+Jatekos_Tuz_ctb2857: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_px]
 	ld [localVariable_Bomba_Ledob_px], a
@@ -10832,20 +10908,20 @@ Jatekos_Tuz_ctb6077: ;Main true block ;keep :
 	ld a,[localVariable_Jatekos_Tuz_j]
 	ld [localVariable_Bomba_Ledob_j], a
 	call Bomba_Ledob
-Jatekos_Tuz_edblock6079:
-Jatekos_Tuz_edblock6067:
+Jatekos_Tuz_edblock2859:
+Jatekos_Tuz_edblock2854:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $3
-	jr nz,Jatekos_Tuz_edblock6085
-Jatekos_Tuz_ctb6083: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2864
+Jatekos_Tuz_ctb2862: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_volt]
 	or a
-	jr nz,Jatekos_Tuz_edblock6097
-Jatekos_Tuz_ctb6095: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2869
+Jatekos_Tuz_ctb2867: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_px]
 	ld [localVariable_TeglaLerak_px], a
@@ -10858,20 +10934,20 @@ Jatekos_Tuz_ctb6095: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_TeglaLerak_akna], a
 	call TeglaLerak
-Jatekos_Tuz_edblock6097:
-Jatekos_Tuz_edblock6085:
+Jatekos_Tuz_edblock2869:
+Jatekos_Tuz_edblock2864:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_varPrefixed_e]
 	cp $4
-	jr nz,Jatekos_Tuz_edblock6103
-Jatekos_Tuz_ctb6101: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2874
+Jatekos_Tuz_ctb2872: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Jatekos_Tuz_volt]
 	or a
-	jr nz,Jatekos_Tuz_edblock6115
-Jatekos_Tuz_ctb6113: ;Main true block ;keep :
+	jr nz,Jatekos_Tuz_edblock2879
+Jatekos_Tuz_ctb2877: ;Main true block ;keep :
 	; akna: egy lenyomás = egy akna 
 	; generic assign 
 	ld a,[localVariable_Jatekos_Tuz_px]
@@ -10883,9 +10959,9 @@ Jatekos_Tuz_ctb6113: ;Main true block ;keep :
 	ld a,[localVariable_Jatekos_Tuz_j]
 	ld [localVariable_Virus_Lerak_j], a
 	call Virus_Lerak
-Jatekos_Tuz_edblock6115:
-Jatekos_Tuz_edblock6103:
-Jatekos_Tuz_edblock5781:
+Jatekos_Tuz_edblock2879:
+Jatekos_Tuz_edblock2874:
+Jatekos_Tuz_edblock2655:
 	ret
 end_procedure_Jatekos_Tuz:
 	; Véletlen rács-mező OSZTÁS NÉLKÜL (a mod 30/18 + *30 szoftveres osztás/szorzás helyett): Rnd_X 1..30, Rnd_Y 1..18, Rnd_Mp = Map-index; (rnd*N)>>8, shiftekkel 
@@ -10994,18 +11070,18 @@ localVariable_Enemyk_Mukodnek_rx:	db	0
 localVariable_Enemyk_Mukodnek_ry:	db	0
 localVariable_Enemyk_Mukodnek_varPrefixed_p:	db	0
 localVariable_Enemyk_Mukodnek_mp:	dw	0
-Enemyk_Mukodnek_block6121:
+Enemyk_Mukodnek_block2884:
 Enemyk_Mukodnek:
 	ld a, $0
 	ld [localVariable_Enemyk_Mukodnek_varPrefixed_p], a
-Enemyk_Mukodnek_while6122:
-Enemyk_Mukodnek_loopstart6126:
+Enemyk_Mukodnek_while2885:
+Enemyk_Mukodnek_loopstart2889:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Mukodnek_varPrefixed_p]
 	cp $6
-	jp nc,Enemyk_Mukodnek_edblock6125
-Enemyk_Mukodnek_ctb6123: ;Main true block ;keep :
+	jp nc,Enemyk_Mukodnek_edblock2888
+Enemyk_Mukodnek_ctb2886: ;Main true block ;keep :
 	call Rnd_Mezo
 	; generic assign 
 	ld a,[Rnd_X]
@@ -11029,8 +11105,8 @@ Enemyk_Mukodnek_ctb6123: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jp c, Enemyk_Mukodnek_edblock6396
-Enemyk_Mukodnek_localsuccess6526: ;keep:
+	jp c, Enemyk_Mukodnek_edblock3033
+Enemyk_Mukodnek_localsuccess3034: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
@@ -11045,8 +11121,8 @@ Enemyk_Mukodnek_localsuccess6526: ;keep:
 	ld a,[VirusMap]
 	add  a, $4
 	cp c
-	jp c,Enemyk_Mukodnek_edblock6396
-Enemyk_Mukodnek_ctb6394: ;Main true block ;keep :
+	jp c,Enemyk_Mukodnek_edblock3033
+Enemyk_Mukodnek_ctb3031: ;Main true block ;keep :
 	; csak vírus (20..24), a 2. játékos pumpái (31..) nem 
 	; generic assign 
 	; Variable is 16-bit
@@ -11064,8 +11140,8 @@ Enemyk_Mukodnek_ctb6394: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	cp $4
-	jp nc,Enemyk_Mukodnek_eblock6530
-Enemyk_Mukodnek_ctb6529: ;Main true block ;keep :
+	jp nc,Enemyk_Mukodnek_eblock3038
+Enemyk_Mukodnek_ctb3037: ;Main true block ;keep :
 	; NÖVEKVŐ: egy lépcső előre 
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Enemyk_Mukodnek_faz]
@@ -11092,8 +11168,8 @@ Enemyk_Mukodnek_ctb6529: ;Main true block ;keep :
 	ld [localVariable_Keret_Erint_y], a
 	call Keret_Erint
 	or a
-	jr nz,Enemyk_Mukodnek_edblock6598
-Enemyk_Mukodnek_ctb6596: ;Main true block ;keep :
+	jr nz,Enemyk_Mukodnek_edblock3044
+Enemyk_Mukodnek_ctb3042: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Enemyk_Mukodnek_rx]
 	ld [localVariable_Enemy_Kirak_x], a
@@ -11104,15 +11180,15 @@ Enemyk_Mukodnek_ctb6596: ;Main true block ;keep :
 	ld a,[localVariable_Enemyk_Mukodnek_faz]
 	ld [localVariable_Enemy_Kirak_faz], a
 	call Enemy_Kirak
-Enemyk_Mukodnek_edblock6598:
-	jp Enemyk_Mukodnek_edblock6531
-Enemyk_Mukodnek_eblock6530:
+Enemyk_Mukodnek_edblock3044:
+	jp Enemyk_Mukodnek_edblock3039
+Enemyk_Mukodnek_eblock3038:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Enemy_Terjedhet]
 	cp $1
-	jp nz,Enemyk_Mukodnek_edblock6605
-Enemyk_Mukodnek_ctb6603: ;Main true block ;keep :
+	jp nz,Enemyk_Mukodnek_edblock3050
+Enemyk_Mukodnek_ctb3048: ;Main true block ;keep :
 	; KIFEJLETT: nem nő; terjed, ha engedélyezve  3x3 környezet: dx,dy fuggetlenul -1/0/+1 
 	call Rnd_Harom
 	; generic assign 
@@ -11146,41 +11222,41 @@ Enemyk_Mukodnek_ctb6603: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Mukodnek_nx]
 	cp $1
-	jr nc,Enemyk_Mukodnek_edblock6635
-Enemyk_Mukodnek_ctb6633: ;Main true block ;keep :
+	jr nc,Enemyk_Mukodnek_edblock3055
+Enemyk_Mukodnek_ctb3053: ;Main true block ;keep :
 	; clamp a rácsra (C64: 0..39 / 1..24) 
 	ld a, $1
 	ld [localVariable_Enemyk_Mukodnek_nx], a
-Enemyk_Mukodnek_edblock6635:
+Enemyk_Mukodnek_edblock3055:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Mukodnek_nx]
 	cp $1e
-	jr c, Enemyk_Mukodnek_edblock6641
-	jr z, Enemyk_Mukodnek_edblock6641
-Enemyk_Mukodnek_ctb6639: ;Main true block ;keep :
+	jr c, Enemyk_Mukodnek_edblock3060
+	jr z, Enemyk_Mukodnek_edblock3060
+Enemyk_Mukodnek_ctb3058: ;Main true block ;keep :
 	ld a, $1e
 	ld [localVariable_Enemyk_Mukodnek_nx], a
-Enemyk_Mukodnek_edblock6641:
+Enemyk_Mukodnek_edblock3060:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Mukodnek_ny]
 	cp $1
-	jr nc,Enemyk_Mukodnek_edblock6647
-Enemyk_Mukodnek_ctb6645: ;Main true block ;keep :
+	jr nc,Enemyk_Mukodnek_edblock3065
+Enemyk_Mukodnek_ctb3063: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Enemyk_Mukodnek_ny], a
-Enemyk_Mukodnek_edblock6647:
+Enemyk_Mukodnek_edblock3065:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Enemyk_Mukodnek_ny]
 	cp $12
-	jr c, Enemyk_Mukodnek_edblock6653
-	jr z, Enemyk_Mukodnek_edblock6653
-Enemyk_Mukodnek_ctb6651: ;Main true block ;keep :
+	jr c, Enemyk_Mukodnek_edblock3070
+	jr z, Enemyk_Mukodnek_edblock3070
+Enemyk_Mukodnek_ctb3068: ;Main true block ;keep :
 	ld a, $12
 	ld [localVariable_Enemyk_Mukodnek_ny], a
-Enemyk_Mukodnek_edblock6653:
+Enemyk_Mukodnek_edblock3070:
 	; generic assign 
 	ld a,[localVariable_Enemyk_Mukodnek_nx]
 	ld [localVariable_Enemy_Terjed_Ide_x], a
@@ -11188,23 +11264,23 @@ Enemyk_Mukodnek_edblock6653:
 	ld a,[localVariable_Enemyk_Mukodnek_ny]
 	ld [localVariable_Enemy_Terjed_Ide_y], a
 	call Enemy_Terjed_Ide
-Enemyk_Mukodnek_edblock6605:
-Enemyk_Mukodnek_edblock6531:
-Enemyk_Mukodnek_edblock6396:
+Enemyk_Mukodnek_edblock3050:
+Enemyk_Mukodnek_edblock3039:
+Enemyk_Mukodnek_edblock3033:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Enemyk_Mukodnek_varPrefixed_p]
 	add  a,$1
 	ld [localVariable_Enemyk_Mukodnek_varPrefixed_p], a
-	jp Enemyk_Mukodnek_while6122
-Enemyk_Mukodnek_edblock6125:
-Enemyk_Mukodnek_loopend6127:
+	jp Enemyk_Mukodnek_while2885
+Enemyk_Mukodnek_edblock2888:
+Enemyk_Mukodnek_loopend2890:
 	ret
 end_procedure_Enemyk_Mukodnek:
 	; Tűzgomb: 1, ha SPACE VAGY a joystick tűzgombja le van nyomva (előtte GetKeyboard + GetJoysticks kell) 
 	; ***********  Defining procedure : Tuz
 	;    Procedure type : User-defined procedure
 localVariable_Tuz_varPrefixed_r:	db	0
-Tuz_block6656:
+Tuz_block3072:
 Tuz:
 	ld a, $0
 	ld [localVariable_Tuz_varPrefixed_r], a
@@ -11216,11 +11292,11 @@ Tuz:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Tuz_edblock6660
-Tuz_ctb6658: ;Main true block ;keep :
+	jr z, Tuz_edblock3076
+Tuz_ctb3074: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Tuz_varPrefixed_r], a
-Tuz_edblock6660:
+Tuz_edblock3076:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -11229,26 +11305,47 @@ Tuz_edblock6660:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, Tuz_edblock6666
-Tuz_ctb6664: ;Main true block ;keep :
+	jr z, Tuz_edblock3082
+Tuz_ctb3080: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Tuz_varPrefixed_r], a
-Tuz_edblock6666:
+Tuz_edblock3082:
 	ld a,[localVariable_Tuz_varPrefixed_r]
 	ret
 	ret
 end_procedure_Tuz:
-	; JELMAGYARÁZAT-képernyő (a főmenüben a 2-es billentyű): a játékelemek leírása, SPACE-re vissza a főmenübe 
-	; ***********  Defining procedure : Jelmagyarazat_Kepernyo
+	; ***********  Defining procedure : Szov_Ikon
 	;    Procedure type : User-defined procedure
-localVariable_Jelmagyarazat_Kepernyo_x:	db	0
-localVariable_Jelmagyarazat_Kepernyo_y:	db	0
-localVariable_Jelmagyarazat_Kepernyo_varPrefixed_c:	db	0
-Jelmagyarazat_Kepernyo_block6669:
-Jelmagyarazat_Kepernyo:
-	ld a, $0
-	ld [GE_Pattern], a
-	call GE_ClearScreen
+localVariable_Szov_Ikon_varPrefixed_i:	db	0
+localVariable_Szov_Ikon_x:	db	0
+localVariable_Szov_Ikon_y:	db	0
+Szov_Ikon_block3085:
+Szov_Ikon:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $5
+	jp nz,Szov_Ikon_eblock3088
+Szov_Ikon_ctb3087: ;Main true block ;keep :
+	; Storing to array  
+	; RHS is pure numeric optimisation
+	ld a,[localVariable_Szov_Ikon_x]
+	sub  $1
+	ld [Keret+$f],a
+	; Storing to array  
+	ld a,[localVariable_Szov_Ikon_y]
+	ld [Keret+$10],a
+	ld hl,Keret
+	ld [GE_Sprite_this],hl
+	call GE_Sprite_SetPosition
+	ld hl,Keret
+	ld [GE_Sprite_this],hl
+	call GE_Sprite_SaveBackground
+	ld hl,Keret
+	ld [GE_Sprite_this],hl
+	call GE_Sprite_Draw
+	jp Szov_Ikon_edblock3089
+Szov_Ikon_eblock3088:
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -11257,16 +11354,12 @@ Jelmagyarazat_Kepernyo:
 	add hl,de
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
-	ld [localVariable_Ikon_Kep_x], a
-	ld a, $a
-	ld [localVariable_Ikon_Kep_y], a
-	; generic assign 
-	; Variable is 16-bit
-	ld hl,[Ikon_D]
-	; Loading pointer
-	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
-	call Ikon_Kep
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $1
+	jr nz,Szov_Ikon_edblock3139
+Szov_Ikon_ctb3137: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -11275,16 +11368,28 @@ Jelmagyarazat_Kepernyo:
 	add hl,de
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
-	ld [localVariable_Ikon_Kep_x], a
-	ld a, $15
-	ld [localVariable_Ikon_Kep_y], a
+Szov_Ikon_edblock3139:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $2
+	jr nz,Szov_Ikon_edblock3144
+Szov_Ikon_ctb3142: ;Main true block ;keep :
 	; generic assign 
+	; Generic 16-bit binop
+	ld de,$03
 	; Variable is 16-bit
-	ld hl,[Ikon_D]
+	ld hl,Talaj2_Data
+	add hl,de
 	; Loading pointer
-	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
-	call Ikon_Kep
+	ld [Ikon_D],hl
+Szov_Ikon_edblock3144:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $3
+	jr nz,Szov_Ikon_edblock3149
+Szov_Ikon_ctb3147: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -11293,16 +11398,13 @@ Jelmagyarazat_Kepernyo:
 	add hl,de
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
-	ld [localVariable_Ikon_Kep_x], a
-	ld a, $2a
-	ld [localVariable_Ikon_Kep_y], a
-	; generic assign 
-	; Variable is 16-bit
-	ld hl,[Ikon_D]
-	; Loading pointer
-	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
-	call Ikon_Kep
+Szov_Ikon_edblock3149:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $4
+	jr nz,Szov_Ikon_edblock3154
+Szov_Ikon_ctb3152: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -11311,16 +11413,13 @@ Jelmagyarazat_Kepernyo:
 	add hl,de
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
-	ld [localVariable_Ikon_Kep_x], a
-	ld a, $3f
-	ld [localVariable_Ikon_Kep_y], a
-	; generic assign 
-	; Variable is 16-bit
-	ld hl,[Ikon_D]
-	; Loading pointer
-	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
-	call Ikon_Kep
+Szov_Ikon_edblock3154:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $6
+	jr nz,Szov_Ikon_edblock3159
+Szov_Ikon_ctb3157: ;Main true block ;keep :
 	; generic assign 
 	ld de,$4
 	ld hl,Enemy_FazPtr_Tab
@@ -11333,16 +11432,13 @@ Jelmagyarazat_Kepernyo:
 	ld l,a
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
-	ld [localVariable_Ikon_Kep_x], a
-	ld a, $69
-	ld [localVariable_Ikon_Kep_y], a
-	; generic assign 
-	; Variable is 16-bit
-	ld hl,[Ikon_D]
-	; Loading pointer
-	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
-	call Ikon_Kep
+Szov_Ikon_edblock3159:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $7
+	jr nz,Szov_Ikon_edblock3164
+Szov_Ikon_ctb3162: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	ld de,$03
@@ -11351,9 +11447,27 @@ Jelmagyarazat_Kepernyo:
 	add hl,de
 	; Loading pointer
 	ld [Ikon_D],hl
-	ld a, $2
+Szov_Ikon_edblock3164:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Ikon_varPrefixed_i]
+	cp $8
+	jr nz,Szov_Ikon_edblock3169
+Szov_Ikon_ctb3167: ;Main true block ;keep :
+	; generic assign 
+	; Generic 16-bit binop
+	ld de,$c3
+	; Variable is 16-bit
+	ld hl,Akna_Data
+	add hl,de
+	; Loading pointer
+	ld [Ikon_D],hl
+Szov_Ikon_edblock3169:
+	; generic assign 
+	ld a,[localVariable_Szov_Ikon_x]
 	ld [localVariable_Ikon_Kep_x], a
-	ld a, $88
+	; generic assign 
+	ld a,[localVariable_Szov_Ikon_y]
 	ld [localVariable_Ikon_Kep_y], a
 	; generic assign 
 	; Variable is 16-bit
@@ -11361,43 +11475,73 @@ Jelmagyarazat_Kepernyo:
 	; Loading pointer
 	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
 	call Ikon_Kep
-	; Storing to array  
-	ld a,$1
-	ld [Keret+$f],a
-	; Storing to array  
-	ld a,$54
-	ld [Keret+$10],a
-	ld hl,Keret
-	ld [GE_Sprite_this],hl
-	call GE_Sprite_SetPosition
-	ld hl,Keret
-	ld [GE_Sprite_this],hl
-	call GE_Sprite_SaveBackground
-	ld hl,Keret
-	ld [GE_Sprite_this],hl
-	call GE_Sprite_Draw
-	; a szovegek a SZOVEG.BIN-bol ($FA00): x, y, szoveg, 0 ... 255 
-	ld hl,$fa00
-	ld [Szov_P],hl
+Szov_Ikon_edblock3089:
+	ret
+end_procedure_Szov_Ikon:
+	; Szöveg-rekordok kiírása a Szov_P-től (x, y, szöveg, 0 ... ; 253, ikon, x, y = ikon) a 254 (oldal vége) vagy 255 (vége) jelig; a Szov_P a jelen marad 
+	; ***********  Defining procedure : Szov_Kiir
+	;    Procedure type : User-defined procedure
+localVariable_Szov_Kiir_x:	db	0
+localVariable_Szov_Kiir_y:	db	0
+localVariable_Szov_Kiir_varPrefixed_c:	db	0
+Szov_Kiir_block3171:
+Szov_Kiir:
 	; generic assign 
 	; Optimization : zp[0]
+	ld hl,[Szov_P]
 	ld a,[hl]
-	ld [localVariable_Jelmagyarazat_Kepernyo_x], a
-Jelmagyarazat_Kepernyo_while6670:
-Jelmagyarazat_Kepernyo_loopstart6674:
-	; Binary clause core: NOTEQUALS
+	ld [localVariable_Szov_Kiir_x], a
+Szov_Kiir_while3172:
+Szov_Kiir_loopstart3176:
+	; Binary clause core: LESS
 	; Compare with pure num / var optimization
-	ld a,[localVariable_Jelmagyarazat_Kepernyo_x]
-	cp $ff
-	jr z, Jelmagyarazat_Kepernyo_edblock6673
-Jelmagyarazat_Kepernyo_ctb6671: ;Main true block ;keep :
+	ld a,[localVariable_Szov_Kiir_x]
+	cp $fe
+	jp nc,Szov_Kiir_edblock3175
+Szov_Kiir_ctb3173: ;Main true block ;keep :
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szov_Kiir_x]
+	cp $fd
+	jp nz,Szov_Kiir_eblock3205
+Szov_Kiir_ctb3204: ;Main true block ;keep :
 	; generic assign 
 	ld de,$1
 	ld hl,[Szov_P]
 	add hl,de
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
-	ld [localVariable_Jelmagyarazat_Kepernyo_y], a
+	ld [localVariable_Szov_Ikon_varPrefixed_i], a
+	; generic assign 
+	ld de,$2
+	ld hl,[Szov_P]
+	add hl,de
+	; TYPETEST : BYTE  WriteType : NADA
+	ld a,[hl]
+	ld [localVariable_Szov_Ikon_x], a
+	; generic assign 
+	ld de,$3
+	ld hl,[Szov_P]
+	add hl,de
+	; TYPETEST : BYTE  WriteType : NADA
+	ld a,[hl]
+	ld [localVariable_Szov_Ikon_y], a
+	call Szov_Ikon
+	; ;generic pointer/integer P:=P+(expr) add expression
+	; RHS is pure 
+	ld de,$04
+	ld hl,[Szov_P]
+	add  hl,de
+	ld [Szov_P],hl
+	jp Szov_Kiir_edblock3206
+Szov_Kiir_eblock3205:
+	; generic assign 
+	ld de,$1
+	ld hl,[Szov_P]
+	add hl,de
+	; TYPETEST : BYTE  WriteType : NADA
+	ld a,[hl]
+	ld [localVariable_Szov_Kiir_y], a
 	; ;generic pointer/integer P:=P+(expr) add expression
 	; RHS is pure 
 	ld de,$02
@@ -11405,10 +11549,10 @@ Jelmagyarazat_Kepernyo_ctb6671: ;Main true block ;keep :
 	add  hl,de
 	ld [Szov_P],hl
 	; generic assign 
-	ld a,[localVariable_Jelmagyarazat_Kepernyo_x]
+	ld a,[localVariable_Szov_Kiir_x]
 	ld [Ir_X], a
 	; generic assign 
-	ld a,[localVariable_Jelmagyarazat_Kepernyo_y]
+	ld a,[localVariable_Szov_Kiir_y]
 	ld [Ir_Y], a
 	; Loading pointer
 	ld hl,[Szov_P]
@@ -11418,15 +11562,15 @@ Jelmagyarazat_Kepernyo_ctb6671: ;Main true block ;keep :
 	; Optimization : zp[0]
 	ld hl,[Szov_P]
 	ld a,[hl]
-	ld [localVariable_Jelmagyarazat_Kepernyo_varPrefixed_c], a
-Jelmagyarazat_Kepernyo_while6686:
-Jelmagyarazat_Kepernyo_loopstart6690:
+	ld [localVariable_Szov_Kiir_varPrefixed_c], a
+Szov_Kiir_while3209:
+Szov_Kiir_loopstart3213:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
-	ld a,[localVariable_Jelmagyarazat_Kepernyo_varPrefixed_c]
+	ld a,[localVariable_Szov_Kiir_varPrefixed_c]
 	or a
-	jr z, Jelmagyarazat_Kepernyo_edblock6689
-Jelmagyarazat_Kepernyo_ctb6687: ;Main true block ;keep :
+	jr z, Szov_Kiir_edblock3212
+Szov_Kiir_ctb3210: ;Main true block ;keep :
 	; ;generic pointer/integer P:=P+(expr) add expression
 	; RHS is pure 
 	ld de,$01
@@ -11436,55 +11580,148 @@ Jelmagyarazat_Kepernyo_ctb6687: ;Main true block ;keep :
 	; generic assign 
 	; Optimization : zp[0]
 	ld a,[hl]
-	ld [localVariable_Jelmagyarazat_Kepernyo_varPrefixed_c], a
-	jr Jelmagyarazat_Kepernyo_while6686
-Jelmagyarazat_Kepernyo_edblock6689:
-Jelmagyarazat_Kepernyo_loopend6691:
+	ld [localVariable_Szov_Kiir_varPrefixed_c], a
+	jr Szov_Kiir_while3209
+Szov_Kiir_edblock3212:
+Szov_Kiir_loopend3214:
 	; ;generic pointer/integer P:=P+(expr) add expression
 	; RHS is pure 
 	ld de,$01
 	ld hl,[Szov_P]
 	add  hl,de
 	ld [Szov_P],hl
+Szov_Kiir_edblock3206:
 	; generic assign 
 	; Optimization : zp[0]
+	ld hl,[Szov_P]
 	ld a,[hl]
-	ld [localVariable_Jelmagyarazat_Kepernyo_x], a
-	jr Jelmagyarazat_Kepernyo_while6670
-Jelmagyarazat_Kepernyo_edblock6673:
-Jelmagyarazat_Kepernyo_loopend6675:
+	ld [localVariable_Szov_Kiir_x], a
+	jp Szov_Kiir_while3172
+Szov_Kiir_edblock3175:
+Szov_Kiir_loopend3177:
+	ret
+end_procedure_Szov_Kiir:
+	; Tűz/SPACE új lenyomására vár (előbb az elengedésre, hogy a nyomva tartott gomb ne lapozzon tovább) 
+	; ***********  Defining procedure : Tuz_Var
+	;    Procedure type : User-defined procedure
+Tuz_Var:
 	ld a, $1
 	ld [Start_Wait], a
-Jelmagyarazat_Kepernyo_while6694:
-Jelmagyarazat_Kepernyo_loopstart6698:
+Tuz_Var_while3217:
+Tuz_Var_loopstart3221:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jr nz,Jelmagyarazat_Kepernyo_edblock6697
-Jelmagyarazat_Kepernyo_ctb6695: ;Main true block ;keep :
+	jr nz,Tuz_Var_edblock3220
+Tuz_Var_ctb3218: ;Main true block ;keep :
+	call GE_GetKeyboard
+	call GE_GetJoysticks
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	call Tuz
+	or a
+	jr nz,Tuz_Var_edblock3234
+Tuz_Var_ctb3232: ;Main true block ;keep :
+	ld a, $0
+	ld [Start_Wait], a
+Tuz_Var_edblock3234:
+	call GE_WaitForSync
+	jr Tuz_Var_while3217
+Tuz_Var_edblock3220:
+Tuz_Var_loopend3222:
+	ld a, $1
+	ld [Start_Wait], a
+Tuz_Var_while3236:
+Tuz_Var_loopstart3240:
+	; Binary clause core: EQUALS
+	; Compare with pure num / var optimization
+	ld a,[Start_Wait]
+	cp $1
+	jr nz,Tuz_Var_edblock3239
+Tuz_Var_ctb3237: ;Main true block ;keep :
 	call GE_GetKeyboard
 	call GE_GetJoysticks
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	call Tuz
 	cp $1
-	jr nz,Jelmagyarazat_Kepernyo_edblock6711
-Jelmagyarazat_Kepernyo_ctb6709: ;Main true block ;keep :
+	jr nz,Tuz_Var_edblock3253
+Tuz_Var_ctb3251: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-Jelmagyarazat_Kepernyo_edblock6711:
+Tuz_Var_edblock3253:
 	call GE_WaitForSync
-	jr Jelmagyarazat_Kepernyo_while6694
-Jelmagyarazat_Kepernyo_edblock6697:
-Jelmagyarazat_Kepernyo_loopend6699:
+	jr Tuz_Var_while3236
+Tuz_Var_edblock3239:
+Tuz_Var_loopend3241:
 	ret
-end_procedure_Jelmagyarazat_Kepernyo:
+end_procedure_Tuz_Var:
+	; JÁTÉKSZABÁLY (a főmenü 5. pontja; sztori, szabály, jelmagyarázat ikonokkal): a SZABALY.BIN az U2 $9000-on; a Pause_Buf-ba másolva, oldalanként kiírva, tűzre lapoz 
+	; ***********  Defining procedure : Szabaly_Kepernyo
+	;    Procedure type : User-defined procedure
+localVariable_Szabaly_Kepernyo_varPrefixed_c:	db	0
+Szabaly_Kepernyo_block3255:
+Szabaly_Kepernyo:
+	; generic assign 
+	ld hl,$9000
+	; Loading pointer
+	ld [Szab_Src],hl
+	ld a, $0
+	ld [localVariable_Szabaly_Kepernyo_varPrefixed_c], a
+Szabaly_Kepernyo_while3256:
+Szabaly_Kepernyo_loopstart3260:
+	; Binary clause core: NOTEQUALS
+	; Compare with pure num / var optimization
+	ld a,[localVariable_Szabaly_Kepernyo_varPrefixed_c]
+	cp $ff
+	jr z, Szabaly_Kepernyo_edblock3259
+Szabaly_Kepernyo_ctb3257: ;Main true block ;keep :
+				di
+				ld a,$B0
+				out ($2),a
+				ld hl,[Szab_Src]
+				ld de,$E700
+				ld bc,2048
+				ldir
+				ld a,$90
+				out ($2),a
+				ei
+			
+	ld hl,$e700
+	ld [Szov_P],hl
+	ld a, $0
+	ld [GE_Pattern], a
+	call GE_ClearScreen
+	call Szov_Kiir
+	; generic assign 
+	; Optimization : zp[0]
+	ld hl,[Szov_P]
+	ld a,[hl]
+	ld [localVariable_Szabaly_Kepernyo_varPrefixed_c], a
+	; ;generic pointer/integer P:=P+(expr) add expression
+	; RHS is pure 
+	ld de,$01
+	ld hl,[Szov_P]
+	add  hl,de
+	ld [Szov_P],hl
+				ld de,$1900
+				add hl,de
+				ld de,[Szab_Src]
+				add hl,de
+				ld [Szab_Src],hl
+			
+	call Tuz_Var
+	jr Szabaly_Kepernyo_while3256
+Szabaly_Kepernyo_edblock3259:
+Szabaly_Kepernyo_loopend3261:
+	ret
+end_procedure_Szabaly_Kepernyo:
 	; ***********  Defining procedure : Kep_Rajz
 	;    Procedure type : User-defined procedure
 localVariable_Kep_Rajz_x:	db	0
 localVariable_Kep_Rajz_y:	db	0
-Kep_Rajz_block6714:
+Kep_Rajz_block3264:
 Kep_Rajz:
 	; generic assign 
 	; Variable is 16-bit
@@ -11527,6 +11764,7 @@ Kep_Rajz:
 			ld a,[Kep_H]
 			ld b,a
 KepR_sor:
+			; kitolto sor: a TRSE a kod elhelyezkedesetol fuggoen osszeomlik, ez a sor eltolja
 			push bc
 			di
 			ld a,$B0
@@ -11618,7 +11856,7 @@ localVariable_Menu_Pumpa_varPrefixed_p:	dw	0
 localVariable_Menu_Pumpa_y:	db	0
 localVariable_Menu_Pumpa_sor:	db	0
 localVariable_Menu_Pumpa_faz:	db	0
-Menu_Pumpa_block6718:
+Menu_Pumpa_block3268:
 Menu_Pumpa:
 	; generic assign 
 	; Variable is 16-bit
@@ -11690,8 +11928,8 @@ Menu_Anim:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $4
-	jr c, Menu_Anim_edblock6725
-Menu_Anim_ctb6723: ;Main true block ;keep :
+	jr c, Menu_Anim_edblock3275
+Menu_Anim_ctb3273: ;Main true block ;keep :
 	ld a, $0
 	ld [Menu_Ido], a
 	; 'a:=a + const'  optimization 
@@ -11701,17 +11939,17 @@ Menu_Anim_ctb6723: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $8
-	jr c, Menu_Anim_edblock6743
-Menu_Anim_ctb6741: ;Main true block ;keep :
+	jr c, Menu_Anim_edblock3293
+Menu_Anim_ctb3291: ;Main true block ;keep :
 	ld a, $0
 	ld [Menu_Faz], a
-Menu_Anim_edblock6743:
+Menu_Anim_edblock3293:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu16]
 	cp $1
-	jr nz,Menu_Anim_edblock6749
-Menu_Anim_ctb6747: ;Main true block ;keep :
+	jr nz,Menu_Anim_edblock3298
+Menu_Anim_ctb3296: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Menu_Sor]
 	ld [localVariable_Menu_Pumpa_sor], a
@@ -11719,8 +11957,8 @@ Menu_Anim_ctb6747: ;Main true block ;keep :
 	ld a,[Menu_Faz]
 	ld [localVariable_Menu_Pumpa_faz], a
 	call Menu_Pumpa
-Menu_Anim_edblock6749:
-Menu_Anim_edblock6725:
+Menu_Anim_edblock3298:
+Menu_Anim_edblock3275:
 	ret
 end_procedure_Menu_Anim:
 	; LEVEL CODE: melyik betű van lenyomva (0..25 = A..Z, 255 = egyik sem) 
@@ -11729,20 +11967,20 @@ end_procedure_Menu_Anim:
 localVariable_Betu_Lenyomva_varPrefixed_i:	db	0
 localVariable_Betu_Lenyomva_varPrefixed_r:	db	0
 localVariable_Betu_Lenyomva_k:	dw	0
-Betu_Lenyomva_block6752:
+Betu_Lenyomva_block3300:
 Betu_Lenyomva:
 	ld a, $ff
 	ld [localVariable_Betu_Lenyomva_varPrefixed_r], a
 	ld a, $0
 	ld [localVariable_Betu_Lenyomva_varPrefixed_i], a
-Betu_Lenyomva_while6753:
-Betu_Lenyomva_loopstart6757:
+Betu_Lenyomva_while3301:
+Betu_Lenyomva_loopstart3305:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Betu_Lenyomva_varPrefixed_i]
 	cp $1a
-	jr nc,Betu_Lenyomva_edblock6756
-Betu_Lenyomva_ctb6754: ;Main true block ;keep :
+	jr nc,Betu_Lenyomva_edblock3304
+Betu_Lenyomva_ctb3302: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Betu_Lenyomva_varPrefixed_i]
 	ld e,a ; variable is 8-bit
@@ -11765,19 +12003,19 @@ Betu_Lenyomva_ctb6754: ;Main true block ;keep :
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Betu_Lenyomva_edblock6770
-Betu_Lenyomva_ctb6768: ;Main true block ;keep :
+	jr z, Betu_Lenyomva_edblock3318
+Betu_Lenyomva_ctb3316: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Betu_Lenyomva_varPrefixed_i]
 	ld [localVariable_Betu_Lenyomva_varPrefixed_r], a
-Betu_Lenyomva_edblock6770:
+Betu_Lenyomva_edblock3318:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Betu_Lenyomva_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Betu_Lenyomva_varPrefixed_i], a
-	jr Betu_Lenyomva_while6753
-Betu_Lenyomva_edblock6756:
-Betu_Lenyomva_loopend6758:
+	jr Betu_Lenyomva_while3301
+Betu_Lenyomva_edblock3304:
+Betu_Lenyomva_loopend3306:
 	ld a,[localVariable_Betu_Lenyomva_varPrefixed_r]
 	ret
 	ret
@@ -11799,7 +12037,7 @@ localVariable_Kod_Bevitel_varPrefixed_a2:	db	0
 localVariable_Kod_Bevitel_varPrefixed_a3:	db	0
 localVariable_Kod_Bevitel_gomb:	db	0
 localVariable_Kod_Bevitel_kesz:	db	0
-Kod_Bevitel_block6773:
+Kod_Bevitel_block3320:
 Kod_Bevitel:
 	ld a, $9c
 	ld [localVariable_Kod_Bevitel_y], a
@@ -11810,7 +12048,7 @@ Kod_Bevitel:
 	ld a,[localVariable_Kod_Bevitel_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Kod_Bevitel_stringassignstr6775
+	ld hl,Kod_Bevitel_stringassignstr3322
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -11831,14 +12069,14 @@ Kod_Bevitel:
 	ld [localVariable_Kod_Bevitel_kesz], a
 	ld a, $1
 	ld [Start_Wait], a
-Kod_Bevitel_while6776:
-Kod_Bevitel_loopstart6780:
+Kod_Bevitel_while3323:
+Kod_Bevitel_loopstart3327:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jp nz,Kod_Bevitel_edblock6779
-Kod_Bevitel_ctb6777: ;Main true block ;keep :
+	jp nz,Kod_Bevitel_edblock3326
+Kod_Bevitel_ctb3324: ;Main true block ;keep :
 	call GE_WaitForSync
 	call GE_GetKeyboard
 	call Menu_Anim
@@ -11851,14 +12089,14 @@ Kod_Bevitel_ctb6777: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_n]
 	cp $5
-	jr nc,Kod_Bevitel_edblock8617
-Kod_Bevitel_ctb8615: ;Main true block ;keep :
+	jr nc,Kod_Bevitel_edblock3897
+Kod_Bevitel_ctb3895: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_villog]
 	cp $10
-	jr nz,Kod_Bevitel_edblock8635
-Kod_Bevitel_ctb8633: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock3902
+Kod_Bevitel_ctb3900: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_cx]
 	ld [GE_X], a
@@ -11872,13 +12110,13 @@ Kod_Bevitel_ctb8633: ;Main true block ;keep :
 	ld a, $f0
 	ld [GE_Pattern], a
 	call GE_FillRect
-Kod_Bevitel_edblock8635:
+Kod_Bevitel_edblock3902:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_villog]
 	cp $20
-	jr c, Kod_Bevitel_edblock8641
-Kod_Bevitel_ctb8639: ;Main true block ;keep :
+	jr c, Kod_Bevitel_edblock3907
+Kod_Bevitel_ctb3905: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_cx]
 	ld [GE_X], a
@@ -11894,8 +12132,8 @@ Kod_Bevitel_ctb8639: ;Main true block ;keep :
 	call GE_FillRect
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_villog], a
-Kod_Bevitel_edblock8641:
-Kod_Bevitel_edblock8617:
+Kod_Bevitel_edblock3907:
+Kod_Bevitel_edblock3897:
 	; betű: új lenyomásra hozzáírva 
 	; generic assign 
 	call Betu_Lenyomva
@@ -11903,23 +12141,23 @@ Kod_Bevitel_edblock8617:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	cp $ff
-	jp z, Kod_Bevitel_edblock8647
-Kod_Bevitel_ctb8645: ;Main true block ;keep :
+	jp z, Kod_Bevitel_edblock3912
+Kod_Bevitel_ctb3910: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[localVariable_Kod_Bevitel_elozo]
 	ld b,a
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_b]
 	cp b
-	jp z, Kod_Bevitel_edblock8695
-Kod_Bevitel_ctb8693: ;Main true block ;keep :
+	jp z, Kod_Bevitel_edblock3917
+Kod_Bevitel_ctb3915: ;Main true block ;keep :
 	; az 5. betű után azonnal ellenőriz (nincs ENTER) 
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_n]
 	cp $5
-	jp nc,Kod_Bevitel_edblock8719
-Kod_Bevitel_ctb8717: ;Main true block ;keep :
+	jp nc,Kod_Bevitel_edblock3922
+Kod_Bevitel_ctb3920: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_cx]
 	ld [GE_X], a
@@ -11980,15 +12218,15 @@ Kod_Bevitel_ctb8717: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_n]
 	cp $5
-	jr nz,Kod_Bevitel_edblock8731
-Kod_Bevitel_ctb8729: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock3927
+Kod_Bevitel_ctb3925: ;Main true block ;keep :
 	; a kurzor azonnal megjelenik 
 	ld a, $1
 	ld [localVariable_Kod_Bevitel_kesz], a
-Kod_Bevitel_edblock8731:
-Kod_Bevitel_edblock8719:
-Kod_Bevitel_edblock8695:
-Kod_Bevitel_edblock8647:
+Kod_Bevitel_edblock3927:
+Kod_Bevitel_edblock3922:
+Kod_Bevitel_edblock3917:
+Kod_Bevitel_edblock3912:
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_b]
 	ld [localVariable_Kod_Bevitel_elozo], a
@@ -12003,11 +12241,11 @@ Kod_Bevitel_edblock8647:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Kod_Bevitel_edblock8737
-Kod_Bevitel_ctb8735: ;Main true block ;keep :
+	jr z, Kod_Bevitel_edblock3932
+Kod_Bevitel_ctb3930: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Kod_Bevitel_egy], a
-Kod_Bevitel_edblock8737:
+Kod_Bevitel_edblock3932:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -12016,50 +12254,50 @@ Kod_Bevitel_edblock8737:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, Kod_Bevitel_edblock8743
-Kod_Bevitel_ctb8741: ;Main true block ;keep :
+	jr z, Kod_Bevitel_edblock3937
+Kod_Bevitel_ctb3935: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Kod_Bevitel_egy], a
-Kod_Bevitel_edblock8743:
+Kod_Bevitel_edblock3937:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_egy]
 	or a
-	jr nz,Kod_Bevitel_edblock8749
-Kod_Bevitel_ctb8747: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock3942
+Kod_Bevitel_ctb3940: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_gomb], a
-Kod_Bevitel_edblock8749:
+Kod_Bevitel_edblock3942:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_kesz]
 	cp $1
-	jr nz,Kod_Bevitel_edblock8755
-Kod_Bevitel_ctb8753: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock3947
+Kod_Bevitel_ctb3945: ;Main true block ;keep :
 	ld a, $3
 	ld [localVariable_Kod_Bevitel_egy], a
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_gomb], a
-Kod_Bevitel_edblock8755:
+Kod_Bevitel_edblock3947:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_gomb]
 	or a
-	jp nz,Kod_Bevitel_edblock8761
-Kod_Bevitel_ctb8759: ;Main true block ;keep :
+	jp nz,Kod_Bevitel_edblock3952
+Kod_Bevitel_ctb3950: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_egy]
 	cp $1
-	jp nz,Kod_Bevitel_edblock9607
-Kod_Bevitel_ctb9605: ;Main true block ;keep :
+	jp nz,Kod_Bevitel_edblock3957
+Kod_Bevitel_ctb3955: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_n]
 	or a
-	jp c, Kod_Bevitel_edblock9619
-	jp z, Kod_Bevitel_edblock9619
-Kod_Bevitel_ctb9617: ;Main true block ;keep :
+	jp c, Kod_Bevitel_edblock3962
+	jp z, Kod_Bevitel_edblock3962
+Kod_Bevitel_ctb3960: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_cx]
 	ld [GE_X], a
@@ -12122,53 +12360,53 @@ Kod_Bevitel_ctb9617: ;Main true block ;keep :
 	ld [localVariable_Kod_Bevitel_cx], a
 	ld a, $f
 	ld [localVariable_Kod_Bevitel_villog], a
-Kod_Bevitel_edblock9619:
-Kod_Bevitel_edblock9607:
+Kod_Bevitel_edblock3962:
+Kod_Bevitel_edblock3957:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_egy]
 	cp $2
-	jr nz,Kod_Bevitel_edblock9625
-Kod_Bevitel_ctb9623: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock3967
+Kod_Bevitel_ctb3965: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-Kod_Bevitel_edblock9625:
+Kod_Bevitel_edblock3967:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_egy]
 	cp $3
-	jp nz,Kod_Bevitel_edblock9631
-Kod_Bevitel_ctb9629: ;Main true block ;keep :
+	jp nz,Kod_Bevitel_edblock3972
+Kod_Bevitel_ctb3970: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_n]
 	cp $5
-	jp nz,Kod_Bevitel_edblock10039
-Kod_Bevitel_ctb10037: ;Main true block ;keep :
+	jp nz,Kod_Bevitel_edblock3977
+Kod_Bevitel_ctb3975: ;Main true block ;keep :
 	; keresés: az egyjátékos, aztán a co-op pályák kódjai (Kod_Mod: 0 / 1) - versus pályának nincs kódja 
 	ld a, $ff
 	ld [Kod_Palya], a
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-Kod_Bevitel_while10240:
-Kod_Bevitel_loopstart10244:
+Kod_Bevitel_while3979:
+Kod_Bevitel_loopstart3983:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	cp $b
-	jp nc,Kod_Bevitel_edblock10243
-Kod_Bevitel_ctb10241: ;Main true block ;keep :
+	jp nc,Kod_Bevitel_edblock3982
+Kod_Bevitel_ctb3980: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_varPrefixed_a1], a
 	ld [localVariable_Kod_Bevitel_j], a
-Kod_Bevitel_while10288:
-Kod_Bevitel_loopstart10292:
+Kod_Bevitel_while3986:
+Kod_Bevitel_loopstart3990:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_j]
 	cp $5
-	jr nc,Kod_Bevitel_edblock10291
-Kod_Bevitel_ctb10289: ;Main true block ;keep :
+	jr nc,Kod_Bevitel_edblock3989
+Kod_Bevitel_ctb3987: ;Main true block ;keep :
 	; generic assign 
 	; Swapping nodes
 	; Generic mul
@@ -12209,65 +12447,65 @@ Kod_Bevitel_ctb10289: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_a2]
 	cp b
-	jr z, Kod_Bevitel_edblock10307
-Kod_Bevitel_ctb10305: ;Main true block ;keep :
+	jr z, Kod_Bevitel_edblock3997
+Kod_Bevitel_ctb3995: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Kod_Bevitel_varPrefixed_a1], a
-Kod_Bevitel_edblock10307:
+Kod_Bevitel_edblock3997:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Kod_Bevitel_j]
 	add  a,$1
 	ld [localVariable_Kod_Bevitel_j], a
-	jr Kod_Bevitel_while10288
-Kod_Bevitel_edblock10291:
-Kod_Bevitel_loopend10293:
+	jr Kod_Bevitel_while3986
+Kod_Bevitel_edblock3989:
+Kod_Bevitel_loopend3991:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_a1]
 	or a
-	jr nz,Kod_Bevitel_edblock10313
-Kod_Bevitel_ctb10311: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4002
+Kod_Bevitel_ctb4000: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr nz,Kod_Bevitel_edblock10325
-Kod_Bevitel_ctb10323: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4007
+Kod_Bevitel_ctb4005: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	ld [Kod_Palya], a
 	ld a, $0
 	ld [Kod_Mod], a
-Kod_Bevitel_edblock10325:
-Kod_Bevitel_edblock10313:
+Kod_Bevitel_edblock4007:
+Kod_Bevitel_edblock4002:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-	jp Kod_Bevitel_while10240
-Kod_Bevitel_edblock10243:
-Kod_Bevitel_loopend10245:
+	jp Kod_Bevitel_while3979
+Kod_Bevitel_edblock3982:
+Kod_Bevitel_loopend3984:
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-Kod_Bevitel_while10328:
-Kod_Bevitel_loopstart10332:
+Kod_Bevitel_while4009:
+Kod_Bevitel_loopstart4013:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	cp $b
-	jp nc,Kod_Bevitel_edblock10331
-Kod_Bevitel_ctb10329: ;Main true block ;keep :
+	jp nc,Kod_Bevitel_edblock4012
+Kod_Bevitel_ctb4010: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_varPrefixed_a1], a
 	ld [localVariable_Kod_Bevitel_j], a
-Kod_Bevitel_while10376:
-Kod_Bevitel_loopstart10380:
+Kod_Bevitel_while4016:
+Kod_Bevitel_loopstart4020:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_j]
 	cp $5
-	jr nc,Kod_Bevitel_edblock10379
-Kod_Bevitel_ctb10377: ;Main true block ;keep :
+	jr nc,Kod_Bevitel_edblock4019
+Kod_Bevitel_ctb4017: ;Main true block ;keep :
 	; generic assign 
 	; Swapping nodes
 	; Generic mul
@@ -12308,97 +12546,97 @@ Kod_Bevitel_ctb10377: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_a2]
 	cp b
-	jr z, Kod_Bevitel_edblock10395
-Kod_Bevitel_ctb10393: ;Main true block ;keep :
+	jr z, Kod_Bevitel_edblock4027
+Kod_Bevitel_ctb4025: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Kod_Bevitel_varPrefixed_a1], a
-Kod_Bevitel_edblock10395:
+Kod_Bevitel_edblock4027:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Kod_Bevitel_j]
 	add  a,$1
 	ld [localVariable_Kod_Bevitel_j], a
-	jr Kod_Bevitel_while10376
-Kod_Bevitel_edblock10379:
-Kod_Bevitel_loopend10381:
+	jr Kod_Bevitel_while4016
+Kod_Bevitel_edblock4019:
+Kod_Bevitel_loopend4021:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_a1]
 	or a
-	jr nz,Kod_Bevitel_edblock10401
-Kod_Bevitel_ctb10399: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4032
+Kod_Bevitel_ctb4030: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr nz,Kod_Bevitel_edblock10413
-Kod_Bevitel_ctb10411: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4037
+Kod_Bevitel_ctb4035: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	ld [Kod_Palya], a
 	ld a, $1
 	ld [Kod_Mod], a
-Kod_Bevitel_edblock10413:
-Kod_Bevitel_edblock10401:
+Kod_Bevitel_edblock4037:
+Kod_Bevitel_edblock4032:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-	jp Kod_Bevitel_while10328
-Kod_Bevitel_edblock10331:
-Kod_Bevitel_loopend10333:
+	jp Kod_Bevitel_while4009
+Kod_Bevitel_edblock4012:
+Kod_Bevitel_loopend4014:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr nz,Kod_Bevitel_edblock10419
-Kod_Bevitel_ctb10417: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4042
+Kod_Bevitel_ctb4040: ;Main true block ;keep :
 	ld a, $b0
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Kod_Bevitel_stringassignstr10431
+	ld hl,Kod_Bevitel_stringassignstr4045
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	; rossz kód: ~1 mp, aztán vissza a menübe 
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-Kod_Bevitel_while10432:
-Kod_Bevitel_loopstart10436:
+Kod_Bevitel_while4046:
+Kod_Bevitel_loopstart4050:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	cp $32
-	jr nc,Kod_Bevitel_edblock10435
-Kod_Bevitel_ctb10433: ;Main true block ;keep :
+	jr nc,Kod_Bevitel_edblock4049
+Kod_Bevitel_ctb4047: ;Main true block ;keep :
 	call GE_WaitForSync
 	call Menu_Anim
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Kod_Bevitel_varPrefixed_i]
 	add  a,$1
 	ld [localVariable_Kod_Bevitel_varPrefixed_i], a
-	jr Kod_Bevitel_while10432
-Kod_Bevitel_edblock10435:
-Kod_Bevitel_loopend10437:
-Kod_Bevitel_edblock10419:
+	jr Kod_Bevitel_while4046
+Kod_Bevitel_edblock4049:
+Kod_Bevitel_loopend4051:
+Kod_Bevitel_edblock4042:
 	ld a, $0
 	ld [Start_Wait], a
-Kod_Bevitel_edblock10039:
-Kod_Bevitel_edblock9631:
+Kod_Bevitel_edblock3977:
+Kod_Bevitel_edblock3972:
 	ld a, $1
 	ld [localVariable_Kod_Bevitel_gomb], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Kod_Bevitel_egy]
 	or a
-	jr nz,Kod_Bevitel_edblock10443
-Kod_Bevitel_ctb10441: ;Main true block ;keep :
+	jr nz,Kod_Bevitel_edblock4056
+Kod_Bevitel_ctb4054: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Kod_Bevitel_gomb], a
-Kod_Bevitel_edblock10443:
-Kod_Bevitel_edblock8761:
-	jp Kod_Bevitel_while6776
-Kod_Bevitel_edblock6779:
-Kod_Bevitel_loopend6781:
+Kod_Bevitel_edblock4056:
+Kod_Bevitel_edblock3952:
+	jp Kod_Bevitel_while3323
+Kod_Bevitel_edblock3326:
+Kod_Bevitel_loopend3328:
 	ret
 end_procedure_Kod_Bevitel:
 	; ***********  Defining procedure : Ed_Add
@@ -12407,7 +12645,7 @@ localVariable_Ed_Add_t:	db	0
 localVariable_Ed_Add_x:	db	0
 localVariable_Ed_Add_y:	db	0
 localVariable_Ed_Add_w:	db	0
-Ed_Add_block10446:
+Ed_Add_block4058:
 Ed_Add:
 	; Storing to array  
 	ld a,[Ed_Db]
@@ -12447,7 +12685,7 @@ end_procedure_Ed_Add:
 	; ***********  Defining procedure : VS_Sor
 	;    Procedure type : User-defined procedure
 localVariable_VS_Sor_ar:	dw	0
-VS_Sor_block10447:
+VS_Sor_block4059:
 VS_Sor:
 	; generic assign 
 	ld a,[Ed_Ujt]
@@ -12510,7 +12748,7 @@ localVariable_VS_Ikonok_vi:	db	0
 localVariable_VS_Ikonok_me:	db	0
 localVariable_VS_Ikonok_ar:	dw	0
 localVariable_VS_Ikonok_varPrefixed_p:	db	0
-VS_Ikonok_block10448:
+VS_Ikonok_block4060:
 VS_Ikonok:
 	ld a, $0
 	ld [Ed_Db], a
@@ -12659,15 +12897,15 @@ VS_Ikonok:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp $1
-	jr nz,VS_Ikonok_edblock10452
-VS_Ikonok_ctb10450: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4064
+VS_Ikonok_ctb4062: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_VS_Ikonok_ar]
 	; Loading pointer
 	ld [localVariable_VS_Sor_ar],hl
 	call VS_Sor
-VS_Ikonok_edblock10452:
+VS_Ikonok_edblock4064:
 	; generic assign 
 	ld a,[localVariable_VS_Ikonok_varPrefixed_p]
 	ld e,a ; variable is 8-bit
@@ -12702,15 +12940,15 @@ VS_Ikonok_edblock10452:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp $1
-	jr nz,VS_Ikonok_edblock10458
-VS_Ikonok_ctb10456: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4070
+VS_Ikonok_ctb4068: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_VS_Ikonok_ar]
 	; Loading pointer
 	ld [localVariable_VS_Sor_ar],hl
 	call VS_Sor
-VS_Ikonok_edblock10458:
+VS_Ikonok_edblock4070:
 	; generic assign 
 	ld a,[localVariable_VS_Ikonok_varPrefixed_p]
 	ld e,a ; variable is 8-bit
@@ -12745,15 +12983,15 @@ VS_Ikonok_edblock10458:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp $1
-	jr nz,VS_Ikonok_edblock10464
-VS_Ikonok_ctb10462: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4076
+VS_Ikonok_ctb4074: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_VS_Ikonok_ar]
 	; Loading pointer
 	ld [localVariable_VS_Sor_ar],hl
 	call VS_Sor
-VS_Ikonok_edblock10464:
+VS_Ikonok_edblock4076:
 	; generic assign 
 	ld a,[localVariable_VS_Ikonok_varPrefixed_p]
 	ld e,a ; variable is 8-bit
@@ -12792,15 +13030,15 @@ VS_Ikonok_edblock10464:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp $1
-	jr nz,VS_Ikonok_edblock10470
-VS_Ikonok_ctb10468: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4082
+VS_Ikonok_ctb4080: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[localVariable_VS_Ikonok_ar]
 	; Loading pointer
 	ld [localVariable_VS_Sor_ar],hl
 	call VS_Sor
-VS_Ikonok_edblock10470:
+VS_Ikonok_edblock4082:
 	ld a, $6
 	ld [localVariable_Ed_Add_t], a
 	ld a, $30
@@ -12816,12 +13054,12 @@ VS_Ikonok_edblock10470:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	cp $9c
-	jr c, VS_Ikonok_edblock10476
-	jr z, VS_Ikonok_edblock10476
-VS_Ikonok_ctb10474: ;Main true block ;keep :
+	jr c, VS_Ikonok_edblock4088
+	jr z, VS_Ikonok_edblock4088
+VS_Ikonok_ctb4086: ;Main true block ;keep :
 	ld a, $9c
 	ld [localVariable_VS_Ikonok_y], a
-VS_Ikonok_edblock10476:
+VS_Ikonok_edblock4088:
 	; generic assign 
 	ld a,[localVariable_VS_Ikonok_y]
 	ld b,a
@@ -12862,8 +13100,8 @@ VS_Ikonok_edblock10476:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	cp $1
-	jr nz,VS_Ikonok_edblock10482
-VS_Ikonok_ctb10480: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4094
+VS_Ikonok_ctb4092: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Ikonok_varPrefixed_p]
@@ -12874,12 +13112,12 @@ VS_Ikonok_ctb10480: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp $1
-	jr nz,VS_Ikonok_edblock10494
-VS_Ikonok_ctb10492: ;Main true block ;keep :
+	jr nz,VS_Ikonok_edblock4106
+VS_Ikonok_ctb4104: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Ikonok_vi], a
-VS_Ikonok_edblock10494:
-VS_Ikonok_edblock10482:
+VS_Ikonok_edblock4106:
+VS_Ikonok_edblock4094:
 	; generic assign 
 	ld de,$4
 	ld hl,Enemy_FazPtr_Tab
@@ -12896,8 +13134,8 @@ VS_Ikonok_edblock10482:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Ikonok_vi]
 	cp $1
-	jr nz,VS_Ikonok_eblock10499
-VS_Ikonok_ctb10498: ;Main true block ;keep :
+	jr nz,VS_Ikonok_eblock4110
+VS_Ikonok_ctb4109: ;Main true block ;keep :
 	ld a, $8
 	ld [localVariable_Ikon_Kep_x], a
 	ld a, $ac
@@ -12908,8 +13146,8 @@ VS_Ikonok_ctb10498: ;Main true block ;keep :
 	; Loading pointer
 	ld [localVariable_Ikon_Kep_varPrefixed_d],hl
 	call Ikon_Kep
-	jr VS_Ikonok_edblock10500
-VS_Ikonok_eblock10499:
+	jr VS_Ikonok_edblock4111
+VS_Ikonok_eblock4110:
 	ld a, $8
 	ld [GE_X], a
 	ld a, $ac
@@ -12921,15 +13159,15 @@ VS_Ikonok_eblock10499:
 	ld a, $0
 	ld [GE_Pattern], a
 	call GE_FillRect
-VS_Ikonok_edblock10500:
+VS_Ikonok_edblock4111:
 	ld a, $c
 	ld [localVariable_VS_Ikonok_x], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Ikonok_me]
 	cp $1
-	jr nz,VS_Ikonok_eblock10507
-VS_Ikonok_ctb10506: ;Main true block ;keep :
+	jr nz,VS_Ikonok_eblock4118
+VS_Ikonok_ctb4117: ;Main true block ;keep :
 	; Storing to array  
 	ld a,[localVariable_VS_Ikonok_x]
 	ld [Meteor+$f],a
@@ -12946,8 +13184,8 @@ VS_Ikonok_ctb10506: ;Main true block ;keep :
 	ld hl,Meteor
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_Draw
-	jr VS_Ikonok_edblock10508
-VS_Ikonok_eblock10507:
+	jr VS_Ikonok_edblock4119
+VS_Ikonok_eblock4118:
 	ld a, $c
 	ld [GE_X], a
 	ld a, $a8
@@ -12959,7 +13197,7 @@ VS_Ikonok_eblock10507:
 	ld a, $0
 	ld [GE_Pattern], a
 	call GE_FillRect
-VS_Ikonok_edblock10508:
+VS_Ikonok_edblock4119:
 	ret
 end_procedure_VS_Ikonok:
 	; VERSUS szintvalaszto: a p. versus palya kiskepe jobb oldalt (30x18 mezo, mezonkent 1 byte x 4 sor, szikla fekete, fekete keret) + palya szama, cel, adatok 
@@ -12967,7 +13205,7 @@ end_procedure_VS_Ikonok:
 	;    Procedure type : User-defined procedure
 localVariable_VS_Elonezet_ti:	dw	0
 localVariable_VS_Elonezet_varPrefixed_p:	db	0
-VS_Elonezet_block10513:
+VS_Elonezet_block4124:
 VS_Elonezet:
 	; generic assign 
 	; Variable is 16-bit
@@ -13092,7 +13330,7 @@ end_procedure_VS_Elonezet:
 localVariable_Ed_Ertek_varPrefixed_p:	db	0
 localVariable_Ed_Ertek_t:	db	0
 localVariable_Ed_Ertek_irany:	db	0
-Ed_Ertek_block10515:
+Ed_Ertek_block4126:
 Ed_Ertek:
 	; generic assign 
 	ld a,[localVariable_Ed_Ertek_varPrefixed_p]
@@ -13204,7 +13442,7 @@ localVariable_Ed_Jelol_x:	db	0
 localVariable_Ed_Jelol_y:	db	0
 localVariable_Ed_Jelol_w:	db	0
 localVariable_Ed_Jelol_varPrefixed_m:	db	0
-Ed_Jelol_block10516:
+Ed_Jelol_block4127:
 Ed_Jelol:
 	; generic assign 
 	ld a,[localVariable_Ed_Jelol_varPrefixed_m]
@@ -13308,12 +13546,12 @@ localVariable_VS_Szerk_varPrefixed_e:	db	0
 localVariable_VS_Szerk_ev:	db	0
 localVariable_VS_Szerk_t:	db	0
 localVariable_VS_Szerk_varPrefixed_p:	db	0
-VS_Szerk_block10519:
+VS_Szerk_block4130:
 VS_Szerk:
 	ld a, $d0
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Szerk_stringassignstr10521
+	ld hl,VS_Szerk_stringassignstr4132
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -13329,14 +13567,14 @@ VS_Szerk:
 	ld [localVariable_VS_Szerk_ev], a
 	ld a, $0
 	ld [localVariable_VS_Szerk_kesz], a
-VS_Szerk_while10522:
-VS_Szerk_loopstart10526:
+VS_Szerk_while4133:
+VS_Szerk_loopstart4137:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_kesz]
 	or a
-	jp nz,VS_Szerk_edblock10525
-VS_Szerk_ctb10523: ;Main true block ;keep :
+	jp nz,VS_Szerk_edblock4136
+VS_Szerk_ctb4134: ;Main true block ;keep :
 	call GE_WaitForSync
 	call GE_GetKeyboard
 	call GE_GetJoysticks
@@ -13350,11 +13588,11 @@ VS_Szerk_ctb10523: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Szerk_edblock10729
-VS_Szerk_ctb10727: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4309
+VS_Szerk_ctb4307: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Szerk_irany], a
-VS_Szerk_edblock10729:
+VS_Szerk_edblock4309:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -13363,11 +13601,11 @@ VS_Szerk_edblock10729:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Szerk_edblock10735
-VS_Szerk_ctb10733: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4314
+VS_Szerk_ctb4312: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_VS_Szerk_irany], a
-VS_Szerk_edblock10735:
+VS_Szerk_edblock4314:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -13376,11 +13614,11 @@ VS_Szerk_edblock10735:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Szerk_edblock10741
-VS_Szerk_ctb10739: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4319
+VS_Szerk_ctb4317: ;Main true block ;keep :
 	ld a, $3
 	ld [localVariable_VS_Szerk_irany], a
-VS_Szerk_edblock10741:
+VS_Szerk_edblock4319:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -13389,33 +13627,33 @@ VS_Szerk_edblock10741:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Szerk_edblock10747
-VS_Szerk_ctb10745: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4324
+VS_Szerk_ctb4322: ;Main true block ;keep :
 	ld a, $4
 	ld [localVariable_VS_Szerk_irany], a
-VS_Szerk_edblock10747:
+VS_Szerk_edblock4324:
 	ld a, $0
 	ld [localVariable_VS_Szerk_varPrefixed_e], a
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_irany]
 	or a
-	jr z, VS_Szerk_edblock10753
-VS_Szerk_ctb10751: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4329
+VS_Szerk_ctb4327: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[localVariable_VS_Szerk_elozo]
 	ld b,a
 	ld a,[localVariable_VS_Szerk_irany]
 	cp b
-	jr z, VS_Szerk_eblock10778
-VS_Szerk_ctb10777: ;Main true block ;keep :
+	jr z, VS_Szerk_eblock4333
+VS_Szerk_ctb4332: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Szerk_varPrefixed_e], a
 	ld a, $0
 	ld [localVariable_VS_Szerk_ism], a
-	jr VS_Szerk_edblock10779
-VS_Szerk_eblock10778:
+	jr VS_Szerk_edblock4334
+VS_Szerk_eblock4333:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_VS_Szerk_ism]
 	add  a,$1
@@ -13423,15 +13661,15 @@ VS_Szerk_eblock10778:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $10
-	jr c, VS_Szerk_edblock10793
-VS_Szerk_ctb10791: ;Main true block ;keep :
+	jr c, VS_Szerk_edblock4340
+VS_Szerk_ctb4338: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Szerk_varPrefixed_e], a
 	ld a, $c
 	ld [localVariable_VS_Szerk_ism], a
-VS_Szerk_edblock10793:
-VS_Szerk_edblock10779:
-VS_Szerk_edblock10753:
+VS_Szerk_edblock4340:
+VS_Szerk_edblock4334:
+VS_Szerk_edblock4329:
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_irany]
 	ld [localVariable_VS_Szerk_elozo], a
@@ -13439,35 +13677,35 @@ VS_Szerk_edblock10753:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_varPrefixed_e]
 	cp $1
-	jp nz,VS_Szerk_edblock10799
-VS_Szerk_ctb10797: ;Main true block ;keep :
+	jp nz,VS_Szerk_edblock4345
+VS_Szerk_ctb4343: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_irany]
 	cp $1
-	jr nz,VS_Szerk_edblock10853
-VS_Szerk_ctb10851: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4350
+VS_Szerk_ctb4348: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	or a
-	jr nz,VS_Szerk_edblock10865
-VS_Szerk_ctb10863: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4355
+VS_Szerk_ctb4353: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Ed_Db]
 	ld [localVariable_VS_Szerk_varPrefixed_m], a
-VS_Szerk_edblock10865:
+VS_Szerk_edblock4355:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	sub $1
 	ld [localVariable_VS_Szerk_varPrefixed_m], a
-VS_Szerk_edblock10853:
+VS_Szerk_edblock4350:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_irany]
 	cp $2
-	jr nz,VS_Szerk_edblock10871
-VS_Szerk_ctb10869: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4360
+VS_Szerk_ctb4358: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	add  a,$1
@@ -13478,12 +13716,12 @@ VS_Szerk_ctb10869: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	cp b
-	jr c, VS_Szerk_edblock10883
-VS_Szerk_ctb10881: ;Main true block ;keep :
+	jr c, VS_Szerk_edblock4365
+VS_Szerk_ctb4363: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_VS_Szerk_varPrefixed_m], a
-VS_Szerk_edblock10883:
-VS_Szerk_edblock10871:
+VS_Szerk_edblock4365:
+VS_Szerk_edblock4360:
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	ld e,a ; variable is 8-bit
@@ -13497,8 +13735,8 @@ VS_Szerk_edblock10871:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_irany]
 	cp $3
-	jr nz,VS_Szerk_edblock10889
-VS_Szerk_ctb10887: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4370
+VS_Szerk_ctb4368: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_varPrefixed_p]
 	ld [localVariable_Ed_Ertek_varPrefixed_p], a
@@ -13508,13 +13746,13 @@ VS_Szerk_ctb10887: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Ed_Ertek_irany], a
 	call Ed_Ertek
-VS_Szerk_edblock10889:
+VS_Szerk_edblock4370:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_irany]
 	cp $4
-	jr nz,VS_Szerk_edblock10895
-VS_Szerk_ctb10893: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4375
+VS_Szerk_ctb4373: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_varPrefixed_p]
 	ld [localVariable_Ed_Ertek_varPrefixed_p], a
@@ -13524,7 +13762,7 @@ VS_Szerk_ctb10893: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Ed_Ertek_irany], a
 	call Ed_Ertek
-VS_Szerk_edblock10895:
+VS_Szerk_edblock4375:
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_varPrefixed_p]
 	ld [localVariable_VS_Elonezet_varPrefixed_p], a
@@ -13533,7 +13771,7 @@ VS_Szerk_edblock10895:
 	ld a,[localVariable_VS_Szerk_varPrefixed_m]
 	ld [localVariable_Ed_Jelol_varPrefixed_m], a
 	call Ed_Jelol
-VS_Szerk_edblock10799:
+VS_Szerk_edblock4345:
 	ld a, $0
 	ld [localVariable_VS_Szerk_varPrefixed_e], a
 	; Binary clause core: NOTEQUALS
@@ -13544,37 +13782,37 @@ VS_Szerk_edblock10799:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, VS_Szerk_edblock10901
-VS_Szerk_ctb10899: ;Main true block ;keep :
+	jr z, VS_Szerk_edblock4380
+VS_Szerk_ctb4378: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Szerk_varPrefixed_e], a
-VS_Szerk_edblock10901:
+VS_Szerk_edblock4380:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_varPrefixed_e]
 	cp $1
-	jr nz,VS_Szerk_edblock10907
-VS_Szerk_ctb10905: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4385
+VS_Szerk_ctb4383: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Szerk_ev]
 	or a
-	jr nz,VS_Szerk_edblock10919
-VS_Szerk_ctb10917: ;Main true block ;keep :
+	jr nz,VS_Szerk_edblock4390
+VS_Szerk_ctb4388: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Szerk_kesz], a
-VS_Szerk_edblock10919:
-VS_Szerk_edblock10907:
+VS_Szerk_edblock4390:
+VS_Szerk_edblock4385:
 	; generic assign 
 	ld a,[localVariable_VS_Szerk_varPrefixed_e]
 	ld [localVariable_VS_Szerk_ev], a
-	jp VS_Szerk_while10522
-VS_Szerk_edblock10525:
-VS_Szerk_loopend10527:
+	jp VS_Szerk_while4133
+VS_Szerk_edblock4136:
+VS_Szerk_loopend4138:
 	ld a, $d0
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Szerk_stringassignstr10923
+	ld hl,VS_Szerk_stringassignstr4393
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -13582,7 +13820,7 @@ VS_Szerk_loopend10527:
 	ld a, $d0
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Szerk_stringassignstr10925
+	ld hl,VS_Szerk_stringassignstr4395
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -13602,7 +13840,7 @@ localVariable_VS_Valaszto_t:	db	0
 localVariable_VS_Valaszto_tv:	db	0
 localVariable_VS_Valaszto_varPrefixed_e:	db	0
 localVariable_VS_Valaszto_ev:	db	0
-VS_Valaszto_block10926:
+VS_Valaszto_block4396:
 VS_Valaszto:
 	ld a, $0
 	ld [GE_Pattern], a
@@ -13610,14 +13848,14 @@ VS_Valaszto:
 	ld a, $14
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10928
+	ld hl,VS_Valaszto_stringassignstr4398
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $c4
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10930
+	ld hl,VS_Valaszto_stringassignstr4400
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -13626,7 +13864,7 @@ VS_Valaszto:
 	ld a, $30
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10932
+	ld hl,VS_Valaszto_stringassignstr4402
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -13635,7 +13873,7 @@ VS_Valaszto:
 	ld a, $50
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10934
+	ld hl,VS_Valaszto_stringassignstr4404
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -13644,7 +13882,7 @@ VS_Valaszto:
 	ld a, $9e
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10936
+	ld hl,VS_Valaszto_stringassignstr4406
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -13653,7 +13891,7 @@ VS_Valaszto:
 	ld a, $9e
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10938
+	ld hl,VS_Valaszto_stringassignstr4408
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -13662,7 +13900,7 @@ VS_Valaszto:
 	ld a, $aa
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10940
+	ld hl,VS_Valaszto_stringassignstr4410
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -13691,21 +13929,21 @@ VS_Valaszto:
 	ld a, $d0
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10942
+	ld hl,VS_Valaszto_stringassignstr4412
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $dc
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10944
+	ld hl,VS_Valaszto_stringassignstr4414
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $e8
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,VS_Valaszto_stringassignstr10946
+	ld hl,VS_Valaszto_stringassignstr4416
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -13722,14 +13960,14 @@ VS_Valaszto:
 	ld [localVariable_VS_Valaszto_tv], a
 	ld [localVariable_VS_Valaszto_ev], a
 	ld [Start_Wait], a
-VS_Valaszto_while10947:
-VS_Valaszto_loopstart10951:
+VS_Valaszto_while4417:
+VS_Valaszto_loopstart4421:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jp nz,VS_Valaszto_edblock10950
-VS_Valaszto_ctb10948: ;Main true block ;keep :
+	jp nz,VS_Valaszto_edblock4420
+VS_Valaszto_ctb4418: ;Main true block ;keep :
 	call GE_WaitForSync
 	call GE_GetKeyboard
 	call GE_GetJoysticks
@@ -13746,11 +13984,11 @@ VS_Valaszto_ctb10948: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Valaszto_edblock11180
-VS_Valaszto_ctb11178: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4570
+VS_Valaszto_ctb4568: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Valaszto_irany], a
-VS_Valaszto_edblock11180:
+VS_Valaszto_edblock4570:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -13759,48 +13997,48 @@ VS_Valaszto_edblock11180:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, VS_Valaszto_edblock11186
-VS_Valaszto_ctb11184: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4575
+VS_Valaszto_ctb4573: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_VS_Valaszto_irany], a
-VS_Valaszto_edblock11186:
+VS_Valaszto_edblock4575:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_irany]
 	or a
-	jr z, VS_Valaszto_edblock11192
-VS_Valaszto_ctb11190: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4580
+VS_Valaszto_ctb4578: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[localVariable_VS_Valaszto_elozo]
 	ld b,a
 	ld a,[localVariable_VS_Valaszto_irany]
 	cp b
-	jr z, VS_Valaszto_edblock11276
-VS_Valaszto_ctb11274: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4585
+VS_Valaszto_ctb4583: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_irany]
 	cp $1
-	jr nz,VS_Valaszto_eblock11317
-VS_Valaszto_ctb11316: ;Main true block ;keep :
+	jr nz,VS_Valaszto_eblock4589
+VS_Valaszto_ctb4588: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	or a
-	jr nz,VS_Valaszto_eblock11338
-VS_Valaszto_ctb11337: ;Main true block ;keep :
+	jr nz,VS_Valaszto_eblock4594
+VS_Valaszto_ctb4593: ;Main true block ;keep :
 	ld a, $5
 	ld [localVariable_VS_Valaszto_varPrefixed_p], a
-	jr VS_Valaszto_edblock11339
-VS_Valaszto_eblock11338:
+	jr VS_Valaszto_edblock4595
+VS_Valaszto_eblock4594:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	sub $1
 	ld [localVariable_VS_Valaszto_varPrefixed_p], a
-VS_Valaszto_edblock11339:
-	jr VS_Valaszto_edblock11318
-VS_Valaszto_eblock11317:
+VS_Valaszto_edblock4595:
+	jr VS_Valaszto_edblock4590
+VS_Valaszto_eblock4589:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	add  a,$1
@@ -13808,18 +14046,18 @@ VS_Valaszto_eblock11317:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $6
-	jr c, VS_Valaszto_edblock11348
-VS_Valaszto_ctb11346: ;Main true block ;keep :
+	jr c, VS_Valaszto_edblock4602
+VS_Valaszto_ctb4600: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_VS_Valaszto_varPrefixed_p], a
-VS_Valaszto_edblock11348:
-VS_Valaszto_edblock11318:
+VS_Valaszto_edblock4602:
+VS_Valaszto_edblock4590:
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	ld [localVariable_VS_Elonezet_varPrefixed_p], a
 	call VS_Elonezet
-VS_Valaszto_edblock11276:
-VS_Valaszto_edblock11192:
+VS_Valaszto_edblock4585:
+VS_Valaszto_edblock4580:
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_irany]
 	ld [localVariable_VS_Valaszto_elozo], a
@@ -13829,21 +14067,21 @@ VS_Valaszto_edblock11192:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	cp $1
-	jr nz,VS_Valaszto_edblock11354
-VS_Valaszto_ctb11352: ;Main true block ;keep :
+	jr nz,VS_Valaszto_edblock4607
+VS_Valaszto_ctb4605: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_tv]
 	or a
-	jr nz,VS_Valaszto_edblock11366
-VS_Valaszto_ctb11364: ;Main true block ;keep :
+	jr nz,VS_Valaszto_edblock4612
+VS_Valaszto_ctb4610: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	ld [Kod_Palya], a
 	ld a, $0
 	ld [Start_Wait], a
-VS_Valaszto_edblock11366:
-VS_Valaszto_edblock11354:
+VS_Valaszto_edblock4612:
+VS_Valaszto_edblock4607:
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_t]
 	ld [localVariable_VS_Valaszto_tv], a
@@ -13855,11 +14093,11 @@ VS_Valaszto_edblock11354:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, VS_Valaszto_edblock11372
-VS_Valaszto_ctb11370: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4617
+VS_Valaszto_ctb4615: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-VS_Valaszto_edblock11372:
+VS_Valaszto_edblock4617:
 	ld a, $0
 	ld [localVariable_VS_Valaszto_varPrefixed_e], a
 	; Binary clause core: NOTEQUALS
@@ -13870,37 +14108,37 @@ VS_Valaszto_edblock11372:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, VS_Valaszto_edblock11378
-VS_Valaszto_ctb11376: ;Main true block ;keep :
+	jr z, VS_Valaszto_edblock4622
+VS_Valaszto_ctb4620: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_VS_Valaszto_varPrefixed_e], a
-VS_Valaszto_edblock11378:
+VS_Valaszto_edblock4622:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_varPrefixed_e]
 	cp $1
-	jr nz,VS_Valaszto_edblock11384
-VS_Valaszto_ctb11382: ;Main true block ;keep :
+	jr nz,VS_Valaszto_edblock4627
+VS_Valaszto_ctb4625: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_VS_Valaszto_ev]
 	or a
-	jr nz,VS_Valaszto_edblock11396
-VS_Valaszto_ctb11394: ;Main true block ;keep :
+	jr nz,VS_Valaszto_edblock4632
+VS_Valaszto_ctb4630: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_p]
 	ld [localVariable_VS_Szerk_varPrefixed_p], a
 	call VS_Szerk
 	ld a, $1
 	ld [localVariable_VS_Valaszto_varPrefixed_e], a
-VS_Valaszto_edblock11396:
-VS_Valaszto_edblock11384:
+VS_Valaszto_edblock4632:
+VS_Valaszto_edblock4627:
 	; generic assign 
 	ld a,[localVariable_VS_Valaszto_varPrefixed_e]
 	ld [localVariable_VS_Valaszto_ev], a
-	jp VS_Valaszto_while10947
-VS_Valaszto_edblock10950:
-VS_Valaszto_loopend10952:
+	jp VS_Valaszto_while4417
+VS_Valaszto_edblock4420:
+VS_Valaszto_loopend4422:
 	ret
 end_procedure_VS_Valaszto:
 	; FŐMENÜ / RND-beállítás: animált pumpa-mutató a sorok előtt; joystick (vagy kurzor) fel/le = sor választás (nyomva tartva ismétel), tűz/SPACE = a menüpont aktiválása. Sorok: 0 egy játékos, 1 co-op, 2 versus, 3 jelmagyarázat, 4 hiscore (még nincs), 5 LEVEL CODE (érvényes kódra azonnal indul a pálya). Közben pörög a véletlenszám-generátor (entrópia) 
@@ -13910,7 +14148,7 @@ localVariable_Start_Kepernyo_irany:	db	0
 localVariable_Start_Kepernyo_elozo:	db	0
 localVariable_Start_Kepernyo_ism:	db	0
 localVariable_Start_Kepernyo_t:	db	0
-Start_Kepernyo_block11399:
+Start_Kepernyo_block4634:
 Start_Kepernyo:
 	call Digi_Le
 	; ha még szólna egy digi hang (pl. tick), a digi mód le: különben a WaitForSync a 4 kHz-es hang-IT-re ébredne ("turbó" menü) 
@@ -13932,14 +14170,14 @@ Start_Kepernyo:
 	call Menu_Pumpa
 	ld a, $1
 	ld [Start_Wait], a
-Start_Kepernyo_while11400:
-Start_Kepernyo_loopstart11404:
+Start_Kepernyo_while4635:
+Start_Kepernyo_loopstart4639:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jp nz,Start_Kepernyo_edblock11403
-Start_Kepernyo_ctb11401: ;Main true block ;keep :
+	jp nz,Start_Kepernyo_edblock4638
+Start_Kepernyo_ctb4636: ;Main true block ;keep :
 	call GE_WaitForSync
 	call GE_GetKeyboard
 	call GE_GetJoysticks
@@ -13958,11 +14196,11 @@ Start_Kepernyo_ctb11401: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, Start_Kepernyo_edblock12015
-Start_Kepernyo_ctb12013: ;Main true block ;keep :
+	jr z, Start_Kepernyo_edblock4957
+Start_Kepernyo_ctb4955: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Start_Kepernyo_irany], a
-Start_Kepernyo_edblock12015:
+Start_Kepernyo_edblock4957:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -13971,33 +14209,33 @@ Start_Kepernyo_edblock12015:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, Start_Kepernyo_edblock12021
-Start_Kepernyo_ctb12019: ;Main true block ;keep :
+	jr z, Start_Kepernyo_edblock4962
+Start_Kepernyo_ctb4960: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Start_Kepernyo_irany], a
-Start_Kepernyo_edblock12021:
+Start_Kepernyo_edblock4962:
 	ld a, $0
 	ld [localVariable_Start_Kepernyo_t], a
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Start_Kepernyo_irany]
 	or a
-	jr z, Start_Kepernyo_edblock12027
-Start_Kepernyo_ctb12025: ;Main true block ;keep :
+	jr z, Start_Kepernyo_edblock4967
+Start_Kepernyo_ctb4965: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[localVariable_Start_Kepernyo_elozo]
 	ld b,a
 	ld a,[localVariable_Start_Kepernyo_irany]
 	cp b
-	jr z, Start_Kepernyo_eblock12052
-Start_Kepernyo_ctb12051: ;Main true block ;keep :
+	jr z, Start_Kepernyo_eblock4971
+Start_Kepernyo_ctb4970: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Start_Kepernyo_t], a
 	ld a, $0
 	ld [localVariable_Start_Kepernyo_ism], a
-	jr Start_Kepernyo_edblock12053
-Start_Kepernyo_eblock12052:
+	jr Start_Kepernyo_edblock4972
+Start_Kepernyo_eblock4971:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Start_Kepernyo_ism]
 	add  a,$1
@@ -14005,15 +14243,15 @@ Start_Kepernyo_eblock12052:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $e
-	jr c, Start_Kepernyo_edblock12067
-Start_Kepernyo_ctb12065: ;Main true block ;keep :
+	jr c, Start_Kepernyo_edblock4978
+Start_Kepernyo_ctb4976: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Start_Kepernyo_t], a
 	ld a, $8
 	ld [localVariable_Start_Kepernyo_ism], a
-Start_Kepernyo_edblock12067:
-Start_Kepernyo_edblock12053:
-Start_Kepernyo_edblock12027:
+Start_Kepernyo_edblock4978:
+Start_Kepernyo_edblock4972:
+Start_Kepernyo_edblock4967:
 	; generic assign 
 	ld a,[localVariable_Start_Kepernyo_irany]
 	ld [localVariable_Start_Kepernyo_elozo], a
@@ -14021,8 +14259,8 @@ Start_Kepernyo_edblock12027:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Start_Kepernyo_t]
 	cp $1
-	jp nz,Start_Kepernyo_edblock12073
-Start_Kepernyo_ctb12071: ;Main true block ;keep :
+	jp nz,Start_Kepernyo_edblock4983
+Start_Kepernyo_ctb4981: ;Main true block ;keep :
 	ld a, $6
 	ld [GE_X], a
 	; generic assign 
@@ -14053,42 +14291,42 @@ Start_Kepernyo_ctb12071: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Start_Kepernyo_irany]
 	cp $1
-	jr nz,Start_Kepernyo_eblock12120
-Start_Kepernyo_ctb12119: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_eblock4988
+Start_Kepernyo_ctb4987: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	or a
-	jr nz,Start_Kepernyo_eblock12143
-Start_Kepernyo_ctb12142: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_eblock4993
+Start_Kepernyo_ctb4992: ;Main true block ;keep :
 	; a pumpa le a regi sorbol 
 	ld a, $4
 	ld [Menu_Sor], a
-	jr Start_Kepernyo_edblock12144
-Start_Kepernyo_eblock12143:
+	jr Start_Kepernyo_edblock4994
+Start_Kepernyo_eblock4993:
 	; 'a:=a + const'  optimization 
 	ld a,[Menu_Sor]
 	sub $1
 	ld [Menu_Sor], a
-Start_Kepernyo_edblock12144:
-	jr Start_Kepernyo_edblock12121
-Start_Kepernyo_eblock12120:
+Start_Kepernyo_edblock4994:
+	jr Start_Kepernyo_edblock4989
+Start_Kepernyo_eblock4988:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	cp $4
-	jr nz,Start_Kepernyo_eblock12152
-Start_Kepernyo_ctb12151: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_eblock5000
+Start_Kepernyo_ctb4999: ;Main true block ;keep :
 	ld a, $0
 	ld [Menu_Sor], a
-	jr Start_Kepernyo_edblock12153
-Start_Kepernyo_eblock12152:
+	jr Start_Kepernyo_edblock5001
+Start_Kepernyo_eblock5000:
 	; 'a:=a + const'  optimization 
 	ld a,[Menu_Sor]
 	add  a,$1
 	ld [Menu_Sor], a
-Start_Kepernyo_edblock12153:
-Start_Kepernyo_edblock12121:
+Start_Kepernyo_edblock5001:
+Start_Kepernyo_edblock4989:
 	; generic assign 
 	ld a,[Menu_Sor]
 	ld [localVariable_Menu_Pumpa_sor], a
@@ -14096,7 +14334,7 @@ Start_Kepernyo_edblock12121:
 	ld a,[Menu_Faz]
 	ld [localVariable_Menu_Pumpa_faz], a
 	call Menu_Pumpa
-Start_Kepernyo_edblock12073:
+Start_Kepernyo_edblock4983:
 	; tűz/SPACE: új lenyomásra a menüpont aktiválása 
 	; generic assign 
 	call Tuz
@@ -14104,45 +14342,45 @@ Start_Kepernyo_edblock12073:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	cp $1
-	jp nz,Start_Kepernyo_edblock12161
-Start_Kepernyo_ctb12159: ;Main true block ;keep :
+	jp nz,Start_Kepernyo_edblock5007
+Start_Kepernyo_ctb5005: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Tuz1_Volt]
 	or a
-	jp nz,Start_Kepernyo_edblock12393
-Start_Kepernyo_ctb12391: ;Main true block ;keep :
+	jp nz,Start_Kepernyo_edblock5012
+Start_Kepernyo_ctb5010: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	or a
-	jr nz,Start_Kepernyo_edblock12509
-Start_Kepernyo_ctb12507: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5017
+Start_Kepernyo_ctb5015: ;Main true block ;keep :
 	ld a, $0
 	ld [Ket_Jatekos], a
 	ld [Coop], a
 	ld [Versus], a
 	ld [Start_Wait], a
-Start_Kepernyo_edblock12509:
+Start_Kepernyo_edblock5017:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	cp $1
-	jr nz,Start_Kepernyo_edblock12515
-Start_Kepernyo_ctb12513: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5022
+Start_Kepernyo_ctb5020: ;Main true block ;keep :
 	ld a, $1
 	ld [Ket_Jatekos], a
 	ld [Coop], a
 	ld a, $0
 	ld [Versus], a
 	ld [Start_Wait], a
-Start_Kepernyo_edblock12515:
+Start_Kepernyo_edblock5022:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	cp $2
-	jr nz,Start_Kepernyo_edblock12521
-Start_Kepernyo_ctb12519: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5027
+Start_Kepernyo_ctb5025: ;Main true block ;keep :
 	; versus: előbb a szintválasztó (kisképpel); ESC-re vissza a menübe 
 	call Mod4
 	call VS_Valaszto
@@ -14150,8 +14388,8 @@ Start_Kepernyo_ctb12519: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr z, Start_Kepernyo_eblock12534
-Start_Kepernyo_ctb12533: ;Main true block ;keep :
+	jr z, Start_Kepernyo_eblock5031
+Start_Kepernyo_ctb5030: ;Main true block ;keep :
 	ld a, $1
 	ld [Ket_Jatekos], a
 	ld a, $0
@@ -14160,8 +14398,8 @@ Start_Kepernyo_ctb12533: ;Main true block ;keep :
 	ld [Versus], a
 	ld a, $0
 	ld [Start_Wait], a
-	jr Start_Kepernyo_edblock12535
-Start_Kepernyo_eblock12534:
+	jr Start_Kepernyo_edblock5032
+Start_Kepernyo_eblock5031:
 	call Fomenu_Rajz
 	; generic assign 
 	ld a,[Menu_Sor]
@@ -14172,18 +14410,18 @@ Start_Kepernyo_eblock12534:
 	call Menu_Pumpa
 	ld a, $1
 	ld [Start_Wait], a
-Start_Kepernyo_edblock12535:
+Start_Kepernyo_edblock5032:
 	ld a, $1
 	ld [localVariable_Start_Kepernyo_t], a
-Start_Kepernyo_edblock12521:
+Start_Kepernyo_edblock5027:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	cp $4
-	jr nz,Start_Kepernyo_edblock12543
-Start_Kepernyo_ctb12541: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5038
+Start_Kepernyo_ctb5036: ;Main true block ;keep :
 	call Mod4
-	call Jelmagyarazat_Kepernyo
+	call Szabaly_Kepernyo
 	call Fomenu_Rajz
 	; generic assign 
 	ld a,[Menu_Sor]
@@ -14196,13 +14434,13 @@ Start_Kepernyo_ctb12541: ;Main true block ;keep :
 	ld [localVariable_Start_Kepernyo_t], a
 	; a visszalépő tűz se aktiváljon azonnal 
 	ld [Start_Wait], a
-Start_Kepernyo_edblock12543:
+Start_Kepernyo_edblock5038:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Menu_Sor]
 	cp $3
-	jr nz,Start_Kepernyo_edblock12549
-Start_Kepernyo_ctb12547: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5043
+Start_Kepernyo_ctb5041: ;Main true block ;keep :
 	; PALYAKOD: 4 szinu kepernyon (a betukeszlet 4 szinu) 
 	call Mod4
 	ld a, $14
@@ -14212,8 +14450,8 @@ Start_Kepernyo_ctb12547: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr z, Start_Kepernyo_eblock12586
-Start_Kepernyo_ctb12585: ;Main true block ;keep :
+	jr z, Start_Kepernyo_eblock5047
+Start_Kepernyo_ctb5046: ;Main true block ;keep :
 	ld a, $0
 	ld [Ket_Jatekos], a
 	; a Kod_Bevitel állította: Kod_Mod 0 = egy játékos, 1 = co-op, 2 = versus pálya 
@@ -14223,26 +14461,26 @@ Start_Kepernyo_ctb12585: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Kod_Mod]
 	cp $1
-	jr nz,Start_Kepernyo_edblock12606
-Start_Kepernyo_ctb12604: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5053
+Start_Kepernyo_ctb5051: ;Main true block ;keep :
 	ld a, $1
 	ld [Ket_Jatekos], a
 	ld [Coop], a
-Start_Kepernyo_edblock12606:
+Start_Kepernyo_edblock5053:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Kod_Mod]
 	cp $2
-	jr nz,Start_Kepernyo_edblock12612
-Start_Kepernyo_ctb12610: ;Main true block ;keep :
+	jr nz,Start_Kepernyo_edblock5058
+Start_Kepernyo_ctb5056: ;Main true block ;keep :
 	ld a, $1
 	ld [Ket_Jatekos], a
 	ld [Versus], a
-Start_Kepernyo_edblock12612:
+Start_Kepernyo_edblock5058:
 	ld a, $0
 	ld [Start_Wait], a
-	jr Start_Kepernyo_edblock12587
-Start_Kepernyo_eblock12586:
+	jr Start_Kepernyo_edblock5048
+Start_Kepernyo_eblock5047:
 	call Fomenu_Rajz
 	; generic assign 
 	ld a,[Menu_Sor]
@@ -14253,18 +14491,18 @@ Start_Kepernyo_eblock12586:
 	call Menu_Pumpa
 	ld a, $1
 	ld [Start_Wait], a
-Start_Kepernyo_edblock12587:
+Start_Kepernyo_edblock5048:
 	ld a, $1
 	ld [localVariable_Start_Kepernyo_t], a
-Start_Kepernyo_edblock12549:
-Start_Kepernyo_edblock12393:
-Start_Kepernyo_edblock12161:
+Start_Kepernyo_edblock5043:
+Start_Kepernyo_edblock5012:
+Start_Kepernyo_edblock5007:
 	; generic assign 
 	ld a,[localVariable_Start_Kepernyo_t]
 	ld [Tuz1_Volt], a
-	jp Start_Kepernyo_while11400
-Start_Kepernyo_edblock11403:
-Start_Kepernyo_loopend11405:
+	jp Start_Kepernyo_while4635
+Start_Kepernyo_edblock4638:
+Start_Kepernyo_loopend4640:
 	call Mod4
 	ret
 end_procedure_Start_Kepernyo:
@@ -14274,7 +14512,7 @@ end_procedure_Start_Kepernyo:
 localVariable_Fal_Mind_Kirak_gx:	db	0
 localVariable_Fal_Mind_Kirak_gy:	db	0
 localVariable_Fal_Mind_Kirak_mp:	dw	0
-Fal_Mind_Kirak_block12616:
+Fal_Mind_Kirak_block5061:
 Fal_Mind_Kirak:
 	; generic assign 
 	ld hl,$00
@@ -14282,10 +14520,10 @@ Fal_Mind_Kirak:
 	ld [localVariable_Fal_Mind_Kirak_mp],hl
 	ld a, $1
 	ld [localVariable_Fal_Mind_Kirak_gy], a
-Fal_Mind_Kirak_forloop12617:
+Fal_Mind_Kirak_forloop5062:
 	ld a, $1
 	ld [localVariable_Fal_Mind_Kirak_gx], a
-Fal_Mind_Kirak_forloop12639:
+Fal_Mind_Kirak_forloop5083:
 	; Binary clause core: EQUALS
 	; Compare two vars optimization
 	ld a,[FalMap]
@@ -14297,8 +14535,8 @@ Fal_Mind_Kirak_forloop12639:
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr nz,Fal_Mind_Kirak_edblock12653
-Fal_Mind_Kirak_ctb12651: ;Main true block ;keep :
+	jr nz,Fal_Mind_Kirak_edblock5090
+Fal_Mind_Kirak_ctb5088: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Fal_Mind_Kirak_gx]
 	ld [localVariable_Fal_Kirak_x], a
@@ -14306,7 +14544,7 @@ Fal_Mind_Kirak_ctb12651: ;Main true block ;keep :
 	ld a,[localVariable_Fal_Mind_Kirak_gy]
 	ld [localVariable_Fal_Kirak_y], a
 	call Fal_Kirak
-Fal_Mind_Kirak_edblock12653:
+Fal_Mind_Kirak_edblock5090:
 	; 16 bit BINOP
 	; RHS is pure 
 	ld de,$01
@@ -14314,20 +14552,20 @@ Fal_Mind_Kirak_edblock12653:
 	ld hl,[localVariable_Fal_Mind_Kirak_mp]
 	add  hl,de
 	ld [localVariable_Fal_Mind_Kirak_mp],hl
-Fal_Mind_Kirak_loopstart12640:
+Fal_Mind_Kirak_loopstart5084:
 	ld a,[localVariable_Fal_Mind_Kirak_gx]
 	add a,1
 	ld [localVariable_Fal_Mind_Kirak_gx],a
 	cp $1e+1
-	jr nz,Fal_Mind_Kirak_forloop12639
-Fal_Mind_Kirak_loopend12641:
-Fal_Mind_Kirak_loopstart12618:
+	jr nz,Fal_Mind_Kirak_forloop5083
+Fal_Mind_Kirak_loopend5085:
+Fal_Mind_Kirak_loopstart5063:
 	ld a,[localVariable_Fal_Mind_Kirak_gy]
 	add a,1
 	ld [localVariable_Fal_Mind_Kirak_gy],a
 	cp $12+1
-	jr nz,Fal_Mind_Kirak_forloop12617
-Fal_Mind_Kirak_loopend12619:
+	jr nz,Fal_Mind_Kirak_forloop5062
+Fal_Mind_Kirak_loopend5064:
 	ret
 end_procedure_Fal_Mind_Kirak:
 	; METEOR BECSAPÓDÁS - a ciklus végén (a meteor eltűnésekor) fut le 
@@ -14343,7 +14581,7 @@ localVariable_Meteor_Becsapodas_mx:	db	0
 localVariable_Meteor_Becsapodas_my:	db	0
 localVariable_Meteor_Becsapodas_rom:	db	0
 localVariable_Meteor_Becsapodas_mp:	dw	0
-Meteor_Becsapodas_block12656:
+Meteor_Becsapodas_block5092:
 Meteor_Becsapodas:
 	; generic assign 
 	ld de,$f
@@ -14389,14 +14627,14 @@ Meteor_Becsapodas:
 	ld [localVariable_Meteor_Becsapodas_gy0], a
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_ty], a
-Meteor_Becsapodas_while12657:
-Meteor_Becsapodas_loopstart12661:
+Meteor_Becsapodas_while5093:
+Meteor_Becsapodas_loopstart5097:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_ty]
 	cp $3
-	jp nc,Meteor_Becsapodas_edblock12660
-Meteor_Becsapodas_ctb12658: ;Main true block ;keep :
+	jp nc,Meteor_Becsapodas_edblock5096
+Meteor_Becsapodas_ctb5094: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Meteor_Becsapodas_ty]
 	ld b,a
@@ -14406,26 +14644,26 @@ Meteor_Becsapodas_ctb12658: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $1
-	jp c, Meteor_Becsapodas_edblock13278
-Meteor_Becsapodas_ctb13276: ;Main true block ;keep :
+	jp c, Meteor_Becsapodas_edblock5258
+Meteor_Becsapodas_ctb5256: ;Main true block ;keep :
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Meteor_Becsapodas_gy]
 	ld b,a
 	ld a,$12
 	cp b
-	jp c,Meteor_Becsapodas_edblock13586
-Meteor_Becsapodas_ctb13584: ;Main true block ;keep :
+	jp c,Meteor_Becsapodas_edblock5263
+Meteor_Becsapodas_ctb5261: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_tx], a
-Meteor_Becsapodas_while13737:
-Meteor_Becsapodas_loopstart13741:
+Meteor_Becsapodas_while5265:
+Meteor_Becsapodas_loopstart5269:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_tx]
 	cp $3
-	jp nc,Meteor_Becsapodas_edblock13740
-Meteor_Becsapodas_ctb13738: ;Main true block ;keep :
+	jp nc,Meteor_Becsapodas_edblock5268
+Meteor_Becsapodas_ctb5266: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Meteor_Becsapodas_gx0]
@@ -14439,16 +14677,16 @@ Meteor_Becsapodas_ctb13738: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $1
-	jp c, Meteor_Becsapodas_edblock13818
-Meteor_Becsapodas_ctb13816: ;Main true block ;keep :
+	jp c, Meteor_Becsapodas_edblock5275
+Meteor_Becsapodas_ctb5273: ;Main true block ;keep :
 	; Binary clause core: LESSEQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Meteor_Becsapodas_gx]
 	ld b,a
 	ld a,$1e
 	cp b
-	jp c,Meteor_Becsapodas_edblock13856
-Meteor_Becsapodas_ctb13854: ;Main true block ;keep :
+	jp c,Meteor_Becsapodas_edblock5280
+Meteor_Becsapodas_ctb5278: ;Main true block ;keep :
 	; generic assign 
 	; Generic 16-bit binop
 	; Swapping nodes
@@ -14504,18 +14742,18 @@ Meteor_Becsapodas_ctb13854: ;Main true block ;keep :
 	; TYPETEST : BYTE  WriteType : NADA
 	ld a,[hl]
 	cp b
-	jr z, Meteor_Becsapodas_edblock13876
-Meteor_Becsapodas_ctb13874: ;Main true block ;keep :
+	jr z, Meteor_Becsapodas_edblock5286
+Meteor_Becsapodas_ctb5284: ;Main true block ;keep :
 	; 1: ezen a pályán a meteor a sziklát (blokkolt mezőt) is rombolja 
 	ld a, $1
 	ld [localVariable_Meteor_Becsapodas_rom], a
-Meteor_Becsapodas_edblock13876:
+Meteor_Becsapodas_edblock5286:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_rom]
 	cp $1
-	jr nz,Meteor_Becsapodas_edblock13882
-Meteor_Becsapodas_ctb13880: ;Main true block ;keep :
+	jr nz,Meteor_Becsapodas_edblock5291
+Meteor_Becsapodas_ctb5289: ;Main true block ;keep :
 	; Storing to array  
 	; Variable is 16-bit
 	ld de,[localVariable_Meteor_Becsapodas_mp]
@@ -14530,31 +14768,31 @@ Meteor_Becsapodas_ctb13880: ;Main true block ;keep :
 	ld a,[localVariable_Meteor_Becsapodas_gy]
 	ld [localVariable_Talaj2_Kirak_y], a
 	call Talaj2_Kirak
-Meteor_Becsapodas_edblock13882:
-Meteor_Becsapodas_edblock13856:
-Meteor_Becsapodas_edblock13818:
+Meteor_Becsapodas_edblock5291:
+Meteor_Becsapodas_edblock5280:
+Meteor_Becsapodas_edblock5275:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Meteor_Becsapodas_tx]
 	add  a,$1
 	ld [localVariable_Meteor_Becsapodas_tx], a
-	jp Meteor_Becsapodas_while13737
-Meteor_Becsapodas_edblock13740:
-Meteor_Becsapodas_loopend13742:
-Meteor_Becsapodas_edblock13586:
-Meteor_Becsapodas_edblock13278:
+	jp Meteor_Becsapodas_while5265
+Meteor_Becsapodas_edblock5268:
+Meteor_Becsapodas_loopend5270:
+Meteor_Becsapodas_edblock5263:
+Meteor_Becsapodas_edblock5258:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Meteor_Becsapodas_ty]
 	add  a,$1
 	ld [localVariable_Meteor_Becsapodas_ty], a
-	jp Meteor_Becsapodas_while12657
-Meteor_Becsapodas_edblock12660:
-Meteor_Becsapodas_loopend12662:
+	jp Meteor_Becsapodas_while5093
+Meteor_Becsapodas_edblock5096:
+Meteor_Becsapodas_loopend5098:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Vir_Engedve]
 	cp $1
-	jr nz,Meteor_Becsapodas_edblock13888
-Meteor_Becsapodas_ctb13886: ;Main true block ;keep :
+	jr nz,Meteor_Becsapodas_edblock5296
+Meteor_Becsapodas_ctb5294: ;Main true block ;keep :
 	; ezen a pályán a meteor vírust hoz: új telep a becsapódás közepén 
 	; generic assign 
 	; RHS is pure numeric optimisation
@@ -14567,46 +14805,46 @@ Meteor_Becsapodas_ctb13886: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_gx0]
 	cp $1
-	jr nc,Meteor_Becsapodas_edblock13930
-Meteor_Becsapodas_ctb13928: ;Main true block ;keep :
+	jr nc,Meteor_Becsapodas_edblock5338
+Meteor_Becsapodas_ctb5336: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_rom], a
-Meteor_Becsapodas_edblock13930:
+Meteor_Becsapodas_edblock5338:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_gx0]
 	cp $1e
-	jr c, Meteor_Becsapodas_edblock13936
-	jr z, Meteor_Becsapodas_edblock13936
-Meteor_Becsapodas_ctb13934: ;Main true block ;keep :
+	jr c, Meteor_Becsapodas_edblock5343
+	jr z, Meteor_Becsapodas_edblock5343
+Meteor_Becsapodas_ctb5341: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_rom], a
-Meteor_Becsapodas_edblock13936:
+Meteor_Becsapodas_edblock5343:
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_gy]
 	cp $1
-	jr nc,Meteor_Becsapodas_edblock13942
-Meteor_Becsapodas_ctb13940: ;Main true block ;keep :
+	jr nc,Meteor_Becsapodas_edblock5348
+Meteor_Becsapodas_ctb5346: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_rom], a
-Meteor_Becsapodas_edblock13942:
+Meteor_Becsapodas_edblock5348:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_gy]
 	cp $12
-	jr c, Meteor_Becsapodas_edblock13948
-	jr z, Meteor_Becsapodas_edblock13948
-Meteor_Becsapodas_ctb13946: ;Main true block ;keep :
+	jr c, Meteor_Becsapodas_edblock5353
+	jr z, Meteor_Becsapodas_edblock5353
+Meteor_Becsapodas_ctb5351: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Meteor_Becsapodas_rom], a
-Meteor_Becsapodas_edblock13948:
+Meteor_Becsapodas_edblock5353:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_rom]
 	cp $1
-	jr nz,Meteor_Becsapodas_edblock13954
-Meteor_Becsapodas_ctb13952: ;Main true block ;keep :
+	jr nz,Meteor_Becsapodas_edblock5358
+Meteor_Becsapodas_ctb5356: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Meteor_Becsapodas_gx0]
 	ld [localVariable_Enemy_Terjed_Ide_x], a
@@ -14614,24 +14852,24 @@ Meteor_Becsapodas_ctb13952: ;Main true block ;keep :
 	ld a,[localVariable_Meteor_Becsapodas_gy]
 	ld [localVariable_Enemy_Terjed_Ide_y], a
 	call Enemy_Terjed_Ide
-Meteor_Becsapodas_edblock13954:
+Meteor_Becsapodas_edblock5358:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Becsapodas_rom]
 	cp $1
-	jr nz,Meteor_Becsapodas_edblock13960
-Meteor_Becsapodas_ctb13958: ;Main true block ;keep :
+	jr nz,Meteor_Becsapodas_edblock5363
+Meteor_Becsapodas_ctb5361: ;Main true block ;keep :
 	ld a, $1
 	ld [Enemy_Terjedhet], a
-Meteor_Becsapodas_edblock13960:
-Meteor_Becsapodas_edblock13888:
+Meteor_Becsapodas_edblock5363:
+Meteor_Becsapodas_edblock5296:
 	ret
 end_procedure_Meteor_Becsapodas:
 	; METEOR figyelmeztetés (NEM blokkoló, a főciklusból képkockánként): a "METEOR !" felirat az ikon-sor közepén 8 képkockánként fel/le (a Meteor_Figy 3. bitje szerint), fekete dobozban szürke betűvel 
 	; ***********  Defining procedure : Meteor_Felirat
 	;    Procedure type : User-defined procedure
 localVariable_Meteor_Felirat_varPrefixed_b:	db	0
-Meteor_Felirat_block13963:
+Meteor_Felirat_block5365:
 Meteor_Felirat:
 	; generic assign 
 	; RHS is pure numeric optimisation
@@ -14641,25 +14879,25 @@ Meteor_Felirat:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	or a
-	jr z, Meteor_Felirat_edblock13967
-Meteor_Felirat_ctb13965: ;Main true block ;keep :
+	jr z, Meteor_Felirat_edblock5369
+Meteor_Felirat_ctb5367: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Felirat_varPrefixed_b], a
-Meteor_Felirat_edblock13967:
+Meteor_Felirat_edblock5369:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Meteor_Lat]
 	ld b,a
 	ld a,[localVariable_Meteor_Felirat_varPrefixed_b]
 	cp b
-	jp z, Meteor_Felirat_edblock13973
-Meteor_Felirat_ctb13971: ;Main true block ;keep :
+	jp z, Meteor_Felirat_edblock5375
+Meteor_Felirat_ctb5373: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Felirat_varPrefixed_b]
 	cp $1
-	jr nz,Meteor_Felirat_eblock13986
-Meteor_Felirat_ctb13985: ;Main true block ;keep :
+	jr nz,Meteor_Felirat_eblock5388
+Meteor_Felirat_ctb5387: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[Meteor_TX]
@@ -14684,7 +14922,7 @@ Meteor_Felirat_ctb13985: ;Main true block ;keep :
 	ld a, $20
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Meteor_Felirat_stringassignstr13992
+	ld hl,Meteor_Felirat_stringassignstr5392
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -14704,8 +14942,8 @@ Meteor_Felirat_ctb13985: ;Main true block ;keep :
 	; szürke betű, fekete háttér 
 	ld a, $0
 	ld [Szin_Mod], a
-	jr Meteor_Felirat_edblock13987
-Meteor_Felirat_eblock13986:
+	jr Meteor_Felirat_edblock5389
+Meteor_Felirat_eblock5388:
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[Meteor_TX]
@@ -14723,11 +14961,11 @@ Meteor_Felirat_eblock13986:
 	ld a, $0
 	ld [GE_Pattern], a
 	call GE_FillRect
-Meteor_Felirat_edblock13987:
+Meteor_Felirat_edblock5389:
 	; generic assign 
 	ld a,[localVariable_Meteor_Felirat_varPrefixed_b]
 	ld [Meteor_Lat], a
-Meteor_Felirat_edblock13973:
+Meteor_Felirat_edblock5375:
 	ret
 end_procedure_Meteor_Felirat:
 	; A következő meteor véletlen ideje: 10..30 mp (Meteor_Mp másodperc, Meteor_Fr = a másodpercen belüli képkocka 0..49) 
@@ -14735,7 +14973,7 @@ end_procedure_Meteor_Felirat:
 	;    Procedure type : User-defined procedure
 localVariable_Meteor_Uj_Ido_varPrefixed_b:	db	0
 localVariable_Meteor_Uj_Ido_varPrefixed_m:	db	0
-Meteor_Uj_Ido_block13994:
+Meteor_Uj_Ido_block5394:
 Meteor_Uj_Ido:
 	; generic assign 
 	call Random_RandomByte
@@ -14782,16 +15020,16 @@ end_procedure_Meteor_Uj_Ido:
 	; ***********  Defining procedure : Meteor_Kijelzo
 	;    Procedure type : User-defined procedure
 localVariable_Meteor_Kijelzo_teljes:	db	0
-Meteor_Kijelzo_block13996:
+Meteor_Kijelzo_block5396:
 Meteor_Kijelzo:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Kijelzo_teljes]
 	cp $1
-	jr nz,Meteor_Kijelzo_edblock14000
-Meteor_Kijelzo_ctb13998: ;Main true block ;keep :
+	jr nz,Meteor_Kijelzo_edblock5400
+Meteor_Kijelzo_ctb5398: ;Main true block ;keep :
 	; Assigning a string : Ir_Szoveg
-	ld hl,Meteor_Kijelzo_stringassignstr14004
+	ld hl,Meteor_Kijelzo_stringassignstr5404
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -14828,14 +15066,14 @@ Meteor_Kijelzo_ctb13998: ;Main true block ;keep :
 	ld a, $20
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Meteor_Kijelzo_stringassignstr14006
+	ld hl,Meteor_Kijelzo_stringassignstr5406
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
 	; generic assign 
 	ld a,[Ir_X]
 	ld [Meteor_KN], a
-Meteor_Kijelzo_edblock14000:
+Meteor_Kijelzo_edblock5400:
 	; generic assign 
 	ld a,[Meteor_Mp]
 	ld [localVariable_HUD_Num2_ertek], a
@@ -14850,7 +15088,7 @@ end_procedure_Meteor_Kijelzo:
 	; ***********  Defining procedure : Meteor_Indit
 	;    Procedure type : User-defined procedure
 localVariable_Meteor_Indit_varPrefixed_r:	db	0
-Meteor_Indit_block14007:
+Meteor_Indit_block5407:
 Meteor_Indit:
 	; a meteor közeledtének JELZÉSE 
 	ld a, $3
@@ -14990,7 +15228,7 @@ localVariable_Meteor_Keret_Frissit_ov2:	db	0
 localVariable_Meteor_Keret_Frissit_vv2:	db	0
 localVariable_Meteor_Keret_Frissit_k2x:	db	0
 localVariable_Meteor_Keret_Frissit_k2y:	db	0
-Meteor_Keret_Frissit_block14010:
+Meteor_Keret_Frissit_block5410:
 Meteor_Keret_Frissit:
 	; generic assign 
 	; Generic 16-bit binop
@@ -15034,33 +15272,33 @@ Meteor_Keret_Frissit:
 	ld b,a
 	ld a,[Keret_X_Pos]
 	cp b
-	jr z, Meteor_Keret_Frissit_edblock14015
-Meteor_Keret_Frissit_ctb14013: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5415
+Meteor_Keret_Frissit_ctb5413: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_mozgott], a
-Meteor_Keret_Frissit_edblock14015:
+Meteor_Keret_Frissit_edblock5415:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Keret_Elozo_Y_Pos]
 	ld b,a
 	ld a,[Keret_Y_Pos]
 	cp b
-	jr z, Meteor_Keret_Frissit_edblock14021
-Meteor_Keret_Frissit_ctb14019: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5421
+Meteor_Keret_Frissit_ctb5419: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_mozgott], a
-Meteor_Keret_Frissit_edblock14021:
+Meteor_Keret_Frissit_edblock5421:
 	ld a, $0
 	ld [localVariable_Meteor_Keret_Frissit_pumpavan], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret_Pumpa_Valt]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14027
-Meteor_Keret_Frissit_ctb14025: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5427
+Meteor_Keret_Frissit_ctb5425: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_pumpavan], a
-Meteor_Keret_Frissit_edblock14027:
+Meteor_Keret_Frissit_edblock5427:
 	; csak ha a Keret alatti/melletti pumpa ebben a képkockában új fázist kap 
 	ld a, $0
 	ld [Keret_Pumpa_Valt], a
@@ -15131,8 +15369,8 @@ Meteor_Keret_Frissit_edblock14027:
 	ld a,[localVariable_Meteor_Keret_Frissit_mx]
 	add  a, $2
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14035
-Meteor_Keret_Frissit_localsuccess14044: ;keep:
+	jr c, Meteor_Keret_Frissit_edblock5435
+Meteor_Keret_Frissit_localsuccess5444: ;keep:
 	; ; logical AND, second requirement
 	; Swapped comparison expressions
 	; Binary clause core: GREATEREQUAL
@@ -15143,8 +15381,8 @@ Meteor_Keret_Frissit_localsuccess14044: ;keep:
 	ld a,[localVariable_Meteor_Keret_Frissit_kx]
 	add  a, $3
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14035
-Meteor_Keret_Frissit_ctb14033: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5435
+Meteor_Keret_Frissit_ctb5433: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ky]
@@ -15153,8 +15391,8 @@ Meteor_Keret_Frissit_ctb14033: ;Main true block ;keep :
 	ld a,[localVariable_Meteor_Keret_Frissit_my]
 	add  a, $16
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14049
-Meteor_Keret_Frissit_localsuccess14051: ;keep:
+	jr c, Meteor_Keret_Frissit_edblock5449
+Meteor_Keret_Frissit_localsuccess5450: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
@@ -15164,60 +15402,60 @@ Meteor_Keret_Frissit_localsuccess14051: ;keep:
 	ld a,[localVariable_Meteor_Keret_Frissit_ky]
 	add  a, $11
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14049
-Meteor_Keret_Frissit_ctb14047: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5449
+Meteor_Keret_Frissit_ctb5447: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov], a
-Meteor_Keret_Frissit_edblock14049:
-Meteor_Keret_Frissit_edblock14035:
+Meteor_Keret_Frissit_edblock5449:
+Meteor_Keret_Frissit_edblock5435:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_mozgott]
 	or a
-	jr z, Meteor_Keret_Frissit_edblock14056
-Meteor_Keret_Frissit_ctb14054: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5455
+Meteor_Keret_Frissit_ctb5453: ;Main true block ;keep :
 	; a meteor (a mozgásával együtt) átfedi a Keretet 
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov], a
-Meteor_Keret_Frissit_edblock14056:
+Meteor_Keret_Frissit_edblock5455:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_pumpavan]
 	or a
-	jr z, Meteor_Keret_Frissit_edblock14062
-Meteor_Keret_Frissit_ctb14060: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5461
+Meteor_Keret_Frissit_ctb5459: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov], a
-Meteor_Keret_Frissit_edblock14062:
+Meteor_Keret_Frissit_edblock5461:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_vir]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14068
-Meteor_Keret_Frissit_ctb14066: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5467
+Meteor_Keret_Frissit_ctb5465: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov], a
-Meteor_Keret_Frissit_edblock14068:
+Meteor_Keret_Frissit_edblock5467:
 	ld a, $0
 	ld [localVariable_Meteor_Keret_Frissit_vv], a
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_mozgott]
 	or a
-	jr z, Meteor_Keret_Frissit_edblock14074
-Meteor_Keret_Frissit_ctb14072: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5473
+Meteor_Keret_Frissit_ctb5471: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_vv], a
-Meteor_Keret_Frissit_edblock14074:
+Meteor_Keret_Frissit_edblock5473:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_vir]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14080
-Meteor_Keret_Frissit_ctb14078: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5479
+Meteor_Keret_Frissit_ctb5477: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_vv], a
-Meteor_Keret_Frissit_edblock14080:
+Meteor_Keret_Frissit_edblock5479:
 	; 2. Keret (a Keret fölött): újrarajzolandó, ha a Keret is, ha a meteor átfedi, ha mozgott / pumpa / vírus 
 	; generic assign 
 	ld a,[localVariable_Meteor_Keret_Frissit_ov]
@@ -15264,8 +15502,8 @@ Meteor_Keret_Frissit_edblock14080:
 	ld a,[localVariable_Meteor_Keret_Frissit_mx]
 	add  a, $2
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14088
-Meteor_Keret_Frissit_localsuccess14097: ;keep:
+	jr c, Meteor_Keret_Frissit_edblock5487
+Meteor_Keret_Frissit_localsuccess5496: ;keep:
 	; ; logical AND, second requirement
 	; Swapped comparison expressions
 	; Binary clause core: GREATEREQUAL
@@ -15276,8 +15514,8 @@ Meteor_Keret_Frissit_localsuccess14097: ;keep:
 	ld a,[localVariable_Meteor_Keret_Frissit_k2x]
 	add  a, $3
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14088
-Meteor_Keret_Frissit_ctb14086: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5487
+Meteor_Keret_Frissit_ctb5485: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_k2y]
@@ -15286,8 +15524,8 @@ Meteor_Keret_Frissit_ctb14086: ;Main true block ;keep :
 	ld a,[localVariable_Meteor_Keret_Frissit_my]
 	add  a, $16
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14102
-Meteor_Keret_Frissit_localsuccess14104: ;keep:
+	jr c, Meteor_Keret_Frissit_edblock5501
+Meteor_Keret_Frissit_localsuccess5502: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: GREATEREQUAL
 	; Compare two vars optimization
@@ -15297,12 +15535,12 @@ Meteor_Keret_Frissit_localsuccess14104: ;keep:
 	ld a,[localVariable_Meteor_Keret_Frissit_k2y]
 	add  a, $11
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14102
-Meteor_Keret_Frissit_ctb14100: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5501
+Meteor_Keret_Frissit_ctb5499: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov2], a
-Meteor_Keret_Frissit_edblock14102:
-Meteor_Keret_Frissit_edblock14088:
+Meteor_Keret_Frissit_edblock5501:
+Meteor_Keret_Frissit_edblock5487:
 	ld a, $0
 	ld [localVariable_Meteor_Keret_Frissit_vv2], a
 	; Binary clause core: NOTEQUALS
@@ -15311,72 +15549,72 @@ Meteor_Keret_Frissit_edblock14088:
 	ld b,a
 	ld a,[Keret2_X_Pos]
 	cp b
-	jr z, Meteor_Keret_Frissit_edblock14109
-Meteor_Keret_Frissit_ctb14107: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5507
+Meteor_Keret_Frissit_ctb5505: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_vv2], a
-Meteor_Keret_Frissit_edblock14109:
+Meteor_Keret_Frissit_edblock5507:
 	; Binary clause core: NOTEQUALS
 	; Compare two vars optimization
 	ld a,[Keret2_Elozo_Y_Pos]
 	ld b,a
 	ld a,[Keret2_Y_Pos]
 	cp b
-	jr z, Meteor_Keret_Frissit_edblock14115
-Meteor_Keret_Frissit_ctb14113: ;Main true block ;keep :
+	jr z, Meteor_Keret_Frissit_edblock5513
+Meteor_Keret_Frissit_ctb5511: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_vv2], a
-Meteor_Keret_Frissit_edblock14115:
+Meteor_Keret_Frissit_edblock5513:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret2_Sereles]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14121
-Meteor_Keret_Frissit_ctb14119: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5519
+Meteor_Keret_Frissit_ctb5517: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_vv2], a
-Meteor_Keret_Frissit_edblock14121:
+Meteor_Keret_Frissit_edblock5519:
 	ld a, $0
 	ld [Keret2_Sereles], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_vv2]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14127
-Meteor_Keret_Frissit_ctb14125: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5525
+Meteor_Keret_Frissit_ctb5523: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov2], a
-Meteor_Keret_Frissit_edblock14127:
+Meteor_Keret_Frissit_edblock5525:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Keret2_Pumpa_Valt]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14133
-Meteor_Keret_Frissit_ctb14131: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5531
+Meteor_Keret_Frissit_ctb5529: ;Main true block ;keep :
 	ld a, $1
 	ld [localVariable_Meteor_Keret_Frissit_ov2], a
-Meteor_Keret_Frissit_edblock14133:
+Meteor_Keret_Frissit_edblock5531:
 	ld a, $0
 	ld [Keret2_Pumpa_Valt], a
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov2]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14139
-Meteor_Keret_Frissit_ctb14137: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5537
+Meteor_Keret_Frissit_ctb5535: ;Main true block ;keep :
 	call Keret2_Le
-Meteor_Keret_Frissit_edblock14139:
+Meteor_Keret_Frissit_edblock5537:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14145
-Meteor_Keret_Frissit_ctb14143: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5543
+Meteor_Keret_Frissit_ctb5541: ;Main true block ;keep :
 	; 1) legfelső réteg le (csak ha kell) 
 	ld hl,Keret
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
-Meteor_Keret_Frissit_edblock14145:
+Meteor_Keret_Frissit_edblock5543:
 	ld hl,Meteor
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_RestoreBackground
@@ -15386,8 +15624,8 @@ Meteor_Keret_Frissit_edblock14145:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_vv]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14151
-Meteor_Keret_Frissit_ctb14149: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5549
+Meteor_Keret_Frissit_ctb5547: ;Main true block ;keep :
 	; 2) alsó animált réteg 
 	; generic assign 
 	ld a,[Keret_X_Pos]
@@ -15396,13 +15634,13 @@ Meteor_Keret_Frissit_ctb14149: ;Main true block ;keep :
 	ld a,[Keret_Y_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_ky], a
 	call Enemyk_Ujrarajzol
-Meteor_Keret_Frissit_edblock14151:
+Meteor_Keret_Frissit_edblock5549:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_vv2]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14157
-Meteor_Keret_Frissit_ctb14155: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5555
+Meteor_Keret_Frissit_ctb5553: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Keret2_X_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_kx], a
@@ -15410,7 +15648,7 @@ Meteor_Keret_Frissit_ctb14155: ;Main true block ;keep :
 	ld a,[Keret2_Y_Pos]
 	ld [localVariable_Enemyk_Ujrarajzol_ky], a
 	call Enemyk_Ujrarajzol
-Meteor_Keret_Frissit_edblock14157:
+Meteor_Keret_Frissit_edblock5555:
 	; Binary clause core: LESS
 	; Compare two vars optimization
 	ld a,[Meteor_Y_Cel]
@@ -15421,8 +15659,8 @@ Meteor_Keret_Frissit_edblock14157:
 	; TYPETEST : BYTE  WriteType : BYTE
 	ld a,[hl]
 	cp b
-	jp nc,Meteor_Keret_Frissit_eblock14162
-Meteor_Keret_Frissit_ctb14161: ;Main true block ;keep :
+	jp nc,Meteor_Keret_Frissit_eblock5560
+Meteor_Keret_Frissit_ctb5559: ;Main true block ;keep :
 	; 3) meteor lépés: EGYENES zuhanás, MINDEN képkockán METEOR_LE_PX px LE; METEOR_ANIM_UTEM képkockánként a következő fázis (0..3 körbe) 
 	; Storing to array  
 	ld de,$10
@@ -15444,8 +15682,8 @@ Meteor_Keret_Frissit_ctb14161: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $3
-	jr c, Meteor_Keret_Frissit_edblock14188
-Meteor_Keret_Frissit_ctb14186: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5585
+Meteor_Keret_Frissit_ctb5583: ;Main true block ;keep :
 	ld a, $0
 	ld [Meteor_UtemFrame], a
 	; 'a:=a + const'  optimization 
@@ -15455,11 +15693,11 @@ Meteor_Keret_Frissit_ctb14186: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $4
-	jr c, Meteor_Keret_Frissit_edblock14200
-Meteor_Keret_Frissit_ctb14198: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5590
+Meteor_Keret_Frissit_ctb5588: ;Main true block ;keep :
 	ld a, $0
 	ld [Meteor_Faz], a
-Meteor_Keret_Frissit_edblock14200:
+Meteor_Keret_Frissit_edblock5590:
 	ld a,[Meteor_Faz]
 	ld e,a ; variable is 8-bit
 	ld d,0 ;keep
@@ -15475,9 +15713,9 @@ Meteor_Keret_Frissit_edblock14200:
 	ld [Meteor+$2],a
 	ld a,h
 	ld [Meteor+$2+1],a
-Meteor_Keret_Frissit_edblock14188:
-	jp Meteor_Keret_Frissit_edblock14163
-Meteor_Keret_Frissit_eblock14162:
+Meteor_Keret_Frissit_edblock5585:
+	jp Meteor_Keret_Frissit_edblock5561
+Meteor_Keret_Frissit_eblock5560:
 	ld a, $0
 	ld [Meteor_Aktiv], a
 	ld a, $3
@@ -15488,13 +15726,13 @@ Meteor_Keret_Frissit_eblock14162:
 	; meteor vége -> vissza világoskék 
 	call Meteor_Becsapodas
 	call Fal_Mind_Kirak
-Meteor_Keret_Frissit_edblock14163:
+Meteor_Keret_Frissit_edblock5561:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14207
-Meteor_Keret_Frissit_ctb14205: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5596
+Meteor_Keret_Frissit_ctb5594: ;Main true block ;keep :
 	ld hl,Meteor
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_SetPosition
@@ -15507,13 +15745,13 @@ Meteor_Keret_Frissit_ctb14205: ;Main true block ;keep :
 	ld hl,Meteor
 	ld [GE_Sprite_this],hl
 	call GE_Sprite_UpdateLastPos
-Meteor_Keret_Frissit_edblock14207:
+Meteor_Keret_Frissit_edblock5596:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14213
-Meteor_Keret_Frissit_ctb14211: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5602
+Meteor_Keret_Frissit_ctb5600: ;Main true block ;keep :
 	; 4) Keret LEGFELÜL (csak ha kellett törölni; a meteor rárajzolhatott) 
 	call Keret_XY_Calc
 	ld hl,Keret
@@ -15534,21 +15772,21 @@ Meteor_Keret_Frissit_ctb14211: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Keret_Y_Pos]
 	ld [Keret_Elozo_Y_Pos], a
-Meteor_Keret_Frissit_edblock14213:
+Meteor_Keret_Frissit_edblock5602:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov2]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14219
-Meteor_Keret_Frissit_ctb14217: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5608
+Meteor_Keret_Frissit_ctb5606: ;Main true block ;keep :
 	call Keret2_Kirak
-Meteor_Keret_Frissit_edblock14219:
+Meteor_Keret_Frissit_edblock5608:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	cp $1
-	jp nz,Meteor_Keret_Frissit_eblock14224
-Meteor_Keret_Frissit_ctb14223: ;Main true block ;keep :
+	jp nz,Meteor_Keret_Frissit_eblock5613
+Meteor_Keret_Frissit_ctb5612: ;Main true block ;keep :
 	; 2. Keret a legfelső  raszter-megszakítás a következő képkockára: a meteor (és a Keret, ha újrarajzoljuk) ALJA alá -> a törlés+rajz a sugár mögött történik, nincs villogás 
 	; generic assign 
 	ld de,$10
@@ -15566,8 +15804,8 @@ Meteor_Keret_Frissit_ctb14223: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14274
-Meteor_Keret_Frissit_ctb14272: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5661
+Meteor_Keret_Frissit_ctb5659: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Meteor_Keret_Frissit_ky]
@@ -15579,20 +15817,20 @@ Meteor_Keret_Frissit_ctb14272: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_Meteor_Keret_Frissit_kb]
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14286
-	jr z, Meteor_Keret_Frissit_edblock14286
-Meteor_Keret_Frissit_ctb14284: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5666
+	jr z, Meteor_Keret_Frissit_edblock5666
+Meteor_Keret_Frissit_ctb5664: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Meteor_Keret_Frissit_kb]
 	ld [localVariable_Meteor_Keret_Frissit_ly], a
-Meteor_Keret_Frissit_edblock14286:
-Meteor_Keret_Frissit_edblock14274:
+Meteor_Keret_Frissit_edblock5666:
+Meteor_Keret_Frissit_edblock5661:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ov2]
 	cp $1
-	jr nz,Meteor_Keret_Frissit_edblock14292
-Meteor_Keret_Frissit_ctb14290: ;Main true block ;keep :
+	jr nz,Meteor_Keret_Frissit_edblock5671
+Meteor_Keret_Frissit_ctb5669: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[localVariable_Meteor_Keret_Frissit_k2y]
@@ -15604,34 +15842,34 @@ Meteor_Keret_Frissit_ctb14290: ;Main true block ;keep :
 	ld b,a
 	ld a,[localVariable_Meteor_Keret_Frissit_kb]
 	cp b
-	jr c, Meteor_Keret_Frissit_edblock14304
-	jr z, Meteor_Keret_Frissit_edblock14304
-Meteor_Keret_Frissit_ctb14302: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5676
+	jr z, Meteor_Keret_Frissit_edblock5676
+Meteor_Keret_Frissit_ctb5674: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Meteor_Keret_Frissit_kb]
 	ld [localVariable_Meteor_Keret_Frissit_ly], a
-Meteor_Keret_Frissit_edblock14304:
-Meteor_Keret_Frissit_edblock14292:
+Meteor_Keret_Frissit_edblock5676:
+Meteor_Keret_Frissit_edblock5671:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Meteor_Keret_Frissit_ly]
 	cp $ef
-	jr c, Meteor_Keret_Frissit_edblock14310
-	jr z, Meteor_Keret_Frissit_edblock14310
-Meteor_Keret_Frissit_ctb14308: ;Main true block ;keep :
+	jr c, Meteor_Keret_Frissit_edblock5681
+	jr z, Meteor_Keret_Frissit_edblock5681
+Meteor_Keret_Frissit_ctb5679: ;Main true block ;keep :
 	ld a, $ef
 	ld [localVariable_Meteor_Keret_Frissit_ly], a
-Meteor_Keret_Frissit_edblock14310:
+Meteor_Keret_Frissit_edblock5681:
 	; generic assign 
 	ld a,[localVariable_Meteor_Keret_Frissit_ly]
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
-	jp Meteor_Keret_Frissit_edblock14225
-Meteor_Keret_Frissit_eblock14224:
+	jp Meteor_Keret_Frissit_edblock5614
+Meteor_Keret_Frissit_eblock5613:
 	ld a, $ef
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
-Meteor_Keret_Frissit_edblock14225:
+Meteor_Keret_Frissit_edblock5614:
 	ret
 end_procedure_Meteor_Keret_Frissit:
 	; A Palya sorszámú pálya betöltése: árak, kezdőpénz, cél, tiltások, térkép; a játékállapot nullázása (nem rajzol) 
@@ -15726,8 +15964,8 @@ Palya_Betolt:
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	cp $1
-	jr nz,Palya_Betolt_edblock14318
-Palya_Betolt_ctb14316: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5688
+Palya_Betolt_ctb5686: ;Main true block ;keep :
 	; generic assign 
 	ld a,[Palya]
 	ld e,a ; variable is 8-bit
@@ -15742,7 +15980,7 @@ Palya_Betolt_ctb14316: ;Main true block ;keep :
 	ld l,a
 	; Loading pointer
 	ld [Cel_Akt],hl
-Palya_Betolt_edblock14318:
+Palya_Betolt_edblock5688:
 	; co-op: a közös cél (a két játékos pumpáinak összege) 
 	; generic assign 
 	ld a,[Palya]
@@ -15829,8 +16067,8 @@ Palya_Betolt_edblock14318:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jp nz,Palya_Betolt_edblock14324
-Palya_Betolt_ctb14322: ;Main true block ;keep :
+	jp nz,Palya_Betolt_edblock5694
+Palya_Betolt_ctb5692: ;Main true block ;keep :
 	; két játékos pálya: a saját táblájából 
 	; generic assign 
 	ld a,[Palya]
@@ -16016,7 +16254,7 @@ Palya_Betolt_ctb14322: ;Main true block ;keep :
 	ld l,a
 	; Loading pointer
 	ld [Virus_price],hl
-Palya_Betolt_edblock14324:
+Palya_Betolt_edblock5694:
 	ld a, $ef
 	ld [GE_LineNr], a
 	call GE_SetRasterInterruptPos
@@ -16036,14 +16274,14 @@ Palya_Betolt_edblock14324:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,Palya_Betolt_edblock14330
-Palya_Betolt_ctb14328: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5700
+Palya_Betolt_ctb5698: ;Main true block ;keep :
 	; generic assign 
 	; Variable is 16-bit
 	ld hl,[Drill_Cash]
 	; Loading pointer
 	ld [Drill_Cash2],hl
-Palya_Betolt_edblock14330:
+Palya_Betolt_edblock5700:
 	; két játékos (versus és co-op): a 2. játékos is a pálya kezdőpénzével indul, saját pénzzel 
 	; generic assign 
 	ld hl,$00
@@ -16062,29 +16300,29 @@ Palya_Betolt_edblock14330:
 	; Compare with pure num / var optimization
 	ld a,[Virus_Engedve]
 	or a
-	jr nz,Palya_Betolt_edblock14336
-Palya_Betolt_ctb14334: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5706
+Palya_Betolt_ctb5704: ;Main true block ;keep :
 	ld a, $a
 	ld [Enemy_Kolonia_db], a
-Palya_Betolt_edblock14336:
+Palya_Betolt_edblock5706:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Vir_Engedve]
 	cp $1
-	jr nz,Palya_Betolt_edblock14342
-Palya_Betolt_ctb14340: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5712
+Palya_Betolt_ctb5710: ;Main true block ;keep :
 	ld a, $1
 	ld [Virus_Engedve], a
-Palya_Betolt_edblock14342:
+Palya_Betolt_edblock5712:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[VirusLe_Engedve]
 	cp $1
-	jr nz,Palya_Betolt_edblock14348
-Palya_Betolt_ctb14346: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5718
+Palya_Betolt_ctb5716: ;Main true block ;keep :
 	ld a, $1
 	ld [Virus_Engedve], a
-Palya_Betolt_edblock14348:
+Palya_Betolt_edblock5718:
 	ld a, $0
 	ld [Enemy_Terjedhet], a
 	ld [Enemy_Frame], a
@@ -16120,12 +16358,12 @@ Palya_Betolt_edblock14348:
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	cp $1
-	jr nz,Palya_Betolt_edblock14354
-Palya_Betolt_ctb14352: ;Main true block ;keep :
+	jr nz,Palya_Betolt_edblock5724
+Palya_Betolt_ctb5722: ;Main true block ;keep :
 	; a 2. játékos pumpa-képe: versus saját, co-op az 1. játékosé 
 	ld a, $0
 	ld [P2_Kep], a
-Palya_Betolt_edblock14354:
+Palya_Betolt_edblock5724:
 	ld a, $0
 	ld [Akna_Robban], a
 	ld [Akna_Db], a
@@ -16161,17 +16399,17 @@ end_procedure_Palya_Ujra:
 	; ***********  Defining procedure : Varakozas
 	;    Procedure type : User-defined procedure
 localVariable_Varakozas_n:	db	0
-Varakozas_block14358:
+Varakozas_block5728:
 Varakozas:
-Varakozas_while14359:
-Varakozas_loopstart14363:
+Varakozas_while5729:
+Varakozas_loopstart5733:
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Varakozas_n]
 	or a
-	jr c, Varakozas_edblock14362
-	jr z, Varakozas_edblock14362
-Varakozas_ctb14360: ;Main true block ;keep :
+	jr c, Varakozas_edblock5732
+	jr z, Varakozas_edblock5732
+Varakozas_ctb5730: ;Main true block ;keep :
 	call GE_WaitForSync
 	; generic assign 
 	call Random_RandomByte
@@ -16180,9 +16418,9 @@ Varakozas_ctb14360: ;Main true block ;keep :
 	ld a,[localVariable_Varakozas_n]
 	sub $1
 	ld [localVariable_Varakozas_n], a
-	jr Varakozas_while14359
-Varakozas_edblock14362:
-Varakozas_loopend14364:
+	jr Varakozas_while5729
+Varakozas_edblock5732:
+Varakozas_loopend5734:
 	ret
 end_procedure_Varakozas:
 	; ***********  Defining procedure : Space_Var
@@ -16190,14 +16428,14 @@ end_procedure_Varakozas:
 Space_Var:
 	ld a, $1
 	ld [Start_Wait], a
-Space_Var_while14368:
-Space_Var_loopstart14372:
+Space_Var_while5738:
+Space_Var_loopstart5742:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $1
-	jr nz,Space_Var_edblock14371
-Space_Var_ctb14369: ;Main true block ;keep :
+	jr nz,Space_Var_edblock5741
+Space_Var_ctb5739: ;Main true block ;keep :
 	call GE_GetKeyboard
 	call GE_GetJoysticks
 	; generic assign 
@@ -16207,23 +16445,23 @@ Space_Var_ctb14369: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	call Tuz
 	or a
-	jr nz,Space_Var_edblock14385
-Space_Var_ctb14383: ;Main true block ;keep :
+	jr nz,Space_Var_edblock5755
+Space_Var_ctb5753: ;Main true block ;keep :
 	ld a, $2
 	ld [Start_Wait], a
-Space_Var_edblock14385:
+Space_Var_edblock5755:
 	call GE_WaitForSync
-	jr Space_Var_while14368
-Space_Var_edblock14371:
-Space_Var_loopend14373:
-Space_Var_while14388:
-Space_Var_loopstart14392:
+	jr Space_Var_while5738
+Space_Var_edblock5741:
+Space_Var_loopend5743:
+Space_Var_while5757:
+Space_Var_loopstart5761:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Start_Wait]
 	cp $2
-	jr nz,Space_Var_edblock14391
-Space_Var_ctb14389: ;Main true block ;keep :
+	jr nz,Space_Var_edblock5760
+Space_Var_ctb5758: ;Main true block ;keep :
 	call GE_GetKeyboard
 	call GE_GetJoysticks
 	; generic assign 
@@ -16233,15 +16471,15 @@ Space_Var_ctb14389: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	call Tuz
 	cp $1
-	jr nz,Space_Var_edblock14405
-Space_Var_ctb14403: ;Main true block ;keep :
+	jr nz,Space_Var_edblock5774
+Space_Var_ctb5772: ;Main true block ;keep :
 	ld a, $0
 	ld [Start_Wait], a
-Space_Var_edblock14405:
+Space_Var_edblock5774:
 	call GE_WaitForSync
-	jr Space_Var_while14388
-Space_Var_edblock14391:
-Space_Var_loopend14393:
+	jr Space_Var_while5757
+Space_Var_edblock5760:
+Space_Var_loopend5762:
 	ret
 end_procedure_Space_Var:
 	; Pálya teljesítve: felirat a képernyő közepére, majd várakozás egy SPACE lenyomásra (előbb a nyomva tartott SPACE felengedésére) 
@@ -16251,7 +16489,7 @@ localVariable_Palya_Teljesitve_van:	db	0
 localVariable_Palya_Teljesitve_varPrefixed_i:	db	0
 localVariable_Palya_Teljesitve_k:	db	0
 localVariable_Palya_Teljesitve_y:	db	0
-Palya_Teljesitve_block14408:
+Palya_Teljesitve_block5776:
 Palya_Teljesitve:
 	call Digi_Le
 	; van-e következő pálya: ha igen, a kódja a "NEXT CODE: " után (Kov_Str 11..15) 
@@ -16266,14 +16504,14 @@ Palya_Teljesitve:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jp nz,Palya_Teljesitve_edblock14412
-Palya_Teljesitve_ctb14410: ;Main true block ;keep :
+	jp nz,Palya_Teljesitve_edblock5780
+Palya_Teljesitve_ctb5778: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Palya_Teljesitve_k]
 	cp $b
-	jp nc,Palya_Teljesitve_edblock14482
-Palya_Teljesitve_ctb14480: ;Main true block ;keep :
+	jp nc,Palya_Teljesitve_edblock5834
+Palya_Teljesitve_ctb5832: ;Main true block ;keep :
 	; versusban nincs pályakód (csak egy játékos és co-op) 
 	ld a, $1
 	ld [localVariable_Palya_Teljesitve_van], a
@@ -16293,11 +16531,11 @@ Palya_Teljesitve_ctb14480: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	cp $1
-	jr nz,Palya_Teljesitve_eblock14517
-Palya_Teljesitve_ctb14516: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_eblock5839
+Palya_Teljesitve_ctb5838: ;Main true block ;keep :
 	ld a, $0
 	ld [localVariable_Palya_Teljesitve_varPrefixed_i], a
-Palya_Teljesitve_forloop14532:
+Palya_Teljesitve_forloop5842:
 	; Storing to array  
 	ld a,[localVariable_Palya_Teljesitve_varPrefixed_i]
 	ld b,a
@@ -16319,18 +16557,18 @@ Palya_Teljesitve_forloop14532:
 	add hl,de
 	pop af
 	ld [hl],a 
-Palya_Teljesitve_loopstart14533:
+Palya_Teljesitve_loopstart5843:
 	ld a,[localVariable_Palya_Teljesitve_varPrefixed_i]
 	add a,1
 	ld [localVariable_Palya_Teljesitve_varPrefixed_i],a
 	cp $5
-	jr nz,Palya_Teljesitve_forloop14532
-Palya_Teljesitve_loopend14534:
-	jr Palya_Teljesitve_edblock14518
-Palya_Teljesitve_eblock14517:
+	jr nz,Palya_Teljesitve_forloop5842
+Palya_Teljesitve_loopend5844:
+	jr Palya_Teljesitve_edblock5840
+Palya_Teljesitve_eblock5839:
 	ld a, $0
 	ld [localVariable_Palya_Teljesitve_varPrefixed_i], a
-Palya_Teljesitve_forloop14538:
+Palya_Teljesitve_forloop5847:
 	; co-op: a co-op kód 
 	; Storing to array  
 	ld a,[localVariable_Palya_Teljesitve_varPrefixed_i]
@@ -16353,16 +16591,16 @@ Palya_Teljesitve_forloop14538:
 	add hl,de
 	pop af
 	ld [hl],a 
-Palya_Teljesitve_loopstart14539:
+Palya_Teljesitve_loopstart5848:
 	ld a,[localVariable_Palya_Teljesitve_varPrefixed_i]
 	add a,1
 	ld [localVariable_Palya_Teljesitve_varPrefixed_i],a
 	cp $5
-	jr nz,Palya_Teljesitve_forloop14538
-Palya_Teljesitve_loopend14540:
-Palya_Teljesitve_edblock14518:
-Palya_Teljesitve_edblock14482:
-Palya_Teljesitve_edblock14412:
+	jr nz,Palya_Teljesitve_forloop5847
+Palya_Teljesitve_loopend5849:
+Palya_Teljesitve_edblock5840:
+Palya_Teljesitve_edblock5834:
+Palya_Teljesitve_edblock5780:
 	ld a, $7
 	ld [localVariable_Doboz_x], a
 	ld a, $69
@@ -16379,51 +16617,51 @@ Palya_Teljesitve_edblock14412:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jp nz,Palya_Teljesitve_eblock14545
-Palya_Teljesitve_ctb14544: ;Main true block ;keep :
+	jp nz,Palya_Teljesitve_eblock5853
+Palya_Teljesitve_ctb5852: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,Palya_Teljesitve_eblock14582
-Palya_Teljesitve_ctb14581: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_eblock5888
+Palya_Teljesitve_ctb5887: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Gyoztes]
 	cp $2
-	jr nz,Palya_Teljesitve_eblock14597
-Palya_Teljesitve_ctb14596: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_eblock5893
+Palya_Teljesitve_ctb5892: ;Main true block ;keep :
 	; két játékos: ki hány pumpát rakott 
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14603
+	ld hl,Palya_Teljesitve_stringassignstr5897
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
-	jr Palya_Teljesitve_edblock14598
-Palya_Teljesitve_eblock14597:
+	jr Palya_Teljesitve_edblock5894
+Palya_Teljesitve_eblock5893:
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14606
+	ld hl,Palya_Teljesitve_stringassignstr5900
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
-Palya_Teljesitve_edblock14598:
-	jr Palya_Teljesitve_edblock14583
-Palya_Teljesitve_eblock14582:
+Palya_Teljesitve_edblock5894:
+	jr Palya_Teljesitve_edblock5889
+Palya_Teljesitve_eblock5888:
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14609
+	ld hl,Palya_Teljesitve_stringassignstr5903
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
-Palya_Teljesitve_edblock14583:
+Palya_Teljesitve_edblock5889:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	add  a,$a
@@ -16434,7 +16672,7 @@ Palya_Teljesitve_edblock14583:
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14611
+	ld hl,Palya_Teljesitve_stringassignstr5905
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -16458,7 +16696,7 @@ Palya_Teljesitve_edblock14583:
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14613
+	ld hl,Palya_Teljesitve_stringassignstr5907
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir
@@ -16474,27 +16712,27 @@ Palya_Teljesitve_edblock14583:
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [localVariable_HUD_Num3_sor], a
 	call HUD_Num3
-	jp Palya_Teljesitve_edblock14546
-Palya_Teljesitve_eblock14545:
+	jp Palya_Teljesitve_edblock5854
+Palya_Teljesitve_eblock5853:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Palya_Teljesitve_van]
 	or a
-	jr nz,Palya_Teljesitve_edblock14618
-Palya_Teljesitve_ctb14616: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_edblock5912
+Palya_Teljesitve_ctb5910: ;Main true block ;keep :
 	ld a, $72
 	ld [localVariable_Palya_Teljesitve_y], a
-Palya_Teljesitve_edblock14618:
+Palya_Teljesitve_edblock5912:
 	; két sor: függőlegesen középen 
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14622
+	ld hl,Palya_Teljesitve_stringassignstr5915
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
-Palya_Teljesitve_edblock14546:
+Palya_Teljesitve_edblock5854:
 	; 'a:=a + const'  optimization 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	add  a,$a
@@ -16503,8 +16741,8 @@ Palya_Teljesitve_edblock14546:
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Palya_Teljesitve_van]
 	cp $1
-	jr nz,Palya_Teljesitve_edblock14626
-Palya_Teljesitve_ctb14624: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_edblock5919
+Palya_Teljesitve_ctb5917: ;Main true block ;keep :
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
@@ -16554,28 +16792,28 @@ Palya_Teljesitve_ctb14624: ;Main true block ;keep :
 	ld a,[localVariable_Palya_Teljesitve_y]
 	add  a,$a
 	ld [localVariable_Palya_Teljesitve_y], a
-Palya_Teljesitve_edblock14626:
+Palya_Teljesitve_edblock5919:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[localVariable_Palya_Teljesitve_van]
 	or a
-	jr nz,Palya_Teljesitve_edblock14632
-Palya_Teljesitve_ctb14630: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_edblock5925
+Palya_Teljesitve_ctb5923: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	or a
-	jr nz,Palya_Teljesitve_edblock14644
-Palya_Teljesitve_ctb14642: ;Main true block ;keep :
+	jr nz,Palya_Teljesitve_edblock5937
+Palya_Teljesitve_ctb5935: ;Main true block ;keep :
 	ld a, $82
 	ld [localVariable_Palya_Teljesitve_y], a
-Palya_Teljesitve_edblock14644:
-Palya_Teljesitve_edblock14632:
+Palya_Teljesitve_edblock5937:
+Palya_Teljesitve_edblock5925:
 	; generic assign 
 	ld a,[localVariable_Palya_Teljesitve_y]
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Teljesitve_stringassignstr14648
+	ld hl,Palya_Teljesitve_stringassignstr5940
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -16605,14 +16843,14 @@ Game_Over:
 	ld a, $72
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Game_Over_stringassignstr14651
+	ld hl,Game_Over_stringassignstr5943
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $82
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Game_Over_stringassignstr14653
+	ld hl,Game_Over_stringassignstr5945
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -16641,31 +16879,31 @@ Palya_Bukas:
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jr nz,Palya_Bukas_edblock14658
-Palya_Bukas_ctb14656: ;Main true block ;keep :
+	jr nz,Palya_Bukas_edblock5950
+Palya_Bukas_ctb5948: ;Main true block ;keep :
 	; GAME OVER után ugyanabban a körben ne vonjon le újra 
 	call Digi_Le
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	or a
-	jr nz,Palya_Bukas_edblock14678
-Palya_Bukas_ctb14676: ;Main true block ;keep :
+	jr nz,Palya_Bukas_edblock5970
+Palya_Bukas_ctb5968: ;Main true block ;keep :
 	; 'a:=a + const'  optimization 
 	ld a,[Eletek]
 	sub $1
 	ld [Eletek], a
-Palya_Bukas_edblock14678:
+Palya_Bukas_edblock5970:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Eletek]
 	or a
-	jr nz,Palya_Bukas_eblock14683
-Palya_Bukas_ctb14682: ;Main true block ;keep :
+	jr nz,Palya_Bukas_eblock5974
+Palya_Bukas_ctb5973: ;Main true block ;keep :
 	; versusban nincs élet: csak újrakezdés 
 	call Game_Over
-	jr Palya_Bukas_edblock14684
-Palya_Bukas_eblock14683:
+	jr Palya_Bukas_edblock5975
+Palya_Bukas_eblock5974:
 	ld a, $7
 	ld [GE_X], a
 	ld a, $6a
@@ -16680,14 +16918,14 @@ Palya_Bukas_eblock14683:
 	ld a, $72
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Bukas_stringassignstr14690
+	ld hl,Palya_Bukas_stringassignstr5979
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
 	ld a, $82
 	ld [Ir_Y], a
 	; Assigning a string : Ir_Szoveg
-	ld hl,Palya_Bukas_stringassignstr14692
+	ld hl,Palya_Bukas_stringassignstr5981
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Kozep
@@ -16705,8 +16943,8 @@ Palya_Bukas_eblock14683:
 	call Space_Var
 	call Normal_Szinek
 	call Palya_Ujra
-Palya_Bukas_edblock14684:
-Palya_Bukas_edblock14658:
+Palya_Bukas_edblock5975:
+Palya_Bukas_edblock5950:
 	ret
 end_procedure_Palya_Bukas:
 	; Következő pálya (az utolsó után egyelőre az elsőre ugrik; a győzelem-felirat később): betöltés + teljes újrarajzolás 
@@ -16722,29 +16960,29 @@ Palya_Kovetkezo:
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,Palya_Kovetkezo_eblock14696
-Palya_Kovetkezo_ctb14695: ;Main true block ;keep :
+	jr nz,Palya_Kovetkezo_eblock5985
+Palya_Kovetkezo_ctb5984: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[Palya]
 	cp $6
-	jr c, Palya_Kovetkezo_edblock14716
-Palya_Kovetkezo_ctb14714: ;Main true block ;keep :
+	jr c, Palya_Kovetkezo_edblock6005
+Palya_Kovetkezo_ctb6003: ;Main true block ;keep :
 	ld a, $0
 	ld [Palya], a
-Palya_Kovetkezo_edblock14716:
-	jr Palya_Kovetkezo_edblock14697
-Palya_Kovetkezo_eblock14696:
+Palya_Kovetkezo_edblock6005:
+	jr Palya_Kovetkezo_edblock5986
+Palya_Kovetkezo_eblock5985:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	ld a,[Palya]
 	cp $b
-	jr c, Palya_Kovetkezo_edblock14723
-Palya_Kovetkezo_ctb14721: ;Main true block ;keep :
+	jr c, Palya_Kovetkezo_edblock6011
+Palya_Kovetkezo_ctb6009: ;Main true block ;keep :
 	ld a, $0
 	ld [Palya], a
-Palya_Kovetkezo_edblock14723:
-Palya_Kovetkezo_edblock14697:
+Palya_Kovetkezo_edblock6011:
+Palya_Kovetkezo_edblock5986:
 	call Palya_Ujra
 	ret
 end_procedure_Palya_Kovetkezo:
@@ -16752,12 +16990,12 @@ block1:
 main_block_begin_:
 	; FŐPROGRAM  Egyszeri indítási beállítások 
 	call ProgramInit
-MainProgram_while14726:
-MainProgram_loopstart14730:
+MainProgram_while6013:
+MainProgram_loopstart6017:
 	; Binary clause core: NOTEQUALS
 	; Comparing two non-equal numerical values
-	jp MainProgram_ctb14727
-MainProgram_ctb14727: ;Main true block ;keep :
+	jp MainProgram_ctb6014
+MainProgram_ctb6014: ;Main true block ;keep :
 	; külső ciklus: főmenü -> játék -> (GAME OVER) -> főmenü  Főmenü 
 	call Start_Kepernyo
 	; Új játék: életek, idő, pálya alaphelyzetbe 
@@ -16773,22 +17011,22 @@ MainProgram_ctb14727: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MainProgram_edblock16533
-MainProgram_ctb16531: ;Main true block ;keep :
+	jr nz,MainProgram_edblock6980
+MainProgram_ctb6978: ;Main true block ;keep :
 	ld a, $0
 	ld [Palya], a
-MainProgram_edblock16533:
+MainProgram_edblock6980:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a,[Kod_Palya]
 	cp $ff
-	jr z, MainProgram_edblock16539
-MainProgram_ctb16537: ;Main true block ;keep :
+	jr z, MainProgram_edblock6985
+MainProgram_ctb6983: ;Main true block ;keep :
 	; két játékos: az első 2P pálya (a játékban LVL 01) 
 	; generic assign 
 	ld a,[Kod_Palya]
 	ld [Palya], a
-MainProgram_edblock16539:
+MainProgram_edblock6985:
 	; LEVEL CODE: a kódos pálya 
 	ld a, $ff
 	ld [Kod_Palya], a
@@ -16805,14 +17043,14 @@ MainProgram_edblock16539:
 	; generic assign 
 	ld a,[Keret_Y_Pos]
 	ld [Keret_Elozo_Y_Pos], a
-MainProgram_while16542:
-MainProgram_loopstart16546:
+MainProgram_while6987:
+MainProgram_loopstart6991:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jp nz,MainProgram_edblock16545
-MainProgram_ctb16543: ;Main true block ;keep :
+	jp nz,MainProgram_edblock6990
+MainProgram_ctb6988: ;Main true block ;keep :
 	; ENEMY_Szekcio: nincs külön kezdő-késleltetés (a C64 sem csinál ilyet)  1. Bemenetkezelés: billentyűzet/joystick lekérdezése, és ez alapján a Keret rács-pozíciójának módosítása 
 	call GE_GetKeyboard
 	call GE_GetJoysticks
@@ -16824,13 +17062,13 @@ MainProgram_ctb16543: ;Main true block ;keep :
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17441
-MainProgram_ctb17439: ;Main true block ;keep :
+	jr z, MainProgram_edblock6997
+MainProgram_ctb6995: ;Main true block ;keep :
 	; P = PAUSE (minden pályán): minden megáll a következő P-ig 
 	call Pause_Kezel
 	call GE_GetKeyboard
 	call GE_GetJoysticks
-MainProgram_edblock17441:
+MainProgram_edblock6997:
 	ld a, $0
 	ld [v_Kilep], a
 	; Binary clause core: NOTEQUALS
@@ -16841,11 +17079,11 @@ MainProgram_edblock17441:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17447
-MainProgram_ctb17445: ;Main true block ;keep :
+	jr z, MainProgram_edblock7002
+MainProgram_ctb7000: ;Main true block ;keep :
 	ld a, $1
 	ld [v_Kilep], a
-MainProgram_edblock17447:
+MainProgram_edblock7002:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -16854,22 +17092,22 @@ MainProgram_edblock17447:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17453
-MainProgram_ctb17451: ;Main true block ;keep :
+	jr z, MainProgram_edblock7007
+MainProgram_ctb7005: ;Main true block ;keep :
 	ld a, $1
 	ld [v_Kilep], a
-MainProgram_edblock17453:
+MainProgram_edblock7007:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[v_Kilep]
 	cp $1
-	jr nz,MainProgram_edblock17459
-MainProgram_ctb17457: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7012
+MainProgram_ctb7010: ;Main true block ;keep :
 	; ESC vagy Q = kilépés a főmenübe (megerősítéssel), minden módban 
 	call Exit_Kerdes
 	call GE_GetKeyboard
 	call GE_GetJoysticks
-MainProgram_edblock17459:
+MainProgram_edblock7012:
 	; A véletlenszám-generátort minden képkockán pörgetjük, hogy a későbbi vírus-terjedés iránya se legyen 
 	; generic assign 
 	call Random_RandomByte
@@ -16885,8 +17123,8 @@ MainProgram_edblock17459:
 	ld b,a
 	ld a,[Keret_Mozog_Frame]
 	cp b
-	jp c, MainProgram_edblock17465
-MainProgram_ctb17463: ;Main true block ;keep :
+	jp c, MainProgram_edblock7017
+MainProgram_ctb7015: ;Main true block ;keep :
 	ld a, $0
 	ld [Keret_Mozog_Frame], a
 	; 1. Keret: 1. joystick (vagy kurzorbillentyűk) 
@@ -16902,11 +17140,11 @@ MainProgram_ctb17463: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_edblock17557
-MainProgram_ctb17555: ;Main true block ;keep :
+	jr z, MainProgram_edblock7022
+MainProgram_ctb7020: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Bal], a
-MainProgram_edblock17557:
+MainProgram_edblock7022:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -16915,11 +17153,11 @@ MainProgram_edblock17557:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_edblock17563
-MainProgram_ctb17561: ;Main true block ;keep :
+	jr z, MainProgram_edblock7027
+MainProgram_ctb7025: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Jobb], a
-MainProgram_edblock17563:
+MainProgram_edblock7027:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -16928,11 +17166,11 @@ MainProgram_edblock17563:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_edblock17569
-MainProgram_ctb17567: ;Main true block ;keep :
+	jr z, MainProgram_edblock7032
+MainProgram_ctb7030: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Fel], a
-MainProgram_edblock17569:
+MainProgram_edblock7032:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $1
@@ -16941,11 +17179,11 @@ MainProgram_edblock17569:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_edblock17575
-MainProgram_ctb17573: ;Main true block ;keep :
+	jr z, MainProgram_edblock7037
+MainProgram_ctb7035: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Le], a
-MainProgram_edblock17575:
+MainProgram_edblock7037:
 	ld a, $1
 	ld [localVariable_Jatekos_Mozog_j], a
 	call Jatekos_Mozog
@@ -16953,8 +17191,8 @@ MainProgram_edblock17575:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jp nz,MainProgram_edblock17581
-MainProgram_ctb17579: ;Main true block ;keep :
+	jp nz,MainProgram_edblock7042
+MainProgram_ctb7040: ;Main true block ;keep :
 	; 2. Keret: 2. joystick (vagy WASD) 
 	ld a, $0
 	ld [Joy_Bal], a
@@ -16969,9 +17207,9 @@ MainProgram_ctb17579: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_localfailed17617
-	jr MainProgram_ctb17613
-MainProgram_localfailed17617: ;keep:
+	jr z, MainProgram_localfailed7048
+	jr MainProgram_ctb7045
+MainProgram_localfailed7048: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
@@ -16981,11 +17219,11 @@ MainProgram_localfailed17617: ;keep:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17615
-MainProgram_ctb17613: ;Main true block ;keep :
+	jr z, MainProgram_edblock7047
+MainProgram_ctb7045: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Bal], a
-MainProgram_edblock17615:
+MainProgram_edblock7047:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $2
@@ -16994,9 +17232,9 @@ MainProgram_edblock17615:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_localfailed17624
-	jr MainProgram_ctb17620
-MainProgram_localfailed17624: ;keep:
+	jr z, MainProgram_localfailed7054
+	jr MainProgram_ctb7051
+MainProgram_localfailed7054: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
@@ -17006,11 +17244,11 @@ MainProgram_localfailed17624: ;keep:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17622
-MainProgram_ctb17620: ;Main true block ;keep :
+	jr z, MainProgram_edblock7053
+MainProgram_ctb7051: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Jobb], a
-MainProgram_edblock17622:
+MainProgram_edblock7053:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $2
@@ -17018,9 +17256,9 @@ MainProgram_edblock17622:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_localfailed17631
-	jr MainProgram_ctb17627
-MainProgram_localfailed17631: ;keep:
+	jr z, MainProgram_localfailed7060
+	jr MainProgram_ctb7057
+MainProgram_localfailed7060: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
@@ -17030,11 +17268,11 @@ MainProgram_localfailed17631: ;keep:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17629
-MainProgram_ctb17627: ;Main true block ;keep :
+	jr z, MainProgram_edblock7059
+MainProgram_ctb7057: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Fel], a
-MainProgram_edblock17629:
+MainProgram_edblock7059:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $2
@@ -17043,9 +17281,9 @@ MainProgram_edblock17629:
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_localfailed17638
-	jr MainProgram_ctb17634
-MainProgram_localfailed17638: ;keep:
+	jr z, MainProgram_localfailed7066
+	jr MainProgram_ctb7063
+MainProgram_localfailed7066: ;keep:
 	; ; logical OR, second chance
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
@@ -17055,16 +17293,16 @@ MainProgram_localfailed17638: ;keep:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17636
-MainProgram_ctb17634: ;Main true block ;keep :
+	jr z, MainProgram_edblock7065
+MainProgram_ctb7063: ;Main true block ;keep :
 	ld a, $1
 	ld [Joy_Le], a
-MainProgram_edblock17636:
+MainProgram_edblock7065:
 	ld a, $2
 	ld [localVariable_Jatekos_Mozog_j], a
 	call Jatekos_Mozog
-MainProgram_edblock17581:
-MainProgram_edblock17465:
+MainProgram_edblock7042:
+MainProgram_edblock7017:
 	; TŰZ: 1. játékos = SPACE / 1. joystick, 2. játékos = E (billentyűzetes teszt) / 2. joystick 
 	; generic assign 
 	call Tuz
@@ -17075,8 +17313,8 @@ MainProgram_edblock17465:
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,MainProgram_edblock17643
-MainProgram_ctb17641: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7071
+MainProgram_ctb7069: ;Main true block ;keep :
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	ld a, $2
@@ -17085,11 +17323,11 @@ MainProgram_ctb17641: ;Main true block ;keep :
 	ld [GE_JoyCode], a
 	call GE_Joystick
 	or a
-	jr z, MainProgram_edblock17661
-MainProgram_ctb17659: ;Main true block ;keep :
+	jr z, MainProgram_edblock7076
+MainProgram_ctb7074: ;Main true block ;keep :
 	ld a, $1
 	ld [Tuz2_Most], a
-MainProgram_edblock17661:
+MainProgram_edblock7076:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -17098,18 +17336,18 @@ MainProgram_edblock17661:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_edblock17667
-MainProgram_ctb17665: ;Main true block ;keep :
+	jr z, MainProgram_edblock7081
+MainProgram_ctb7079: ;Main true block ;keep :
 	ld a, $1
 	ld [Tuz2_Most], a
-MainProgram_edblock17667:
-MainProgram_edblock17643:
+MainProgram_edblock7081:
+MainProgram_edblock7071:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Tuz1_Most]
 	cp $1
-	jr nz,MainProgram_edblock17673
-MainProgram_ctb17671: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7086
+MainProgram_ctb7084: ;Main true block ;keep :
 	; minden módban: a 0. sorban (ikon-menü) a tűz eszközt választ, a pályán a kiválasztott eszközt rakja le 
 	ld a, $1
 	ld [localVariable_Jatekos_Tuz_j], a
@@ -17123,13 +17361,13 @@ MainProgram_ctb17671: ;Main true block ;keep :
 	ld a,[Tuz1_Volt]
 	ld [localVariable_Jatekos_Tuz_volt], a
 	call Jatekos_Tuz
-MainProgram_edblock17673:
+MainProgram_edblock7086:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Tuz2_Most]
 	cp $1
-	jr nz,MainProgram_edblock17679
-MainProgram_ctb17677: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7091
+MainProgram_ctb7089: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Jatekos_Tuz_j], a
 	; generic assign 
@@ -17142,7 +17380,7 @@ MainProgram_ctb17677: ;Main true block ;keep :
 	ld a,[Tuz2_Volt]
 	ld [localVariable_Jatekos_Tuz_volt], a
 	call Jatekos_Tuz
-MainProgram_edblock17679:
+MainProgram_edblock7091:
 	; generic assign 
 	ld a,[Tuz1_Most]
 	ld [Tuz1_Volt], a
@@ -17157,26 +17395,26 @@ MainProgram_edblock17679:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_eblock17684
-MainProgram_ctb17683: ;Main true block ;keep :
+	jr z, MainProgram_eblock7095
+MainProgram_ctb7094: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Rot1_Volt]
 	or a
-	jr nz,MainProgram_edblock17698
-MainProgram_ctb17696: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7101
+MainProgram_ctb7099: ;Main true block ;keep :
 	; M = az 1., Y = a 2. játékos eszközváltása (körbe), új lenyomásra 
 	ld a, $1
 	ld [localVariable_Eszkoz_Kovetkezo_j], a
 	call Eszkoz_Kovetkezo
-MainProgram_edblock17698:
+MainProgram_edblock7101:
 	ld a, $1
 	ld [Rot1_Volt], a
-	jr MainProgram_edblock17685
-MainProgram_eblock17684:
+	jr MainProgram_edblock7096
+MainProgram_eblock7095:
 	ld a, $0
 	ld [Rot1_Volt], a
-MainProgram_edblock17685:
+MainProgram_edblock7096:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -17185,32 +17423,32 @@ MainProgram_edblock17685:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_eblock17704
-MainProgram_ctb17703: ;Main true block ;keep :
+	jr z, MainProgram_eblock7106
+MainProgram_ctb7105: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Rot2_Volt]
 	or a
-	jr nz,MainProgram_edblock17730
-MainProgram_ctb17728: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7112
+MainProgram_ctb7110: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Ket_Jatekos]
 	cp $1
-	jr nz,MainProgram_edblock17742
-MainProgram_ctb17740: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7117
+MainProgram_ctb7115: ;Main true block ;keep :
 	ld a, $2
 	ld [localVariable_Eszkoz_Kovetkezo_j], a
 	call Eszkoz_Kovetkezo
-MainProgram_edblock17742:
-MainProgram_edblock17730:
+MainProgram_edblock7117:
+MainProgram_edblock7112:
 	ld a, $1
 	ld [Rot2_Volt], a
-	jr MainProgram_edblock17705
-MainProgram_eblock17704:
+	jr MainProgram_edblock7107
+MainProgram_eblock7106:
 	ld a, $0
 	ld [Rot2_Volt], a
-MainProgram_edblock17705:
+MainProgram_edblock7107:
 	; Binary clause core: NOTEQUALS
 	; Compare with pure num / var optimization
 	; generic assign 
@@ -17219,24 +17457,24 @@ MainProgram_edblock17705:
 	ld [GE_KeyCode],hl
 	call GE_Pressed
 	or a
-	jr z, MainProgram_eblock17748
-MainProgram_ctb17747: ;Main true block ;keep :
+	jr z, MainProgram_eblock7122
+MainProgram_ctb7121: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[R_Volt]
 	or a
-	jr nz,MainProgram_edblock17762
-MainProgram_ctb17760: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7128
+MainProgram_ctb7126: ;Main true block ;keep :
 	; R = újrakezdés, egy életbe kerül (egy lenyomás = egy élet) 
 	call Palya_Bukas
-MainProgram_edblock17762:
+MainProgram_edblock7128:
 	ld a, $1
 	ld [R_Volt], a
-	jr MainProgram_edblock17749
-MainProgram_eblock17748:
+	jr MainProgram_edblock7123
+MainProgram_eblock7122:
 	ld a, $0
 	ld [R_Volt], a
-MainProgram_edblock17749:
+MainProgram_edblock7123:
 	; 1b. Pumpa-animáció SZÁMOLÁSI fázisa 
 	call PumpakSzamol
 	call Akna_Lep
@@ -17244,31 +17482,31 @@ MainProgram_edblock17749:
 	; Compare with pure num / var optimization
 	ld a,[Akna_Robban]
 	cp $1
-	jr nz,MainProgram_edblock17769
-MainProgram_ctb17767: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7134
+MainProgram_ctb7132: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	or a
-	jr nz,MainProgram_edblock17781
-MainProgram_ctb17779: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7139
+MainProgram_ctb7137: ;Main true block ;keep :
 	call Akna_Robbant
-MainProgram_edblock17781:
-MainProgram_edblock17769:
+MainProgram_edblock7139:
+MainProgram_edblock7134:
 	; lejárt akna: robban (zuhanó meteor alatt megvárja a becsapódást)  2. Várakozás a képfrissítésre (raszter-megszakítás), hogy a rajzolás ne okozzon szakadást/villogást a 
 	call Frame_Sync
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	cp $1
-	jr nz,MainProgram_eblock17786
-MainProgram_ctb17785: ;Main true block ;keep :
+	jr nz,MainProgram_eblock7143
+MainProgram_ctb7142: ;Main true block ;keep :
 	; 3. Rajzolási fázis. Ha a meteor ÉPPEN zuhan, a Meteor_Keret_Frissit fut a Keret_Frissit HELYETT 
 	call Meteor_Keret_Frissit
-	jr MainProgram_edblock17787
-MainProgram_eblock17786:
+	jr MainProgram_edblock7144
+MainProgram_eblock7143:
 	call Keret_Frissit
-MainProgram_edblock17787:
+MainProgram_edblock7144:
 	; 4. Pumpák termelése: Termel_Utem képkockánként egyszer 
 	; 16 bit BINOP
 	; RHS is pure 
@@ -17287,20 +17525,20 @@ MainProgram_edblock17787:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, MainProgram_edblock17795
-MainProgram_ctb17793: ;Main true block ;keep :
+	jr c, MainProgram_edblock7150
+MainProgram_ctb7148: ;Main true block ;keep :
 	; generic assign 
 	ld hl,$00
 	; Loading pointer
 	ld [Termel_Frame],hl
 	call Pumpak_Termelnek
-MainProgram_edblock17795:
+MainProgram_edblock7150:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Virus_Engedve]
 	cp $1
-	jp nz,MainProgram_edblock17801
-MainProgram_ctb17799: ;Main true block ;keep :
+	jp nz,MainProgram_edblock7155
+MainProgram_ctb7153: ;Main true block ;keep :
 	; 5-6. VÍRUS: csak ha az aktuális pályán engedélyezett  5. KOLÓNIA-VETÉS - C64: aqualiquex.ras "if raster::newSecond" 
 	; 16 bit BINOP
 	; RHS is pure 
@@ -17318,8 +17556,8 @@ MainProgram_ctb17799: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, MainProgram_edblock17865
-MainProgram_ctb17863: ;Main true block ;keep :
+	jr c, MainProgram_edblock7160
+MainProgram_ctb7158: ;Main true block ;keep :
 	; generic assign 
 	ld hl,$00
 	; Loading pointer
@@ -17354,26 +17592,26 @@ MainProgram_ctb17863: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	or a
-	jr nz,MainProgram_edblock17895
-MainProgram_ctb17893: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7166
+MainProgram_ctb7164: ;Main true block ;keep :
 	; Binary clause core: LESS
 	; Compare with pure num / var optimization
 	ld a,[Enemy_Kolonia_db]
 	cp $a
-	jr nc,MainProgram_eblock17908
-MainProgram_ctb17907: ;Main true block ;keep :
+	jr nc,MainProgram_eblock7170
+MainProgram_ctb7169: ;Main true block ;keep :
 	call Enemy_Random_Lerak
 	; 'a:=a + const'  optimization 
 	ld a,[Enemy_Kolonia_db]
 	add  a,$1
 	ld [Enemy_Kolonia_db], a
-	jr MainProgram_edblock17909
-MainProgram_eblock17908:
+	jr MainProgram_edblock7171
+MainProgram_eblock7170:
 	ld a, $1
 	ld [Enemy_Terjedhet], a
-MainProgram_edblock17909:
-MainProgram_edblock17895:
-MainProgram_edblock17865:
+MainProgram_edblock7171:
+MainProgram_edblock7166:
+MainProgram_edblock7160:
 	; 6. NÖVEKEDÉS + TERJEDÉS - C64 
 	; 'a:=a + const'  optimization 
 	ld a,[Enemy_Frame]
@@ -17385,33 +17623,33 @@ MainProgram_edblock17865:
 	ld b,a
 	ld a,[Enemy_Frame]
 	cp b
-	jr c, MainProgram_edblock17917
-MainProgram_ctb17915: ;Main true block ;keep :
+	jr c, MainProgram_edblock7177
+MainProgram_ctb7175: ;Main true block ;keep :
 	ld a, $0
 	ld [Enemy_Frame], a
 	call Enemyk_Mukodnek
-MainProgram_edblock17917:
-MainProgram_edblock17801:
+MainProgram_edblock7177:
+MainProgram_edblock7155:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Aktiv]
 	or a
-	jp nz,MainProgram_edblock17923
-MainProgram_localsuccess18001: ;keep:
+	jp nz,MainProgram_edblock7182
+MainProgram_localsuccess7183: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Engedve]
 	cp $1
-	jp nz,MainProgram_edblock17923
-MainProgram_ctb17921: ;Main true block ;keep :
+	jp nz,MainProgram_edblock7182
+MainProgram_ctb7180: ;Main true block ;keep :
 	; Binary clause core: GREATER
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Figy]
 	or a
-	jp c, MainProgram_eblock18005
-	jp z, MainProgram_eblock18005
-MainProgram_ctb18004: ;Main true block ;keep :
+	jp c, MainProgram_eblock7187
+	jp z, MainProgram_eblock7187
+MainProgram_ctb7186: ;Main true block ;keep :
 	; 7. METEOR trigger: ha NEM zuhan épp, visszaszámlálás a következő random zuhanásig  figyelmeztetés: a "METEOR !" villog (~2 mp), a végén indul a meteor 
 	; 'a:=a + const'  optimization 
 	ld a,[Meteor_Figy]
@@ -17423,8 +17661,8 @@ MainProgram_ctb18004: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Figy]
 	or a
-	jr nz,MainProgram_edblock18047
-MainProgram_ctb18045: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7193
+MainProgram_ctb7191: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[Meteor_TX]
@@ -17450,22 +17688,22 @@ MainProgram_ctb18045: ;Main true block ;keep :
 	; a következő: véletlenül 10..30 mp múlva 
 	ld a, $1
 	ld [Meteor_Kij_Kell], a
-MainProgram_edblock18047:
-	jp MainProgram_edblock18006
-MainProgram_eblock18005:
+MainProgram_edblock7193:
+	jp MainProgram_edblock7188
+MainProgram_eblock7187:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Meteor_Kij_Kell]
 	cp $1
-	jr nz,MainProgram_edblock18054
-MainProgram_ctb18052: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7199
+MainProgram_ctb7197: ;Main true block ;keep :
 	; a meteor lezuhant: a kijelző vissza 
 	ld a, $1
 	ld [localVariable_Meteor_Kijelzo_teljes], a
 	call Meteor_Kijelzo
 	ld a, $0
 	ld [Meteor_Kij_Kell], a
-MainProgram_edblock18054:
+MainProgram_edblock7199:
 	; 'a:=a + const'  optimization 
 	ld a,[Meteor_Fr]
 	add  a,$1
@@ -17474,8 +17712,8 @@ MainProgram_edblock18054:
 	; Binary clause core: GREATEREQUAL
 	; Compare with pure num / var optimization
 	cp $32
-	jr c, MainProgram_edblock18060
-MainProgram_ctb18058: ;Main true block ;keep :
+	jr c, MainProgram_edblock7204
+MainProgram_ctb7202: ;Main true block ;keep :
 	; másodperc-számláló (50 képkocka) 
 	ld a, $0
 	ld [Meteor_Fr], a
@@ -17486,8 +17724,8 @@ MainProgram_ctb18058: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	or a
-	jr nz,MainProgram_eblock18073
-MainProgram_ctb18072: ;Main true block ;keep :
+	jr nz,MainProgram_eblock7208
+MainProgram_ctb7207: ;Main true block ;keep :
 	; generic assign 
 	; RHS is pure numeric optimisation
 	ld a,[Meteor_KX]
@@ -17510,7 +17748,7 @@ MainProgram_ctb18072: ;Main true block ;keep :
 	ld [Meteor_Figy], a
 	; jön a figyelmeztetés 
 	; Assigning a string : Ir_Szoveg
-	ld hl,MainProgram_stringassignstr18079
+	ld hl,MainProgram_stringassignstr7212
 	; Loading pointer
 	ld [Ir_Szoveg],hl
 	call Ir_Hossza
@@ -17536,21 +17774,21 @@ MainProgram_ctb18072: ;Main true block ;keep :
 	ld [Meteor_TX], a
 	ld a, $0
 	ld [Meteor_Lat], a
-	jr MainProgram_edblock18074
-MainProgram_eblock18073:
+	jr MainProgram_edblock7209
+MainProgram_eblock7208:
 	ld a, $0
 	ld [localVariable_Meteor_Kijelzo_teljes], a
 	call Meteor_Kijelzo
-MainProgram_edblock18074:
-MainProgram_edblock18060:
-MainProgram_edblock18006:
-MainProgram_edblock17923:
+MainProgram_edblock7209:
+MainProgram_edblock7204:
+MainProgram_edblock7188:
+MainProgram_edblock7182:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Coop]
 	cp $1
-	jr nz,MainProgram_eblock18083
-MainProgram_ctb18082: ;Main true block ;keep :
+	jr nz,MainProgram_eblock7216
+MainProgram_ctb7215: ;Main true block ;keep :
 	; 8. CÉL: ha elértük az aktuális pálya célját (a pumpák száma), jön a következő pálya  co-op: a két játékos pumpáinak ÖSSZEGE számít 
 	; generic assign 
 	; Variable is 16-bit
@@ -17574,8 +17812,8 @@ MainProgram_ctb18082: ;Main true block ;keep :
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jr nz,MainProgram_edblock18145
-MainProgram_ctb18143: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7222
+MainProgram_ctb7220: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	; Variable is 16-bit
@@ -17586,19 +17824,19 @@ MainProgram_ctb18143: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, MainProgram_edblock18157
-MainProgram_ctb18155: ;Main true block ;keep :
+	jr c, MainProgram_edblock7227
+MainProgram_ctb7225: ;Main true block ;keep :
 	call Palya_Kovetkezo
-MainProgram_edblock18157:
-MainProgram_edblock18145:
-	jr MainProgram_edblock18084
-MainProgram_eblock18083:
+MainProgram_edblock7227:
+MainProgram_edblock7222:
+	jr MainProgram_edblock7217
+MainProgram_eblock7216:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jr nz,MainProgram_edblock18164
-MainProgram_ctb18162: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7233
+MainProgram_ctb7231: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	; Variable is 16-bit
@@ -17609,19 +17847,19 @@ MainProgram_ctb18162: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, MainProgram_edblock18176
-MainProgram_ctb18174: ;Main true block ;keep :
+	jr c, MainProgram_edblock7238
+MainProgram_ctb7236: ;Main true block ;keep :
 	ld a, $1
 	ld [Gyoztes], a
 	call Palya_Kovetkezo
-MainProgram_edblock18176:
-MainProgram_edblock18164:
+MainProgram_edblock7238:
+MainProgram_edblock7233:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jr nz,MainProgram_edblock18182
-MainProgram_ctb18180: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7243
+MainProgram_ctb7241: ;Main true block ;keep :
 	; Binary clause core: GREATEREQUAL
 	; Binary clause INTEGER: GREATEREQUAL
 	; Variable is 16-bit
@@ -17632,15 +17870,15 @@ MainProgram_ctb18180: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr c, MainProgram_edblock18194
-MainProgram_ctb18192: ;Main true block ;keep :
+	jr c, MainProgram_edblock7248
+MainProgram_ctb7246: ;Main true block ;keep :
 	; versus: aki előbb eléri a célt (255), nyer 
 	ld a, $2
 	ld [Gyoztes], a
 	call Palya_Kovetkezo
-MainProgram_edblock18194:
-MainProgram_edblock18182:
-MainProgram_edblock18084:
+MainProgram_edblock7248:
+MainProgram_edblock7243:
+MainProgram_edblock7217:
 	; Binary clause core: EQUALS
 	; Binary clause INTEGER: EQUALS
 	ld hl,$00
@@ -17650,8 +17888,8 @@ MainProgram_edblock18084:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nz,MainProgram_edblock18200
-MainProgram_localsuccess18209: ;keep:
+	jr nz,MainProgram_edblock7253
+MainProgram_localsuccess7254: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
@@ -17663,8 +17901,8 @@ MainProgram_localsuccess18209: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nc,MainProgram_edblock18200
-MainProgram_ctb18198: ;Main true block ;keep :
+	jr nc,MainProgram_edblock7253
+MainProgram_ctb7251: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Binary clause INTEGER: EQUALS
 	ld hl,$00
@@ -17674,8 +17912,8 @@ MainProgram_ctb18198: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nz,MainProgram_edblock18214
-MainProgram_localsuccess18216: ;keep:
+	jr nz,MainProgram_edblock7259
+MainProgram_localsuccess7260: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
@@ -17687,24 +17925,24 @@ MainProgram_localsuccess18216: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nc,MainProgram_edblock18214
-MainProgram_ctb18212: ;Main true block ;keep :
+	jr nc,MainProgram_edblock7259
+MainProgram_ctb7257: ;Main true block ;keep :
 	; nincs pumpa és nincs pénz egyre sem: vége a pályának - versus: ha MINDKÉT játékos így jár 
 	call Palya_Bukas
-MainProgram_edblock18214:
-MainProgram_edblock18200:
+MainProgram_edblock7259:
+MainProgram_edblock7253:
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Versus]
 	cp $1
-	jr nz,MainProgram_edblock18221
-MainProgram_ctb18219: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7265
+MainProgram_ctb7263: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Compare with pure num / var optimization
 	ld a,[Jatek_Fut]
 	cp $1
-	jr nz,MainProgram_edblock18279
-MainProgram_ctb18277: ;Main true block ;keep :
+	jr nz,MainProgram_edblock7270
+MainProgram_ctb7268: ;Main true block ;keep :
 	; Binary clause core: EQUALS
 	; Binary clause INTEGER: EQUALS
 	ld hl,$00
@@ -17714,8 +17952,8 @@ MainProgram_ctb18277: ;Main true block ;keep :
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nz,MainProgram_eblock18307
-MainProgram_localsuccess18318: ;keep:
+	jr nz,MainProgram_eblock7274
+MainProgram_localsuccess7276: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
@@ -17727,14 +17965,14 @@ MainProgram_localsuccess18318: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nc,MainProgram_eblock18307
-MainProgram_ctb18306: ;Main true block ;keep :
+	jr nc,MainProgram_eblock7274
+MainProgram_ctb7273: ;Main true block ;keep :
 	; versus: aki "elfogyott" (nincs pumpája és pénze sem egyre), veszít - a másik nyer 
 	ld a, $2
 	ld [Gyoztes], a
 	call Palya_Kovetkezo
-	jr MainProgram_edblock18308
-MainProgram_eblock18307:
+	jr MainProgram_edblock7275
+MainProgram_eblock7274:
 	; Binary clause core: EQUALS
 	; Binary clause INTEGER: EQUALS
 	ld hl,$00
@@ -17744,8 +17982,8 @@ MainProgram_eblock18307:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nz,MainProgram_edblock18324
-MainProgram_localsuccess18326: ;keep:
+	jr nz,MainProgram_edblock7282
+MainProgram_localsuccess7283: ;keep:
 	; ; logical AND, second requirement
 	; Binary clause core: LESS
 	; Binary clause INTEGER: LESS
@@ -17757,21 +17995,21 @@ MainProgram_localsuccess18326: ;keep:
 	pop de
 	xor a ; clear carry
 	sbc hl,de
-	jr nc,MainProgram_edblock18324
-MainProgram_ctb18322: ;Main true block ;keep :
+	jr nc,MainProgram_edblock7282
+MainProgram_ctb7280: ;Main true block ;keep :
 	ld a, $1
 	ld [Gyoztes], a
 	call Palya_Kovetkezo
-MainProgram_edblock18324:
-MainProgram_edblock18308:
-MainProgram_edblock18279:
-MainProgram_edblock18221:
-	jp MainProgram_while16542
-MainProgram_edblock16545:
-MainProgram_loopend16547:
-	jp MainProgram_while14726
-MainProgram_edblock14729:
-MainProgram_loopend14731:
+MainProgram_edblock7282:
+MainProgram_edblock7275:
+MainProgram_edblock7270:
+MainProgram_edblock7265:
+	jp MainProgram_while6987
+MainProgram_edblock6990:
+MainProgram_loopend6992:
+	jp MainProgram_while6013
+MainProgram_edblock6016:
+MainProgram_loopend6018:
 main_block_end_:
 ; Copy BC bytes from HL to DE.
 z80_copy_mem:

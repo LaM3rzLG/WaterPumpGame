@@ -1,0 +1,35 @@
+# SZABALY.BIN a resources\szovegek\szabaly.txt-bol (a tobboldalas JATEKSZABALY kepernyo).
+# Formatum: oldalanként rekordok (x, y, szoveg, 0), oldal vege 254, a legvegen 255; 2048 bajtra kiegeszitve.
+# A jatek inditaskor az U2 $9000-ra tolti, a Szabaly_Kepernyo a Pause_Buf-ba ($E700) masolja es onnan irja ki.
+# x = "k": kozepre igazitas a font.bin szelessegei alapjan. Hasznalat: powershell -File resources\make_szabaly_bin.ps1
+$dir = Split-Path $PSScriptRoot -Parent
+$MERET = 2048
+$font = [IO.File]::ReadAllBytes("$dir\resources\tvc_sprites\font.bin")
+$N = ($font.Length - 1) / (1 + ($font[0] -band 15))
+# a font 123..140-es kodjai (a betukeszlet-szerkeszto sorrendje); kodpontokkal, hogy a szkript kodolasa ne szamitson
+$HU = -join (@(0xC1,0xC9,0xCD,0xD3,0xD6,0x150,0xDA,0xDC,0x170,0xE1,0xE9,0xED,0xF3,0xF6,0x151,0xFA,0xFC,0x171) | ForEach-Object { [char]$_ })
+$b = New-Object System.Collections.Generic.List[byte]
+$hiba = 0; $oldal = 0
+foreach ($s in Get-Content "$dir\resources\szovegek\szabaly.txt" -Encoding UTF8) {
+  if ($s -like '# --- OLDAL*') { if ($oldal -gt 0) { $b.Add(254) }; $oldal++; continue }
+  if ($s.Trim() -eq '' -or $s.StartsWith('#')) { continue }
+  $r = $s.Split(';', 3)
+  if ($r.Count -ne 3) { "HIBA: rossz sor: $s"; $hiba = 1; continue }
+  $kod = @(); $px = 0
+  foreach ($c in $r[2].ToCharArray()) {
+    $k = $HU.IndexOf($c)
+    if ($k -ge 0) { $kod += 123 + $k } elseif ([int]$c -ge 32 -and [int]$c -le 122) { $kod += [int]$c } else { "HIBA: nem kiirhato karakter '$c': $s"; $hiba = 1; continue }
+    $i = $kod[-1] - 32; if ($i -lt $N) { $px += $font[1 + $i] }
+  }
+  $szel = [Math]::Floor(($px + 3) / 4)
+  if ($r[0] -eq 'k') { $x = [Math]::Floor((64 - $szel) / 2) } else { $x = [int]$r[0] }
+  $y = [int]$r[1]
+  if ($x + $szel -gt 64 -or $y -gt 232) { "HIBA: kilog a kepernyorol ($($x + $szel) byte): $s"; $hiba = 1 }
+  $b.Add([byte]$x); $b.Add([byte]$y); foreach ($v in $kod) { $b.Add([byte]$v) }; $b.Add(0)
+}
+$b.Add(255)
+if ($b.Count -gt $MERET) { "HIBA: a szoveg tul hosszu: $($b.Count) bajt (max $MERET)"; $hiba = 1 }
+if ($hiba -eq 1) { exit 1 }
+while ($b.Count -lt $MERET) { $b.Add(0) }
+[IO.File]::WriteAllBytes("$dir\SZABALY.BIN", $b.ToArray())
+"SZABALY.BIN: $MERET bajt, $oldal oldal, ebbol hasznalt: " + ($b.IndexOf(255) + 1)

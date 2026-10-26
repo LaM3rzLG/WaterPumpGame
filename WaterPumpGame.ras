@@ -86,16 +86,18 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 
 		Font_Data						:	array[1] of byte at $E100;	/* SPRITES.BIN: tvc_sprites\font.bin */
 		Spr_Nev							:	array[13] of byte = (11,115,112,114,105,116,101,115,46,98,105,110,0);	/* 11, sprites.bin, 0 */
-		Spr_Hossz						:	integer = 9814;	/* a SPRITES.BIN hossza (make_sprites_bin.ps1 kiirja) */
+		Spr_Hossz						:	integer = 9321;	/* a SPRITES.BIN hossza (make_sprites_bin.ps1 kiirja) */
 		Spr_Buf							:	pointer;
 		Pal_Nev							:	array[12] of byte = (10,112,97,108,121,97,107,46,98,105,110,0);	/* 10, palyak.bin, 0 */
 		Fajl_Nev						:	pointer;
-		Szov_Nev						:	array[12] of byte = (10,115,122,111,118,101,103,46,98,105,110,0);	/* 10, szoveg.bin, 0 */
 		Szov_P							:	pointer;
 		Men_Nev							:	array[12] of byte = (10,109,101,110,117,49,54,46,98,105,110,0);	/* 10, menu16.bin, 0 */
+		Szab_Nev						:	array[13] of byte = (11,115,122,97,98,97,108,121,46,98,105,110,0);	/* 11, szabaly.bin, 0 (U2 $9000, 4096 byte) */
+		Szab_Src						:	integer = 0;	/* Szabaly_Kepernyo: az aktualis oldal kezdete az U2-ben (oldalankent a Pause_Buf-ba masolva, max 2048 byte/oldal) */
 		Kep_Src, Kep_Dst			:	integer = 0;	/* Kep_Rajz: forras (U2) es cel (kepernyo) */
 		Kep_W, Kep_H, Menu16		:	byte = 0;	/* Menu16 = 1: a 16 szinu fomenu van a kepernyon */
 		Fajl_Hossz, Fajl_Cel			:	integer;
+		Fajl_Hiba						:	byte = 0;	/* Fajl_Olvas: 0 = jo, 1 = nem nyilik, 2 = olvasasi hiba */
 		LvlStr						:	string = ("LVL:");	/* két játékos: rövid LEVEL a pálya alatt */
 		SlashStr					:	string = ("/");
 		LivesStr					:	string = ("LIVES:");
@@ -285,18 +287,20 @@ BombaIkon					:	GE::Sprite;	/* 8x8 bombaikon az árak sorához */
 		Talaj2Map						:	byte=12;
 		Talaj3Map						:	byte=13;	/* 3. talajtípus: BLOKKOLÓ, törhetetlen (a térképszerkesztő x mezője) */
 				VirusMap						:	byte=20;		/* vírusos mező alapértéke (Map[]=20+faz) */
-		/* SAJÁT SZÖVEGKIÍRÓ (Ir) változói - a Font_Data az U3-ban (font.bin: 1 byte magasság + 91 byte szélesség + kép) */
+		/* SAJÁT SZÖVEGKIÍRÓ (Ir) változói - a Font_Data az U3-ban (font.bin: 1 byte magasság + 109 byte szélesség + kép; kód 32..122 ASCII, 123..140 ÁÉÍÓÖŐÚÜŰáéíóöőúüű) */
 		Ir_X							:	byte = 0;		/* be: x (byte); ki: a következő szabad byte-oszlop */
 		Ir_Y							:	byte = 0;
 		Ir_Szoveg						:	^byte;
 		Ir_Cim							:	integer = 0;
 		Ir_Szel							:	byte = 0;
 		Ir_Hossz						:	byte = 0;		/* az Ir_Hossza eredménye (byte) */
+		Ir_Px, Ir_Bdb, Ir_H				:	byte = 0;		/* Ir: pixel-pozicio a soron belul, a szoveg szelessege byte-ban, a font magassaga */
+		Ir_Sor0, Ir_Dst					:	integer = 0;	/* Ir: az aktualis fontsor kezdete, a kepernyo-cel */
 		JegyStr							:	array[2] of byte = (48, 0);	/* egy számjegy kiírásához */
 		Jegy_Sz							:	byte = 2;		/* a számjegyek szélessége (a "0" szélessége) */
 		Cash_X, Cash2_X, Pump_X, Pump2_X, Lives_X, Ossz_X, Cel_X	:	byte;		/* a HUD-számok helye (a feliratok után, láncolva) */
 
-/* SAJÁT SZÖVEGKIÍRÓ, VÁLTOZÓ SZÉLESSÉGŰ BETŰKKEL (a GE::WriteText helyett): Font_Data = 1 byte magasság + 91 byte szélesség (ASCII 32..122, 1 vagy 2 byte) + kép (91*2 = 182 byte széles, soronként); x byte-ban, y sorban; utána Ir_X = a következő szabad byte-oszlop */
+/* SAJAT SZOVEGKIIRO: aranyos, pixelszelessegu betuk, 1 bites font (font_1bit.ps1), sorpuffer 1460h */
 Procedure Ir(Ir_X, Ir_Y : global byte; Ir_Szoveg : global ^byte);
 	begin
 		asm("
@@ -316,53 +320,90 @@ Procedure Ir(Ir_X, Ir_Y : global byte; Ir_Szoveg : global ^byte);
 			ld d,0
 			add hl,de
 			ld [Ir_Cim],hl
-Ir_Kov:
+			ld [Ir_Dst],hl
 			ld hl,[Ir_Szoveg]
+			call Ir_PxSzel
+			ld [Ir_Bdb],a
+			ld a,[Font_Data]
+			and 15
+			ld [Ir_H],a
+			ld hl,Font_Data+110
+			ld [Ir_Sor0],hl
+			ld a,[Ir_H]
+			ld b,a
+IrSorCiklus:
+			push bc
+			ld hl,$1460
+			ld b,34
+			xor a
+Ir_Torol:
+			ld (hl),a
+			inc hl
+			djnz Ir_Torol
+			ld [Ir_Px],a
+			ld hl,[Ir_Szoveg]
+Ir_Kar:
 			ld a,(hl)
 			or a
-			jp z,Ir_Vege
+			jr z,Ir_Kiir
 			inc hl
-			ld [Ir_Szoveg],hl
 			cp 32
-			jr c,Ir_Kov
-			cp 123
-			jr nc,Ir_Kov
+			jr c,Ir_Kar
+			cp 141
+			jr nc,Ir_Kar
 			sub 32
+			push hl
 			ld e,a
 			ld d,0
 			ld hl,Font_Data+1
 			add hl,de
 			ld a,(hl)
 			or a
-			jr nz,Ir_SzelOk
-			inc a
-Ir_SzelOk:
+			jr z,Ir_KarVege
 			ld [Ir_Szel],a
-			ld hl,Font_Data+92
+			ld hl,[Ir_Sor0]
 			add hl,de
-			add hl,de
-			ld de,[Ir_Cim]
-			ld a,[Font_Data]
+			ld d,(hl)
+			ld e,0
+			ld a,[Ir_Px]
+			ld c,a
+			and 7
+			jr z,Ir_NemTol
 			ld b,a
-Ir_Sor:
-			push bc
-			push hl
-			push de
-			ld a,[Ir_Szel]
+Ir_Tol:
+			srl d
+			rr e
+			djnz Ir_Tol
+Ir_NemTol:
+			ld a,c
+			rrca
+			rrca
+			rrca
+			and 31
 			ld c,a
 			ld b,0
-			ldir
-			pop de
-			pop hl
-			ld bc,182
+			ld hl,$1460
 			add hl,bc
-			ex de,hl
-			ld bc,64
-			add hl,bc
-			ex de,hl
-			pop bc
-			djnz Ir_Sor
+			ld a,(hl)
+			or d
+			ld (hl),a
+			inc hl
+			ld a,(hl)
+			or e
+			ld (hl),a
 			ld a,[Ir_Szel]
+			ld c,a
+			ld a,[Ir_Px]
+			add a,c
+			ld [Ir_Px],a
+Ir_KarVege:
+			pop hl
+			jr Ir_Kar
+Ir_Kiir:
+			call IrKiirRut
+			pop bc
+			djnz IrSorCiklus
+			ld a,[Ir_Bdb]
 			ld e,a
 			ld d,0
 			ld hl,[Ir_Cim]
@@ -371,7 +412,75 @@ Ir_Sor:
 			ld a,[Ir_X]
 			add a,e
 			ld [Ir_X],a
-			jp Ir_Kov
+			jp Ir_Vege
+IrKiirRut:
+			ld a,[Ir_Bdb]
+			or a
+			jr z,IrSorVege
+			ld b,a
+			ld hl,$1460
+			ld de,[Ir_Dst]
+Ir_Byte:
+			ld a,(hl)
+			and $F0
+			ld (de),a
+			inc de
+			dec b
+			jr z,IrSorVege
+			ld a,(hl)
+			rlca
+			rlca
+			rlca
+			rlca
+			and $F0
+			ld (de),a
+			inc de
+			inc hl
+			djnz Ir_Byte
+IrSorVege:
+			ld hl,[Ir_Dst]
+			ld de,64
+			add hl,de
+			ld [Ir_Dst],hl
+			ld hl,[Ir_Sor0]
+			ld de,109
+			add hl,de
+			ld [Ir_Sor0],hl
+			ret
+Ir_PxSzel:
+			ld c,0
+Ir_PKov:
+			ld a,(hl)
+			or a
+			jr z,Ir_PVege
+			inc hl
+			cp 32
+			jr c,Ir_PKov
+			cp 141
+			jr nc,Ir_PKov
+			sub 32
+			push hl
+			ld e,a
+			ld d,0
+			ld hl,Font_Data+1
+			add hl,de
+			ld a,(hl)
+			add a,c
+			ld c,a
+			pop hl
+			jr Ir_PKov
+Ir_PVege:
+			ld l,c
+			ld h,0
+			inc hl
+			inc hl
+			inc hl
+			srl h
+			rr l
+			srl h
+			rr l
+			ld a,l
+			ret
 Ir_Vege:
 		");
 	end;
@@ -381,33 +490,7 @@ Procedure Ir_Hossza(Ir_Szoveg : global ^byte);
 	begin
 		asm("
 			ld hl,[Ir_Szoveg]
-			ld c,0
-Ir_HKov:
-			ld a,(hl)
-			or a
-			jr z,Ir_HVege
-			inc hl
-			cp 32
-			jr c,Ir_HKov
-			cp 123
-			jr nc,Ir_HKov
-			sub 32
-			push hl
-			ld e,a
-			ld d,0
-			ld hl,Font_Data+1
-			add hl,de
-			ld a,(hl)
-			or a
-			jr nz,Ir_HOk
-			inc a
-Ir_HOk:
-			add a,c
-			ld c,a
-			pop hl
-			jr Ir_HKov
-Ir_HVege:
-			ld a,c
+			call Ir_PxSzel
 			ld [Ir_Hossz],a
 		");
 	end;
@@ -432,13 +515,49 @@ Procedure Ir_Jegy(d : byte; sor : byte);
 		Ir(Ir_X, sor, #JegyStr);
 	end;
 
+/* Fajl_Nev olvasasa a Spr_Buf-ba, a Lemmings betoltojenek ROM-hivasaival; hiba: keret piros = nem nyilik, lila = olvasasi hiba */
+Procedure Fajl_Olvas();
+	begin
+		asm("
+			xor a
+			ld [Fajl_Hiba],a
+			ld ($0B0A),a
+			ld de,[Fajl_Nev]
+			rst $30
+			db $D3
+			jr z,Fajl_Olvas_nyitva
+			ld a,1
+			ld [Fajl_Hiba],a
+			jr Fajl_Olvas_vege
+Fajl_Olvas_nyitva:
+			ld de,[Spr_Buf]
+			ld bc,[Fajl_Hossz]
+			rst $30
+			db $D2
+			or a
+			jr z,Fajl_Olvas_zar
+			ld a,2
+			ld [Fajl_Hiba],a
+Fajl_Olvas_zar:
+			xor a
+			rst $30
+			db $D4
+Fajl_Olvas_vege:
+		");
+		if (Fajl_Hiba<>0) then
+			begin;
+			GE::SetBorder(GE::BORDER_MAGENTA);
+			if (Fajl_Hiba=1) then GE::SetBorder(GE::BORDER_RED);
+			TVC::ReadKey();
+			GE::SetBorder(GE::BORDER_YELLOW);
+			end;
+	end;
+
 /* Egy fajl betoltese lemezrol a $8000-es pufferbe, majd masolas az U3-ba (Fajl_Nev, Fajl_Hossz, Fajl_Cel); a GE::Init ELOTT, alap lapozassal */
 Procedure Fajl_Betolt();
 	begin
 		Spr_Buf:=$8000;
-		TVC::OpenFile(Fajl_Nev);
-		TVC::BlockRead(Spr_Buf, Fajl_Hossz);
-		TVC::CloseFile();
+		Fajl_Olvas();
 		asm("
 			di
 			ld a,($3)
@@ -467,14 +586,14 @@ Procedure Spr_Betolt();
 		Fajl_Hossz:=Pal_Hossz;
 		Fajl_Cel:=$EF00;
 		Fajl_Betolt();
-		Fajl_Nev:=#Szov_Nev;
-		Fajl_Hossz:=1024;
-		Fajl_Cel:=$FA00;
-		Fajl_Betolt();
+		Spr_Buf:=$9000;				/* a jatekszabaly az U2-ben marad (a $8000-at a palyamentes hasznalja) */
+		Fajl_Nev:=#Szab_Nev;
+		Fajl_Hossz:=4096;
+		Fajl_Olvas();
 		Spr_Buf:=$A000;
-		TVC::OpenFile(#Men_Nev);
-		TVC::BlockRead(Spr_Buf, 6196);
-		TVC::CloseFile();
+		Fajl_Nev:=#Men_Nev;
+		Fajl_Hossz:=6196;
+		Fajl_Olvas();
 	end;
 
 /* Játék indításakor egyszer lefutó beállítások */
@@ -779,6 +898,17 @@ Procedure Jelolo_Rajz(j : byte);
 			end;
 	end;
 
+/* A j. jatekos eszkoz-ikonjai a 0. sorban (csak az engedelyezettek, hezag nelkul) + a jelolo */
+Procedure Ikon_Sor(j : byte);
+	begin;
+		Ikon_Rajz(j, 0);
+		if (Fal_Engedve=1) then Ikon_Rajz(j, 1);
+		if (Bomba_Engedve=1) then Ikon_Rajz(j, 2);
+		if (Akna_Engedve=1) then Ikon_Rajz(j, 3);
+		if (VirusLe_Engedve=1) then Ikon_Rajz(j, 4);
+		Jelolo_Rajz(j);
+	end;
+
 /* Árak középen, soronként középre igazítva: pumpa ikon : ár / bevétel (y=4), fal ikon : ár (y=14), bomba ikon : ár (y=24); a 0. sor (a pálya fölött) = eszköz-választó ikonok + jelölő (P1 bal, P2 jobb) - csak pályabetöltéskor */
 Procedure Arak_OSD();
 	var ax, w, bx, sor : byte;
@@ -796,19 +926,8 @@ Procedure Arak_OSD();
 		Ir(Ir_X, 4, #SlashStr);		/* / a pumpa ára után, mögötte a bevétel (termelés/pumpa) */
 		HUD_Num3(Pumpa_termel, Ir_X, 4);
 		/* az eszköz-ikonok a 0. sorban: a fal és a bomba csak ha az adott pályán engedélyezett */
-		Ikon_Rajz(1, 0);
-		if (Fal_Engedve=1) then Ikon_Rajz(1, 1);
-		if (Bomba_Engedve=1) then Ikon_Rajz(1, 2);
-		if (Akna_Engedve=1) then Ikon_Rajz(1, 3);
-		Jelolo_Rajz(1);
-		if (Ket_Jatekos=1) then
-			begin;
-			Ikon_Rajz(2, 0);
-			if (Fal_Engedve=1) then Ikon_Rajz(2, 1);
-			if (Bomba_Engedve=1) then Ikon_Rajz(2, 2);
-			if (Akna_Engedve=1) then Ikon_Rajz(2, 3);
-			Jelolo_Rajz(2);
-			end;
+		Ikon_Sor(1);
+		if (Ket_Jatekos=1) then Ikon_Sor(2);
 		Ir_Hossza(#ColonStr);			/* a fal- és a bomba-sor a saját szélessége szerint középre (soronként középre igazítva) */
 		w:=Ir_Hossz+3+Jegy_Sz*4;		/* ikon + hézag (3) + ":" + 4 jegy */
 		bx:=64-w;
@@ -1442,7 +1561,7 @@ Procedure Keret_MoveDown();
 /* Rövid "tick" digi hang a pumpa lerakásakor (ha épp nem szól a bomba hangja); a hang végét a Frame_Sync állítja le */
 Procedure Tick_Hang();
 	begin;
-		if (Digi_Aktiv=0) then
+		if (Digi_Aktiv=7) then
 			begin;
 			GE::DigiSoundOn(GE::DIGI_FREQ_4_KHZ, GE::DIGI_TYPE_2x4BIT);
 			GE::PlayDigiSound(#TickSFX);
@@ -2305,44 +2424,70 @@ Function Tuz() : byte;
 		returnvalue(r);
 	end;
 
-/* JELMAGYARÁZAT-képernyő (a főmenüben a 2-es billentyű): a játékelemek leírása, SPACE-re vissza a főmenübe */
-Procedure Jelmagyarazat_Kepernyo();
+/* Jelmagyarázat-ikon a szabály-képernyőn (SZABALY.BIN 253-as rekord): i = 0 pumpa, 1 talaj, 2 kráter, 3 szikla, 4 fal, 5 keret, 6 vírus, 7 bomba, 8 akna (make_szabaly_bin.ps1) */
+Procedure Szov_Ikon(i, x, y : byte);
+	begin;
+		if (i=5) then
+			begin;
+			Keret.X:=x-1;
+			Keret.Y:=y;
+			Keret.SetPosition;
+			Keret.SaveBackground;
+			Keret.Draw;
+			end
+		else
+			begin;
+			Ikon_D:=#Pumpa_Data+3;
+			if (i=1) then Ikon_D:=#Talaj1_Data+3;
+			if (i=2) then Ikon_D:=#Talaj2_Data+3;
+			if (i=3) then Ikon_D:=#Talaj3_Data+3;
+			if (i=4) then Ikon_D:=#Fal_Data+3;
+			if (i=6) then Ikon_D:=Enemy_FazPtr_Tab[4];
+			if (i=7) then Ikon_D:=#BombaIkon_Data+3;
+			if (i=8) then Ikon_D:=#Akna_Data+195;
+			Ikon_Kep(x, y, Ikon_D);
+			end;
+	end;
+
+/* Szöveg-rekordok kiírása a Szov_P-től (x, y, szöveg, 0 ... ; 253, ikon, x, y = ikon) a 254 (oldal vége) vagy 255 (vége) jelig; a Szov_P a jelen marad */
+Procedure Szov_Kiir();
 	var x, y, c : byte;
 	begin;
-		GE::ClearScreen(0);
-		Ikon_D:=#Pumpa_Data+3;
-		Ikon_Kep(2, 10, Ikon_D);
-		Ikon_D:=#Talaj1_Data+3;
-		Ikon_Kep(2, 21, Ikon_D);
-		Ikon_D:=#Talaj3_Data+3;
-		Ikon_Kep(2, 42, Ikon_D);
-		Ikon_D:=#Fal_Data+3;
-		Ikon_Kep(2, 63, Ikon_D);
-		Ikon_D:=Enemy_FazPtr_Tab[4];
-		Ikon_Kep(2, 105, Ikon_D);
-		Ikon_D:=#BombaIkon_Data+3;
-		Ikon_Kep(2, 136, Ikon_D);
-		Keret.X:=1;
-		Keret.Y:=84;
-		Keret.SetPosition;
-		Keret.SaveBackground;
-		Keret.Draw;
-		/* a szovegek a SZOVEG.BIN-bol ($FA00): x, y, szoveg, 0 ... 255 */
-		Szov_P:=$FA00;
 		x:=Szov_P[0];
-		while (x<>255) do
+		while (x<254) do
 			begin;
-			y:=Szov_P[1];
-			Szov_P:=Szov_P+2;
-			Ir(x, y, Szov_P);
-			c:=Szov_P[0];
-			while (c<>0) do
+			if (x=253) then
 				begin;
-				Szov_P:=Szov_P+1;
+				Szov_Ikon(Szov_P[1], Szov_P[2], Szov_P[3]);
+				Szov_P:=Szov_P+4;
+				end
+			else
+				begin;
+				y:=Szov_P[1];
+				Szov_P:=Szov_P+2;
+				Ir(x, y, Szov_P);
 				c:=Szov_P[0];
+				while (c<>0) do
+					begin;
+					Szov_P:=Szov_P+1;
+					c:=Szov_P[0];
+					end;
+				Szov_P:=Szov_P+1;
 				end;
-			Szov_P:=Szov_P+1;
 			x:=Szov_P[0];
+			end;
+	end;
+
+/* Tűz/SPACE új lenyomására vár (előbb az elengedésre, hogy a nyomva tartott gomb ne lapozzon tovább) */
+Procedure Tuz_Var();
+	begin;
+		Start_Wait:=1;
+		while (Start_Wait = 1) do
+			begin;
+			GE::GetKeyboard();
+			GE::GetJoysticks();
+			if (Tuz()=0) then Start_Wait:=0;
+			GE::WaitForSync();
 			end;
 		Start_Wait:=1;
 		while (Start_Wait = 1) do
@@ -2351,6 +2496,43 @@ Procedure Jelmagyarazat_Kepernyo();
 			GE::GetJoysticks();
 			if (Tuz()=1) then Start_Wait:=0;
 			GE::WaitForSync();
+			end;
+	end;
+
+/* JÁTÉKSZABÁLY (a főmenü 5. pontja; sztori, szabály, jelmagyarázat ikonokkal): a SZABALY.BIN az U2 $9000-on; a Pause_Buf-ba másolva, oldalanként kiírva, tűzre lapoz */
+Procedure Szabaly_Kepernyo();
+	var c : byte;
+	begin;
+		Szab_Src:=$9000;
+		c:=0;
+		while (c<>255) do
+			begin;
+			asm("
+				di
+				ld a,$B0
+				out ($2),a
+				ld hl,[Szab_Src]
+				ld de,$E700
+				ld bc,2048
+				ldir
+				ld a,$90
+				out ($2),a
+				ei
+			");
+			Szov_P:=$E700;
+			GE::ClearScreen(0);
+			Szov_Kiir();
+			c:=Szov_P[0];
+			Szov_P:=Szov_P+1;
+			asm("
+				ld hl,[Szov_P]
+				ld de,$1900
+				add hl,de
+				ld de,[Szab_Src]
+				add hl,de
+				ld [Szab_Src],hl
+			");
+			Tuz_Var();
 			end;
 	end;
 
@@ -2365,6 +2547,7 @@ Procedure Kep_Rajz(x, y : byte);
 			ld a,[Kep_H]
 			ld b,a
 KepR_sor:
+			; kitolto sor: a TRSE a kod elhelyezkedesetol fuggoen osszeomlik, ez a sor eltolja
 			push bc
 			di
 			ld a,$B0
@@ -3115,7 +3298,7 @@ Procedure Start_Kepernyo();
 				if (Menu_Sor=4) then
 					begin;
 					Mod4();
-					Jelmagyarazat_Kepernyo();
+					Szabaly_Kepernyo();
 					Fomenu_Rajz();
 					Menu_Pumpa(Menu_Sor, Menu_Faz);
 					t:=1;							/* a visszalépő tűz se aktiváljon azonnal */
