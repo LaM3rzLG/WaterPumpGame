@@ -9,6 +9,8 @@
 #   ep.sh gepel '<szoveg>'        - "=Shift+2  ~=ESC (Mac End)  |=Enter  <=Backspace  NAGYBETU=Shift+betu
 #   ep.sh gomb <nev[+nev]> [ms]   - nyomva tartas: enter esc fel le bal jobb szokoz shift bs tab ctrl alt F1.. vagy 1 karakter
 #   ep.sh ablak [nev.png]         - regi mod: az ablak fotoja (csak ha ugyanazon az asztalon latszik)
+#   ep.sh memablak [zar]          - TVC memoriaterkep-ablak megnyitasa / bezarasa (EP menu: Debug, Cmd+Shift+M)
+#   ep.sh memkep [nev.png]        - a memoriaterkep-ablak kepe (takarva / masik asztalon is)
 # Inditas utan: a TVC logo egy gombnyomasra tunik el (ep.sh gomb szokoz), betoltes: ep.sh gepel 'load"waterpg"|'
 set -u
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -54,8 +56,10 @@ case "${1:-}" in
   mem)    need; F=$(abs "${5:-mem.bin}"); send 1 "mem ${2:?seg} ${3:?kezdo} ${4:?hossz} $F" && echo "$F" ;;
   gepel)  need; send 2 "gepel ${2:-}" ;;
   gomb)   need; send 2 "gomb ${2:?nev} ${3:-100}" ;;
+  memablak) need; send 1 "memablak ${2:-}" ;;
+  memkep) need; F=$(abs "${2:-memkep.png}"); send 1 "memkep $F" && echo "$F" ;;
   ablak)  need; tool epwin; F=$(abs "${2:-ablak.png}"); ID=$("$BIN/epwin" "$(pid)")
           screencapture -x -o -l "$ID" "$F" 2>/dev/null || { echo "az EP ablaka nem lathato (masik asztalon / lekicsinyitve)"; exit 2; }
           sips -Z 768 "$F" >/dev/null && echo "$F" ;;
-  *)      sed -n '2,13p' "$0"; exit 1 ;;
+  *)      sed -n '2,15p' "$0"; exit 1 ;;
 esac

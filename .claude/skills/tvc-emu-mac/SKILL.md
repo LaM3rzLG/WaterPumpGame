@@ -124,6 +124,27 @@ key press (`ep.sh gomb szokoz 150`), then BASIC `ok`. Load from BASIC: `ep.sh ge
 menu appears ~12-14 s later (yellow border = loading). Check with `kep` before typing. `ext2` = VT-DOS CLI: DOS
 commands only, loading does NOT work there, leave with ESC (`~`). In BASIC LOAD the name may be abbreviated with `*`.
 Lua is NOT available: the build uses `nolua=1`.
+- `memablak [zar]` / `memkep [f.png]` - the TVC memory-map window (below); `memkep` renders it off-screen, works
+  when it is covered or on another desktop.
+- **`gepel` drops keys** (seen 2026-10-28; the pre-memmap binary does it too, so it is older): often the first key,
+  sometimes keys in the middle, worse on repeated commands. Workaround: start with a space and CHECK with `kep`
+  before relying on it. Likely fix (not done): longer key hold/gap in `claudeTap_` (now 60 ms) in gui.cpp.
+
+## TVC memory-map window (2026-10-28, patch `patches/ep128emu-memmap.patch`, on top of the other two)
+Live view of the physical RAM pages, 10 refreshes/s, ~4 % extra CPU, only while open. Open: EP menu
+**Debug -> TVC memoriaterkep (Cmd+Shift+M)** or `ep.sh memablak`. Code: `gui/memmap.cpp/.hpp` (own Fl_Double_Window,
+no gui dependency) + hooks in `gui/gui.cpp` (menu item, `memablak`/`memkep` commands, copy loop in
+`fltkCheckCallback` via `vm.getSegmentPtr(F8..FC)` + `vm.getMemoryPage(0..3)`, no VM lock - read-only).
+- Layout: U0, U1, U2, U3 stacked (each 128x128 bytes, one row = $80), VID next to U2; right column = details panel
+  (hovered byte; click = hex dump of that $80 row) and legend. Window resizable (picture scales; when shrunk a pixel
+  shows the max of the bytes it covers). Left labels: what each CPU page holds now (green = usual, orange = other,
+  e.g. SYS ROM); yellow frame = segment currently paged in.
+- Per page header: used = non-zero bytes / 16384 (%), largest zero run ("max. szabad") - zero bytes of that run are
+  tinted green. Verified in the game menu: U1 free from $6BE2, U2 from $B834, U3 $D44E-$E0E1 = matches the build.
+- Value colours: 0 dark, $01 blue -> $40 cyan -> $80 green -> $C0 yellow -> $FF white. Pause button freezes it.
+- Planned next (agreed with the user): symbol names from the build's .sym in the hover/details; activity heat map
+  (read/write/execute, switchable - needs a memory-access hook); "sections" and "differs from loaded file" views
+  together with the Mac port of memoria_terkep.ps1. User wants a section-based fill level there too.
 Install after a rebuild: `rm` the old binary, `cp` the new one into `~/Documents/EP128TVCEmu/ep128emu.app/Contents/MacOS/`
 and `codesign --force -s -` it (a binary copied over the old one is refused by launchd: "error 162").
 Old binary kept as `ep128emu.bak_claude`. macOS permissions given to VS Code: Screen Recording, Accessibility.
