@@ -3,12 +3,12 @@
 # Szinek (palettaindex): fekete=1, zold=2, kek=3, szurke=ATLATSZO (mindket maszkbit 1, adat 0).
 # Pixel n (0..3, balrol) egy bajton belul: szin also bitje -> bit(7-n), felso bitje -> bit(3-n).
 param(
-  [string]$In  = "$PSScriptRoot\images\nukebomb.bmp",
-  [string]$Out = "$PSScriptRoot\tvc_sprites\nukebomb.bin"
+  [string]$In  = (Join-Path $PSScriptRoot "images/nukebomb.bmp"),
+  [string]$Out = (Join-Path $PSScriptRoot "tvc_sprites/nukebomb.bin")
 )
-Add-Type -AssemblyName System.Drawing
-$bmp = [System.Drawing.Bitmap]::FromFile($In)
-$w = $bmp.Width; $h = $bmp.Height
+. (Join-Path $PSScriptRoot 'kozos.ps1')
+$bmp = Bmp-Olvas (Resolve-Path $In).Path
+$w = $bmp.W; $h = $bmp.H
 if ($w % 4 -ne 0) { throw "A szelesseg ($w px) nem osztható 4-gyel" }
 $wb = $w / 4
 
@@ -28,7 +28,7 @@ for ($y=0; $y -lt $h; $y++) {
   for ($bx=0; $bx -lt $wb; $bx++) {
     $mask = 0; $data = 0
     for ($n=0; $n -lt 4; $n++) {
-      $i = Get-Idx ($bmp.GetPixel($bx*4+$n, $y)); $count[$i]++
+      $i = Get-Idx (Bmp-Pixel $bmp ($bx*4+$n) $y); $count[$i]++
       if ($i -eq 0) { $mask = $mask -bor (0x80 -shr $n) -bor (0x08 -shr $n) }
       else {
         if ($i -band 1) { $data = $data -bor (0x80 -shr $n) }
@@ -38,7 +38,6 @@ for ($y=0; $y -lt $h; $y++) {
     $bytes.Add([byte]$mask); $bytes.Add([byte]$data)
   }
 }
-$bmp.Dispose()
 [System.IO.File]::WriteAllBytes($Out, $bytes.ToArray())
 "{0}x{1} px = {2} byte x {1} sor; {3} byte -> {4}" -f $w,$h,$wb,$bytes.Count,$Out
 "atlatszo/fekete/zold/kek pixel: $($count -join ' / ')"

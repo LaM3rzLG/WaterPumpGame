@@ -1,13 +1,13 @@
 # SZOVEG.BIN a resources\szovegek\jatekszabaly.txt-bol (a JATEKSZABALY / HOW TO USE kepernyo szovegei).
 # Formatum: rekordonkent  x, y, szoveg (ASCII; az ekezetes betuk 123..140), 0  ... vegen 255. Mindig 1024 bajtra kiegeszitve (a jatek Szov_Hossz = 1024).
 # A jatek inditaskor az U3-ba toltí ($FA00), a Jelmagyarazat_Kepernyo onnan irja ki. Hasznalat: powershell -File resources\make_szoveg_bin.ps1
-$dir = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'kozos.ps1')
 $MERET = 1024
 $b = New-Object System.Collections.Generic.List[byte]
 $hiba = 0
 # a font 123..140-es kodjai (a betukeszlet-szerkeszto sorrendje); kodpontokkal, hogy a szkript kodolasa ne szamitson
 $HU = -join (@(0xC1,0xC9,0xCD,0xD3,0xD6,0x150,0xDA,0xDC,0x170,0xE1,0xE9,0xED,0xF3,0xF6,0x151,0xFA,0xFC,0x171) | ForEach-Object { [char]$_ })
-foreach ($s in Get-Content "$dir\resources\szovegek\jatekszabaly.txt" -Encoding UTF8) {
+foreach ($s in Get-Content (Ut "resources/szovegek/jatekszabaly.txt") -Encoding UTF8) {
   if ($s.Trim() -eq '' -or $s.StartsWith('#')) { continue }
   $r = $s.Split(';', 3)
   if ($r.Count -ne 3) { "HIBA: rossz sor: $s"; $hiba = 1; continue }
@@ -22,5 +22,5 @@ $b.Add(255)
 if ($b.Count -gt $MERET) { "HIBA: a szoveg tul hosszu: $($b.Count) bajt (max $MERET)"; $hiba = 1 }
 if ($hiba -eq 1) { exit 1 }
 while ($b.Count -lt $MERET) { $b.Add(0) }
-[IO.File]::WriteAllBytes("$dir\SZOVEG.BIN", $b.ToArray())
+[IO.File]::WriteAllBytes((Ut "SZOVEG.BIN"), $b.ToArray())
 "SZOVEG.BIN: $MERET bajt (`$FA00..`$FDFF), ebbol hasznalt: " + ($b.IndexOf(255) + 1)

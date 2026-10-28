@@ -16,7 +16,7 @@ for($k=0;$k -lt 6;$k++){
     $dl+=(3*$n); $n++
   }
 }
-$f=Join-Path $PSScriptRoot "..\nukebomb.ras"
+$f=Join-Path (Split-Path $PSScriptRoot -Parent) 'nukebomb.ras'
 $lines=[IO.File]::ReadAllText($f,[Text.Encoding]::UTF8) -split "`n"
 for($i=0;$i -lt $lines.Length;$i++){
  $l=$lines[$i]

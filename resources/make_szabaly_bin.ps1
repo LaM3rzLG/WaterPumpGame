@@ -8,13 +8,13 @@
 # Kimenet: oldalankent rekordok (x, y, szoveg, 0) es ikon-rekordok (253, ikon, x, y), oldal vege 254, a legvegen 255; 4096 bajtra kiegeszitve.
 # A jatek inditaskor az U2 $9000-ra tolti, a Szabaly_Kepernyo oldalankent a Pause_Buf-ba ($E700) masolja es onnan irja ki.
 # Hasznalat: powershell -File resources\make_szabaly_bin.ps1   (majd make_dsk.ps1)
-$dir = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'kozos.ps1')
 $MERET = 4096                         # U2 $9000..$9FFF; egy oldal legfeljebb 2048 bajt (a Pause_Buf merete)
 $BAL = 2; $JOBB = 63                  # a bekezdesek bal szele es a jobb hatar (byte-oszlop)
 $CIM_Y = 2; $ELSO_Y = 18; $LAB_Y = 226; $ALJ = 219   # a cim, az elso szovegsor, a labsor helye; a szoveg utolso sora legfeljebb itt kezdodhet
 $TETEL_X = 8                           # a jelmagyarazat-tetelek szovegenek bal szele
 $IKON = @{ PUMPA = 0; TALAJ = 1; KRATER = 2; SZIKLA = 3; FAL = 4; KERET = 5; VIRUS = 6; BOMBA = 7; AKNA = 8 }   # a Szov_Ikon (WaterPumpGame.ras) sorszamai
-$font = [IO.File]::ReadAllBytes("$dir\resources\tvc_sprites\font.bin")
+$font = [IO.File]::ReadAllBytes((Ut "resources/tvc_sprites/font.bin"))
 $N = ($font.Length - 1) / (1 + ($font[0] -band 15))
 # a font 123..140-es kodjai (a betukeszlet-szerkeszto sorrendje); kodpontokkal, hogy a szkript kodolasa ne szamitson
 $HU = -join (@(0xC1,0xC9,0xCD,0xD3,0xD6,0x150,0xDA,0xDC,0x170,0xE1,0xE9,0xED,0xF3,0xF6,0x151,0xFA,0xFC,0x171) | ForEach-Object { [char]$_ })
@@ -35,7 +35,7 @@ function Nagybetus([string]$s) { return ($s -cmatch '\p{Lu}') -and -not ($s -cma
 
 # oldalakra bontas
 $oldalak = @(); $akt = $null
-foreach ($s in Get-Content "$dir\resources\szovegek\szabaly.txt" -Encoding UTF8) {
+foreach ($s in Get-Content (Ut "resources/szovegek/szabaly.txt") -Encoding UTF8) {
   $s = $s.Trim()
   if ($s -match '^\d+\.\s*oldal$') { if ($akt) { $oldalak += ,$akt }; $akt = New-Object System.Collections.ArrayList; continue }
   if ($s -eq '' -or $s.StartsWith('#')) { continue }
@@ -81,5 +81,5 @@ $b.Add(255)
 if ($b.Count -gt $MERET) { "HIBA: a szoveg tul hosszu: $($b.Count) bajt (max $MERET)"; $hiba = 1 }
 if ($hiba -eq 1 -or $script:hiba -eq 1) { exit 1 }
 while ($b.Count -lt $MERET) { $b.Add(0) }
-[IO.File]::WriteAllBytes("$dir\SZABALY.BIN", $b.ToArray())
+[IO.File]::WriteAllBytes((Ut "SZABALY.BIN"), $b.ToArray())
 "SZABALY.BIN: $MERET bajt, $on oldal, ebbol hasznalt: " + ($b.IndexOf(255) + 1)

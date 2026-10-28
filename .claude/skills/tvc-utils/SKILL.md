@@ -41,14 +41,15 @@ TVC-hardver) NEM ide tartozik - arra a **tvc-trse** skill és a projekt `CLAUDE.
 ## Mac-en (2026-10-28 óta a második gép)
 
 - A HTML-eszközök bármely böngészőben futnak.
-- PowerShell 7: `pwsh` (`brew install powershell`). Macen kipróbálva és működik: `u3_boot_patch.ps1`,
-  `make_dsk.ps1` (a Mac build, `resources/build_mac.sh` hívja; a boot-szektor sablonja Macen
-  `~/Downloads/TVC/TVC_CEmu/roms/Lemmings.dsk`, `-Template`-tel megadva). A többi `make_*_bin`,
-  `palyak_bin`, `memoria_terkep` sima bájtmunka - valószínűleg megy, még nincs kipróbálva.
-- `System.Drawing`-ot használnak, Macen NEM futnak (Windowson csináld, vagy portolni kell):
-  `bmp_to_talaj.ps1`, `charset_export.ps1`, `charset_import.ps1`, `nukebomb_to_bin.ps1`, `palyak_import.ps1`.
-- Szkriptben Macen: `/` útvonal-elválasztó vagy `Join-Path`, `$env:TEMP` helyett `[IO.Path]::GetTempPath()`,
-  `powershell` helyett `pwsh`. A Mac-es build és eszközlánc részletei: **tvc-trse-mac** skill.
+- **A `resources\*.ps1` szkriptek KÖZÖSEK (2026-10-28):** Windowson `powershell -File resources\x.ps1` (5.1),
+  Macen `pwsh resources/x.ps1` (7). Mind a `resources\kozos.ps1`-et tölti be: `$Gyoker`, `$Mac`, `$Temp`, `$PsExe`,
+  `Ut 'resources/x.bin'` (relatív -> teljes út, `/` és `\` is jó), gépfüggő utak (`$TrseExe`, `$DskSablon`, `$Bongeszo`;
+  felülírható a gitből kihagyott `resources\gep_beallitas.ps1`-ben), és saját BMP-olvasó/író (`Bmp-Olvas`, `Bmp-Pixel`,
+  `Bmp-Ir`) a csak Windowsos `System.Drawing` helyett. Új szkriptnél is ezt használd; maradjon 5.1-kompatibilis
+  (BOM nélküli fájlban csak ASCII, nincs `??`/háromtagú `?:`). Gyerek-szkript: `& $PsExe -NoProfile -File ...`.
+  Macen bájtra azonos kimenettel kipróbálva: sprites/pályák/szabály/menu16/nuke/talaj/charset/pályaimport/make_dsk.
+  A `charset_export` feliratos PNG-előnézete csak Windowson készül. **Még nincs átírva: `memoria_terkep.ps1`**
+  (később, az EP-emulátoros munkával együtt); `build.ps1` Windows-only (Macen `build_mac.sh`). Részletek, csapdák: **tvc-trse-mac**.
 
 ## Fájlformátumok (a legfontosabbak - teljes leírás: `references/formats.md`)
 

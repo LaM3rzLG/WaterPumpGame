@@ -5,9 +5,12 @@
 param(
   [string]$Out = "WaterPumpGame.dsk",
   [string[]]$Files = @("WaterPumpGame.cas=WATERPG.CAS", "SPRITES.BIN=SPRITES.BIN", "PALYAK.BIN=PALYAK.BIN", "SZOVEG.BIN=SZOVEG.BIN", "MENU16.BIN=MENU16.BIN"),
-  [string]$Template = "C:\TVC\Cas\2025\Lemmings\Lemmings.dsk"   # mukodo lemezkep: ebbol a BOOT SZEKTORT (BPB + boot kod) vesszuk at, a tobbit kiuritjuk; "" = sajat, tiszta boot szektor
+  [string]$Template   # mukodo lemezkep: ebbol a BOOT SZEKTORT (BPB + boot kod) vesszuk at, a tobbit kiuritjuk; "" = sajat, tiszta boot szektor;
+                      # megadas nelkul: $DskSablon a kozos.ps1-bol (gepenkent mas: Windows C:\TVC\Cas\..., Mac ~/Downloads/TVC/...)
 )
-$root = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'kozos.ps1')
+if (-not $PSBoundParameters.ContainsKey('Template')) { $Template = $DskSablon }
+$root = $Gyoker
 $BPS = 512; $SPC = 2; $RES = 1; $NFAT = 2; $ROOTENT = 112; $TOTSEC = 1440; $SPF = 3; $SPT = 9; $HEADS = 2
 $img = New-Object byte[] ($TOTSEC * $BPS)
 # --- boot szektor (BPB a Lemmings.dsk-val azonos) ---

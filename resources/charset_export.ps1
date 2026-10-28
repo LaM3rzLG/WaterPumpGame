@@ -2,17 +2,23 @@
 # Formatum: GRAPHICS4 kep, 118 byte (= 472 px) szeles, 7 sor; 59 karakter egymas mellett, karakterenkent 2 byte (8 px).
 # Karakter-sorrend: ASCII 32..90 (szokoz ! " # $ % & ' ( ) * + , - . / 0-9 : ; < = > ? @ A-Z) - a GE WriteText (kod-32)*CharWidth.
 # Pixel n (0..3) egy bajton belul: szin = bit(7-n) + 2*bit(3-n). Szinek: 0 szurke C0C0C0, 1 fekete, 2 zold 04FF04, 3 kek 0000FF.
-param([string]$In = "$PSScriptRoot\tvc_sprites\CharSetGR4.bin", [string]$Out = "$PSScriptRoot\images\charset.bmp", [int]$ImgWidth = 118, [int]$CharW = 2)
-Add-Type -AssemblyName System.Drawing
+param([string]$In = (Join-Path $PSScriptRoot "tvc_sprites/CharSetGR4.bin"), [string]$Out = (Join-Path $PSScriptRoot "images/charset.bmp"), [int]$ImgWidth = 118, [int]$CharW = 2)
+. (Join-Path $PSScriptRoot 'kozos.ps1')
 $d = [IO.File]::ReadAllBytes($In)
 $h = [int]($d.Length / $ImgWidth); $w = $ImgWidth * 4
-$cols = @([Drawing.Color]::FromArgb(192,192,192), [Drawing.Color]::FromArgb(0,0,0), [Drawing.Color]::FromArgb(4,255,4), [Drawing.Color]::FromArgb(0,0,255))
-$bmp = New-Object Drawing.Bitmap $w, $h, ([Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$szin = @(0xC0C0C0, 0x000000, 0x04FF04, 0x0000FF)
+$px = New-Object int[] ($w * $h)
 for ($y=0; $y -lt $h; $y++) { for ($bx=0; $bx -lt $ImgWidth; $bx++) { $v = $d[$y*$ImgWidth+$bx]
-  for ($n=0; $n -lt 4; $n++) { $c = ((($v -shr (7-$n)) -band 1)) + 2*((($v -shr (3-$n)) -band 1)); $bmp.SetPixel($bx*4+$n, $y, $cols[$c]) } } }
-$bmp.Save($Out, [Drawing.Imaging.ImageFormat]::Bmp)
+  for ($n=0; $n -lt 4; $n++) { $c = ((($v -shr (7-$n)) -band 1)) + 2*((($v -shr (3-$n)) -band 1)); $px[$y*$w + $bx*4+$n] = $szin[$c] } } }
+Bmp-Ir $Out $w $h $px
+$nch = [int]($ImgWidth / $CharW); $cw = $CharW*4
+# elonezet (feliratos PNG): System.Drawing kell hozza - csak Windowson
+$vanRajz = $false
+if (-not $Mac) { try { Add-Type -AssemblyName System.Drawing -ErrorAction Stop; $vanRajz = $true } catch { } }
+if (-not $vanRajz) { "$Out : ${w}x${h} px, $nch karakter (${cw}x${h} px), ASCII 32..$(31+$nch)  (elonezet PNG csak Windowson keszul)"; exit 0 }
+$bmp = [Drawing.Bitmap]::FromFile($Out)
 # elonezet
-$z = 8; $cw = $CharW*4; $nch = [int]($ImgWidth / $CharW); $pw = $w*$z; $ph = $h*$z + 14
+$z = 8; $pw = $w*$z; $ph = $h*$z + 14
 $pv = New-Object Drawing.Bitmap $pw, $ph; $g = [Drawing.Graphics]::FromImage($pv); $g.Clear([Drawing.Color]::White)
 $g.InterpolationMode = 'NearestNeighbor'; $g.PixelOffsetMode = 'Half'; $g.DrawImage($bmp, 0, 0, $pw, $h*$z)
 $pen = New-Object Drawing.Pen ([Drawing.Color]::FromArgb(255,0,0)), 1

@@ -4,7 +4,8 @@
 # Utana: palyak_bin.ps1 (a palyak kozvetlenul a sprite-ok ala kerulnek), majd forditas.
 # Hasznalat: powershell -File resources\make_sprites_bin.ps1   [-NemIr: csak kiirja a kiosztast]
 param([switch]$NemIr)
-$root = Split-Path $PSScriptRoot -Parent
+. (Join-Path $PSScriptRoot 'kozos.ps1')
+$root = $Gyoker
 $list = @(
   @("resources\sfx\explosion.bin",          "ExplosionSFX"),
   @("resources\sfx\akna.bin",               "AknaSFX"),
@@ -26,7 +27,7 @@ $list = @(
 )
 $adat = @()
 $ossz = 0
-foreach ($e in $list) { $d = [IO.File]::ReadAllBytes((Join-Path $root $e[0])); $adat += ,$d; $ossz += $d.Length }
+foreach ($e in $list) { $d = [IO.File]::ReadAllBytes((Ut $e[0])); $adat += ,$d; $ossz += $d.Length }
 $base = 0x10000 - $ossz
 $buf = New-Object byte[] $ossz
 $cimek = @{}

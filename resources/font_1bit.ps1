@@ -5,13 +5,13 @@
 #   [92..]   = a kepek SORONKENT: sor r, karakter i -> [92 + r*91 + i], 1 byte = 8 pixel, bit7 = bal szelso pixel
 # A szelesseg: a legjobboldalibb hasznalt oszlop + 2 (1 pixel betukoz); szokoz es ures karakter: 4; a szamjegyek egyforma szelesek (HUD).
 # Hasznalat: powershell -File resources\font_1bit.ps1   (a regi font mentese: resources\tvc_sprites\font_regi4szin.bin)
-$dir = Split-Path $PSScriptRoot -Parent
-$f = "$dir\resources\tvc_sprites\font.bin"
+. (Join-Path $PSScriptRoot 'kozos.ps1')
+$f = Ut "resources/tvc_sprites/font.bin"
 $b = [IO.File]::ReadAllBytes($f)
 if ($b[0] -band 0x80) { "A font.bin mar az uj formatumu."; exit 0 }
 $H = $b[0]; $N = 91; $W = 182
 if ($b.Length -ne 1 + $N + $W * $H) { "HIBA: nem a regi formatum ($($b.Length) byte)"; exit 1 }
-Copy-Item $f "$dir\resources\tvc_sprites\font_regi4szin.bin" -Force
+Copy-Item $f (Ut "resources/tvc_sprites/font_regi4szin.bin") -Force
 $rows = New-Object byte[] ($N * $H)
 $wid = New-Object byte[] $N
 for ($i = 0; $i -lt $N; $i++) {

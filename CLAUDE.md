@@ -35,7 +35,8 @@ a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Win
   a javító MINDEN fordítás után kell, a felhasználó kérte) - a VS Code Build gomb ezt NEM csinálja!
   U3-ba csak MEM_48K_VID alatt futó, ROM-ot nem hívó eljárás kerülhet (a `Pal_Ment`/fájlkezelés maradjon lent).
   `@startblock` TVC-n hatástalan, visszafelé `org` és `phase` nincs (nightly-val tesztelve). Most: lent `$6B9A` (5222 szabad), U3 `$D492` (878 szabad).
-- Memóriatérkép: `/memoria` (vagy `powershell -File resources\memoria_terkep.ps1`).
+- Memóriatérkép: `/memoria` (vagy `powershell -File resources\memoria_terkep.ps1`) - MÉG CSAK WINDOWSON.
+- **`resources\*.ps1` közösek (2026-10-28):** Windows `powershell -File resources\x.ps1`, Mac `pwsh resources/x.ps1`; közös segéd: `resources\kozos.ps1` (gyökér, gépfelismerés, gépfüggő utak, BMP System.Drawing nélkül). Gépenkénti felülírás: `resources\gep_beallitas.ps1` (nincs a gitben). Részletek: skill tvc-utils.
 - **Futtatás csak lemezről** (a `.cas` gyorsbetöltésénél nincs fájleszköz, minden fájlnyitás hibás = piros keret):
   `resources\make_dsk.ps1 -Files @("WaterPumpGame.cas=WATERPG.CAS","SPRITES.BIN=SPRITES.BIN","PALYAK_lemez.BIN=PALYAK.BIN","SZABALY.BIN=SZABALY.BIN","MENU16.BIN=MENU16.BIN","U3KOD.BIN=U3KOD.BIN")`
   (a build.ps1 ezt hívja; RELATÍV útvonalakkal!). `PALYAK_lemez.BIN` = a játékbeli versus-szerkesztővel mentett pályaadat - ezt kell

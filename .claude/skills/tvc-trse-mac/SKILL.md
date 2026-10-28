@@ -68,9 +68,19 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
 - After changing a unit on Windows: copy it into `tvc_units/` there, commit + push.
 - Do not commit the build outputs from the Mac unless asked (`.asm/.bin/.dsk/.sym` are tracked
   and also committed from Windows -> conflicts); `git checkout --` them after a test build.
-- Still Windows-only (`System.Drawing`): `bmp_to_talaj.ps1`, `charset_export.ps1`,
-  `charset_import.ps1`, `nukebomb_to_bin.ps1`, `palyak_import.ps1`. The other `make_*_bin`,
-  `palyak_bin`, `memoria_terkep` scripts are plain byte work - probably fine under `pwsh`, not verified.
+- `resources/*.ps1` are SHARED by both machines (2026-10-28): each loads `resources/kozos.ps1`
+  (`$Gyoker`, `$Mac`, `$Temp`, `$PsExe`, `Ut 'rel/path'`, machine paths `$TrseExe`/`$DskSablon`/`$Bongeszo`,
+  optional override `resources/gep_beallitas.ps1` (gitignored), own BMP reader/writer instead of
+  `System.Drawing`). Must stay Windows PowerShell 5.1 compatible (ASCII only in BOM-less files, no
+  `??`/ternary). Verified on the Mac, byte-identical output: make_sprites_bin, palyak_bin, make_szabaly_bin,
+  make_menu16_bin, nuke_build/nukebomb_to_bin, bmp_to_talaj, charset_import/export (PNG preview only on
+  Windows), palyak_import (headless Chrome, then build_mac.sh --no-emu), make_dsk (default template = `$DskSablon`).
+  NOT yet ported: `memoria_terkep.ps1` (planned later, together with EP emulator work); `build.ps1`
+  stays Windows-only (merging the builds: postponed). Obsolete, untouched: `watervas_build.ps1`.
+  Pitfalls found: `"$dir\x"` + `[IO.File]` makes a file literally named `dir\x` on the Mac (Join-Path
+  normalizes, string concat does not); `[Uri]'/abs/path'` is relative on Unix (empty AbsoluteUri);
+  `-ArgumentList a,(expr).Prop` drops the argument - use a variable; a script called with `&` in-process
+  does not set `$LASTEXITCODE` -> call sub-scripts with `& $PsExe -NoProfile -File`.
 - The HTML tools in `tools/` run in any browser.
 
 ## Testing
@@ -84,4 +94,4 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
 
 ## Open items (Mac)
 
-1. Port the `System.Drawing` scripts only when needed (or keep doing those on Windows).
+1. Port `memoria_terkep.ps1` + the `/memoria` command to both machines (after the EP emulator work).
