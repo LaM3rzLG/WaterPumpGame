@@ -85,7 +85,7 @@ a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Win
 ## Teendők, amiket a felhasználó kért
 - **Az asm-et tartalmazó eljárásokat unitokba költöztetni** (17 eljárás, 729 asm-sor; csoportok: szöveg,
   fájl/kép, képernyő-effekt, véletlen, játéklogika) - még nem kezdtük el.
-- **TVC known-bugs skill-oldal** (a SANE 82 hibájának TVC-re szűrése) - még nincs kész, új munkamenetben szólj.
+- **TVC known-bugs skill-oldal** (a SANE 82 hibájának TVC-re szűrése) - TALONBAN (2026-10-28): csak fordítási gondoknál vesszük elő; a közös pontok és a teszt-jelöltek: memória `todo-tvc-known-bugs`.
 
 ## Munkastílus
 Magyarul, tömören; a lemez az igazság; `.bak_<név>` minden változtatás előtt; kétértelmű kérésnél az
