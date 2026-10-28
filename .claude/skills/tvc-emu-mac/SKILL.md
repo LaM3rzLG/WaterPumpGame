@@ -144,10 +144,12 @@ Live view of the physical RAM pages, 10 refreshes/s, ~4 % extra CPU, only while 
 no gui dependency) + hooks in `gui/gui.cpp` (menu item, `memablak`/`memkep` commands, copy loop in
 `fltkCheckCallback` via `vm.getSegmentPtr(F8..FC)` + `vm.getMemoryPage(0..3)`, no VM lock - read-only).
 - Layout (user request 2026-10-28, patch `ep128emu-memmap-szeles.patch`): U0, U1, U2, U3 stacked, each a WIDE
-  rectangle of 256 x 64 bytes (one row = $100) that stretches to fill the window in both directions; VID next to U2;
-  right column = details panel (hovered byte; click = hex dump of that $100 row) and legend. Default 1100x820, fonts
+  rectangle of 256 x 64 bytes (one row = $100) that stretches to fill the window in both directions. VID in the
+  SCREEN layout (64 bytes = 1 pixel row x 256 rows; dashed line at row 240 = $BC00, the off-screen 1 KB below) and
+  twice as tall (U2 + U3 rows of the right column) - with 256-byte rows it showed 4 copies of the screen side by side.
+  Right column top = details panel (hovered byte; click = hex dump of that $100 block) with the legend at its bottom. Default 1100x820, fonts
   12-14 pt. When shrunk a pixel shows the max of the bytes it covers. Left labels: what each CPU page holds now (green = usual, orange = other,
-  e.g. SYS ROM); yellow frame = segment currently paged in.
+  e.g. SYS ROM); thick RED frame (+ red "▶ n. lap") = segment currently paged in.
 - Per page header: used = non-zero bytes / 16384 (%), largest zero run ("max. szabad") - zero bytes of that run are
   tinted green. Verified in the game menu: U1 free from $6BE2, U2 from $B834, U3 $D44E-$E0E1 = matches the build.
 - Value colours: 0 dark, $01 blue -> $40 cyan -> $80 green -> $C0 yellow -> $FF white. Pause button freezes it.
