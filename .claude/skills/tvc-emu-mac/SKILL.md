@@ -16,6 +16,12 @@ accurate, has a debugger); TVC_CEmu is a quick extra.
 
 ## ep128emu (main)
 
+**Saved, ready-to-run copy (user's request): `~/Documents/EP128TVCEmu/`** - the patched
+`ep128emu.app`, `ep128emu_data/` (ROMs + configs), the patch, `OLVASSEL.txt`, and
+`TVC_inditas.command` (double-click: TVC 64k+ BASIC 1.2 + VT-DOS + the repo's
+WaterPumpGame.dsk; restores the ROMs to Application Support if missing). Needs the
+Homebrew libs (`fltk@1.3 portaudio libsndfile sdl12-compat`). Update it after a rebuild.
+
 - Source + build: `~/Documents/TVC-emu/ep128emu` - `libretro/ep128emu-core`, branch
   `standalone`, 2.0.12.8 (commit `41cf08e`, by zoltanvb). No official macOS binary exists.
 - App: `~/Documents/TVC-emu/ep128emu/ep128emu.app/Contents/MacOS/ep128emu`
