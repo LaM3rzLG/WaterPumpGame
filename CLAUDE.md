@@ -82,7 +82,7 @@ a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Win
 - 11 egyjátékos/co-op + 6 versus pálya; import: `resources\palyak_import.ps1`, mérvadó `waterpump_palyak.json`.
 - Nyitott: LEVEL COMPLETED doboz nem végleges; HISCORE nincs; HOW TO USE szöveg; többfájlos betöltő
   (címkép, pályák fájlba) - lásd memória `watergame-multifile-loader-plan`.
-- Utolsó mentett béta: `WaterPump_Final_Betav1.4` (09-25) - azóta minden munka bétán kívül.
+- Utolsó mentett béta: `WaterPump_Final_Betav1.4` (09-25) - azóta minden munka bétán kívül. **2026-10-28: a régi verziók (2.0..Meteor_11, WP_12, Final_Beta), kísérletek (WaterVAS, SzinGyors, SzinSorok, U3Test, main, nuke*) és az összes `.bak` törölve - csak a git-történetben vannak** (`git log --all -- <fájl>`).
 
 ## Teendők, amiket a felhasználó kért
 - **Az asm-et tartalmazó eljárásokat unitokba költöztetni** (17 eljárás, 729 asm-sor; csoportok: szöveg,
