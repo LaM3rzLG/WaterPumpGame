@@ -19,3 +19,4 @@
 - [Real-machine file loading](tvc-real-machine-file-loading.md) - CONFIRMED 2026-10-23: own asm Fajl_Olvas (Lemmings sequence, $D4 read-close) works on real SD; TVC::OpenFile/BlockRead/CloseFile fail there
 - [Build = build.ps1](feedback-build-patch.md) — after every compile the U3 boot patch must run; always use resources\build.ps1
 - [TODO: Claude across machines](todo-cross-machine-claude.md) - postponed: Mac<->Windows Claude sessions talking (Remote Control peer messaging / git / SSH)
+- [EP control = Mac only](ep-claude-interface-mac-only.md) — Claude sees/types/dumps memory in the EP only on the Mac (ep.sh); NOT on the Windows PC

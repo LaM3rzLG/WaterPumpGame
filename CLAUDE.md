@@ -10,7 +10,7 @@ mindkét gépen erre mutat - Mac: symlink, Windows: junction, bekötés: `claude
 a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Windowson ez a kettő NEM használandó.
 **Mac build (2026-10-28, működik, a Windows-ossal azonos kimenet):** `bash resources/build_mac.sh` = VS Code Cmd+Shift+B
 ("Mac: Build + EP emu": fordítás + u3_boot_patch + .dsk + EP128 emulátor). Windowson a SANE/`build.ps1` változatlan.
-**Claude látja az EP-t (Mac, 2026-10-28):** `bash resources/emu_mac/ep.sh` kep/folyam/mem/gepel/gomb - parancsfájlon át, bármelyik asztalon (skill tvc-emu-mac). Indítás után várni + gombnyomás a logóra.
+**Claude látja az EP-t - CSAK MACEN (2026-10-28):** `bash resources/emu_mac/ep.sh` kep/folyam/mem/gepel/gomb - parancsfájlon át, bármelyik asztalon (skill tvc-emu-mac). Indítás után várni + gombnyomás a logóra. **Windowson (PC, WinTVC) ez NEM működik** - ott nincs ilyen felület, a képet/állapotot a felhasználó nézi.
 **Munka elején `git pull`, a végén commit + push** (a `claude_memory/` is!), különben a gépek elcsúsznak.
 
 ## A projekt

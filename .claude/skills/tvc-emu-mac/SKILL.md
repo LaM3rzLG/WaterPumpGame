@@ -101,6 +101,9 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
 - Its RAM starts zeroed - real-machine-only bugs from uninitialised RAM do not show here.
 
 ## Claude sees, types and reads memory in the EP (2026-10-28, working)
+**MAC ONLY.** It relies on our own patched ep128emu build and macOS tools (swiftc, perl setsid,
+screencapture). On the Windows PC (WinTVC/TMC20) none of this exists - do not try `ep.sh` there; the user
+looks at the screen and reports.
 Our ep128emu build has a **command-file interface** (patch `patches/ep128emu-claude.patch`, on top of
 `ep128emu-macos.patch`, in `gui/gui.cpp` `fltkCheckCallback`): it polls
 `~/Library/Application Support/ep128emu/claude/parancs.txt` every 50 ms, deletes it, runs its lines, logs each to
