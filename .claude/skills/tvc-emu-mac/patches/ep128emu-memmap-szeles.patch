@@ -1,0 +1,401 @@
+--- a/gui/memmap.hpp
++++ b/gui/memmap.hpp
+@@ -1,5 +1,5 @@
+ // TVC memoriaterkep-ablak (Mac, WaterPumpGame / Claude kiegeszites)
+-// Az U0, U1, U2, U3 RAM-lap egymas alatt, a VID az U2 mellett; lapokent 128 x 128 bajt (egy sor = $80 bajt).
++// Az U0, U1, U2, U3 RAM-lap egymas alatt, a VID az U2 mellett; lapokent 256 x 64 bajt (egy sor = $100 bajt), kitoltve az ablakot.
+ // Az adatot a gui.cpp tolti (segData + setPages + dataUpdated), az ablak csak rajzol.
+ #ifndef EP128EMU_MEMMAP_HPP
+ #define EP128EMU_MEMMAP_HPP
+@@ -37,7 +37,7 @@
+   Box       r_[SEG_N];          // a terkep-negyzetek (fejlec nelkul)
+   Box       info_;              // reszletek panel (jobb oszlop, az U2 sora felett)
+   Box       legend_;            // jelmagyarazat (jobb oszlop, az U3 soraban)
+-  int       side_;
++  int       rw_, rh_;           // egy terkep-teglalap merete (pixel); a racs GW x GH bajt
+   bool      haveData_;
+   bool      paused_;
+   int       hoverSeg_, hoverOff_;
+--- a/gui/memmap.cpp
++++ b/gui/memmap.cpp
+@@ -10,17 +10,20 @@
+ #include <chrono>
+ 
+ namespace {
+-  const int M = 8;          // margo
+-  const int LBL = 78;       // a bal oldali lap-felirat oszlop
+-  const int HDR = 40;       // a negyzetek feletti harom soros fejlec
+-  const int STATUS = 30;    // also allapotsor
++  const int GW = 256;       // racs: bajt / sor
++  const int GH = 64;        // racs: sorok szama (GW * GH = 16384)
++  const int M = 10;         // margo
++  const int LBL = 92;       // a bal oldali lap-felirat oszlop
++  const int HDR = 50;       // a teglalapok feletti harom soros fejlec
++  const int STATUS = 36;    // also allapotsor
+   const Fl_Color BG = fl_rgb_color(30, 30, 36);
+   const Fl_Color PANEL = fl_rgb_color(22, 22, 28);
+   const Fl_Color TXT = fl_rgb_color(225, 225, 225);
+-  const Fl_Color DIM = fl_rgb_color(150, 150, 160);
++  const Fl_Color DIM = fl_rgb_color(160, 160, 170);
+   const Fl_Color YEL = fl_rgb_color(255, 210, 40);
+   const Fl_Color GRN = fl_rgb_color(110, 220, 110);
+   const Fl_Color ORA = fl_rgb_color(255, 150, 60);
++  const Fl_Color HOV = fl_rgb_color(255, 120, 220);
+   const unsigned char ZERO_RGB[3] = { 26, 26, 34 };
+   const unsigned char FREE_RGB[3] = { 20, 56, 32 };
+ 
+@@ -40,20 +43,20 @@
+ }
+ 
+ TvcMemMapWindow::TvcMemMapWindow()
+-  : Fl_Double_Window(660, 900, "TVC memóriatérkép"),
+-    side_(128), haveData_(false), paused_(false),
++  : Fl_Double_Window(1100, 820, "TVC memóriatérkép"),
++    rw_(GW), rh_(GH), haveData_(false), paused_(false),
+     hoverSeg_(-1), hoverOff_(0), selSeg_(-1), selOff_(0)
+ {
+   drawSumMs = 0.0; drawMaxMs = 0.0; drawCnt = 0;
+   std::memset(mem_, 0, sizeof(mem_));
+   std::memset(pages_, 0, sizeof(pages_));
+   std::memset(stat_, 0, sizeof(stat_));
+-  pauseBtn_ = new Fl_Button(0, 0, 80, 22, "Szünet");
+-  pauseBtn_->labelsize(12);
++  pauseBtn_ = new Fl_Button(0, 0, 90, 26, "Szünet");
++  pauseBtn_->labelsize(14);
+   pauseBtn_->callback(&pauseCb_, (void *) this);
+   end();
+   resizable(this);
+-  size_range(360, 420);
++  size_range(600, 480);
+   layout_();
+ }
+ 
+@@ -136,24 +139,25 @@
+ 
+ void TvcMemMapWindow::layout_()
+ {
+-  int sw = (w() - LBL - 3 * M) / 2;
+-  int sh = (h() - STATUS - M - 4 * (HDR + M)) / 4;
+-  side_ = (sw < sh ? sw : sh);
+-  if (side_ < 32) side_ = 32;
+-  int x1 = M + LBL, x2 = x1 + side_ + M;
+-  int rowH = HDR + side_ + M;
++  // ket oszlop (U0/U1/U2/U3 | reszletek, VID, jelmagyarazat), negy sor; a teglalapok kitoltik a helyet
++  rw_ = (w() - LBL - 3 * M) / 2;
++  rh_ = (h() - STATUS - M - 4 * (HDR + M)) / 4;
++  if (rw_ < 64) rw_ = 64;
++  if (rh_ < 32) rh_ = 32;
++  int x1 = M + LBL, x2 = x1 + rw_ + M;
++  int rowH = HDR + rh_ + M;
+   for (int i = 0; i < 4; i++) {
+     int y = M + i * rowH + HDR;
+     int s = (i == 0 ? SEG_U0 : (i == 1 ? SEG_U1 : (i == 2 ? SEG_U2 : SEG_U3)));
+-    r_[s].x = x1; r_[s].y = y; r_[s].w = side_; r_[s].h = side_;
++    r_[s].x = x1; r_[s].y = y; r_[s].w = rw_; r_[s].h = rh_;
+   }
+   r_[SEG_VID] = r_[SEG_U2];
+   r_[SEG_VID].x = x2;
+-  info_.x = x2; info_.y = M; info_.w = side_; info_.h = 2 * rowH - M;
+-  legend_.x = x2; legend_.y = M + 3 * rowH; legend_.w = side_; legend_.h = HDR + side_;
++  info_.x = x2; info_.y = M; info_.w = rw_; info_.h = 2 * rowH - M;
++  legend_.x = x2; legend_.y = M + 3 * rowH; legend_.w = rw_; legend_.h = HDR + rh_;
+   int sy = M + 4 * rowH;
+-  pauseBtn_->resize(x2 + side_ - 80, sy, 80, 22);
+-  img_.resize(size_t(side_) * size_t(side_) * 3);
++  pauseBtn_->resize(x2 + rw_ - 90, sy, 90, 26);
++  img_.resize(size_t(rw_) * size_t(rh_) * 3);
+ }
+ 
+ void TvcMemMapWindow::resize(int x_, int y_, int w_, int h_)
+@@ -188,48 +192,47 @@
+   for (int i = 0; i < 4; i++) {
+     if (pages_[i] == sn || (s == SEG_VID && pages_[i] >= 0xFC)) { mappedPage = i; break; }
+   }
+-  // fejlec
++  // fejlec: nev + tartomany (+ melyik CPU-lapon van), foglaltsag, legnagyobb szabad
+   char b[160];
+-  fl_font(FL_HELVETICA_BOLD, 12);
++  fl_push_clip(r.x, r.y - HDR, r.w, HDR);
++  fl_font(FL_HELVETICA_BOLD, 14);
+   fl_color(TXT);
+   std::snprintf(b, sizeof(b), "%s  $%04X–$%04X", segName_(s), baseAddr_(s), baseAddr_(s) + 0x3FFF);
+-  fl_push_clip(r.x, r.y - HDR, r.w, HDR);
+-  fl_draw(b, r.x, r.y - HDR + 12);
++  fl_draw(b, r.x, r.y - HDR + 15);
+   if (mappedPage >= 0) {
+     int tw = int(fl_width(b));
+     std::snprintf(b, sizeof(b), "  ▶ %d. lap", mappedPage);
+     fl_color(YEL);
+-    fl_draw(b, r.x + tw, r.y - HDR + 12);
++    fl_draw(b, r.x + tw, r.y - HDR + 15);
+   }
+-  fl_font(FL_HELVETICA, 10);
++  fl_font(FL_HELVETICA, 12);
+   fl_color(DIM);
+   if (haveData_) {
+     std::string t = "foglalt: " + ezres(st.used) + " / 16 384 bájt (" + std::to_string((st.used * 100 + 8191) / 16384) + "%)";
+-    fl_draw(t.c_str(), r.x, r.y - 17);
++    fl_draw(t.c_str(), r.x, r.y - 20);
+     if (st.freeLen > 0) {
+-      std::snprintf(b, sizeof(b), "max. szabad: $%04X–$%04X (%s)", baseAddr_(s) + st.freeStart,
++      std::snprintf(b, sizeof(b), "legnagyobb szabad: $%04X–$%04X (%s bájt)", baseAddr_(s) + st.freeStart,
+                     baseAddr_(s) + st.freeStart + st.freeLen - 1, ezres(st.freeLen).c_str());
+       fl_draw(b, r.x, r.y - 5);
+     }
+   }
+   fl_pop_clip();
+   // kep: pixelenkent a lefedett bajtok maximuma (kicsinyitesnel sem tunik el a nem nulla bajt)
+-  int n = side_;
+   int fs = st.freeStart, fe = st.freeStart + st.freeLen;
+-  for (int py = 0; py < n; py++) {
+-    int by0 = (py * 128) / n, by1 = ((py + 1) * 128) / n;
++  for (int py = 0; py < rh_; py++) {
++    int by0 = (py * GH) / rh_, by1 = ((py + 1) * GH) / rh_;
+     if (by1 <= by0) by1 = by0 + 1;
+-    for (int px = 0; px < n; px++) {
+-      int bx0 = (px * 128) / n, bx1 = ((px + 1) * 128) / n;
++    for (int px = 0; px < rw_; px++) {
++      int bx0 = (px * GW) / rw_, bx1 = ((px + 1) * GW) / rw_;
+       if (bx1 <= bx0) bx1 = bx0 + 1;
+       int mx = 0;
+       for (int yy = by0; yy < by1; yy++)
+         for (int xx = bx0; xx < bx1; xx++) {
+-          int v = d[yy * 128 + xx];
++          int v = d[yy * GW + xx];
+           if (v > mx) mx = v;
+         }
+-      unsigned char *p = &img_[(size_t(py) * n + px) * 3];
+-      int off = by0 * 128 + bx0;
++      unsigned char *p = &img_[(size_t(py) * rw_ + px) * 3];
++      int off = by0 * GW + bx0;
+       if (mx == 0 && haveData_ && off >= fs && off < fe) {
+         p[0] = FREE_RGB[0]; p[1] = FREE_RGB[1]; p[2] = FREE_RGB[2];
+       }
+@@ -237,7 +240,7 @@
+         valueColor_(mx, p);
+     }
+   }
+-  fl_draw_image(&img_[0], r.x, r.y, n, n, 3);
++  fl_draw_image(&img_[0], r.x, r.y, rw_, rh_, 3);
+   // keret: sarga = be van lapozva
+   if (mappedPage >= 0) {
+     fl_color(YEL);
+@@ -250,15 +253,16 @@
+   }
+   // kijelolt sor es egermutato
+   if (selSeg_ == s) {
+-    int y0 = r.y + ((selOff_ >> 7) * n) / 128, y1 = r.y + (((selOff_ >> 7) + 1) * n) / 128;
++    int row = selOff_ / GW;
++    int y0 = r.y + (row * rh_) / GH, y1 = r.y + ((row + 1) * rh_) / GH;
+     fl_color(FL_WHITE);
+     fl_rect(r.x - 1, y0 - 1, r.w + 2, (y1 - y0) + 2);
+   }
+   if (hoverSeg_ == s) {
+-    int bx = hoverOff_ & 127, by = hoverOff_ >> 7;
+-    int x0 = r.x + (bx * n) / 128, x1 = r.x + ((bx + 1) * n) / 128;
+-    int y0 = r.y + (by * n) / 128, y1 = r.y + ((by + 1) * n) / 128;
+-    fl_color(fl_rgb_color(255, 60, 200));
++    int bx = hoverOff_ % GW, by = hoverOff_ / GW;
++    int x0 = r.x + (bx * rw_) / GW, x1 = r.x + ((bx + 1) * rw_) / GW;
++    int y0 = r.y + (by * rh_) / GH, y1 = r.y + ((by + 1) * rh_) / GH;
++    fl_color(HOV);
+     fl_rect(x0 - 2, y0 - 2, (x1 - x0) + 4, (y1 - y0) + 4);
+   }
+ }
+@@ -271,50 +275,51 @@
+   fl_color(fl_rgb_color(80, 80, 90));
+   fl_rect(r.x, r.y, r.w, r.h);
+   fl_push_clip(r.x + 1, r.y + 1, r.w - 2, r.h - 2);
+-  int x = r.x + 6, y = r.y + 16;
++  int x = r.x + 8, y = r.y + 18;
+   char b[200];
+-  fl_font(FL_HELVETICA_BOLD, 12);
++  fl_font(FL_HELVETICA_BOLD, 14);
+   fl_color(TXT);
+   fl_draw("Részletek", x, y);
+-  y += 18;
+-  fl_font(FL_COURIER, 11);
++  y += 22;
+   if (hoverSeg_ >= 0) {
+     int v = mem_[hoverSeg_][hoverOff_];
+     std::snprintf(b, sizeof(b), "%s $%04X = $%02X (%d)", segName_(hoverSeg_),
+                   baseAddr_(hoverSeg_) + hoverOff_, v, v);
+-    fl_color(fl_rgb_color(255, 120, 220));
++    fl_font(FL_COURIER_BOLD, 14);
++    fl_color(HOV);
+     fl_draw(b, x, y);
+   }
+   else {
++    fl_font(FL_HELVETICA, 13);
+     fl_color(DIM);
+-    fl_font(FL_HELVETICA, 11);
+     fl_draw("(vidd az egeret a térképre)", x, y);
+   }
+-  y += 20;
++  y += 24;
+   if (selSeg_ < 0) {
++    fl_font(FL_HELVETICA, 13);
+     fl_color(DIM);
+-    fl_font(FL_HELVETICA, 11);
+-    fl_draw("Kattints egy sorra: hexa nézet", x, y);
++    fl_draw("Kattints egy sorra: hexa nézet ($100 bájt)", x, y);
+     fl_pop_clip();
+     return;
+   }
+-  int a0 = selOff_ & ~127;
++  int a0 = selOff_ & ~(GW - 1);
+   std::snprintf(b, sizeof(b), "%s $%04X–$%04X", segName_(selSeg_),
+-                baseAddr_(selSeg_) + a0, baseAddr_(selSeg_) + a0 + 127);
++                baseAddr_(selSeg_) + a0, baseAddr_(selSeg_) + a0 + GW - 1);
++  fl_font(FL_HELVETICA_BOLD, 13);
+   fl_color(FL_WHITE);
+   fl_draw(b, x, y);
+-  y += 16;
+-  fl_font(FL_COURIER, 11);
++  y += 18;
++  fl_font(FL_COURIER, 13);
+   int bpl = 16;
+-  while (bpl > 4 && fl_width("0000 ") + fl_width("00 ") * bpl > r.w - 10) bpl /= 2;
++  while (bpl > 4 && fl_width("0000 ") + fl_width("00 ") * bpl > r.w - 12) bpl /= 2;
+   const uint8_t *d = mem_[selSeg_];
+-  for (int o = a0; o < a0 + 128 && y < r.y + r.h - 4; o += bpl) {
++  for (int o = a0; o < a0 + GW && y < r.y + r.h - 4; o += bpl) {
+     int n = std::snprintf(b, sizeof(b), "%04X ", baseAddr_(selSeg_) + o);
+     for (int k = 0; k < bpl && n < int(sizeof(b)) - 4; k++)
+       n += std::snprintf(b + n, sizeof(b) - n, "%02X ", d[o + k]);
+-    fl_color((hoverSeg_ == selSeg_ && hoverOff_ >= o && hoverOff_ < o + bpl) ? fl_rgb_color(255, 120, 220) : TXT);
++    fl_color((hoverSeg_ == selSeg_ && hoverOff_ >= o && hoverOff_ < o + bpl) ? HOV : TXT);
+     fl_draw(b, x, y);
+-    y += 13;
++    y += 16;
+   }
+   fl_pop_clip();
+ }
+@@ -323,52 +328,52 @@
+ {
+   const Box& r = legend_;
+   fl_push_clip(r.x, r.y, r.w, r.h);
+-  int x = r.x + 4, y = r.y + 12;
+-  fl_font(FL_HELVETICA_BOLD, 12);
++  int x = r.x + 4, y = r.y + 15;
++  fl_font(FL_HELVETICA_BOLD, 14);
+   fl_color(TXT);
+   fl_draw("Érték nézet", x, y);
+   y += 10;
+   int bw = r.w - 8;
++  if (bw > 420) bw = 420;
+   unsigned char rgb[3];
+   for (int i = 0; i < bw; i++) {
+     valueColor_(1 + (i * 254) / (bw > 1 ? bw - 1 : 1), rgb);
+     fl_color(rgb[0], rgb[1], rgb[2]);
+-    fl_yxline(x + i, y, y + 12);
++    fl_yxline(x + i, y, y + 14);
+   }
+-  y += 24;
+-  fl_font(FL_HELVETICA, 10);
++  y += 30;
++  fl_font(FL_HELVETICA, 12);
+   fl_color(DIM);
+   fl_draw("$01", x, y);
+-  fl_draw("$80", x + bw / 2 - 8, y);
+-  fl_draw("$FF", x + bw - 18, y);
+-  y += 16;
++  fl_draw("$80", x + bw / 2 - 10, y);
++  fl_draw("$FF", x + bw - 22, y);
++  y += 20;
+   struct { const unsigned char *c; Fl_Color fc; const char *t; } it[3] = {
+     { ZERO_RGB, 0, "0 = üres bájt" },
+     { FREE_RGB, 0, "leghosszabb szabad (nullás) szakasz" },
+     { 0, YEL, "sárga keret = be van lapozva" } };
+   for (int i = 0; i < 3; i++) {
+-    if (it[i].c) { fl_color(it[i].c[0], it[i].c[1], it[i].c[2]); fl_rectf(x, y - 9, 12, 10); }
+-    else { fl_color(it[i].fc); fl_rect(x, y - 9, 12, 10); }
++    if (it[i].c) { fl_color(it[i].c[0], it[i].c[1], it[i].c[2]); fl_rectf(x, y - 11, 14, 12); }
++    else { fl_color(it[i].fc); fl_rect(x, y - 11, 14, 12); }
+     fl_color(DIM);
+-    fl_draw(it[i].t, x + 18, y);
+-    y += 15;
++    fl_draw(it[i].t, x + 22, y);
++    y += 18;
+   }
+   y += 4;
+-  fl_draw("Egy sor = $80 bájt; kicsinyítve egy pont", x, y); y += 13;
+-  fl_draw("a lefedett bájtok legnagyobbika.", x, y);
++  fl_draw("Egy sor = $100 bájt; kicsinyítve egy pont a lefedett bájtok legnagyobbika.", x, y);
+   fl_pop_clip();
+ }
+ 
+ void TvcMemMapWindow::drawStatus_()
+ {
+-  int y = M + 4 * (HDR + side_ + M) + 15;
+-  fl_font(FL_HELVETICA, 11);
++  int y = M + 4 * (HDR + rh_ + M) + 18;
++  fl_font(FL_HELVETICA, 14);
+   std::string t;
+   if (paused_) t = "SZÜNET · ";
+   t += "Lapozás:";
+   for (int i = 0; i < 4; i++) t += "  " + std::to_string(i) + "=" + pageName_(pages_[i]);
+   fl_color(paused_ ? ORA : TXT);
+-  fl_push_clip(M, y - 14, pauseBtn_->x() - 2 * M, 22);
++  fl_push_clip(M, y - 16, pauseBtn_->x() - 2 * M, 24);
+   fl_draw(t.c_str(), M, y);
+   fl_pop_clip();
+ }
+@@ -379,33 +384,33 @@
+   fl_color(BG);
+   fl_rectf(0, 0, w(), h());
+   // bal oszlop: CPU-lapok, mi van bennuk
+-  int rowH = HDR + side_ + M;
++  int rowH = HDR + rh_ + M;
+   static const uint8_t natural[4] = { 0xF8, 0xF9, 0xFA, 0xFB };
+   for (int i = 0; i < 4; i++) {
+     int y = M + i * rowH + HDR;
+     char b[32];
+-    fl_font(FL_HELVETICA_BOLD, 12);
++    fl_font(FL_HELVETICA_BOLD, 14);
+     fl_color(TXT);
+     std::snprintf(b, sizeof(b), "%d. lap", i);
+-    fl_draw(b, M, y + 12);
+-    fl_font(FL_HELVETICA, 10);
++    fl_draw(b, M, y + 14);
++    fl_font(FL_HELVETICA, 12);
+     fl_color(DIM);
+     std::snprintf(b, sizeof(b), "$%04X", i * 0x4000);
+-    fl_draw(b, M, y + 26);
++    fl_draw(b, M, y + 30);
+     uint8_t pg = pages_[i];
+     bool nat = (pg == natural[i]) || (i == 2 && pg >= 0xFC);
+-    fl_font(FL_HELVETICA_BOLD, 10);
++    fl_font(FL_HELVETICA_BOLD, 12);
+     fl_color(nat ? GRN : ORA);
+-    fl_draw(("▶ " + pageName_(pg)).c_str(), M, y + 44);
++    fl_draw(("▶ " + pageName_(pg)).c_str(), M, y + 50);
+   }
+   for (int s = 0; s < SEG_N; s++) drawSeg_(s);
+   drawInfo_();
+   drawLegend_();
+   drawStatus_();
+   if (!haveData_) {
+-    fl_font(FL_HELVETICA_BOLD, 14);
++    fl_font(FL_HELVETICA_BOLD, 16);
+     fl_color(ORA);
+-    fl_draw("nincs adat (fut a TVC?)", r_[SEG_U0].x + 8, r_[SEG_U0].y + 24);
++    fl_draw("nincs adat (fut a TVC?)", r_[SEG_U0].x + 8, r_[SEG_U0].y + 26);
+   }
+   draw_children();
+   double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0).count();
+@@ -417,10 +422,10 @@
+   for (int s = 0; s < SEG_N; s++) {
+     const Box& r = r_[s];
+     if (mx >= r.x && mx < r.x + r.w && my >= r.y && my < r.y + r.h) {
+-      int bx = ((mx - r.x) * 128) / r.w, by = ((my - r.y) * 128) / r.h;
+-      if (bx > 127) bx = 127;
+-      if (by > 127) by = 127;
+-      off = by * 128 + bx;
++      int bx = ((mx - r.x) * GW) / r.w, by = ((my - r.y) * GH) / r.h;
++      if (bx > GW - 1) bx = GW - 1;
++      if (by > GH - 1) by = GH - 1;
++      off = by * GW + bx;
+       return s;
+     }
+   }

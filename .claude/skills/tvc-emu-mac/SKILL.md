@@ -104,7 +104,7 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
 **MAC ONLY.** It relies on our own patched ep128emu build and macOS tools (swiftc, perl setsid,
 screencapture). On the Windows PC (WinTVC/TMC20) none of this exists - do not try `ep.sh` there; the user
 looks at the screen and reports.
-Our ep128emu build has a **command-file interface** (patch order: macos -> claude -> memmap -> gepel; `patches/ep128emu-claude.patch`, on top of
+Our ep128emu build has a **command-file interface** (patch order: macos -> claude -> memmap -> gepel -> memmap-szeles; `patches/ep128emu-claude.patch`, on top of
 `ep128emu-macos.patch`, in `gui/gui.cpp` `fltkCheckCallback`): it polls
 `~/Library/Application Support/ep128emu/claude/parancs.txt` every 50 ms, deletes it, runs its lines, logs each to
 `kesz.txt`. Works whatever desktop (Space) the window is on - the user watches the EP on another desktop.
@@ -143,9 +143,10 @@ Live view of the physical RAM pages, 10 refreshes/s, ~4 % extra CPU, only while 
 **Debug -> TVC memoriaterkep (Cmd+Shift+M)** or `ep.sh memablak`. Code: `gui/memmap.cpp/.hpp` (own Fl_Double_Window,
 no gui dependency) + hooks in `gui/gui.cpp` (menu item, `memablak`/`memkep` commands, copy loop in
 `fltkCheckCallback` via `vm.getSegmentPtr(F8..FC)` + `vm.getMemoryPage(0..3)`, no VM lock - read-only).
-- Layout: U0, U1, U2, U3 stacked (each 128x128 bytes, one row = $80), VID next to U2; right column = details panel
-  (hovered byte; click = hex dump of that $80 row) and legend. Window resizable (picture scales; when shrunk a pixel
-  shows the max of the bytes it covers). Left labels: what each CPU page holds now (green = usual, orange = other,
+- Layout (user request 2026-10-28, patch `ep128emu-memmap-szeles.patch`): U0, U1, U2, U3 stacked, each a WIDE
+  rectangle of 256 x 64 bytes (one row = $100) that stretches to fill the window in both directions; VID next to U2;
+  right column = details panel (hovered byte; click = hex dump of that $100 row) and legend. Default 1100x820, fonts
+  12-14 pt. When shrunk a pixel shows the max of the bytes it covers. Left labels: what each CPU page holds now (green = usual, orange = other,
   e.g. SYS ROM); yellow frame = segment currently paged in.
 - Per page header: used = non-zero bytes / 16384 (%), largest zero run ("max. szabad") - zero bytes of that run are
   tinted green. Verified in the game menu: U1 free from $6BE2, U2 from $B834, U3 $D44E-$E0E1 = matches the build.
