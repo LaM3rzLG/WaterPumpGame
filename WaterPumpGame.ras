@@ -1746,13 +1746,33 @@ Procedure Digi_Le();
 			end;
 	end;
 
-/* Képkocka-szinkron a főciklusban: digi hang alatt WaitForDigiSoundSync (+ a hang végén leállítás), egyébként WaitForSync */
+/* Digi hang alatti képkocka-szinkron: CSAK a hang-IT számlálóra vár (77 hang-IT ~ 1 képkocka, mint a GE-ben), a hang-IT-t NEM kapcsolja ki.
+   A GE::WaitForDigiSoundSync a számláló után kikapcsolta a hang-IT-t és a raszterre várt -> addig csend -> ütemes szakadás (2026-10-28).
+   A raszterhez a DigiSoundOn indításkor igazít; egy hang alatt az eltérés kicsi. */
+Procedure Digi_Szinkron();
+	begin
+		asm("
+DSz_Var:
+			halt
+			exx
+			ld a,e			; E' = a hang-IT szamlalo (a GE kezeloje noveli)
+			exx
+			cp 77
+			jp c,DSz_Var
+			sub 77
+			exx
+			ld e,a
+			exx
+		");
+	end;
+
+/* Képkocka-szinkron a főciklusban: digi hang alatt Digi_Szinkron (+ a hang végén leállítás), egyébként WaitForSync */
 Procedure Frame_Sync();
 	var v : byte;
 	begin;
 		if (Digi_Aktiv=1) then
 			begin;
-			GE::WaitForDigiSoundSync();
+			Digi_Szinkron();				/* a GE::WaitForDigiSoundSync helyett: a hang nem szakad meg */
 			v:=0;
 			if (GE::Is2x4bitDigiSoundPlaying()) then v:=1;
 			if (v=0) then Digi_Le();

@@ -19,3 +19,10 @@ GE digi sound facts (read from GE.tru, 2026-09-20): `DIGI_TYPE_2x4BIT` byte = 2 
 **Why/How to apply:** reuse this pattern for any new sound; check the memory budget first ([[watergame-status]]).
 
 UPDATE 2026-10-03: **digi mode left on -> `GE::WaitForSync` returns at ~4 kHz ("turbo" menu).** Happened when the exit-confirm fire placed a pump (tick sound) in the same frame the game loop ended. Fix in place: `Start_Kepernyo` begins with `Digi_Le()`, and `Exit_Kerdes` waits until all keys are released. Rule: call `Digi_Le` before any menu/wait loop that uses `WaitForSync`.
+
+UPDATE 2026-10-28: **rhythmic chopping of every digi sound FIXED - user confirmed (Mac ep128emu).** Cause: `GE::WaitForDigiSoundSync`
+waits for 77 sound ITs, then switches the SOUND IT OFF and halts for the cursor/raster IT (raster and sound IT share bit 4 of
+port $59, only one can be on) -> silence until the raster line, every frame. Fix: own `Digi_Szinkron` in the .ras (only the
+E'-counter wait, `cp 77`/`sub 77`, sound IT stays on), called from `Frame_Sync`. Side effect to watch: during digi the frame
+pace follows the sound counter, not the raster (aligned once by DigiSoundOn) - check flicker of Keret/virus/meteor during sounds;
+not yet tested on WinTVC / the real machine. Emulator side was ruled out first: `hangido` showed 0 audio underruns in 3 min.

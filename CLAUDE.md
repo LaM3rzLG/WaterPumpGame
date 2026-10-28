@@ -73,6 +73,7 @@ a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Win
   `Menu_IT_Be` a `Fomenu_Rajz` végén, `Szab_IT_Ki` a `Mod4` elején; a sor (`Szab_SavY`) a `Menu_Pumpa`-ból. A menüben a színek 4 képkockánként kifelé lépnek (`Szab_SavFr`, a tábla két fele forog); a CRTC-t a GE_SetRasterInterruptPos állítja. Gumi-mozgás: a `Menu_Pumpa` a `Szab_SavCel`-t írja, az IT a távolság negyedével (+1 lefelé) lépteti a `Szab_SavY`-t.
 
 ## Játék - aktuális állapot (részletek: archívum, `Map` értékek, eszközök)
+- **Digi hang (2026-10-28, Macen visszaigazolva):** a `Frame_Sync` digi alatt a saját `Digi_Szinkron`-t hívja (csak a hang-IT számlálóra vár); a `GE::WaitForDigiSoundSync` képkockánként elnémította a hangot (ütemes szakadás). Windowson/valós gépen még tesztelendő, és hang közben a villódzás figyelendő.
 - 30x18 `Map` (az egyetlen állapot-tömb). Pumpa (`WaterPump::PutAt`, 8 fázis, P1 kék `Pumpa.bin`, P2 zöld
   `Pumpa2.bin`), fal, bomba, akna (4. eszköz), meteor (pályánként `MeteorTor`/`MeteorVir`), vírus (C64-modell).
 - Módok: egy játékos, co-op, versus (vírus-lerakás CSAK versusban, `Ikon_Sor(j)` rajzolja az ikonsort -
