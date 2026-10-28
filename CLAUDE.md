@@ -8,6 +8,8 @@ mindkét gépen erre mutat - Mac: symlink, Windows: junction, bekötés: `claude
 **Skillek a repóban (`.claude/skills/`):** TVC/TRSE tudás **tvc-trse** (mindig töltsd be); PC-s eszközök **tvc-utils**.
 **KÉT GÉP:** Windows (fő build-gép) és Mac. **Macen** a tvc-trse mellé töltsd be a **tvc-trse-mac**-et (build, útvonalak -
 a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Windowson ez a kettő NEM használandó.
+**Mac build (2026-10-28, működik, a Windows-ossal azonos kimenet):** `bash resources/build_mac.sh` = VS Code Cmd+Shift+B
+("Mac: Build + EP emu": fordítás + u3_boot_patch + .dsk + EP128 emulátor). Windowson a SANE/`build.ps1` változatlan.
 **Munka elején `git pull`, a végén commit + push** (a `claude_memory/` is!), különben a gépek elcsúsznak.
 
 ## A projekt

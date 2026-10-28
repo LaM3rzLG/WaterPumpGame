@@ -11,6 +11,28 @@
 				"isDefault": true
 			},
 			"label": "SANE / TRSE: Build"
+		},
+		{
+			// MAC: forditas + u3_boot_patch + .dsk + EP128 emulator (resources/build_mac.sh).
+			// Macen a Cmd+Shift+B erre van kotve (felhasznaloi keybindings.json); Windowson nem hasznalt.
+			"label": "Mac: Build + EP emu",
+			"type": "shell",
+			"command": "bash",
+			"args": ["resources/build_mac.sh"],
+			"options": { "cwd": "${workspaceFolder}" },
+			"group": "build",
+			"presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+			"problemMatcher": []
+		},
+		{
+			"label": "Mac: Build (emulator nelkul)",
+			"type": "shell",
+			"command": "bash",
+			"args": ["resources/build_mac.sh", "--no-emu"],
+			"options": { "cwd": "${workspaceFolder}" },
+			"group": "build",
+			"presentation": { "reveal": "always", "panel": "dedicated", "clear": true },
+			"problemMatcher": []
 		}
 	]
 }

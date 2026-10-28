@@ -12,9 +12,9 @@ description: >
 
 # TVC / TRSE development on the Mac
 
-Status 2026-10-28: the Mac is set up for **editing and emulator testing**. **Compiling on the
-Mac is NOT working yet** (see "Open items"). The Windows machine is still the build machine.
-Whatever is marked "not verified" below has not been seen working - say so, do not assume.
+Status 2026-10-28 evening: **the full build works on the Mac** and gives the same result as
+Windows (WaterPumpGame.bin before splitting and U3KOD.BIN byte-identical; the .dsk differs only
+in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
 
 ## Machines and sync
 
@@ -31,38 +31,42 @@ Whatever is marked "not verified" below has not been seen working - say so, do n
 
 ## TRSE on the Mac
 
-- App: `/Applications/trse.app` (release build; a second copy in `~/Downloads/trse/`).
-  Binary: `/Applications/trse.app/Contents/MacOS/trse`.
-- Units: `/Applications/trse.app/units/TVC/` - on 2026-10-23 `GE.tru`, `TVC.tru`, `crtc.tru`,
-  `system.tru`, `text.tru` were byte-identical to the Windows ones (from the USB package).
-  After a GE.tru change on Windows, copy it here (it is not in git).
-- **Windows builds with the TRSE NIGHTLY** (`C:\TVC\TRSE_Nightly\trse.exe`, chosen in
-  `.vscode\settings.json`); the Mac has a release build. The project uses nightly-only
-  behaviour (see tvc-trse `trse-compiler.md` / CLAUDE.md) - a Mac nightly may be needed.
-  Not verified.
-- CLI (same syntax as Windows):
-  `/Applications/trse.app/Contents/MacOS/trse -cli op=project project="$PWD/LG_TVC_Projects.trse" input_file="$PWD/WaterPumpGame.ras" assemble=yes`
-  First attempt failed: **"Could not load TRSE settings! Please make sure you have started TRSE
-  as a windowed application at least once"** - the user has to open TRSE once by hand.
-  `LG_TVC_Projects.trse` has `project_path = C:/TVC/TRSE_Projects/WaterPumpGame/` - may need a
-  Mac path (do not commit that change without asking: Windows uses the same file).
-- macOS file system is case-insensitive by default, so the Linux `@use` case trap
-  (tvc-trse) does not apply here.
+- App: `/Applications/trse.app` (release build from 2026-10-18; Windows uses the nightly - the
+  output was still identical). Binary: `/Applications/trse.app/Contents/MacOS/trse`.
+- **The Mac TRSE GUI crashes when it is closed with no project open** (`CIniFile::setStringList`
+  in `MainWindow::saveCurrentProject`, SIGSEGV), so it never writes its own `trse.ini` and the
+  CLI says "Could not load TRSE settings!". Fix: the CLI gets **`settings=resources/trse_mac.ini`**
+  (the Windows nightly `trse.ini` minus `recent_projects`/`ok64_emulator`). Needed keys:
+  `assembler_z80 = OrgAsm` (else "set up a link to the assembler (pasmo...)") and the rest of
+  that file - with only a few keys `@use` fails with "After declarations, BEGIN is expected".
+- Units: `/Applications/trse.app/units/TVC/` (outside git, `GE.tru` is the user's own).
+  **OrgAsm does not strip `//` comments inside `asm("...")`** -> in `TVC.tru` (28 lines) and
+  `GE.tru` (10 lines) they were replaced with `;` on 2026-10-28 (originals:
+  `~/Documents/trse_units_TVC_eredeti_mac/`). Windows has the same fix in its nightly units.
+  Not yet compared with the Windows nightly `units\TVC` - after a GE.tru change on Windows,
+  copy it over and redo the `//` -> `;` fix inside asm blocks if needed.
+- `LG_TVC_Projects.trse` has a Windows `project_path`; the CLI ignores it (full paths given).
+- macOS file system is case-insensitive by default, so the Linux `@use` case trap does not apply.
 
-## Build chain (Windows = `resources\build.ps1`)
+## Build chain
 
-`build.ps1` = TRSE nightly compile -> `u3_boot_patch.ps1` (splits the output into
-`WaterPumpGame.cas` + `U3KOD.BIN`, must run after EVERY compile) -> `make_dsk.ps1`
-(WATERPG.CAS, SPRITES.BIN, PALYAK_lemez.BIN as PALYAK.BIN, SZABALY.BIN, MENU16.BIN, U3KOD.BIN).
-
-- PowerShell 7 is not installed on the Mac (`brew install powershell` -> `pwsh`).
-- `build.ps1` hard-codes `C:\TVC\TRSE_Nightly\trse.exe`, `$env:TEMP` and calls
-  `powershell` (Windows PowerShell) - needs a Mac branch.
-- Use `System.Drawing` / Windows-only .NET (need porting or Windows): `bmp_to_talaj.ps1`,
-  `charset_export.ps1`, `charset_import.ps1`, `nukebomb_to_bin.ps1`, `palyak_import.ps1`.
-- The other scripts (`make_dsk`, `u3_boot_patch`, `make_*_bin`, `palyak_bin`,
-  `memoria_terkep`, ...) look plain file/byte work - probably fine under `pwsh`, not verified.
-- The HTML tools in `tools/` (sprite/charset/level editors, memory map) run in any browser.
+- **Mac: `bash resources/build_mac.sh`** (`--no-emu` = without emulator) = TRSE CLI compile ->
+  `pwsh resources/u3_boot_patch.ps1` -> `pwsh resources/make_dsk.ps1` (boot sector template:
+  `~/Downloads/TVC/TVC_CEmu/roms/Lemmings.dsk`, byte-identical boot sector to the Windows one;
+  override with `TVC_DSK_TEMPLATE`) -> kills the old ep128emu (`-9`, SIGTERM hangs) and starts
+  `~/Documents/EP128TVCEmu/TVC_inditas.command` with the new `.dsk`.
+- VS Code (`.vscode/tasks.json`): tasks "Mac: Build + EP emu" and "Mac: Build (emulator nelkul)";
+  the SANE task stays the default build for Windows. On the Mac `cmd+shift+b` is bound to
+  "Mac: Build + EP emu" in the USER keybindings.json (keybindings sync per platform).
+  The workspace `.vscode/settings.json` (`sane-trse.compilerPath`) is Windows-only - leave it.
+- Windows: `resources\build.ps1` (same steps with the nightly), unchanged.
+- PowerShell 7: `brew install powershell` (formula, not the cask) -> `pwsh`.
+- Do not commit the build outputs from the Mac unless asked (`.asm/.bin/.dsk/.sym` are tracked
+  and also committed from Windows -> conflicts); `git checkout --` them after a test build.
+- Still Windows-only (`System.Drawing`): `bmp_to_talaj.ps1`, `charset_export.ps1`,
+  `charset_import.ps1`, `nukebomb_to_bin.ps1`, `palyak_import.ps1`. The other `make_*_bin`,
+  `palyak_bin`, `memoria_terkep` scripts are plain byte work - probably fine under `pwsh`, not verified.
+- The HTML tools in `tools/` run in any browser.
 
 ## Testing
 
@@ -75,7 +79,5 @@ Whatever is marked "not verified" below has not been seen working - say so, do n
 
 ## Open items (Mac)
 
-1. User opens TRSE once in windowed mode -> retry the CLI build.
-2. Decide: release vs nightly TRSE on the Mac.
-3. `pwsh` + a Mac-capable `build.ps1` (or a `build.sh`) -> full build + `.dsk` on the Mac.
-4. Port the `System.Drawing` scripts only when needed (or keep doing those on Windows).
+1. Compare `/Applications/trse.app/units/TVC/*.tru` with the Windows nightly `units\TVC`.
+2. Port the `System.Drawing` scripts only when needed (or keep doing those on Windows).
