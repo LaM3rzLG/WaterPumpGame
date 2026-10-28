@@ -18,5 +18,7 @@ Verified only on the Mac (pwsh 7, byte-identical outputs). NOT run on Windows Po
 2. `powershell -File resources\palyak_import.ps1` (headless Edge -> palyak_bin -> build.ps1) -> PALYAK.BIN, .ras unchanged, build OK, .dsk made
 3. optional: `powershell -File resources\bmp_to_talaj.ps1 -In resources\images\talaj3.bmp -Out $env:TEMP\t3.bin` and compare with resources\tvc_sprites\talaj3.bin (`fc /b`)
 4. optional: `powershell -File resources\charset_export.ps1 -Out $env:TEMP\cs.bmp` - the PNG preview must still be made on Windows
+5. Also (2026-10-28): rebuild with build.ps1 and listen to the digi sounds in WinTVC / on the real machine - the Digi_Szinkron fix
+   (no more rhythmic chopping, confirmed on the Mac); watch for flicker of Keret/virus/meteor while a sound plays.
 If something fails: fix in kozos.ps1 / the script, keep it 5.1 + pwsh 7 compatible (see [[watergame-mac-migration]]).
 After success: delete this memory and its MEMORY.md line.
