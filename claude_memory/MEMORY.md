@@ -1,4 +1,5 @@
 - ⚠ [OPEN TODO - remind user](todo-tvc-known-bugs.md) - at session start say: TVC known-bugs skill page (SANE list triage) is NOT done yet
+- ⚠ [OPEN TODO - Windows script test](todo-windows-script-test.md) - on the Windows PC remind user: shared resources/*.ps1 (kozos.ps1) untested under PowerShell 5.1; 2 commands to run
 - [WaterGame working style](watergame-working-style.md) — how the user iterates on the TVC/TRSE pump game; disk is source of truth, terse answers, frequent version saves
 - [C64 aqualiquex reference](c64-aqualiquex-reference.md) — the C64 TRSE port at `C:\Users\LG\Documents\-- DEY --\` is the behavior reference for virus/pump/economy logic; what each file holds
 - [TRSE writetype-index workaround](trse-writetype-index-workaround.md) — `arr[i] := <sprite field>` won't compile; launder the field through a plain scalar/const first
