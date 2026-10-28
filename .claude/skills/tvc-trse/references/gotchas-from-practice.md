@@ -438,13 +438,28 @@ state (flicker). Move the IRQ just below the sprite being redrawn
 Border colour (`GE::SetBorder`) around code sections is a cheap raster profiler.
 
 ### Custom proportional text renderer (replacing `GE::WriteText`)
-Font file = 1 byte height + 91 width bytes (ASCII 32..122, 1 or 2 bytes each) + image
-(91*2 bytes wide, row-major). The renderer copies only `width` bytes per row
-(source stride 182, screen stride 64) and returns the next free column, so HUD
-labels/numbers chain (`Ir(x,y,"PUMP:"); HUD_Num3(n, Ir_X, y)`). No pixel shifting,
-byte-aligned. Saved ~1.4 KB vs GE text + `ByteToStr/IntToStr`. Note: 4-px-wide
-glyphs (3 px + gap) are too small for M/W/Q — the owner rejected small glyphs as
-ugly; keep 8 px unless explicitly redesigned.
+(First version, superseded:) font file = 1 byte height + 91 width bytes (1 or 2 bytes each) + image
+(91*2 bytes wide, row-major); copied whole bytes per glyph, byte-aligned, returned the next free
+column so HUD labels/numbers chain (`Ir(x,y,"PUMP:"); HUD_Num3(n, Ir_X, y)`). Saved ~1.4 KB vs GE
+text + `ByteToStr/IntToStr`. 4-px-wide glyphs were rejected as ugly.
+
+**Current (2026-10-26, WaterPumpGame):** 1-bit font, per-glyph width in PIXELS, 109 glyphs
+(ASCII 32..122 + Hungarian `ÁÉÍÓÖŐÚÜŰáéíóöőúüű` as codes 123..140). `Ir` ORs each glyph row
+(shifted by the pixel position) into a 34-byte line buffer, then expands every buffer byte to two
+GR4 screen bytes (`and $F0` / `rlca x4`). Glyph-count constants in the asm: `cp 141` (2x),
+`ld de,109` (font row stride), `Font_Data+110` (first image row). Format details: TVC-Utils
+`formats.md`. Do NOT put accented letters into `.ras` string literals (TRSE's encoding of them is
+untested) - accented text comes from data files built by PowerShell (`make_szabaly_bin.ps1`).
+
+### Multi-page text screens from U2 (WaterPumpGame rules screen, 2026-10-26)
+Text data (records `x,y,text,0`, icon records `253,id,x,y`, `254` = page end, `255` = end) is loaded at
+start-up into U2 `$9000` (4 KB). In the menu the memory map has VID at `$8000`, so per page: `di`,
+`ld a,$B0 / out ($2),a` (U2 visible), `ldir` 2048 bytes from the page start to `Pause_Buf` ($E700, U3),
+`ld a,$90 / out ($2),a`, `ei`; draw from the U3 copy; advance the U2 pointer by the bytes consumed
+(`Szov_P + $1900 + Szab_Src` = `Szov_P - $E700 + Szab_Src`). One shared `Szov_Kiir` + `Tuz_Var`
+(wait for RELEASE, then a new press - otherwise a held fire button flips through all pages).
+Pitfall: U2 `$8000` is NOT free for persistent data in this game - the versus editor's level save
+(`Pal_Elo`) uses `$8000` as its disk buffer; that is why the text sits at `$9000`.
 
 ### Per-line palette change (raster bars) without GE — verified on WinTVC (2026-10-01, `SzinSorok.ras`)
 - After `TVC::SetGraphicsMode` (ROM VMODE) the cursor/raster IRQ is NOT at line 239 (observed ~line 173). Call `TVC::SetRasterInterruptPos(239)` right after it, otherwise the line-timed effect starts mid-screen.
@@ -484,7 +499,11 @@ ugly; keep 8 px unless explicitly redesigned.
   `SetRasterInterruptPos(239)` afterwards. Non-blocking pattern: a `Digi_Aktiv` flag + a `Frame_Sync()` that
   picks the right sync and switches digi off when the sample ends. WinTVC showed a constant ~1 s audio delay
   (also in a bare menu test) - emulator buffering, not code. Raster-IRQ effects and digi are mutually exclusive.
-- **`@startblock $C000 "x" ... @endblock` does nothing on TVC** (compiles, the `.sym` shows the code unmoved).
+- **`@startblock $C000 "x" ... @endblock` does nothing on TVC** (compiles, the `.sym` shows the code unmoved; re-checked with the 2026 nightly).
+  The assembler accepts a FORWARD `org $C000` inside a procedure's `asm(...)` (gap zero-filled) - everything after it in the
+  source, INCLUDING the main block (always emitted last), lands there. Backward `org` and `phase` are rejected. WaterPumpGame
+  (2026-10-26) uses this + a post-build patch of the `jp block1` at `$1A03` to a low boot stub (`call ProgramInit` / `jp block1+3`),
+  because at start `$C000` is still ROM. Code there must never run while U3 is paged out (ROM/file calls).
   Only `incbin(file, address)` data placement works.
 - **`Random::SetRSeed()` can produce a 0 seed** (one byte from R) and the xorshift then sticks at 0. Skip it;
   spin `RandomByte()` every frame in the title/menu loop - the player's reaction time is the entropy.
@@ -578,10 +597,6 @@ Useful for size analysis, memory maps and checking fixed addresses (the PC tool 
 - GE / TVC variables in the `.asm` give the real workspace in use: TVC `$0E48`-`$0E6C`, GE `$0E70`-`$0EA7` (2026 GE.tru).
 - `.sym` has duplicate names for incbin blocks (`.Fosos_Data` twice) - keep the first.
 
-## TRSE compiler crash 0xC0000005 depends on code LAYOUT (2026-10-22, WaterPumpGame)
-- Deterministic for a given file, but not tied to a statement: replacing an asm block with the same number of `nop`s still crashed; 20 and 45 `nop`s crashed, 70 did not. Trailing comments/line count did not matter.
-- Practical workaround: append 1-8 `nop`s at the end of the newest asm block and keep the first variant that compiles (bisect with `tst_*.ras` copies, `assemble=no` is enough to see the crash).
-- Also seen: an asm block at the START of a procedure (before any Rascal statement) crashed; Rascal statements first, asm last compiled. Passing `#Label+3` as a procedure argument and passing a procedure's own integer parameter on to another procedure crashed too - go through a global variable.
-- File writing after `GE::Init`: `GE::EnableTVCITHandler`, paging `$70` (also store it in `($3)`), `TVC::CreateFile` / `BlockWrite` / `CloseFile`, then `GE::DisableTVCITHandler` + `GE::SetMemory(...)`; the source buffer must be visible under `$70` (U0/U1/U2).
 
-- **`case` is NOT smaller or faster than an `if` chain (measured 2026-10-23, WaterPumpGame):** TRSE compiles `case x of` into the same compare chain the separate ifs give (`ld a,[x]` / `cp n` / `jr nz,next`, and it reloads `x` for every branch), plus a `jp caseend` (3 bytes) after every branch. Five rewritten chains (21 branches) cost +50 bytes. The only gain is skipping the rest of the compares after a match. When code space is tight, keep the ifs. Also seen: a `case` nested in a `case` branch, and a `case ... else begin ... end;`, gave "After declarations, BEGIN is expected" at the end of the procedure, then a compiler crash (0xC0000005). A flat `case` with explicit values compiled.
+## Moved out (2026-10-25)
+Compiler crashes, nightly vs old trse.exe, case vs if, file writing: `references/trse-compiler.md`. Reading files on a real machine: `cookbook/multifile-loader-design.md`. Builtins on Z80: `language/builtins.md`. Class-method call with a local-variable argument inside a `.tru` unit fails when `pascal_settings_use_local_variables = 1` (SANE known-bugs; untested on TVC) - pass a unit-level global instead.

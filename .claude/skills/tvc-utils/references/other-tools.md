@@ -72,7 +72,10 @@ make_explosion_sfx, make_tick_sfx, make_dsk - alapértelmezése ott `Befosas.cas
   Forráskódot sorszám- vagy here-string-alapú cserével módosíts, és utána olvasd vissza.
 - PS 5.1 a BOM nélküli `.ps1`-et ANSI-nak olvassa -> ékezetes keresőszöveg nem talál. Ékezet nélküli minta (`P.LY.K`) vagy BOM.
 - Rövid saját függvénynév ne legyen alias: `function R` helyett az `Invoke-History` (alias `r`) futott.
-- A változónevek kis/nagybetű-érzéketlenek: `$l` ciklusváltozó elfedi a `$L` tömböt.
+- A változónevek kis/nagybetű-érzéketlenek: `$l` ciklusváltozó elfedi a `$L` tömböt. DINAMIKUS hatókörrel ez a HÍVOTT
+  függvényekre is átterjed: egy `function Uj($fn, $w)` paramétere a belőle hívott `P()`-ben a szkript `$W`-jét (kép
+  szélessége) írta felül; a script-szintű `$bal`/`$n` a `$BAL` margót / `$N` betűszámot (2026-10-26, mind csendes hibás
+  kimenet, nem hiba). Globális konstansnak egyedi, hosszabb nevet adj, és ne használd ugyanazt kisbetűvel.
 - Fájl visszaírása előtt őrfeltétel (üres kimenet / hibás blokkhatár esetén NE írjon) + `.bak_` mentés.
 - Sorvégek: a `.ras` lehet LF, a `.trse` CRLF - detektáld, ne feltételezd.
 
@@ -189,3 +192,40 @@ kell). Billentyűk: 1-9 csempe, 0 üres, K kijelöl; jobb gomb / Ctrl = törlés
 `tilemap_to_bin.ps1`: a karaktert `"0123...xyz".IndexOf`-fal olvassa (**a .NET `Convert.ToInt32(x, 36)` NEM létezik** - csak
 2 / 8 / 10 / 16; ezzel egyszer felülírtam a `palya1.bin`-t hibás futással - konvertert előbb másolatra kell próbálni).
 `csempek_to_bin.ps1`: BMP-lista -> 1 byte darabszám + csempénként 30 byte oszlopfolytonosan. `?teszt` -> `document.title`.
+
+## UPDATE 2026-10-25: charset editor and font.bin are now 1-bit, pixel-width (WaterPumpGame)
+
+`tools\charset_szerkeszto.html` was rewritten (old 4-colour version kept as `charset_szerkeszto_regi4szin.html`).
+New `font.bin`: `[0] = $80 + height` (the $80 marks the new format), `[1..91]` = width in PIXELS (0..8, includes
+the letter gap) for ASCII 32..122, then the glyphs row by row: row r, glyph i at `92 + r*91 + i`, bit7 = left pixel.
+729 bytes at height 7 (old format: 1366). Editor: draw black / erase, width with -/+ or `[` `]`, "Automatikus" =
+rightmost pixel + 2, preview lays text out exactly like the game (pixel advance, byte-rounded line width), loads
+both the new and the old 4-colour font.bin (old -> converted). Converter script: `resources\font_1bit.ps1`.
+The game's `Ir` renderer reads this format (see the project CLAUDE.md).
+
+## UPDATE 2026-10-26: Hungarian letters, multi-page rules text, AQUALIQUE title (WaterPumpGame)
+
+**charset_szerkeszto.html / font.bin - 109 glyphs.** After ASCII 32..122 (index 0..90) come 18 Hungarian letters,
+index 91..108 = game code 123..140, order `ÁÉÍÓÖŐÚÜŰáéíóöőúüű`. `font.bin` = `[0] $80+h`, `[1..109]` widths, then row r
+glyph i at `1 + 109 + r*109 + i` (873 bytes at h = 7). The editor loads the old 91-glyph file and the old localStorage
+work too (`padHU`: missing accented glyphs start as a copy of the base letter, with an accent if there are 2 free rows
+above it); `charIndex()` maps preview text. The game's `Ir` asm has three constants for this: `cp 141` (2x),
+`ld de,109` (row stride), `Font_Data+110` (first image row). Changing the glyph count = change these + `Spr_Hossz`.
+
+**`resources\make_szabaly_bin.ps1` -> `SZABALY.BIN`** from `resources\szovegek\szabaly.txt` (PLAIN text, the user
+edits it; all layout is computed from the font widths):
+- `N. oldal` = new page; first line of a page = title (centred, y 2), last line = footer (centred, y 226);
+- an ALL-CAPS line = section heading (5 px gap before it); any other line = paragraph, word-wrapped from x 2 to 63;
+- `@PUMPA @KRATER | text` = legend item: icon(s) at x 2, 5, ... and the text wrapped from x 8; `"R" gomb | text` =
+  label put in front of the text as `"R" gomb: text`. Icon names: PUMPA TALAJ KRATER SZIKLA FAL KERET VIRUS BOMBA AKNA
+  (= ids 0..8, the game's `Szov_Ikon`);
+- line pitch 10 (falls back to 9 if a page overflows), error if a page does not fit or is over 2048 bytes;
+- output: text record `x, y, codes..., 0`; icon record `253, id, x, y`; `254` = end of page; `255` = end; padded to 4096.
+`make_szoveg_bin.ps1` / `jatekszabaly.txt` / `SZOVEG.BIN` are obsolete (the old one-page legend).
+
+**Title logo generated in PowerShell (scratch script, not kept in the repo).** The 100x40 GR16 `Cim_C16` sprite in
+`resources\Menu\WaterPump_Menu.json` was rebuilt as AQUALIQUE by reusing glyphs cut out of the old WATERPUMP logo
+(A, E, U), drawing Q/L/I masks coloured from the old E stem row-by-row (keeps the vertical gradient), then an 8-neighbour
+black outline + 1 px right/down shadow. Preview PNG via System.Drawing with GR16 pixel aspect ~2:1 (6x3 px per pixel).
+The JSON was patched as TEXT (object substring), not via `ConvertTo-Json`, to keep the editor's format; the old sprite
+was kept as `Cim_C16_WaterPump`. `make_menu16_bin.ps1` then rebuilds `MENU16.BIN` (size unchanged, 6196).

@@ -1,6 +1,6 @@
 # TVC documentation PDF index
 
-> The `pdf/` folder is NOT in the git repo (674 MB). Windows: `C:\Users\LG\.claude\skills\TVC-TRSE\sources\docs\pdf\`,
+> The `pdf/` folder is NOT in the git repo (674 MB). Windows: `C:\Users\LG\Documents\TVC-TRSE-skill\sources\docs\pdf\`,
 > Mac: `~/Documents/TVC-TRSE-skill/sources/docs/pdf/`. The `extracted/` texts are in the repo.
 
 37 PDFs (+1 plain-text file) under `pdf/`, organized into the 7 category folders they

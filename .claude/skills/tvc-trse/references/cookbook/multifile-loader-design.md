@@ -15,7 +15,7 @@ loaded and shown. The rest (data file to U3, code file, jump to the game) is sti
   (likely cause of the old "System error 236"). Correct: blocks = ceil((size - 128) / 128), last = (size - 128) mod 128.
   `make_dsk.ps1` fixes the copy it puts on the disk.
 - **Block read is function `$D2`** (CAS_BKIN), not `$D5` (verify). Read-close is `$D4`; Bery's `CloseFile` calls `$54` (write-close) -
-  harmless for one file, UNTESTED for several files in a row.
+  harmless for one file in WinTVC, but on the REAL machine with SD (2026-10-23, WaterPumpGame, 4 files) Bery's OpenFile/BlockRead/CloseFile FAILED for every file (garbage data). Working replacement = the Lemmings sequence: `xor a`, `ld ($0B0A),a`, `ld de,name`, `rst $30`/`db $D3` (Z = ok), `ld de,dest`, `ld bc,len`, `rst $30`/`db $D2`, `xor a`, `rst $30`/`db $D4`. Confirmed on real SD and builds for WinTVC disk.
 - **A file can never be read straight into video RAM.** The `rst $30` entry (in RAM at `$0B23`, constant `$70` at `$0B2E` - derived
   from the ROM image) switches to `$70` (U0,U1,U2,SYS) for every system call and restores the caller's paging afterwards; the
   disk card ROM switches to `$F0` (U0,U1,U2,EXT) itself. So data read to `$8000` always lands in U2. Read into a buffer below `$8000`.

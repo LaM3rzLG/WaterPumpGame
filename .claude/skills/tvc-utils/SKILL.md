@@ -29,7 +29,8 @@ TVC-hardver) NEM ide tartozik - arra a **tvc-trse** skill és a projekt `CLAUDE.
 |---|---|---|
 | `sprite16_szerkeszto.html` | 16 színű (GRAPHICS16) sprite-ok rajzolása, képernyő-elrendezés, animátor, konténerek, képimport ditheringgel, PNG/.bin export | `references/sprite16-editor.md`, változástörténet: `references/history-sprite16.md` |
 | `sprite4_szerkeszto.html` | 4 színű (GRAPHICS4) sprite-ok - a Sprite16 másolata, választható paletta-készlettel (most: WaterPump); a játék `.bin`-jeit bájtazonosan olvassa/írja | `references/sprite4-editor.md` |
-| `charset_szerkeszto.html` | a játék arányos betűkészlete (`font.bin`, GRAPHICS4) | `references/other-tools.md` |
+| `charset_szerkeszto.html` | a játék arányos betűkészlete (`font.bin`: 1 bites, pixelszélességű, 109 karakter = ASCII 32..122 + `ÁÉÍÓÖŐÚÜŰáéíóöőúüű`) | `references/other-tools.md` (UPDATE 2026-10-25/26), formátum: `references/formats.md` |
+| `resources\make_szabaly_bin.ps1` | a többoldalas játékszabály + sztori + ikonos jelmagyarázat (`szabaly.txt` sima szövegből, automatikus tördeléssel) -> `SZABALY.BIN` | `references/other-tools.md` UPDATE 2026-10-26 |
 | `terkep_szerkeszto.html` | a WaterPumpGame pályái (30x18 rács, pályaadatok -> `.ras` blokk / `.json`) | `references/other-tools.md` |
 | `tilemap_szerkeszto.html` (Befosas `tools`) | a Befosas vízszintesen scrollozó pályája: 12 csempe magas, állítható szélességű tilemap -> `.json` (v4: mentés másként, pályarész másolása) | `references/other-tools.md` |
 | `dallam_szerkeszto.html` (Befosas `tools`, v1 2026-10-10) | zene a TVC EGY hangcsatornájára: lépésrács (tempó = képkocka / lépés), 37 hang A1..A4, szünet, lábdob, pergő; WebAudio lejátszás; mentés `.json` projekt + `.bin` a játéknak | `references/other-tools.md` |

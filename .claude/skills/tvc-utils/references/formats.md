@@ -40,8 +40,18 @@ több fázis: a fázisok egymás után, a fejléc csak egyszer (fázisméret = s
 
 ## Arányos betűkészlet `font.bin` (charset_szerkeszto.html, a játék `Ir()` kiírója)
 
-`1 byte magasság` + `91 byte szélesség` (ASCII 32..122, értéke 1 vagy 2 byte) + kép: 91 x 2 byte = 182 byte
-széles, `magasság` sor, GRAPHICS4 (minden karakternek 2 byte hely, a keskeny a bal felét használja).
+**Jelenlegi (2026-10-26):** 1 bites, pixelszélességű, 109 karakter. `[0]` = `$80 + magasság`, `[1..109]` = szélesség
+pixelben (0..8, a betűközzel), utána a képek soronként: r. sor, i. karakter = `1 + 109 + r*109 + i`, bit7 = bal pixel
+(873 byte 7 soros fontnál). Index 0..90 = ASCII 32..122, 91..108 = `ÁÉÍÓÖŐÚÜŰáéíóöőúüű` (a játékban kód 123..140).
+Előzmények: 2026-10-25 ugyanez 91 karakterrel (729 byte); előtte 4 színű: `1 byte magasság` + `91 byte szélesség`
+(1 vagy 2 byte) + kép 182 byte széles. A szerkesztő mindhármat betölti.
+
+## Szabály-képernyő `SZABALY.BIN` (make_szabaly_bin.ps1, WaterPumpGame, 2026-10-26)
+
+4096 byte (U2 `$9000`). Oldalanként rekordok: szöveg `x, y, kódok..., 0` (kód 32..122 ASCII, 123..140 magyar
+ékezetes); ikon `253, ikon (0..8), x, y`; oldal vége `254`; a legvégén `255`; nullákkal kiegészítve. Egy oldal max
+2048 byte (a játék oldalanként a `Pause_Buf`-ba másolja). Forrás: `resources\szovegek\szabaly.txt`, sima szöveg -
+a jelölés: `other-tools.md` UPDATE 2026-10-26.
 A régi GE-készlet `CharSetGR4.bin`: 59 karakter (ASCII 32..90) x 2 byte = 118 byte széles, 7 sor.
 
 ## Sprite16 projekt `.json` (version 3)

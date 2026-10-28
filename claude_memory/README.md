@@ -10,6 +10,13 @@ Ez a README nem memória-bejegyzés (a `MEMORY.md` az index).
 `~/.claude/projects/-Users-lgabor-Documents-TVC-Projects-WaterPumpGame/memory` ->
 symlink erre a mappára.
 
+## Windows (kész, 2026-10-28)
+
+`%USERPROFILE%\.claude\projects\c--TVC-TRSE-Projects-WaterPumpGame\memory` -> junction erre a mappára.
+A bekötés előtti állapot mentése: `%USERPROFILE%\claude_memory_mentes\`. A régi személyes skillek
+kikerültek a `~\.claude\skills`-ből: `Documents\TVC-TRSE-skill\` (a PDF-ekkel) és `Documents\TVC-Utils-skill-regi\`.
+FIGYELEM: a lenti `xcopy` a `watergame-mac-migration.md`-t a régebbi Windows-ossal írta volna felül - kézzel kellett fésülni.
+
 ## Windows - egyszeri bekötés (junction, nem kell hozzá rendszergazda)
 
 A Windows-os memória ÚJABB lehet a repóban lévőnél (10-26/27-i munka), ezért ELŐBB

@@ -1,6 +1,6 @@
 ---
 name: watergame-text-font
-description: "WaterPumpGame text output: own proportional renderer Ir() + font.bin replaced GE::WriteText; user rejected 4-px glyphs; charset editor html"
+description: "WaterPumpGame text: own proportional Ir() + 1-bit font.bin (109 glyphs incl. Hungarian); multi-page rules/story/legend screen from SZABALY.BIN; user edits plain szabaly.txt"
 metadata:
   type: project
 ---
@@ -12,3 +12,8 @@ The user tried to redraw glyphs 1 byte (4 px) wide and gave up: M/W/Q do not fit
 Tools: `charset_szerkeszto.html` (91 glyphs, per-glyph narrow/wide toggle, height, proportional preview, font.bin/CharSetGR4.bin/.bmp import/export), `resources\charset_export.ps1` / `charset_import.ps1` (old 59-glyph format). Not tested on the real machine yet — fallback: `WaterPumpGame.ras.bak_font` (GE WriteText version).
 
 **How to apply:** if text or HUD numbers look wrong after the next test, suspect `Ir`/`HUD_Num*` first; keep digits equal width. Related: [[watergame-status]].
+
+2026-10-25: the user plans to draw real LOWERCASE glyphs (8 px wide) for the rules text. No code needed: font.bin already holds 32..122 (lowercase = copies now) and `Ir` handles them. Height must stay 7 rows (one more row = 182 bytes, only 170 free after the font before Pause_Buf). `make_szoveg_bin.ps1` now accepts 32..122 (backup `.bak_kisbetu`). Planned next (offered, not yet approved): multi-page rules text stored in U2, page copied to Pause_Buf for display, `---` page break.
+2026-10-25 evening: new pixel-proportional renderer WRITTEN but NOT in the game - the compiler crashes as soon as the program has more inline-asm lines than now (see TVC-TRSE gotchas "inline-asm line budget"). Saved: `WaterPumpGame.ras.uj_ir_nemfordul` (new Ir + Ir_Hossza, Spr_Hossz 9177), converted font `resources\tvc_sprites\font_1bit_uj.bin` (new format: $80+H, 91 px widths, rows of 91 bytes), converter `resources\font_1bit.ps1`. Project restored to the working state (code end $7D5B). font.bin on disk = the user's editor save (uppercase original, lowercase = old narrow attempt); original = `font_eredeti.bin`. Editor not yet changed.
+UPDATE 2026-10-25 late: the new renderer IS in the game now (compiles, code end $7DE6) - the crash was layout-dependent, one asm comment line in Kep_Rajz fixed it. font.bin on disk = new 1-bit format. Charset editor rewritten for the new format (1-bit, 0..8 px width per glyph, [ ] keys, auto width). Not yet tested in the emulator / on the machine.
+2026-10-26: font = 109 glyphs (+ ÁÉÍÓÖŐÚÜŰáéíóöőúüű = codes 123..140), user redrew them (height stays 7, 873 bytes, Spr_Hossz 9321). Menu item 5 = `Szabaly_Kepernyo`: 5 pages from `SZABALY.BIN` (U2 $9000): story (T Ö R T É N E T), 2 rules pages, 2 legend pages with icons (J E L M A G Y A R Á Z A T); old `Jelmagyarazat_Kepernyo` + SZOVEG.BIN removed. The user edits `resources\szovegek\szabaly.txt` as PLAIN text (they asked "csak a szöveget kérem" - give them text without coordinates); `make_szabaly_bin.ps1` lays it out. Item tool naming: the mine is called "Rezonancia-töltet" in the rules, "AKNA" in the legend (user's text, not yet unified). Main-menu title is now AQUALIQUE (generated from the old WATERPUMP glyphs; user approved; old kept as `Cim_C16_WaterPump`). CONFIRMED by the user 2026-10-26: font, rules screen, legend and title all work.
