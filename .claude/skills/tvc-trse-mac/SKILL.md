@@ -56,7 +56,9 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
   `pwsh resources/u3_boot_patch.ps1` -> `pwsh resources/make_dsk.ps1` (boot sector template:
   `~/Downloads/TVC/TVC_CEmu/roms/Lemmings.dsk`, byte-identical boot sector to the Windows one;
   override with `TVC_DSK_TEMPLATE`) -> kills the old ep128emu (`-9`, SIGTERM hangs) and starts
-  `~/Documents/EP128TVCEmu/TVC_inditas.command` with the new `.dsk`.
+  `~/Documents/EP128TVCEmu/ep128emu.app` with the new `.dsk` via `open -n ... --args` (same args as
+  `TVC_inditas.command`). NOT `nohup ... &`: the VS Code task kills its whole process tree when it
+  ends, so the emulator died silently (2026-10-28).
 - VS Code (`.vscode/tasks.json`): tasks "Mac: Build + EP emu" and "Mac: Build (emulator nelkul)";
   the SANE task stays the default build for Windows. On the Mac `cmd+shift+b` is bound to
   "Mac: Build + EP emu" in the USER keybindings.json (keybindings sync per platform).
