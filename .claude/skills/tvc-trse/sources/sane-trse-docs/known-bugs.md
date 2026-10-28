@@ -1,0 +1,1500 @@
+# Known Bugs
+
+This page lists every confirmed compiler defect found so far, in one
+place. Each one is also explained in more detail on the reference page
+for the feature it affects, where one already exists; this page is meant
+as an index and quick-reference, not a duplicate of the full writeup.
+
+Fixing all of these is one of the project's [goals](goals.md). Once one
+is fixed, it also gets an entry in the [changelog](changelog.md), and
+this entry gets updated to say so.
+
+Individual reference pages sometimes carry their own "Known limitations"
+notes that aren't listed here: those are usually clarifications about how
+a feature is *meant* to work (easy to get wrong assumptions about, but not
+actually broken), rather than confirmed defects. This page is reserved for
+the latter.
+
+## Signed arithmetic
+
+### Signed comparisons: only `<` and `<=` were implemented
+
+**Status:** Fixed · **Fixed in:** all six comparison operators (`<`,
+`<=`, `>`, `>=`, `=`, `<>`) now work for signed `integer` and signed
+`long` values.
+
+For signed `integer` (16-bit) values, only the `<` and `<=` operators
+used to work; `>`, `>=`, `=`, and `<>` all failed to compile in the
+signed case. Signed `long` (24-bit) comparisons weren't implemented at
+all, for any operator.
+
+*Reference pages:* [`<`](reference/operators/less-than.md),
+[`<=`](reference/operators/less-or-equal.md),
+[`>`](reference/operators/greater-than.md),
+[`>=`](reference/operators/greater-or-equal.md),
+[`=`](reference/operators/equal.md),
+[`<>`](reference/operators/not-equal.md)
+
+### Byte-level signed comparison was wrong at the boundaries
+
+**Status:** Fixed · **Fixed in:** the byte-level signed comparison path
+now gets the same overflow correction the 16-bit path always used.
+
+Unlike the 16-bit signed comparison path, the byte-level signed comparison
+was missing a correction step needed to get the right answer near the
+boundary between positive and negative values (comparisons like `-128`
+against `127`).
+
+*Reference pages:* [`<`](reference/operators/less-than.md),
+[`<=`](reference/operators/less-or-equal.md),
+[`>`](reference/operators/greater-than.md),
+[`>=`](reference/operators/greater-or-equal.md)
+
+### A comparison against the literal `0` was wrong for every ordering operator
+
+**Status:** Fixed · **Fixed in:** comparing a byte against a literal `0`
+now gives the correct result for every operator.
+
+For an unsigned byte, comparing it against the literal `0` gave the wrong
+answer for `>=`, `>`, `<=`, and `<` alike (`=`/`<>` were unaffected):
+`x >= 0` and `x > 0` always evaluated false regardless of `x`'s actual
+value, and `x <= 0`/`x < 0` always evaluated true regardless of `x`'s
+actual value. A signed comparison against the literal `0` was also
+affected for the same four operators.
+
+*Reference pages:* [`<`](reference/operators/less-than.md),
+[`<=`](reference/operators/less-or-equal.md),
+[`>`](reference/operators/greater-than.md),
+[`>=`](reference/operators/greater-or-equal.md)
+
+### Signed multiplication silently gave the wrong result
+
+**Status:** Fixed · **Fixed in:** a `byte * byte` product widened to an
+`integer` now correctly accounts for the sign of a negative operand.
+
+Multiplying two byte values where the product widened to an `integer`
+and at least one operand was a negative signed number gave a wrong
+result, with no compile error or warning. A plain `byte * byte` product
+kept as a `byte` was never affected, since a two's-complement product's
+low byte is identical whether the inputs are interpreted as signed or
+unsigned.
+
+*Reference page:* [`*`](reference/operators/multiplication.md)
+
+### Signed division wasn't implemented at all
+
+**Status:** Partially fixed · **Fixed in:** `mod` and `mod16` (any
+width), and `/` when the quotient widens to an `integer`, now follow
+C-style truncating signed division semantics. A plain `byte / byte`
+division that stays a `byte` result is still open (see below).
+
+Division always used unsigned arithmetic, regardless of whether either
+operand was a negative signed value. `mod`/`mod16` had the identical gap:
+`mod16` shares `/`'s 16-bit-by-8-bit division routine, and `mod`'s own
+separate 8-bit routine was unsigned for the same underlying reason.
+
+**Still open:** a plain `byte / byte` division that stays a `byte`
+result (not widened to `integer`) uses a separate, unsigned-only routine
+that was never touched by this fix. Unlike multiplication, a
+two's-complement quotient's low byte isn't sign-independent the way a
+product's is, so this case doesn't get the "already correct" pass
+multiplication's byte-only path gets: a negative signed operand genuinely
+gives a wrong result here, in both TRSE and SANE.
+
+*Reference pages:* [`/`](reference/operators/division.md),
+[`mod`](reference/builtins/mod.md), [`mod16`](reference/builtins/mod16.md),
+[`init8x8div`](reference/builtins/init8x8div.md)
+
+### Mixing a signed byte with an integer dropped the sign
+
+**Status:** Fixed · **Fixed in:** a negative `signed byte` mixed into a
+wider expression is now sign-extended instead of zero-extended.
+
+When a `byte` value was combined with an `integer` (16-bit) value
+(addition, subtraction, multiplication), a negative byte's value should
+have been sign-extended (so `-1` becomes `$FFFF`, not `$00FF`), but was
+always zero-extended instead, producing a wrong result.
+
+*Reference pages:* [`signed`](reference/keywords/signed.md),
+[`+`](reference/operators/addition.md),
+[`-`](reference/operators/subtraction.md),
+[`*`](reference/operators/multiplication.md)
+
+## Procedures & functions
+
+### Inline procedure parameters weren't reliably evaluated
+
+**Status:** Fixed · **Fixed in:** a non-pure parameter expression is now
+evaluated once into a generated temp variable, instead of being
+re-evaluated (or re-inserted as raw text) at every reference.
+
+For procedures marked `inline`, passing anything more complex than a
+plain variable or literal as a parameter (an array index, a pointer
+dereference, a computed expression) could misbehave if the parameter was
+referenced more than once inside the procedure body. This was confirmed
+specifically for `inline` procedures; regular (non-inline) procedures use
+a different, unaffected mechanism.
+
+*Reference pages:* [`inline`](reference/keywords/inline.md),
+[`procedure`](reference/keywords/procedure.md)
+
+### `wedge` compiles to exactly the same code as `interrupt`
+
+**Status:** By design, not planned · **Fixed in:** not applicable - see
+explanation.
+
+Declaring a procedure with `wedge` instead of `interrupt` produces
+identical generated assembly: same body, same trailing interrupt-return
+instruction. In standard C64 terminology, a "wedge" specifically means
+chaining a new routine onto an already-installed interrupt vector rather
+than replacing it, but nothing about the `wedge` declaration keyword
+itself does that; the compiler's actual interrupt-vector-chaining
+behavior lives entirely in a separate, unrelated set of builtin functions
+(`rasterirqwedge()` and friends), usable regardless of which keyword
+declared the procedure they're chaining. Treated as an intentional alias
+for `interrupt` at the declaration level, documented clearly rather than
+a defect to fix: giving the keyword itself real chaining behavior would
+duplicate what those builtins already do correctly.
+
+*Reference page:* [`wedge`](reference/keywords/wedge.md)
+
+### `return` doesn't exit an interrupt handler correctly
+
+**Status:** Fixed · **Fixed in:** `return;` now checks whether it's
+inside an `interrupt` procedure and exits the same correct way the
+procedure's own natural `end;` already did, instead of always using the
+plain-procedure exit.
+
+Using a plain `return;` for an early exit partway through an `interrupt`
+procedure's body used to not leave the interrupt the same way reaching
+the procedure's own closing `end;` did. Every other exit path of the same
+handler, including its natural end, exited correctly; only an explicit
+`return;` used before that point was affected. `ReturnInterrupt` remains
+a valid, equivalent way to do an early exit from inside an `interrupt`
+procedure; `return;` is no longer a worse alternative to it there.
+
+*Reference pages:* [`return`](reference/keywords/return.md),
+[`ReturnInterrupt`](reference/builtins/returninterrupt.md)
+
+### `ReturnValue` fails on a function that returns `long`
+
+**Status:** Fixed · **Fixed in:** `ReturnValue` now handles a `long`
+return value the same way it already handled `byte`/`integer`/`boolean`.
+
+`ReturnValue` correctly sets and returns a `byte`, `integer`, or
+`boolean` value. On a function declared to return `long`, it used to fail
+to assemble instead: the build stopped with an error at the point this
+builtin's code would run. The plain `<functionName> := <value>;` form
+worked correctly for a `long`-returning function; only `ReturnValue`
+itself was affected.
+
+*Reference page:* [`ReturnValue`](reference/builtins/returnvalue.md)
+
+## Builtin auto-initialization
+
+### `sine[]`'s table-fill only looked for usages in the current file
+
+**Status:** Fixed · **Fixed in:** a `@use`d unit's own auto-init triggers
+are now merged back into the compiled program's, so a unit-only `sine[`
+usage correctly fills the table.
+
+A number of builtins (`sine[`, `rand(`, `sqrt(`, `atan2(`, `joystick(`,
+and others) automatically insert a setup call the first time the compiler
+spots a matching usage anywhere in the source text, so a program doesn't
+have to call the setup routine itself. That text scan only looked at
+whichever file was currently being compiled, so a usage that only
+appeared inside a unit file brought in with `use` could be missed.
+
+In practice, testing each of these individually showed only `sine[]` was
+actually affected: its auto-inserted setup call fills a 256-byte lookup
+table at program start, and if `sine[` was only ever used from inside a
+`use`d unit, that fill never ran and `sine[angle]` always returned `0`.
+The other builtins in this same auto-init mechanism didn't have this
+problem in practice, either because their setup is just a self-contained
+routine that gets called directly at each actual use (nothing needs to
+run ahead of time), or because a separate check at compile time catches
+the missing setup and stops the build with an error rather than silently
+producing wrong output.
+
+*Reference page:* [`@use`](reference/directives/use.md)
+
+### `@ignoremethod`'s argument only matches in lowercase
+
+**Status:** Fixed · **Fixed in:** the argument is now lowercased before
+being matched, so it can be written in any casing.
+
+`@ignoremethod <name>` is meant to opt a named `init...` routine out of
+the automatic-initialization scan described above, so a program can call
+that routine itself instead. Writing `<name>` in the routine's normally
+documented casing, matching how it's written everywhere else (for example
+`@ignoremethod initGetKey`), used to silently fail to match, leaving the
+automatic insertion active alongside the program's own explicit call. For
+most `init...` routines this doubling was harmless. For `initGetKey`
+specifically it wasn't: the build failed outright with a duplicate-symbol
+assembly error. Writing the argument in all-lowercase (`@ignoremethod
+initgetkey`) always worked correctly, and still does.
+
+*Reference page:* [`@ignoremethod`](reference/directives/ignoremethod.md)
+
+## Loops
+
+### `for`/`fori` always ran at least once, wrapping around instead of skipping
+
+**Status:** Fixed · **Fixed in:** both loop forms now check the range
+before entering the loop and skip it entirely when it's already empty.
+
+Both loop forms used to only check whether they were done *after* running
+the loop body, never before the first pass. So a loop whose end value was
+already behind its start value, `for i:=5 to 0 do ...` for instance,
+didn't just skip the loop: it ran the body once, then kept counting up and
+wrapping around the full byte range before happening to land back on the
+end value, running far more times than intended. This was also the root
+cause behind [`FLD`](reference/builtins/fld.md),
+[`MemCpy`/`MemCpyFast`](reference/builtins/memcpy.md), and
+[`Wait`](reference/builtins/wait.md) each mishandling a count of `0` the
+same way; see each page for its own fix.
+
+*Reference pages:* [`for`](reference/keywords/for.md),
+[`fori`](reference/keywords/fori.md)
+
+### `unroll` always treats a `fori` loop's end value as exclusive
+
+**Status:** Fixed · **Fixed in:** `unroll` on a `fori` loop now includes
+the end value, matching a non-unrolled `fori` loop.
+
+Adding `unroll` to a `for` loop expands it into repeated, literal copies
+of the body at compile time instead of a runtime loop. On a `fori` loop,
+which is normally inclusive of its end value, `unroll` used to silently
+switch it back to `for`'s exclusive behavior: `fori i:=0 to 3 unroll do
+...` only emitted copies for `i = 0, 1, 2`, dropping the `i = 3` pass a
+non-unrolled `fori` loop always runs. A plain, non-unrolled `fori` loop
+was unaffected and always correctly included the end value.
+
+*Reference page:* [`unroll`](reference/keywords/unroll.md)
+
+## Preprocessor directives
+
+### `case ... else <single statement>; end;` desynced the parser
+
+**Status:** Fixed · **Fixed in:** a `case` statement's `else` branch can
+now be a single bare statement or a `begin ... end` block.
+
+A `case` statement whose `else` branch was a single statement (not
+wrapped in its own `begin...end`) used to fail to compile, with the
+reported error pointing at the very end of the file instead of at the
+actual problem, since the parser lost track of one `end` and everything
+after it shifted by one.
+
+*Reference page:* [`case`](reference/keywords/case.md)
+
+### `absolute` isn't accepted on pointer declarations
+
+**Status:** Fixed · **Fixed in:** `absolute` is now accepted on pointer
+declarations, with the same effect as `at`.
+
+`absolute` and `at` are meant to be interchangeable ways to place a
+variable at a fixed memory address, and are, for plain variables. On a
+pointer declaration, though, only `at` used to be recognized; `absolute`
+was silently not accepted there, failing with a parse error.
+
+*Reference page:* [`absolute`](reference/keywords/absolute.md),
+[`at`](reference/keywords/at.md)
+
+### `@bin2inc`'s own output can't be `@include`d in the same compile
+
+**Status:** Fixed · **Fixed in:** a preprocessor directive's tokens were
+being silently swallowed and discarded the very first time the compiler
+ever saw them, before `@bin2inc`'s own handler got a chance to write its
+output file at all (an internal pass-tracking gate was one comparison
+operator too loose). `@bin2inc` and `@include` can now appear in the same
+compile that generates the included file.
+
+A file that both generates an include file with `@bin2inc` and
+`@include`s that same file in the same compile used to fail on a clean
+build, even though `@bin2inc` runs first. The generated file only became
+`@include`-able starting from the next compile onward. The old workaround
+(generate it with one compile first, then `@include` it from a separate
+compile) is no longer needed.
+
+*Reference page:* [`@bin2inc`](reference/directives/bin2inc.md)
+
+### `@vbmcompilechunk`'s own output can't be `@include`d in the same compile
+
+**Status:** Fixed · **Fixed in:** same fix as `@bin2inc` above (the same
+underlying pass-tracking gate).
+
+The same issue as `@bin2inc` above, confirmed separately for this
+directive: a file that both ran `@vbmcompilechunk` and `@include`d the
+file it just generated used to fail on a clean build, even though
+`@vbmcompilechunk` runs first. The old workaround (generate the file with
+one compile first, then `@include` it from a separate compile) is no
+longer needed.
+
+*Reference page:* [`@vbmcompilechunk`](reference/directives/vbmcompilechunk.md)
+
+### `@include`'s standard-library fallback only resolves from the repository root
+
+**Status:** Fixed · **Fixed in:** the fallback lookup now anchors to the
+same working-directory-independent location `@use`'s own unit lookup
+already used, instead of a value that was never actually set on Linux.
+
+`@include` first checks the current project's own directory, then falls
+back to the shared standard library (used from inside a `.tru` unit that
+`@include`s another standard-library file). That fallback used to only
+find the right file when the compiler happened to be invoked with the
+repository's own root as the current working directory; the ordinary,
+documented way of invoking the compiler ('cd'd into the project's own
+directory) made the fallback look in the wrong place entirely, failing
+with "Could not open file for inclusion" even though the file genuinely
+existed in the standard library. `@use`'s own unit lookup was never
+affected, only `@include`'s fallback.
+
+*Reference page:* [`@include`](reference/directives/include.md)
+
+### `@donotprefix <symbol>` never compiles
+
+**Status:** Fixed · **Fixed in:** the directive's symbol-name argument is
+now fully consumed everywhere it's read, so it no longer desyncs the
+tokens that follow it.
+
+Unlike its sibling directive `@donotprefixunit` (which takes no argument
+and works fine), `@donotprefix <symbolName>` used to fail to compile in
+every configuration tested: the directive read its symbol-name argument
+but never actually consumed it from the token stream, desyncing everything
+parsed afterward, the same failure shape as the `case`/`else` bug above.
+
+*Reference page:* [`@donotprefix`](reference/directives/donotprefix.md)
+
+### `@ignoresystemheaders` has no effect
+
+**Status:** Fixed · **Fixed in:** since the directive can never have any
+effect on this fork's C64-only target, using it now stops compilation
+with a clear error instead of silently doing nothing.
+
+In vanilla TRSE, the directive compiles cleanly and doesn't error, but
+nothing else in the compiler actually reads the flag it sets. Using it
+doesn't change the compiled output in any observable way.
+
+*Reference page:*
+[`@ignoresystemheaders`](reference/directives/ignoresystemheaders.md)
+
+### `@use KrillsLoader` requires one exact casing/spacing, or it fails
+
+**Status:** Fixed · **Fixed in:** the directive's line is now located
+case-insensitively, matching every other directive in the language.
+
+After parsing the directive's three address values, the compiler
+regenerates what it considers the "correct" textual form of the line and
+locates that text in the source file, to splice the generated loader/
+installer declarations in at that point. In vanilla TRSE this means the
+directive name has to be written exactly `KrillsLoader` (capitalized just
+so), even though every other directive in the language is matched
+case-insensitively; a lowercase `krillsloader` with the identical, valid
+address values fails to compile there. Spacing still matters (single
+spaces, no extras) even after this fix; only the keyword's letter casing
+was the actual bug.
+
+*Reference page:* [`krillsloader`](reference/keywords/krillsloader.md)
+
+### No compiler warning is ever shown when compiling from the command line
+
+**Status:** Fixed · **Fixed in:** a successful CLI compile now prints
+every warning collected during that compile to the terminal at the end,
+the same way a failed compile's error message already reached it. This
+isn't specific to any one directive: every warning the compiler produces
+used to go silent when compiled from the command line, not just
+`@raisewarning`'s. The directive (or the built-in check that triggers a
+warning) ran and compilation finished normally, but the warning text was
+never printed anywhere: not to the terminal, not into the compiled
+output. For example, calling `getKey()` internally queues a deprecation
+notice; that now surfaces too, same as `Rand`'s own deprecation notice.
+It was only ever wired up to be read by the old graphical editor's own
+output pane, which no longer exists in this command-line-only fork.
+`@raiseerror`, by contrast, already showed its message and stopped
+compilation before this fix, since aborting works through a different
+mechanism.
+
+*Reference pages:* [`@raisewarning`](reference/directives/raisewarning.md),
+[`getKey`](reference/builtins/getkey.md), [`Rand`](reference/builtins/rand.md)
+
+### `@startblock` doesn't notice a missing or nested `@endblock`
+
+**Status:** Fixed · **Fixed in:** the disabled check is re-enabled, so
+opening a new `@startblock` region while a previous one is still open now
+fails to compile with a clear error instead of silently switching.
+
+In vanilla TRSE, opening a new `@startblock` region while a previous one
+is still open (no `@endblock` in between) is accepted silently: the
+active fixed-address region just switches to the new one, with no error
+or warning. The reverse mistake, an `@endblock` with nothing open to
+close, does raise a clear error, so this asymmetry is easy to trust past
+its actual safety.
+
+*Reference page:* [`@startblock`](reference/directives/startblock.md)
+
+## Compression
+
+### `compressed`/`@compress` output can't be decompressed at runtime
+
+**Status:** By design, not planned · **Fixed in:** not applicable - see
+explanation.
+
+Both the `compressed` variable flag and the `@compress` build directive
+shrink data using LZ4 compression, but there is currently no builtin that
+can decompress LZ4 data from within a running program. The only builtin
+decompressor (`decrunch()`) only understands a completely different
+format (Exomizer) and only accepts a different kind of input to begin
+with. On top of that, `compressed` and `@compress` don't even produce the
+same LZ4 container as each other, so they aren't interchangeable either.
+Right now, the only working "compress at build time, decompress at
+runtime" path is pre-compressing data offline with an external tool and
+loading it with `decrunch()`, not `compressed`/`@compress`. This isn't
+going to change: writing and maintaining a bundled 6502 LZ4 decompressor
+(and reconciling `@compress`'s legacy-frame output against `compressed`'s
+modern-frame output along the way) is real, substantial new feature work
+with no existing user demand driving it, not a narrow fix. Documented
+here and on both features' own reference pages so the constraint is
+clear rather than discovered by trial and error;
+`compressed`/`@compress` remain useful for their one actually-working
+purpose (shrinking on-disk `.prg` size for data consumed by external
+tooling, or via `decrunch()`'s separate Exomizer path), just not for a
+compress-then-decompress-at-runtime round trip.
+
+*Reference pages:* [`compressed`](reference/keywords/compressed.md),
+[`@compress`](reference/directives/compress.md)
+
+## Image/asset import/export directives
+
+### `@importchar` never actually copies the character it's asked to
+
+**Status:** Fixed · **Fixed in:** the directive still only works for
+that one non-C64 asset type; nothing new is now supported. What changed
+is the failure mode: pointing `@importchar` at any other destination
+asset type now stops compilation with a clear error, instead of silently
+saving the output file back unchanged.
+
+In vanilla TRSE, `@importchar` compiles without error and both the
+source and destination assets load successfully, but the actual step
+that copies one character's data across is unimplemented for every asset
+type this fork can produce. The destination file is saved back to disk
+completely unchanged. Only one unrelated, non-C64 asset type has a
+working implementation of this step.
+
+*Reference page:* [`@importchar`](reference/directives/importchar.md)
+
+### `@exportblackwhite`/`@exportframe` only work for one asset type each
+
+**Status:** Fixed · **Fixed in:** both directives now stop compilation
+with a clear error, naming the input file, when the loaded asset isn't
+the one type each directive actually supports.
+
+In vanilla TRSE, both directives compile without error for any input
+asset, but silently produce an empty output file for every asset type
+except the one each was actually implemented for (`@exportframe`
+additionally has a second implementation that's a dead stub, contributing
+to the same silent-empty outcome for the asset types routed through it).
+There's no warning when this happens, the build just quietly produces
+nothing useful.
+
+The fix does not add support for any additional asset type: each
+directive still only works for the same one asset type it always did.
+Only the failure mode changed, from a silent zero-byte output file to a
+clear compile-time error.
+
+*Reference pages:*
+[`@exportblackwhite`](reference/directives/exportblackwhite.md),
+[`@exportframe`](reference/directives/exportframe.md)
+
+### `@spritecompiler` never produces any output
+
+**Status:** Fixed · **Fixed in:** since this directive can never produce
+any output on this fork's C64-only target, using it now stops compilation
+with a clear error instead of silently doing nothing.
+
+In vanilla TRSE, the directive compiles cleanly and validates that its
+input file exists, but never actually generates anything: on a C64 build
+the underlying image-processing step it calls is an empty stub, and even
+on the handful of other targets where that step does generate something,
+the result is computed and then thrown away internally rather than making
+it into the compiled output. There is currently no target this fork ships
+with where `@spritecompiler` does anything useful.
+
+*Reference page:* [`@spritecompiler`](reference/directives/spritecompiler.md)
+
+### `@pathtool` never compiles, in any configuration
+
+**Status:** Fixed · **Fixed in:** the code-generation-phase pass was
+consuming one token fewer than `@pathtool` actually has, desyncing
+everything parsed afterward; it now consumes all of the directive's
+tokens, matching what its real handler already consumed.
+
+The directive's own work (fitting a curve through the input points and
+writing the three output files) ran successfully, but something
+afterward left the parser out of sync with the rest of the file. The
+resulting error was reported far from the actual problem, worded as if a
+`begin` were missing rather than pointing at the `@pathtool` line. This
+happened no matter where the directive was placed.
+
+*Reference page:* [`@pathtool`](reference/directives/pathtool.md)
+
+### `@perlinnoise`'s exported data isn't clamped, but its preview image is
+
+**Status:** Fixed · **Fixed in:** the value is clamped to 0-255 before
+it's stored in the exported byte buffer, the same way the `.png` preview
+already was, so both outputs now agree at every pixel.
+
+In vanilla TRSE, with a high enough amplitude/power setting, the raw
+noise bytes written to the output file can wrap or truncate outside the
+normal 0-255 range at some pixels, while the `.png` preview saved
+alongside it is clamped and looks completely clean at those same pixels.
+The preview can't be trusted to catch an out-of-range setting; only the
+actual exported data can.
+
+*Reference page:* [`@perlinnoise`](reference/directives/perlinnoise.md)
+
+## Object model
+
+### `private`/`public` are reserved but completely non-functional
+
+**Status:** By design, not planned · **Fixed in:** not applicable - see
+explanation.
+
+Both keywords are reserved (so a field or method can't be named `private`
+or `public`), but neither is actually read anywhere while parsing a
+`class`/`record` body. Writing a visibility section the way the keywords'
+names suggest fails to compile immediately, rather than being accepted
+and ignored. Every class/record member is effectively public; there is
+currently no way to mark one private. This isn't going to change: adding
+real visibility (parsing the keywords, threading a flag through the
+symbol table, and enforcing it against external access) is real feature
+work, not a narrow fix, with no existing user demand driving it.
+Documented on both keywords' own reference pages instead.
+
+*Reference pages:* [`private`](reference/keywords/private.md),
+[`public`](reference/keywords/public.md)
+
+### Whole-record assignment always fails
+
+**Status:** Fixed · **Fixed in:** assigning one `record` variable
+directly to another of the same type now compiles and copies every field.
+
+Assigning one record variable directly to another of the same type, with
+no field selector on either side, used to always fail to compile with an
+error saying a record can't be assigned to a single variable, even though
+a correct, working field-by-field copy already existed in the compiler
+and just needed to be reachable. An earlier, overly broad validation check
+rejected the assignment before that code ever ran. Field-by-field
+assignment (copying each field individually) still works too. This fix
+only covers plain `record` variables, not `class`: whole-class assignment
+was never blocked by this same check, but see the next entry for what it
+does instead.
+
+*Reference page:* [`record`](reference/types/record.md)
+
+### A whole-class assignment silently does nothing instead of copying fields
+
+**Status:** Fixed · **Fixed in:** whole-class assignment now does a real
+raw byte-for-byte copy of the instance's full size.
+
+Assigning one `class` variable directly to another of the same type, with
+no field selector on either side, used to compile cleanly with no error
+or warning, but not actually copy any fields: the destination variable's
+fields were left unchanged. This was a genuinely different, and worse,
+failure mode than plain `record` assignment used to have (a clear compile
+error): there was nothing to signal that the assignment did nothing.
+Unlike a record's field-by-field copy, a class instance's fields aren't
+individually named symbols (method calls resolve field access through a
+`this`-pointer offset instead), so the fix copies the whole instance's
+raw bytes rather than one field at a time; the observable result is the
+same either way. Field-by-field assignment (copying each field
+individually) still works too.
+
+*Reference pages:* [`class`](reference/types/class.md),
+[`record`](reference/types/record.md)
+
+## Types
+
+### A non-`const` `address` variable is completely unusable
+
+**Status:** Fixed · **Fixed in:** declaring a non-`const` `address`
+variable now stops compilation with a clear error instead of failing
+later with a confusing one.
+
+Every real usage of the `address` type declares it as a `const`.
+Declaring one as a plain `var` instead used to fail to compile with a
+confusing codegen error ("Could not find variable 'ADDRESS'"), with or
+without an initial value, and whether or not the variable was ever
+referenced anywhere in the program. It's still not possible to declare a
+non-`const` `address` (that would need giving it real, mutable 2-byte
+storage, which this fix doesn't do), but the error now names the actual
+constraint at the declaration line instead. Use `const` for a fixed
+memory location, or `pointer` for something that genuinely needs to
+change at runtime.
+
+*Reference page:* [`address`](reference/types/address.md)
+
+### A negative `long` literal with a magnitude of 65536 or higher was truncated to 16 bits
+
+**Status:** Fixed · **Fixed in:** both the `var`-declaration-initializer
+path and the ordinary-expression path now correctly wrap a negative
+literal at 24 bits, whatever its magnitude.
+
+Two independent, unrelated code paths handle a negative decimal literal
+in this compiler, and both hardcoded a two-tier two's-complement
+negation (`256 - x` for a magnitude under 256, `65536 - x` otherwise)
+with no wider tier at all, even though `long` needs 24 bits: `lv : long
+= -100000;` (a `var` declaration's own initializer, evaluated separately
+via a small expression-string evaluator) stored the wrong value at
+runtime with no error, and `lv := -100000;` or `if (lv = -100000)`
+(ordinary code, evaluated via the general expression parser) computed
+the wrong constant the same way. Since `100000` needs 24 bits, both used
+their existing 16-bit tier, wrapping to a completely different number
+(`-100000 mod 65536`) instead of the correct 24-bit value.
+
+*Reference page:* [`long`](reference/types/long.md)
+
+### A small-magnitude negative literal isn't sign-extended when compared against a wider variable
+
+**Status:** Fixed · **Fixed in:** a negative literal now remembers how
+many bytes its own two's-complement tier actually covers, and any byte
+read back beyond that width is sign-extended to `$FF` instead of falling
+through to a plain zero.
+
+Found while fixing the bug above. A negative decimal literal small
+enough to fit in a single byte (like `-1`) is internally stored using
+only as many bytes as its own magnitude needs; when it was compared
+directly against a wider (`long`) variable, the byte(s) beyond what the
+literal itself naturally occupies were read as `$00` instead of being
+sign-extended to `$FF`. Concretely, `if (lv = -1)` for a `long` variable
+genuinely holding `-1` ($FFFFFF) could compare unequal, since the
+literal `-1` on the right-hand side was read back as `$0000FF` for the
+comparison's upper two bytes. The same gap applied to a `-1` compared
+against an `integer` variable's high byte, not just `long`.
+
+*Reference page:* [`long`](reference/types/long.md)
+
+## Branch optimization
+
+### `onpage`/`offpage` have gaps on `case` and `repeat...until`, and no safety net when forcing `onpage`
+
+**Status:** Fixed · **Fixed in:** the `case` compare-and-jump routine now
+reads the forced-page flag instead of ignoring it; `repeat...until` now
+parses a trailing `onpage`/`offpage` and passes it through to the code
+generator's already-working handling for it; and forcing `onpage` on an
+`if`/`while`/`for` block too large for a short relative branch now raises
+a clear compile-time error instead of silently letting the assembler
+catch a broken branch later (or not at all).
+
+`onpage`/`offpage` on a `case` statement used to parse without error but
+have no effect on the generated code either way. Neither keyword could be
+used on a `repeat...until` loop at all: writing one there desynced the
+parser instead of applying the override, even though the code generator
+already had full, working support for both directions in that spot. And
+on `if`/`while`/`for`, forcing `onpage` (the short-branch direction)
+skipped the size check that normally decides automatically, so forcing it
+on a block that turned out too large produced a broken branch caught only
+late, by the assembler, with a confusing error not pointing at the
+`onpage` keyword itself.
+
+*Reference pages:* [`onpage`](reference/keywords/onpage.md),
+[`offpage`](reference/keywords/offpage.md), [`case`](reference/keywords/case.md),
+[`until`](reference/keywords/until.md)
+
+## Inline assembler
+
+### A program, procedure, or variable name starting with "repeat" can trigger an unrelated unrolling error
+
+**Status:** Fixed · **Fixed in:** the unrolling detection now requires the
+line to actually match a real `repeat <count>`/`repeat <countX> <countY>`
+shape, not just start with the text "repeat".
+
+The inline-assembler unrolling feature (`repeat N` / `repend`) used to be
+detected by scanning the generated assembly line by line for anything
+that starts with the word "repeat", rather than checking for the actual
+"repeat, followed by a number" shape. A program, procedure, or variable
+whose name happened to start with those same letters (`RepeatDemo`, for
+example) produced a line in the generated assembly that starts the same
+way, so it was mistaken for the start of an unrolling block. Compilation
+then failed with a count-parsing error that had nothing to do with the
+actual source, even in a project that never uses `repeat`/`repend`
+unrolling at all. The ordinary Pascal `repeat...until` loop was always
+unaffected by this and worked correctly on its own; only the name
+collision with the unrelated assembler feature caused the failure.
+
+*Reference pages:* [`repeat`](reference/keywords/repeat.md),
+[`repend`](reference/keywords/repend.md)
+
+### `php`/`plp` fail to assemble with "Unknown opcode"
+
+**Status:** Fixed · **Fixed in:** the assembler's opcode table now
+includes both mnemonics.
+
+The assembler's opcode table (a hand-maintained data file, not a
+from-spec complete 6502 assembler) used to have no entry for `php`
+(push processor status) or `plp` (pull processor status), unlike every
+other legal 6502 mnemonic, including every other stack- and
+status-adjacent one (`pha`, `pla`, `txs`, `tsx`, `rti`). Writing
+`asm(" php ");` or `asm(" plp ");` failed with "Unknown opcode: php"/
+"Unknown opcode: plp" at the assembly stage. This gap is also present in
+vanilla TRSE's current upstream, confirmed all the way back to the first
+version of the assembler; it isn't a fork regression.
+
+*Reference page:* [`asm`](reference/keywords/asm.md)
+
+## Bitwise operators
+
+### Signed right shift is always a logical shift, never arithmetic
+
+**Status:** Fixed · **Fixed in:** `shr`/`>>` on a `signed` value now
+correctly preserves the sign bit, at every width.
+
+Shifting a negative signed value right with `shr`/`>>` used to give a
+wrong (positive) result instead of preserving the sign. The shift always
+filled the vacated high bits with `0`, the same way it would for an
+unsigned value, rather than replicating the sign bit the way a proper
+arithmetic right shift needs to. A `signed byte` holding `-8`, shifted
+right by one, used to produce `124` instead of the mathematically correct
+`-4`.
+
+*Reference page:* [`shr`](reference/operators/shift-right.md)
+
+### `long` bitwise AND/OR/XOR silently miscompute the result with a non-trivial right-hand operand
+
+**Status:** Fixed · **Fixed in:** the top byte is now combined correctly,
+and the middle byte no longer picks up leftover carry state from the
+right-hand side.
+
+`&`, `|`, and `xor`/`^` between two 24-bit `long` values work correctly
+when the right-hand side is a plain variable. As soon as the right-hand
+side is a more complex expression (an addition, for example), two
+separate things used to go wrong at once: the top byte of the result
+wasn't combined with the operator at all, it was simply overwritten with
+the right-hand expression's own top byte; and the middle byte could come
+out one off from the correct value, because of leftover state from
+evaluating the right-hand expression bleeding into the result.
+
+*Reference pages:* [`&`](reference/operators/bitwise-and.md),
+[`|`](reference/operators/bitwise-or.md), [`xor`](reference/operators/xor.md)
+
+### `xor` used to combine two conditions always evaluates true
+
+**Status:** Fixed · **Fixed in:** `xor` between two parenthesized
+conditions now correctly evaluates to true only when exactly one side is
+true, the same as `and`/`or` already did.
+
+Writing `xor` between two parenthesized conditions, like
+`(a>5) xor (b<3)`, used to compile without any error, but the resulting
+condition always behaved as true, no matter what either side actually
+evaluated to; the `else` branch of an `if` using this pattern was
+unreachable. Both conditions were evaluated correctly, but the step that's
+supposed to combine them with `xor` and branch on the result was missing:
+only `and`/`or` were wired up to combine two conditions this way. Plain
+bitwise `xor`/`^` between two numeric values was unaffected and always
+worked correctly; this only affected `xor` written between two
+parenthesized conditions.
+
+*Reference page:* [`xor`](reference/operators/xor.md)
+
+## Logical operators
+
+### `not` on a wider-than-byte value only complements the low byte
+
+**Status:** Fixed · **Fixed in:** `not` on an `integer` or `long`
+plain-variable operand now flips every byte, not just the low one.
+
+`not` on an `integer` or `long` value should flip every bit, but only the
+low byte actually got flipped; the upper byte(s) passed straight through
+unchanged instead of being complemented too. `not` on an `integer`
+holding `$00FF` used to give `$0000` instead of the correct `$FF00`. `not`
+on a plain `byte` was unaffected and already worked correctly. The fix
+covers a plain variable operand (the common case); `not` on a more
+complex expression still falls back to the old byte-width behavior.
+
+*Reference page:* [`not`](reference/operators/not.md)
+
+### `not` can't negate a comparison the way it looks like it should
+
+**Status:** Fixed · **Fixed in:** `not` now has real clause-level
+negation, covering a parenthesized comparison, an unparenthesized
+comparison, and a bare boolean flag alike.
+
+Writing `not (a > 5)`, with the comparison in parentheses, used to fail
+to compile at all. Writing it without the parentheses, `not a > 5`, used
+to compile, but silently meant something different from what it looked
+like: it computed `not a` (a bitwise complement) first, and only then
+compared that complemented value against `5`, instead of negating the
+result of `a > 5`. For `a = 10`, this read as `(not 10) > 5`, which came
+out true, the opposite of the intended `not (10 > 5)`, which should be
+false. Even `not` directly in front of a bare boolean flag used as a
+condition, like `if not someFlag then`, only gave the right answer when
+the flag held exactly `false` (`0`): any other nonzero "true" value (such
+as `1`) was wrongly still treated as true after negation, since the old
+implementation bitwise-complemented the value and re-tested the
+complement for non-zero rather than actually inverting the truth value.
+
+*Reference page:* [`not`](reference/operators/not.md)
+
+## Builtins
+
+### `Lo`, `Hi`, and `bankbyte` are all a silent no-op on a `long` value
+
+**Status:** Fixed · **Fixed in:** all three now correctly return the
+requested byte of a `long` value too, the same as they already did for
+`pointer`.
+
+`Lo`, `Hi`, and `bankbyte` correctly return the low, high, and third
+(bits 16-23) byte of a `pointer` value. On a `long` value, this fork's
+other 24-bit type, all three used to produce no code at all: the
+destination variable ended up holding whatever was already in the
+processor's accumulator at that point in the program, not any byte of the
+`long` value. There was no error or warning, the assignment just silently
+did the wrong thing. All three share one underlying implementation, so
+this wasn't three separate bugs, just one gap that happened to surface
+under three different names.
+
+*Reference pages:* [`Lo`](reference/builtins/lo.md),
+[`Hi`](reference/builtins/hi.md), [`bankbyte`](reference/builtins/bankbyte.md)
+
+### `Abs` only negates the low byte of a `long` value
+
+**Status:** Fixed · **Fixed in:** `Abs` now has a dedicated `long` path
+that checks the correct (top) byte's sign and negates all three bytes
+with real carry propagation between them. A related, previously
+uncatalogued gap in the existing `integer` path (the low byte's own
+carry-out was never propagated into the high byte, so `Abs` of a
+negative multiple of 256 came out wrong too) was found and fixed in the
+same pass.
+
+`Abs` correctly returns the absolute value of a negative `byte` or
+`integer`. On a `long` value it used to silently fall back to the plain
+`byte` logic: it checked the sign bit of the wrong byte (the low byte
+instead of the high byte, where a 24-bit value's sign actually lives)
+and, even when that happened to trigger, only negated that one byte,
+leaving the other two completely unchanged.
+
+*Reference page:* [`Abs`](reference/builtins/abs.md)
+
+### `CopyBytesShift`'s rotate-right mode never actually rotates
+
+**Status:** Fixed · **Fixed in:** rotate right now performs a genuine
+circular rotate, matching rotate left's existing correct behavior.
+
+`CopyBytesShift` supports four modes: shift left, shift right, rotate
+left, and rotate right. Rotate left works correctly at any shift amount.
+Rotate right used to silently behave exactly like plain shift right at
+every shift amount, including a single shift: the bit that falls off the
+bottom was simply discarded and a `0` was always shifted in from the top,
+instead of the discarded bit wrapping back around to the top the way a
+real rotate should. Rotating `%10000001` right by one gives `%11000000`
+in a correct rotate; this builtin used to give `%01000000` instead.
+
+*Reference page:* [`CopyBytesShift`](reference/builtins/copybytesshift.md)
+
+### A literal numeric address fails for a handful of builtins
+
+**Status:** Fixed · **Fixed in:** all affected builtins now format a bare
+numeric literal address as a plain memory operand instead of an immediate
+(register-load) one, so it assembles the same way a named constant always
+did.
+
+Passing a bare numeric address literal (e.g. `$ffea`) directly as an
+argument to `Call`, `ClearBitmap`, `CopyCharsetFromRom`, `CopyFullScreen`,
+`CopyHalfScreen`, or `TransformColors` used to compile without any error,
+but fail at the assembly stage right afterward, with an "opcode not
+implemented" error. The generated instruction ended up in an invalid form
+(an addressing mode that doesn't exist for that instruction) because the
+literal was formatted the same way it would be for loading it into a
+register, not for using it as a memory address. Routing the exact same
+address through a named constant, a `^`-prefixed literal, or a
+pointer/variable worked correctly in every case, and still does.
+
+`Poke` had the same symptom (a bare numeric literal address failed, a
+named constant/`^`-prefixed literal/pointer all worked) but failed
+earlier and more clearly, with a plain "must be a variable or address"
+error at compile time rather than a confusing assembly-stage failure.
+`Peek`, the matching read builtin, was originally believed unaffected,
+but turned out to have a related, differently-shaped bug of its own: see
+the next entry.
+
+*Reference pages:* [`Call`](reference/builtins/call.md),
+[`ClearBitmap`](reference/builtins/clearbitmap.md),
+[`CopyCharsetFromRom`](reference/builtins/copycharsetfromrom.md),
+[`CopyFullScreen`](reference/builtins/copyfullscreen.md),
+[`CopyHalfScreen`](reference/builtins/copyhalfscreen.md),
+[`TransformColors`](reference/builtins/transformcolors.md),
+[`Poke`](reference/builtins/poke.md)
+
+### `Peek` silently returns the wrong value for a literal numeric address
+
+**Status:** Fixed · **Fixed in:** `Peek` now formats a bare numeric
+literal address as a plain memory operand too, so it reads the correct
+value.
+
+Passing a bare numeric address literal directly to `Peek` (e.g.
+`peek(53280, 0)`) used to compile and assemble without any error, unlike
+the builtins in the previous entry - but the value it returned wasn't
+actually read from that address; it silently returned a wrong,
+address-derived constant instead. This was the same underlying formatting
+issue as the previous entry's bug, just hidden behind a symptom that
+looked like success, which is why `Peek` was originally (and incorrectly)
+recorded as unaffected by it. Routing the same address through a
+`^`-prefixed literal, a named `address` constant, or a pointer worked
+correctly, and still does.
+
+*Reference page:* [`Peek`](reference/builtins/peek.md)
+
+### `CopyCharsetFromRom` only copies part of the character ROM
+
+**Status:** Fixed · **Fixed in:** the copy loop now uses the correct
+256-byte stride, and (for a `pointer` destination) the destination is
+now advanced between chunks too, so the full 2048-byte ROM font is
+copied correctly.
+
+`CopyCharsetFromRom` is meant to copy the full 2048-byte character ROM
+font to RAM in one call. Its copy loop is built from 8 chunks that are
+each supposed to cover one non-overlapping 256-byte page, but they're
+actually spaced only 100 bytes apart, so they heavily overlap each other
+and the last chunk stops well short of the end. Well over half of the
+character ROM is never copied at all, while the bytes that are covered
+get copied several times over. With a `pointer` destination (the only
+kind this builtin accepts), the real-world impact was actually worse than
+the stride alone suggests: the destination store never advanced between
+chunks either, so only the very last chunk's 256 bytes ever survived.
+
+*Reference page:*
+[`CopyCharsetFromRom`](reference/builtins/copycharsetfromrom.md)
+
+### `CopyCharsetFromRom` disabled interrupts and never turned them back on
+
+**Status:** Fixed · **Fixed in:** `CopyCharsetFromRom` now re-enables
+interrupts before returning.
+
+`CopyCharsetFromRom` disabled interrupts partway through (needed to
+safely bank in the character ROM for reading) but never re-enabled them
+afterward, leaving any program that didn't separately set up its own
+interrupt handling running with interrupts permanently off from that
+point on.
+
+*Reference page:*
+[`CopyCharsetFromRom`](reference/builtins/copycharsetfromrom.md)
+
+### `CopyImageColorData` silently accepts an invalid bank number
+
+**Status:** Fixed · **Fixed in:** an out-of-range bank number now raises
+a compile error instead of silently defaulting to bank 0's address.
+
+`CopyImageColorData`'s bank parameter is meant to be 1, 2, or 3. Passing
+any other value (0, or 4 and above) compiles and assembles without any
+error or warning, but silently produces the exact same addresses as bank
+0, not an error and not the (nonexistent) address an out-of-range bank
+number would suggest.
+
+*Reference page:*
+[`CopyImageColorData`](reference/builtins/copyimagecolordata.md)
+
+### `CreateInteger` and `CreatePointer` are the same builtin under two names
+
+**Status:** Fixed · **Fixed in:** `CreatePointer` now also loads its
+result's high byte into X, so its result is distinguishable from
+`CreateInteger`'s via X immediately after the call. Fixing this also
+surfaced and fixed a second, previously-uncatalogued bug: both builtins
+used to build their result with the low and high bytes swapped relative
+to their own documented parameter order (see the entry below).
+
+`CreatePointer` sounds like it should build a result usable as a
+`pointer`, distinct from `CreateInteger`. In practice the two compile to
+byte-for-byte identical assembly: both always put the high byte in the Y
+register, and neither ever loads, stores, or touches the X register.
+Assigning the result of `CreatePointer` to a `pointer` variable produces
+exactly the same code as assigning `CreateInteger`'s result to an
+`integer` variable.
+
+### `CreateInteger`/`CreatePointer` built their result with the low/high bytes swapped
+
+**Status:** Fixed · **Fixed in:** the low/high byte order now matches the
+documented `(loByte, hiByte)` parameters.
+
+Found while fixing the bug above. Both builtins are documented as
+`(loByte, hiByte)`, returning `loByte + hiByte*256`. In practice they
+actually built the result the other way round: `CreateInteger(10, 20)`
+did not equal `5130` as documented; `CreateInteger(20, 10)` did. This
+affected both builtins identically, since they share one implementation.
+
+*Reference pages:* [`CreateInteger`](reference/builtins/createinteger.md),
+[`CreatePointer`](reference/builtins/createpointer.md)
+
+### `FillFast` writes one byte more than it's told to
+
+**Status:** Fixed · **Fixed in:** `FillFast` now writes exactly `count`
+bytes, matching `Fill`; a runtime count of `0` correctly writes zero
+bytes too.
+
+`FillFast(address, value, count)` is meant to fill exactly `count` bytes,
+the same as the plain `Fill` builtin. `Fill` does that correctly, but
+`FillFast`'s loop always runs one extra time, so it actually writes
+`count + 1` bytes, silently overwriting one byte past the range the
+caller asked for every time it's used.
+
+*Reference page:* [`FillFast`](reference/builtins/fillfast.md)
+
+### `FLD` used to run 256 times instead of 0 when given a count of 0
+
+**Status:** Fixed · **Fixed in:** `FLD` now checks the count before
+entering the loop and skips the effect entirely for a count of `0`.
+
+`FLD(count, mode)` is meant to repeat one step of the effect `count`
+times. Its loop used to always execute the step at least once before
+checking the count, so passing a count of 0 didn't skip the effect: the
+counter wrapped around instead, and the step ended up running 256 times.
+
+*Reference page:* [`FLD`](reference/builtins/fld.md)
+
+### `InitKrill` disabled interrupts and never turned them back on
+
+**Status:** Fixed · **Fixed in:** `InitKrill` now re-enables interrupts
+before returning, on every exit path.
+
+`InitKrill` disabled interrupts partway through installing Krill's
+loader into memory but never re-enabled them afterward, the same gap as
+`CopyCharsetFromRom` above, in a separate routine.
+
+*Reference page:* [`InitKrill`](reference/builtins/initkrill.md)
+
+### `LeftBitShift`/`RightBitShift` always rotate, never actually shift
+
+**Status:** By design, not planned · **Fixed in:** not applicable - see
+explanation.
+
+Both builtins are named and used as a "shift" across a block of 8-row
+character/bitmap data, `num` bytes wide. At every width, including the
+simplest case (a single byte, 8 rows), the bit that shifts off one end of
+the block doesn't get dropped the way a real shift would drop it: it
+reappears at the opposite end instead. That's a rotate, not a shift, with
+no way to ask for the non-wrapping version. This one isn't going to be
+changed: the bundled tutorial `Tutorials/intermediate/06_tech.ras` calls
+`rightbitshift` on the same data unconditionally every single frame,
+forever, for a continuous melt/scroll effect that only keeps working
+*because* the data wraps around instead of eventually shifting to all
+zeros. Changing the default to a true dropping shift would break that
+tutorial outright. Treated as a naming mismatch to document clearly
+rather than a defect to fix - the behavior itself is real, useful, and
+depended on.
+
+*Reference page:* [`LeftBitShift`](reference/builtins/leftbitshift.md)
+
+### `MemCpy`/`MemCpyFast` used to copy 256 bytes instead of 0 for a runtime count of 0
+
+**Status:** Fixed · **Fixed in:** both builtins now check for an empty
+range before entering the copy loop.
+
+Both builtins are meant to copy exactly `count` bytes. Their copy loops
+used to only check whether they were done *after* copying a byte, never
+before the first pass, the same "always runs at least once" shape as
+`FLD`'s count-of-0 case above. So if `count` was a runtime value that
+happened to be 0 (not a literal `0` written in the source), neither one
+copied zero bytes: both wrapped all the way around and copied a full 256
+bytes instead, silently overwriting whatever memory followed the
+destination. `MemCpyUnroll`/`MemCpyUnrollReverse` never had this problem,
+since their count has to be a fixed value known at compile time, and a
+compile-time 0 there always correctly produced no copy at all.
+
+*Reference pages:* [`MemCpy`](reference/builtins/memcpy.md),
+[`MemCpyFast`](reference/builtins/memcpyfast.md)
+
+### `min`/`max` compare bytes as unsigned, with no signed handling at all
+
+**Status:** Fixed · **Fixed in:** both builtins now compare `signed byte`
+operands correctly, reusing the same corrected signed-compare idiom the
+comparison operators use.
+
+`min`/`max` pick the smaller/larger of two `byte` values using a plain
+unsigned comparison. On a `signed byte`, any pair straddling the sign
+boundary comes out wrong: `min(-1, 1)` returns `1` instead of `-1`,
+because `-1`'s bit pattern is unsigned-larger than `1`'s. This is a
+stricter gap than the signed-comparison operators above: those at least
+attempt a signed-aware branch, even if it's imperfect at the boundary;
+`min`/`max` don't attempt signed handling at all.
+
+*Reference pages:* [`min`](reference/builtins/min.md),
+[`max`](reference/builtins/max.md)
+
+### `PrintNumber`/`PrintDecimal` fail unless `MoveTo`, `PrintString`, or `Tile` is also used somewhere
+
+**Status:** Fixed · **Fixed in:** `PrintNumber`/`PrintDecimal` are now
+themselves part of the auto-init trigger list, so either works standalone.
+
+Using `PrintNumber` or `PrintDecimal` with no `MoveTo`, `PrintString`, or
+`Tile` call anywhere else in the whole compiled program fails at the
+assembly stage with an "unknown operation" error. Adding a single
+`MoveTo` (or `PrintString`/`Tile`) call anywhere in the same compile,
+whether or not it's the one that actually runs at that point in the
+program, is enough to make the exact same `PrintNumber`/`PrintDecimal`
+call work. In practice this rarely bites, since real programs almost
+always call `MoveTo` to position the cursor before printing anything
+anyway, but `PrintNumber`/`PrintDecimal` used on their own, with nothing
+else positioning the screen cursor anywhere in the program, hits this.
+
+*Reference pages:* [`PrintNumber`](reference/builtins/printnumber.md),
+[`PrintDecimal`](reference/builtins/printdecimal.md),
+[`MoveTo`](reference/builtins/moveto.md)
+
+### `PlaySound`'s two waveform parameters both write the same register
+
+**Status:** By design, not planned · **Fixed in:** not applicable - see
+explanation.
+
+`PlaySound` takes two separate "waveform" parameters. Both are written
+to the exact same sound-chip control register back to back with nothing
+in between, so the first write is immediately overwritten by the second
+before it can have any observable effect; only the second waveform
+parameter's value ever actually reaches the chip. This isn't going to be
+changed: no bundled tutorial or template actually calls `PlaySound` at
+all, so there's no real usage to weigh a fix against, and neither the
+"correct" two-write gate-trigger idiom (what delay or second address it
+would actually need) nor the case for removing the dead first write
+outweighs just documenting the parameter's real, current behavior.
+Treated the same way as `LeftBitShift`/`RightBitShift`'s rotate-not-shift
+naming mismatch above: a quirk to document clearly, not a defect to fix.
+
+*Reference page:* [`PlaySound`](reference/builtins/playsound.md)
+
+### `RasterIRQWedge`'s KERNAL-vector mode never compiles
+
+**Status:** Fixed · **Fixed in:** the KERNAL-vector mode now writes the
+handler's address into the KERNAL's own IRQ vector, the same way
+`RasterIRQ`'s own KERNAL-vector mode already did.
+
+`RasterIRQWedge` takes the same hardware-vector-or-KERNAL-vector mode
+parameter `RasterIRQ` does. The KERNAL-vector mode used to always fail to
+compile, with an error stating outright that it isn't implemented. Every
+real usage of this builtin, in this fork's own bundled tutorials
+included, used the hardware-vector mode for exactly this reason.
+`RasterIRQ` itself never had this gap; both modes worked there already.
+
+*Reference page:* [`RasterIRQWedge`](reference/builtins/rasterirqwedge.md)
+
+### `RasterIRQWedge` never actually worked, in either mode
+
+**Status:** Fixed · **Fixed in:** the shared wedge-chaining routine now
+reads the raster line back from the correct hardware register before
+rescheduling the next trigger.
+
+Found while fixing the KERNAL-vector-mode bug above: even the
+hardware-vector mode, previously believed to work, never actually
+produced a working build either. Every use of `RasterIRQWedge`, in any
+mode, pulls in a small shared routine that reschedules the next raster
+trigger on every interrupt; that routine referenced a nonexistent
+register name instead of the raster-line hardware register it needed to
+read back, so assembly failed the moment `RasterIRQWedge` was used at
+all. This means `RasterIRQWedge` could never have compiled successfully
+before, in any bundled tutorial or otherwise; this fix is the first time
+it actually produces a working build.
+
+*Reference page:* [`RasterIRQWedge`](reference/builtins/rasterirqwedge.md)
+
+### `ScrollX`/`ScrollY` didn't range-check their own input value
+
+**Status:** Fixed · **Fixed in:** both builtins now mask their own input
+to `0`-`7` before combining it into the register; `ScrollY` also no
+longer clears the raster-compare high bit, and both now raise a compile
+error instead of silently no-opping when `temp_zeropages` is blank.
+
+Both builtins expect a value from `0` to `7`. Both used to correctly mask
+the VIC-II register's *existing* contents before combining in the new
+value, but neither masked the value passed in. A value outside `0`-`7`
+got OR'd straight into the register, silently flipping unrelated bits:
+for `ScrollX`, the 38/40-column select or multicolor-mode bits of the
+scroll register; for `ScrollY`, the 24/25-row select, display-enable, or
+extended-color-mode bits of its register.
+
+`ScrollY` also had a second, independent quirk: every call unconditionally
+cleared the raster-compare high bit of its register, regardless of the
+value passed in, silently disarming a raster interrupt set up on a line
+at or past 256.
+
+Both builtins also depend on a specific project setting
+(`temp_zeropages`) being non-empty; it used to silently do nothing at all
+if it was blank, with no error or assembly emitted for the call.
+
+*Reference pages:* [`ScrollX`](reference/builtins/scrollx.md),
+[`ScrollY`](reference/builtins/scrolly.md)
+
+### `SetBank` used to write the whole banking register unmasked
+
+**Status:** Fixed · **Fixed in:** `SetBank` now does a masked
+read-modify-write, preserving the register's other bits.
+
+`SetBank` selects which 16KB region the VIC-II reads video data from by
+writing to a CIA chip register that also carries the serial (IEC) bus
+and RS-232 output lines in its other bits. `SetBank` used to write its
+value straight to that register with no read-modify-write step, so every
+call also forced those other lines low as a side effect, a real hazard
+for any custom fastloader or serial-bus code that called `SetBank` while
+a transfer might still be active.
+
+*Reference page:* [`SetBank`](reference/builtins/setbank.md)
+
+### `SetBitmapMode` used to overwrite its whole register instead of changing one bit
+
+**Status:** Fixed · **Fixed in:** `SetBitmapMode` now does a masked
+read-modify-write, the same shape its sibling mode-toggle builtins
+already used.
+
+Switching into bitmap mode should only need to change one bit of the
+relevant VIC-II register. Every sibling mode-toggle builtin
+(`SetTextMode`, `SetMultiColorMode`, `SetRegularColorMode`) correctly
+changed only the bit(s) it needed to, leaving everything else in the
+register alone; `SetBitmapMode` instead overwrote the entire register
+with one fixed value, silently resetting the vertical fine-scroll value
+and clearing the raster-compare high bit set up beforehand.
+
+*Reference page:* [`SetBitmapMode`](reference/builtins/setbitmapmode.md)
+
+### `SetMemoryConfig(1, 0, 0)` silently writes a different value than requested
+
+**Status:** Fixed · **Fixed in:** the dead `n3=1` override removed;
+`SetMemoryConfig` now writes the byte a plain reading of its three
+arguments predicts.
+
+`SetMemoryConfig` takes three arguments and computes a byte value from
+them to write to the CPU's memory-configuration port. For exactly one
+combination of arguments, `(1, 0, 0)`, which also happens to be by far
+the most common way this builtin gets called in practice, the compiler
+used to silently substitute a different value for the third argument
+before computing the byte it writes, rather than using the value
+actually passed in. This particular substitution didn't change which
+ROM/RAM ended up mapped in (with `kernal=0`, the `basic` bit has no
+further effect on the real 6510 port truth table), so most programs
+never noticed, but it did mean the exact byte value ended up different
+from what a plain reading of the three arguments would predict, which
+mattered for any code that read that port back directly and compared it
+against an expected value.
+
+*Reference page:* [`SetMemoryConfig`](reference/builtins/setmemoryconfig.md)
+
+### `SpritePos` with sprite number 8 or higher corrupts VIC-II registers
+
+**Status:** Fixed · **Fixed in:** the sprite number is now masked to
+`0`-`7` before it's used to compute the sprite register offset, for both
+a compile-time-constant and a runtime sprite number.
+
+`SpritePos` expects a sprite number from `0` to `7`, matching the eight
+hardware sprites. That range isn't enforced anywhere. If the sprite
+number is a compile-time constant of `8` or higher, the position writes
+don't land on a nonexistent ninth sprite, they land squarely on two core
+VIC-II registers instead: the sprite-MSB register (which tracks each
+sprite's 9th X-position bit) and the VIC-II's main control register
+(screen on/off, text/bitmap mode, Y-scroll, and the raster-compare high
+bit). Calling `SpritePos(x, y, 8)` silently corrupts core display state
+on every call instead of failing to compile.
+
+*Reference page:* [`SpritePos`](reference/builtins/spritepos.md)
+
+### `SetSpriteLoc` doesn't range-check its own bank or sprite-number arguments
+
+**Status:** Partially fixed · **Fixed in:** the `bank` argument now
+actually enforces its documented `0`-`3` range, and a compile-time-constant
+sprite number is now checked against `0`-`7` too. A non-constant (runtime
+variable) sprite number still isn't range-checked.
+
+`SetSpriteLoc`'s own compile error message for its bank argument says it
+"must be constant 0-3", but only "is this actually a constant" gets
+checked, not whether the constant is inside that range. A bank value of
+`4` or higher compiles cleanly and computes an address outside the
+sprite-pointer table it's meant to target. Its sprite-number argument has
+no range check at all, so a value outside the real `0`-`7` hardware range
+silently writes past the 8-byte sprite-pointer table into whatever memory
+follows it, again with no error.
+
+*Reference page:* [`SetSpriteLoc`](reference/builtins/setspriteloc.md)
+
+### `EnableRasterIRQ` (and `StartRasterChain`) used to overwrite the whole VIC-II control register, and still can't reach raster lines past 255
+
+**Status:** Partially fixed · **Fixed in:** `EnableRasterIRQ` no longer
+touches the VIC-II's main control register at all; raster-IRQ-enable now
+lives entirely in the separate register that already needed no fix. The
+raster-line-256+ gap below is still open.
+
+`EnableRasterIRQ` is meant to turn on the raster-interrupt source, a
+single-bit change in one register. It used to immediately follow that
+with an unconditional overwrite of the VIC-II's entire main control
+register with one fixed value, the same "hardcoded overwrite instead of a
+masked change" shape `SetBitmapMode` above also had, silently resetting
+the vertical fine-scroll value and turning off bitmap/extended-color mode
+regardless of anything set up beforehand. `StartRasterChain` calls
+`EnableRasterIRQ` internally as part of its own one-call setup, so it
+shares this fix too.
+
+**Still open:** that overwrite also always cleared the raster-compare
+high bit rather than setting it, and `RasterIRQ` (the builtin that
+actually arms a raster line) never sets that bit either. Between the two,
+there's still no way to trigger a raster interrupt on a line at or past
+256 through `RasterIRQ`, `EnableRasterIRQ`, or `StartRasterChain`; only
+lines `0`-`255` work.
+
+*Reference pages:* [`EnableRasterIRQ`](reference/builtins/enablerasterirq.md),
+[`RasterIRQ`](reference/builtins/rasterirq.md),
+[`StartRasterChain`](reference/builtins/startrasterchain.md)
+
+### `RasterIRQ`, `RasterIRQWedge`, and `StartIRQWedge` crash the compiler on a bad argument instead of erroring
+
+**Status:** Fixed · **Fixed in:** all three now validate the argument
+before dereferencing it (`RasterIRQ`'s previously-disabled procedure-
+reference check re-enabled; the same check added to `RasterIRQWedge`,
+plus a pure-numeric check on its mode argument; a pure-numeric check
+added to `StartIRQWedge`, matching its sibling `StartIRQ`). A malformed
+call now produces a clean compile error instead of crashing the compiler
+process. `StartRasterChain` inherits the `RasterIRQ` fix automatically.
+
+Three related builtins skip validating an argument that's used
+unconditionally right after, so a malformed call doesn't produce a
+compile error, it crashes the compiler process itself:
+
+- `RasterIRQ`, and by extension `StartRasterChain` (which calls it
+  internally): passing something other than an interrupt procedure
+  reference as the first argument.
+- `RasterIRQWedge`: the same gap on its first argument, plus no check
+  that its mode argument is a compile-time constant.
+- `StartIRQWedge`: no check that its one argument is a compile-time
+  constant. Its sibling `StartIRQ` correctly rejects a non-constant
+  argument with a clean compile error; `StartIRQWedge` doesn't do the
+  same check.
+
+*Reference pages:* [`RasterIRQ`](reference/builtins/rasterirq.md),
+[`RasterIRQWedge`](reference/builtins/rasterirqwedge.md),
+[`StartIRQWedge`](reference/builtins/startirqwedge.md),
+[`StartRasterChain`](reference/builtins/startrasterchain.md)
+
+### `Sqrt` fails with a confusing assembler error if not enough zero-page scratch is configured
+
+**Status:** Fixed · **Fixed in:** a missing `zeropage_internal1`-`4`
+setting now raises a clear compile error naming the actual problem,
+instead of the confusing assembler-stage failure.
+
+`Sqrt` needs 4 of the project's internal zero-page scratch slots to hold
+its working state while it computes. The shipped default project
+settings always provide all 4, so this doesn't affect a normal project.
+If a project's settings were missing one or more of them, a call to
+`Sqrt` used to fail at the assembly stage with a confusing, unrelated
+error ("Opcode type not implemented or illegal: sty type 0") instead of a
+diagnostic pointing at the actual missing setting.
+
+*Reference page:* [`Sqrt`](reference/builtins/sqrt.md)
+
+### `SetSpriteLoc` assumes the screen is still at its default location
+
+**Status:** Fixed · **Fixed in:** `SetSpriteLoc` now computes the
+sprite-pointer table's address relative to whatever screen location the
+most recent `SetScreenLocation` call actually set (compile-time tracked,
+in source order), instead of always assuming the default.
+
+The sprite-pointer table always lives at a fixed offset from wherever
+screen memory currently starts. `SetSpriteLoc` used to not compute that
+offset from the screen's actual, currently configured location; it
+always assumed the *default* one. If a program moved the screen with
+`SetScreenLocation` and also used sprites, `SetSpriteLoc` kept writing
+to the old, default location's sprite-pointer table rather than the
+real one, silently leaving sprites pointed at the wrong (or stale)
+shape data, with no error.
+
+*Reference pages:* [`SetSpriteLoc`](reference/builtins/setspriteloc.md),
+[`SetScreenLocation`](reference/builtins/setscreenlocation.md)
+
+### `Wait(0)` used to spin through a near-256-iteration loop instead of returning immediately
+
+**Status:** Fixed · **Fixed in:** `Wait` now checks the count before
+entering the loop and returns immediately for a count of `0`.
+
+`Wait` is meant to busy-loop for a given number of iterations before
+returning. The generated loop used to always count down at least once
+before checking whether it had reached zero, so calling it with a count
+of `0` underflowed immediately and spun through nearly the full
+256-iteration range instead of doing nothing. The same "runs the body at
+least once" shape showed up elsewhere in this fork too (`FOR`/`FORI`,
+`FLD`, `MemCpy`/`MemCpyFast` with a runtime count of `0`).
+
+*Reference page:* [`Wait`](reference/builtins/wait.md)
+
+### `ToggleBit` with a constant bit index runs its work twice
+
+**Status:** Fixed · **Fixed in:** the constant-bit-index fast path now
+stops once it's done, instead of also falling through into the general
+path.
+
+`ToggleBit` has two internal code paths: a fast one for when the bit
+index is a compile-time constant, and a slower general one for when it's
+a variable or expression. When the bit index actually was a constant, the
+compiler generated the fast path correctly, but then fell through and
+also generated the slow path right after it, recomputing and reapplying
+the same set/clear a second time. The end result was still correct
+(setting or clearing the same bit twice has no further effect), but every
+call with a literal bit index, the common case, ended up roughly twice the
+code size and twice the execution time it needed to be.
+
+*Reference page:* [`ToggleBit`](reference/builtins/togglebit.md)
+
+## Project files and build tooling
+
+### A missing settings file reports a successful exit code
+
+**Status:** Fixed · **Fixed in:** this case now reports a nonzero exit
+code, the same as any other compile failure.
+
+Compiling with no `settings=` argument, when the CLI's own fallback
+location for a settings file also doesn't have one, prints an error and
+compiles nothing at all, but the process still reports a successful
+exit code, the same one a real, successful compile returns. A build
+script or CI job that only checks the exit code, rather than reading
+the printed output, would report this as a passing build.
+
+*Reference page:* [Project & Settings Files](project-files.md)
+
+### `output_file=` has no effect in the normal project compile mode
+
+**Status:** Fixed · **Fixed in:** `output_file=` now renames the
+produced `.prg` in the normal project compile mode too, as long as the
+project's build output type is left at its default (a `crt`/`d64` build
+produces its own separately-named artifact from the intermediate `.prg`
+and is unaffected).
+
+`output_file=` is meant to rename the produced binary. It only actually
+does that when assembling a `.asm` file directly, outside of a full
+project compile; in the normal project-compile mode, it's accepted on
+the command line but silently changes nothing, with no error or warning
+that it had no effect.
+
+*Reference page:* [Project & Settings Files](project-files.md)
+
+### Shipped C64 project templates spell two of their own settings wrong
+
+**Status:** Fixed · **Fixed in:** every shipped template, including the
+downloadable project bundle used on this site, now uses the correct key
+names.
+
+Every general-purpose C64 project template this fork ships (including
+the downloadable project bundle used to compile examples on this site)
+contains two settings under the wrong key name, so setting them has no
+effect at all: the whole-program compression toggle, and two of the
+four settings that override the default load address/header behavior
+(only the custom-load-address override actually works in an affected
+template; the other two silently stay off). A handful of more
+specialized templates carry the correct key names too, alongside the
+wrong ones, so compression and all four overrides do work there.
+Setting either one from inside a program's own source, rather than by
+hand-editing the project file, always uses the correct key name and
+isn't affected by this.
+
+*Reference page:* [Project & Settings Files](project-files.md)
+
+### A settings-file key that looks like it removes unused symbols does nothing
+
+**Status:** Fixed · **Fixed in:** the settings-file key now enables
+unused-symbol removal too, alongside the project-file key.
+
+The settings file (as opposed to the project file) contains a key that
+reads exactly like the on/off switch for removing unused
+variables/procedures from a compile. It isn't; that key is never read
+anywhere. The real switch lives in the project file instead, under a
+different, similarly-named key.
+
+*Reference page:* [Project & Settings Files](project-files.md)

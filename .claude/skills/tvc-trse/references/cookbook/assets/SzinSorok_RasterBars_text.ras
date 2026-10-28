@@ -1,0 +1,113 @@
+program SzinSorok;
+@use "TVC"
+
+/* GRAPHICS2 (2 szín, 512x240): fekete papír, felül egy felirat (tinta = 1. paletta),
+   a tinta színét (port $61) soronként váltjuk: a 7 sötét szín oda-vissza (bordás sáv), fekete nélkül.
+   Időzítés: saját megszakítás-kezelő (csak nyugtáz), halt = szinkron a raszter-IT-re
+   (a 239. sor végén), utána di alatt pontosan 200 T-s sorok (1 sor = 64 us @ 3,125 MHz). */
+
+var
+	/* sötétkék, sötétpiros, sötétlila, sötétzöld, sötétcián, sötétsárga, szürke - majd vissza */
+	Szinek		:	array[14] of byte = (1, 4, 5, 16, 17, 20, 21, 21, 20, 17, 16, 5, 4, 1);
+	Sorszin		:	array[240] of byte;
+	Elo_Sorok	:	byte = 72;	// ennyi sor várakozás az IT (239. sor vége) után a 0. sorig
+	Finom		:	byte = 10;	// finom eltolás (13 T lépés): a színváltás vízszintes helye a soron belül
+	i, j		:	byte;
+	p			:	pointer;
+	k			:	integer;
+
+const SAV_KEZD  : integer = 15;	// a tömör sáv első pixelsora
+const SAV_MAGAS : integer = 50;	// a tömör sáv magassága (sor)
+
+begin
+	TVC::SetGraphicsMode(TVC::GRAPHICS2);
+	TVC::SetRasterInterruptPos(239);	// a VMODE után: raszter-IT a 239. sor végére
+	TVC::SetPalette(0, TVC::PALETTE_BLACK);
+	TVC::SetBorder(TVC::BORDER_BLACK);
+
+	/* soronkénti színtábla: a 14 elemes oda-vissza sor ismétlődve, 240 sorra */
+	i := 0;
+	j := 0;
+	while (i < 240) do
+	begin
+		Sorszin[i] := Szinek[j];
+		j := j + 1;
+		if (j = 14) then j := 0;
+		i := i + 1;
+	end;
+
+	/* törlés feketére (papír), felirat az 1. sorba, középre (ROM szövegkiírás, 64 oszlop; 24 karakter -> X=21) */
+	TVC::ClearScreen();
+	TVC::SetColor(1);
+	TVC::TextBackground(0);
+	TVC::WriteAt(21, 1, "GRAPHICS 2 - MORE COLORS");
+
+	/* tömör sáv: a felirat (0..9. sor) alatt 5 sorral, a 15. sortól 50 sor $FF (teljes szélesség, 64 byte/sor) */
+	TVC::SetMemory(TVC::MEM_VID_ON);
+	p := $8000 + SAV_KEZD * 64;
+	k := 0;
+	while (k < SAV_MAGAS * 64) do
+	begin
+		p[0] := $FF;
+		p := p + 1;
+		k := k + 1;
+	end;
+	TVC::SetMemory(TVC::MEM_DEFAULT);
+
+	asm("
+		di
+		;// saját megszakítás-kezelő: $38 -> JP SzS_Isr
+		ld hl,$38
+		ld (hl),195
+		ld de,SzS_Isr
+		inc hl
+		ld (hl),e
+		inc hl
+		ld (hl),d
+		ei
+
+SzS_Frame:
+		halt
+		di
+		;// várakozás Elo_Sorok sorig (200 T / sor)
+		ld a,[Elo_Sorok]
+		ld c,a
+SzS_Elo:
+		ld b,14
+SzS_EloB:
+		djnz SzS_EloB
+		dec c
+		jr nz,SzS_Elo
+		;// finom eltolás
+		ld a,[Finom]
+		ld b,a
+SzS_Fin:
+		djnz SzS_Fin
+
+		;// 240 sor: soronként új tintaszín, PONTOSAN 200 T / sor
+		ld hl,Sorszin
+		ld de,240
+SzS_Sor:
+		ld a,(hl)			;// 7
+		out ($61),a			;// 11
+		inc hl				;// 6
+		dec de				;// 6
+		ld a,d				;// 4
+		or e				;// 4
+		jp z,SzS_Kesz		;// 10  (= 48)
+		ld b,10				;// 7
+SzS_Var:
+		djnz SzS_Var		;// 9*13+8 = 125  (= 180)
+		jp SzS_J			;// 10
+SzS_J:
+		jp SzS_Sor			;// 10  (= 200)
+SzS_Kesz:
+		ei
+		jp SzS_Frame
+
+SzS_Isr:
+		out ($7),a			;// IT nyugtázása
+		ei
+		ret
+	");
+end.

@@ -3,8 +3,12 @@
 Szándékosan RÖVID (minden munkamenet elején betöltődik). A teljes korábbi szöveg és a dátumozott
 napló: **`docs/NAPLO_archiv.md`** (a végén a 2026-10-25-i teljes CLAUDE.md is). NE olvasd be egészben -
 grep-pel keress rá a kulcsszóra. Érdemi változás után ezt a fájlt frissítsd röviden; hosszú indoklás az
-archívum VÉGÉRE. Projektmemória: `C:\Users\LG\.claude\projects\c--TVC-TRSE-Projects-WaterPumpGame\memory\`.
-TVC/TRSE tudás: **TVC-TRSE skill** (mindig töltsd be); PC-s eszközök: **TVC-Utils skill**.
+archívum VÉGÉRE. **Projektmemória: a repó `claude_memory/` mappája** (2026-10-28 óta; a Claude memória-mappája
+mindkét gépen erre mutat - Mac: symlink, Windows: junction, bekötés: `claude_memory/README.md`, ha még nincs kész).
+**Skillek a repóban (`.claude/skills/`):** TVC/TRSE tudás **tvc-trse** (mindig töltsd be); PC-s eszközök **tvc-utils**.
+**KÉT GÉP:** Windows (fő build-gép) és Mac. **Macen** a tvc-trse mellé töltsd be a **tvc-trse-mac**-et (build, útvonalak -
+a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Windowson ez a kettő NEM használandó.
+**Munka elején `git pull`, a végén commit + push** (a `claude_memory/` is!), különben a gépek elcsúsznak.
 
 ## A projekt
 - Videoton TV-Computer (Z80, 3 MHz), TRSE/Rascal, saját GE unit (`units\TVC\GE.tru`, 304 KB, NINCS a repóban).

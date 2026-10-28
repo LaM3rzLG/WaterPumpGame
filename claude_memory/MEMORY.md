@@ -1,0 +1,17 @@
+- [WaterGame working style](watergame-working-style.md) — how the user iterates on the TVC/TRSE pump game; disk is source of truth, terse answers, frequent version saves
+- [C64 aqualiquex reference](c64-aqualiquex-reference.md) — the C64 TRSE port at `C:\Users\LG\Documents\-- DEY --\` is the behavior reference for virus/pump/economy logic; what each file holds
+- [TRSE writetype-index workaround](trse-writetype-index-workaround.md) — `arr[i] := <sprite field>` won't compile; launder the field through a plain scalar/const first
+- [TRSE asm integration pitfalls](trse-asm-integration-pitfalls.md) — const-only-used-in-asm gets stripped by whole-project build; only A/HL support absolute-address opcodes; integer-array writes via variable index are unreliable
+- [TVC memory map / U3](tvc-memory-map-u3.md) — code end $7827; MEM_48K_VID; U3 slots; Pause_Buf $E700; 52 KB .cas fails on real TVC -> generated WaterVAS variant (30 KB, U3 data copied at start)
+- [WaterGame pump scheduling](watergame-pump-scheduling.md) — confirmed-working: strided Map[] scan (step coprime w/ 540), keret move throttle, rotating pump start-phase
+- [Level workflow](watergame-level-workflow.md) — editor v5 json -> .ras blocks (bit-packed maps, codes, VS block); waterpump_palyak.json is authoritative
+
+- [Confirmed + decisions 2026-10-05](watergame-confirmed-2026-10-05.md) - user-confirmed working features, LEVEL COMPLETED box still open, WaterVAS dropped (loader later), lever pump rejected, pump files renamed
+- [WaterGame status 2026-10-05 evening](watergame-status.md) - memory full ($7F38); mine (akna) tool, M/Y tool cycling, Hungarian main menu, VS icon row, sprite4 editor; earlier: P1 blue / P2 green pump (files swapped at incbin), PutAt 8-row fix, WaterVAS compile crash open; joystick icon menu, unified HUD, pause/exit, level codes, VS level select, meteor countdown + per-level meteor options, open topics
+- [Digi sound in WaterGame](watergame-digi-sound.md) - GE digi format/pitfalls, non-blocking Frame_Sync/Digi_Le pattern, explosion+tick generators, ~1 s emulator latency
+- [Flicker lessons](watergame-flicker-lessons.md) - Keret/virus/meteor redraw rules that worked vs failed, raster IT below sprites
+- [Editor overwrite conflict](feedback-editor-overwrite.md) - VS Code "file is newer" Overwrite lost changes once; check disk state, keep .bak files
+- [Text renderer + font](watergame-text-font.md) - own proportional Ir() + font.bin replaced GE::WriteText; user rejected 4-px glyphs; charset editor html
+- [NEXT: multi-file loader plan](watergame-multifile-loader-plan.md) - loader + title image + U3 data + main code; since 2026-10-05 it BLOCKS new features (code end $7F38, full); what waits for it (mine explosion image, maps out of the program); AGREED 4-file design saved 2026-10-05 late (start here); first ask the unanswered question: load medium
+- [Design preferences](watergame-design-prefs.md) - joystick-only, simple over clever, confirm ambiguous readings, dark scheme for pause/exit/fail
+- [Mac migration](watergame-mac-migration.md) - Mac = 2nd machine; memory+skills live in the repo (claude_memory/, .claude/skills/); Mac know-how in skills tvc-trse-mac, tvc-emu-mac

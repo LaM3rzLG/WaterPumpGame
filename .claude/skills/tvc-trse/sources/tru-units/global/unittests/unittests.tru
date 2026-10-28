@@ -1,0 +1,82 @@
+Unit Unittests;
+
+@use "unittests/common"
+@use "unittests/case"
+@use "unittests/advanced_math"
+@use "unittests/casts"
+@use "unittests/integer"
+@if SUPPORTS_CLASSES = 1
+@use "unittests/classes"
+@endif
+@use "unittests/ifthenelse"
+@use "unittests/muldiv"
+@use "unittests/forloop"
+@use "unittests/registers"
+@use "unittests/strings"
+@use "unittests/bitop"
+@use "unittests/functions"
+@ifndef CPU_PCHIP8
+@use "unittests/various"
+@endif
+@use "unittests/boolean"
+@use "unittests/long"
+
+
+
+
+var
+//	allTests: array[] of integer = (#AdvancedTests);
+	const noTests : byte = 15;
+	currentTest : byte;
+	isDone: boolean;
+
+procedure Exec();
+begin
+	currentTest := 0;
+	isDone := false;
+	Common::TestInit();
+@ifndef ATARI520ST
+	while (Common::Status() = 0 and isDone = false) do
+@endif
+	
+@ifdef ATARI520ST
+	while (Common::unittests_status = 0 and isDone = false) do
+@endif 
+	begin
+		Common::TestSuiteInit();
+		
+		@ifndef X86
+		// Pointer tests - the x86 needs a different set of pointer tests.
+		if (currentTest=13) then AdvancedMath::Exec();
+		@endif
+		
+		if (currentTest=6) then MulDiv::Exec();
+		if (currentTest=2) then Strings::Exec();
+		if (currentTest=3) then Functions::Exec();
+		if (currentTest=4) then CaseTest::Exec();
+		if (currentTest=5) then Casts::Exec();
+		if (currentTest=1) then ForLoop::Exec();
+		if (currentTest=7) then Registers::Exec();
+		if (currentTest=8) then BitOp::Exec();
+		if (currentTest=9) then IfThenElse::Exec();
+		if (currentTest=10) then IntegerTest::Exec();
+@ifndef CPU_PCHIP8
+		if (currentTest=11) then Various::Exec();
+@endif
+@ifndef CPU_M68000
+		if (currentTest=12) then BooleanTest::Exec();
+@endif
+		if (currentTest=0) then LongTest::Exec();
+		
+@if SUPPORTS_CLASSES = 1
+		if (currentTest=14) then Classes::Exec();
+@endif
+		currentTest+=1;
+				
+		if (currentTest>=noTests) then
+			isDone := true;
+		
+	end;
+end;
+
+end.
