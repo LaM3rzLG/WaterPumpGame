@@ -26,7 +26,7 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
   Mac only) and `claude_memory/` (the Claude project memory; on the Mac
   `~/.claude/projects/-Users-lgabor-Documents-TVC-Projects-WaterPumpGame/memory` is a
   symlink to it, on Windows a junction - see `claude_memory/README.md`).
-- NOT in the repo: the TVC/GE units (`GE.tru` is the user's own!), the 674 MB manual PDFs,
+- NOT in the repo: the 674 MB manual PDFs,
   the emulators, `*.cas`.
 
 ## TRSE on the Mac
@@ -39,12 +39,13 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
   (the Windows nightly `trse.ini` minus `recent_projects`/`ok64_emulator`). Needed keys:
   `assembler_z80 = OrgAsm` (else "set up a link to the assembler (pasmo...)") and the rest of
   that file - with only a few keys `@use` fails with "After declarations, BEGIN is expected".
-- Units: `/Applications/trse.app/units/TVC/` (outside git, `GE.tru` is the user's own).
-  **OrgAsm does not strip `//` comments inside `asm("...")`** -> in `TVC.tru` (28 lines) and
-  `GE.tru` (10 lines) they were replaced with `;` on 2026-10-28 (originals:
-  `~/Documents/trse_units_TVC_eredeti_mac/`). Windows has the same fix in its nightly units.
-  Not yet compared with the Windows nightly `units\TVC` - after a GE.tru change on Windows,
-  copy it over and redo the `//` -> `;` fix inside asm blocks if needed.
+- Units: **the repo's `tvc_units/` is authoritative** (pushed from the Windows nightly
+  `units\TVC` on 2026-10-28: TVC.tru with all `//` -> `;` in asm, the user's GE.tru, crtc,
+  music, system, text). `build_mac.sh` copies them into `/Applications/trse.app/units/TVC/`
+  before compiling when they differ. Verified: with them the Mac build equals the Windows build.
+  (OrgAsm does not strip `//` comments inside `asm("...")`; the Windows GE.tru still has 10 such
+  lines but in code that is not compiled into the game.) Older Mac copies:
+  `~/Documents/trse_units_TVC_eredeti_mac/` (USB package), `~/Documents/trse_units_TVC_mac_javitott/`.
 - `LG_TVC_Projects.trse` has a Windows `project_path`; the CLI ignores it (full paths given).
 - macOS file system is case-insensitive by default, so the Linux `@use` case trap does not apply.
 
@@ -61,6 +62,7 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
   The workspace `.vscode/settings.json` (`sane-trse.compilerPath`) is Windows-only - leave it.
 - Windows: `resources\build.ps1` (same steps with the nightly), unchanged.
 - PowerShell 7: `brew install powershell` (formula, not the cask) -> `pwsh`.
+- After changing a unit on Windows: copy it into `tvc_units/` there, commit + push.
 - Do not commit the build outputs from the Mac unless asked (`.asm/.bin/.dsk/.sym` are tracked
   and also committed from Windows -> conflicts); `git checkout --` them after a test build.
 - Still Windows-only (`System.Drawing`): `bmp_to_talaj.ps1`, `charset_export.ps1`,
@@ -79,5 +81,4 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
 
 ## Open items (Mac)
 
-1. Compare `/Applications/trse.app/units/TVC/*.tru` with the Windows nightly `units\TVC`.
-2. Port the `System.Drawing` scripts only when needed (or keep doing those on Windows).
+1. Port the `System.Drawing` scripts only when needed (or keep doing those on Windows).

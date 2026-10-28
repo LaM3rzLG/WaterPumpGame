@@ -4,8 +4,9 @@
 # Hasznalat (a projekt gyokereben):  bash resources/build_mac.sh          (emulatorral)
 #                                    bash resources/build_mac.sh --no-emu (csak build)
 # Kell: /Applications/trse.app, pwsh (brew install powershell), ~/Documents/EP128TVCEmu (skill: tvc-emu-mac).
+# A unitokat (TVC.tru, GE.tru, ...) a repo tvc_units/ mappajabol masolja a TRSE-be (Windowsrol jonnek).
 # A TRSE Macen bezaraskor osszeomlik, ezert nincs sajat trse.ini-je: a beallitasokat a resources/trse_mac.ini adja
-# (a Windows-os nightly trse.ini-jebol). A units/TVC TVC.tru es GE.tru asm-blokkjaiban a // megjegyzes ; legyen (OrgAsm).
+# (a Windows-os nightly trse.ini-jebol).
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -13,6 +14,14 @@ TRSE="/Applications/trse.app/Contents/MacOS/trse"
 EMU_DIR="$HOME/Documents/EP128TVCEmu"
 TEMPLATE="${TVC_DSK_TEMPLATE:-$HOME/Downloads/TVC/TVC_CEmu/roms/Lemmings.dsk}"
 LOG="${TMPDIR:-/tmp}/trse_out_mac.txt"
+
+# 0. unitok: a repo tvc_units/ mappaja a mervado (Windowsrol jon) -> a Mac-es TRSE units/TVC-be, ha elter
+UNITS="/Applications/trse.app/units/TVC"
+for f in TVC.tru GE.tru crtc.tru music.tru system.tru text.tru; do
+  if [ -f "tvc_units/$f" ] && ! cmp -s "tvc_units/$f" "$UNITS/$f"; then
+    cp "tvc_units/$f" "$UNITS/$f" && echo "unit frissitve: $f"
+  fi
+done
 
 # 1. forditas
 rm -f WaterPumpGame.cas

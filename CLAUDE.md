@@ -13,7 +13,7 @@ a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Win
 **Munka elején `git pull`, a végén commit + push** (a `claude_memory/` is!), különben a gépek elcsúsznak.
 
 ## A projekt
-- Videoton TV-Computer (Z80, 3 MHz), TRSE/Rascal, saját GE unit (`units\TVC\GE.tru`, 304 KB, NINCS a repóban).
+- Videoton TV-Computer (Z80, 3 MHz), TRSE/Rascal, saját GE unit (`units\TVC\GE.tru`; 2026-10-28 óta a repóban is: `tvc_units/` - a Windows nightly unitjai, a Mac build ezt használja; unit-módosítás után oda is másold).
   Fő forrás: `WaterPumpGame.ras`; saját unit: `WaterPump.tru` (pumpa-kirakás `PutAt`, táblák).
 - Az eredeti játék: Commocore Aqualique 1.0 (C64). Viselkedési referencia (vírus/pumpa/gazdaság): a felhasználó
   C64 TRSE-portja, `C:\Users\LG\Documents\-- DEY --\` (`aqualiquex.ras`, `units.tru`, `raster.tru`).
