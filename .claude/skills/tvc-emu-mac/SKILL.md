@@ -104,7 +104,7 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
 **MAC ONLY.** It relies on our own patched ep128emu build and macOS tools (swiftc, perl setsid,
 screencapture). On the Windows PC (WinTVC/TMC20) none of this exists - do not try `ep.sh` there; the user
 looks at the screen and reports.
-Our ep128emu build has a **command-file interface** (patch order: macos -> claude -> memmap -> gepel -> memmap-szeles; `patches/ep128emu-claude.patch`, on top of
+Our ep128emu build has a **command-file interface** (patch order: macos -> claude -> memmap -> gepel -> memmap-szeles -> memmap-vidkep; `patches/ep128emu-claude.patch`, on top of
 `ep128emu-macos.patch`, in `gui/gui.cpp` `fltkCheckCallback`): it polls
 `~/Library/Application Support/ep128emu/claude/parancs.txt` every 50 ms, deletes it, runs its lines, logs each to
 `kesz.txt`. Works whatever desktop (Space) the window is on - the user watches the EP on another desktop.
@@ -145,8 +145,13 @@ no gui dependency) + hooks in `gui/gui.cpp` (menu item, `memablak`/`memkep` comm
 `fltkCheckCallback` via `vm.getSegmentPtr(F8..FC)` + `vm.getMemoryPage(0..3)`, no VM lock - read-only).
 - Layout (user request 2026-10-28, patch `ep128emu-memmap-szeles.patch`): U0, U1, U2, U3 stacked, each a WIDE
   rectangle of 256 x 64 bytes (one row = $100) that stretches to fill the window in both directions. VID in the
-  SCREEN layout (64 bytes = 1 pixel row x 256 rows; dashed line at row 240 = $BC00, the off-screen 1 KB below) and
-  twice as tall (U2 + U3 rows of the right column) - with 256-byte rows it showed 4 copies of the screen side by side.
+  twice as tall (U2 + U3 rows of the right column) and shows the SCREEN PICTURE in real TVC colours (patch
+  `memmap-vidkep`): `TVC64VM::claudeVideoState()` (added public in tvc64vm.hpp) gives video mode, palette 0-3 +
+  border, CRTC R0-R17 and the displayed 16 KB video segment; memmap decodes it like tvcvideo.cpp (address =
+  ((RA&3)<<6)|(MA&$3F)|((MA&$FC0)<<2), MA = R12/R13 start + charrow*R1 + col; 2/4/16-colour pixel formats; colour
+  bits R=$0C G=$30 B=$03, intensity $C0, dark = 146). Verified = emulator image in the menu (16 col) and in the game
+  (4 col). Hover gives the real video address. (Earlier 256-byte rows showed 4 copies of the screen; value colours
+  did not match the picture.) Raster palette tricks (menu stripes) are not in memory - only the snapshot palette.
   Right column top = details panel (hovered byte; click = hex dump of that $100 block) with the legend at its bottom. Default 1100x820, fonts
   12-14 pt. When shrunk a pixel shows the max of the bytes it covers. Left labels: what each CPU page holds now (green = usual, orange = other,
   e.g. SYS ROM); thick RED frame (+ red "▶ n. lap") = segment currently paged in.
