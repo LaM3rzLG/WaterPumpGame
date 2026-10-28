@@ -6,7 +6,9 @@
 #   ep.sh kep [nev.png]           - kepkocka (768x576) -> kiirja az utvonalat
 #   ep.sh folyam <ms> <db> [nev]  - kepsorozat + kontaktlap (<nev>_lap.png), kiirja a lap utvonalat
 #   ep.sh mem <U0|U1|U2|U3|VID|CPU> <kezdo hex> <hossz hex> [nev.bin]  - nyers memoria
-#   ep.sh gepel '<szoveg>'        - "=Shift+2  ~=ESC (Mac End)  |=Enter  <=Backspace  NAGYBETU=Shift+betu
+#   ep.sh gepel '<szoveg>'        - a TVC magyar billentyuzetere forditva: betuk (y/z jo), szamok, ' " + ! % / = ( ) & ? : _ - , .
+#                                   es öüóőúéáű (nagybetuvel is); ~=ESC  |=Enter  <=Backspace; mas karakter (* ; < > ...) = HIBA
+#   (meres/hangolas: parancs.txt-be 'gepelido <lenyomas ms> <szunet ms>' (alap 50 40), 'hangido', 'memido')
 #   ep.sh gomb <nev[+nev]> [ms]   - nyomva tartas: enter esc fel le bal jobb szokoz shift bs tab ctrl alt F1.. vagy 1 karakter
 #   ep.sh ablak [nev.png]         - regi mod: az ablak fotoja (csak ha ugyanazon az asztalon latszik)
 #   ep.sh memablak [zar]          - TVC memoriaterkep-ablak megnyitasa / bezarasa (EP menu: Debug, Cmd+Shift+M)

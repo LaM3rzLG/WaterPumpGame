@@ -126,11 +126,17 @@ commands only, loading does NOT work there, leave with ESC (`~`). In BASIC LOAD 
 Lua is NOT available: the build uses `nolua=1`.
 - `memablak [zar]` / `memkep [f.png]` - the TVC memory-map window (below); `memkep` renders it off-screen, works
   when it is covered or on another desktop.
-- `gepel` used to drop keys (fixed 2026-10-28, patch `patches/ep128emu-gepel.patch`, applied after the memmap patch):
-  the VM runs in ~0.1 s chunks (sound latency), so a 60 ms press and its release landed in the same emulated moment;
-  and after a GUI stall the `while` loop sent down+up at once. Now: 150 ms hold, 100 ms gap, ONE key event per
-  check-callback pass; `gomb` minimum hold 120 ms (default 150). Tested: 4 x 30-char lines + load, no lost key.
-  Typing is slower (~0.25 s / key).
+- `gepel` (patch `patches/ep128emu-gepel.patch`, after memmap; 2026-10-28): used to drop keys - a press and its
+  release landed in the same emulated moment (the VM runs in chunks) and after a GUI stall the `while` loop sent
+  down+up at once. Now ONE key event per check-callback pass; hold 50 ms / gap 40 ms (tested OK down to 40/30;
+  change at runtime: `gepelido <hold> <gap>` in parancs.txt). `gomb` min hold 120 ms (default 150).
+  **Character mapping = Hungarian TVC keyboard by key POSITION** (measured): host `` ` ``->0, `/`->-, `0`->ö, `-`->ü,
+  `=`->ó, `[`->ő, `]`->ú, `;`->é, `'`->á, `\`->ű, y<->z (QWERTZ); Shift+ 1=' 2=" 3=+ 4=! 5=% 6=/ 7== 8=( 9=)
+  `` ` ``=& ,=? .=: /=_ , accented capitals = Shift. gepel translates all of these (UTF-8 accents too); other chars
+  (`* ; < > # $ @`) are skipped and reported as HIBA (key not found yet).
+- Diagnostics in the same patch: `hangido` (audio callbacks + underruns since last call; an underrun = silence =
+  audible gap), `memido` (memory-map draw time). Measured 2026-10-28 in the game menu: 0 underruns in 10 s with
+  the map window closed AND open; map draw ~6-10 ms at 10/s.
 
 ## TVC memory-map window (2026-10-28, patch `patches/ep128emu-memmap.patch`, on top of the other two)
 Live view of the physical RAM pages, 10 refreshes/s, ~4 % extra CPU, only while open. Open: EP menu
