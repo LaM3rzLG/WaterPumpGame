@@ -1,0 +1,8283 @@
+# Operacios_rendszer
+# Forrás: sources/docs/pdf/02_rendszer/Operacios_rendszer.pdf (OCR, tesseract hun+eng). A kódlistákban és táblázatokban OCR-hibák lehetnek.
+
+=== [oldal 1] ===
+ag ee ——— eee
+
+dszer
+
+an 4
+
+|
+
+c
+ay
+red
+ny
+o
+O
+©
+
+Oper
+
+ 
+
+ 
+
+=== [oldal 2] ===
+
+=== [oldal 3] ===
+
+=== [oldal 4] ===
+GARAI GÉZA
+
+FV-COMPUTER
+
+Ünerációs rendszer
+
+NOVOTRADE, 1988
+
+=== [oldal 5] ===
+Lektorálta: dr. Tagányi György
+Cseh Tibor
+
+Szerkesztette: Gergely Janos
+
+A kiadásért felel RÉNYI GÁBOR, a Novotrade Rt. igazgatója
+Budapest, 1787.
+
+ISBN 963 02 5072 1
+Copyright (@ Garai Géza, 1987.
+Készült a Somogy Megyei Nyomdaipari Vállalat Kaposvári Uzemében
+
+Felelős vezető: Mike Ferenc igazgató
+
+=== [oldal 6] ===
+1.
+
+2.
+
+3.
+
+5.
+
+6.
+
+TARTALOMJEGYZÉK
+
+BevEZEtÉéS e... vess ítt ís áá ítás arat azta ra ata kant ?
+Mikroprocesszor És MERÚLDÍS e... s sss tg beans 11
+2.1 MikrODPrTOCESSZOL 2... eee eee eee bee cee ee ee rane E rá 11
+27.2 Memoria 2.2.0... ee eee eee eee Sena cece eee eae eee eae e rata 12
+2.3 MemóriaáalaDOzás 2. ace ec ae ee ee ee 13
+2.3.1 Lapozási szabályok 2... . ccc cee cece eee senna . 16
+2.3.2 Lapozas SYS és EXIT KÖZÖTT wo ce cee eee eee pence eee n eae 17
+2.3.3 Programozási példák 2... eee eects 17
+
+2.4 Programmodul használata e. ess. vess sss ts áz íz a 19
+2.2 Rendszer VETEM 2. cee ce ete eee eae eta rá 20
+Megszakitdskezelés 2.0.0... cece ee eee eee rítt ítt ítt ítt átt 21
+3.1 Megszakításkezelő hardvet 2... cece teers pees Zi
+3.2 MegszakitdaskezelG Szoftver wo. cece eect eee íz tí 23
+Input-output rendszer oo... ce eee ee ene eee een eens 25
+4.1 Hardver Struktura e e.t tí íz áá ítt árát ná 29
+4,2 Funkcióhívások e... eszt ítt ítt ítt ítt tí ő ss, 20
+4,2.1 Programozási példa e... vessz tí ízt ítt át a , 31
+
+4.3 I/D hozzárendelések 2.0... 0. eee eae teereee 33
+4.3.1 Programozdsi példa ......... beeen eens 38
+Rendszervaltozok ....... PP ví íz ítt taszít tát rt átt Catan ee aneee 41
+Rendszer-inicializálás .. . s s. cee eee beet e tense ennas 43
+
+=== [oldal 7] ===
+7.
+
+Kernel hívások s... sss eae eee Af
+
+Fol HE MEM SET eses ses sss tzítít tí tí ítt ítt ítt ízét té tét é zt 4g
+7.2 EXP DIRECT vesse sss ee beeen teenies 50
+Pod L/D DIRECT e ee e eens ot
+7.4 SEÜT NUM Lice eee cece center eee eee tet eer es 52
+Képmegjelenítés .. . ss sss sss eee ener eee tét 23
+8.1 Képmegjelenítő hardver e... sss sss áá sre a 53
+B.1.1 Video memória és képernyűővezérlő ........... beac eee ae ees 23
+B.1.2 A megjelenités folyamata ....-.. cc eee cee eee eee 57
+8.2 A £845-ös képernyővezérlő programozása e... ess sss tét 60
+8.2.1 Féldák a képernyővezérlő átprogramOozásárCa vs... ss sss 65
+8.3 Video rerdszerváltozók ess... sss eee ee eee eae 71
+8.4 Videg funkciók 2. eee nets 75
+8.4.1 VID CHOUT s... ess szí ízt ítt beeen eee ane 75
+G.4.2 VIB BRQUT 2.0... i ccc eee tere ett teen eran 76
+B.4.3  BIEXT s... esse zt ítt tí rí tíz ítt ítását a a 77
+B.ú,ú VMODE sss sss sss ee eee eee ee ete ee ees 77
+B.4.5 ELS sss sss szít íz sört tt ízt ízt tí eee szarás a 78
+8B.4,6 BABS co.cc ccc cee eee eee ee ee 79
+B.4.7 BREL wo... eee eee ee eee eet eaten ae BO
+8.4.8 BON co.cc cece cee eee ete bene eee ; 80
+B.4.9 BORE . 1... ce tet ára ára rt át sss ítás 81
+B.4.10 FIll wo cee ee eee ete eee eee eee rans 81
+B.4,11 DEO s... sees tí ee been a eee aaa c 82
+B.4.12 PÁL vess sss szí ízt íz tí ííítí ítt tí tíz ítt tíz tíz ítt té 82
+8.5 Programozási példák 2... cee eee eee eee tött tí tí ís 83
+A billentyizet ...........- betes een ee renee ees szsz szt ta áá 85
+9.1 Billentyűzet hardver .......e cece eae be eb eee een eee eee ítt ő a5
+9.2 Billentyűzet szoftver 2... ccc cece eee eres Sete e ee ízt tt tí. 87
+9.3 Billentyűzet funkciók . e... sees sss sss átt át tí a a 89
+9.3.1 KBD_CHIN .... ee eee eee eee eee ere e ene eenes beeen a9
+9.5.2 KBO STATUS ......... 00.0 eee eee bea ences eee er enenees 30
+2.4 Programozási példa s... sss sss sss szír tí bee eee ítt 90
+
+=== [oldal 8] ===
+10. Képernyőszerkesztő . , e... eses szítt ízt ítt ítt tt tá 93
+
+10,1 Editor funkciók ....... tí ízt íz zzz sei 9D
+10.1.1 KŐ dNT 2 occ ccc sztár s etnies 95
+1Ű0.1.2 ED CHIN eses ves saves szé szász ítását tra tt tá 92
+10.1.3 ED CHOUT e... esett tí tét tt 96
+10.1.4 ED BRIN cece e eee cece eee een een ees 97
+10,1,5 ED AKOUT ............... Lae ene eae a een eee nae 98
+10.1.6 EPO Lo cee ee ee eee eects 99
+10,1.7 CFIX e sss sss sss yt MO szsztz tt zzz tí t.i 99
+
+10.2 SverkeSztési ParancSok visa eee eae ee eee 100
+
+10.53 Frogramozási példák e... sees ess szí íz ítt ítt tíz íz áá a 101
+
+LL, Hat oe ee cc cee een te tebe ee íz ítt tát ítt ő 103
+
+il.1 4 hangkezelő hardver e... ess sss sss atát ír áttért 103
+
+TL, ? Hangkezeld SZOftver wl. cee eee eee 164
+
+LL.3 TONE SET ess ss sss stét ts ítt aa tr .- LOS
+
+12, Nyomtatókezelés 2... ee re ee eee eee 107
+
+12.1 Nyomtatócsatoló hardvelt is... eee eee eet eens 107
+
+12.Z Nyomtató SZOÍTVET 2... cee eee ence eee te etna e 108
+12.2.1 PAR_CHOUT 2.0... cece eee eee es bce c enn eaee 108
+12.2.2 PÁR BKÜUT 2.0... eee cece eee reer ee teeter eee tnnes 108
+
+15, KazettakezeléS e. sss vessz stét beac eee twee eens 103
+
+13.] KazettakezelG NArCvel wok ieee eee ee eee tetas 109
+
+13.2 Adatstruktdra a szalagon . 2... ec ce eee eee ete .. lll
+
+13.3 Pufferelt Pile-Gh vee te eee ee eens 113
+
+13.4 Nem pufferelt file-ok wo. ccc eee 113
+
+13.5 Kazetta rendszervaltozék .............. bec eee e esata eae eee 114
+
+13.6 Kazettafunkcidk oo... cee ee eee szá sza. 116
+13.6.1 CAS CHIN 0... .. ccc ee eee eect eee eee erect eee eens L1é
+13.6.2 CAS CHOUT s. vess sss sss szít ízt ítt tt tt 11é
+13.6.3 CAS BKIN ..........0 0s eee szítt ízt ta zat zt áz arrra 117
+13.6.4 CAS BKOLT ese sv vessz tí tíz zat áz átt 117
+13.6.5 CAS OPEN eses sss tí ítt att ítt ítt 118
+13.6.6 CAZ CRTE eses eee ee teeter ete erent 119
+
+=== [oldal 9] ===
+13.6.7 CAS CLOSE 0.00.00. cece cece ee ee reeset eet eee tee eeees 119
+
+13.6.9 CAS VERIFY wos ccs e cece ete teen eee nares 120
+
+13.7 Kazettahibak ve es ss sss szít ítt ír tát zt at 121
+13.8 Frogramozási Példa e... vess sss eee 122
+
+14. Á Soros vonal 2.21. cece ete te eee 125
+14.1 Hardverfelépites 2... cee tee ete eee 125
+14.2 A B251A tipusd USART programozása e... sss sss ítt eee 127
+14.3 A soros vonalat működtető szoftver ....... cece ee cee eae 131
+14.3.1 SER CHOUT e... se vessz srészt írt tárt n aes 132
+
+14.3.2 SER CHIN sees eses sss ítt tt tat ra teens 133
+
+14.3.3 SER BKOUT 2.6... cece ce cere eee eee ene ns 134
+
+14.3.4 SER BKIN ee... ss ez sasszé t zt té tét tí tí írt ítás stk tés 134
+
+14,3.5 RSZÓZ SET oo ee eee eee teen erste tee arene 134
+
+14.3.6 RS232 CLOSE .. 1. ee eee teeter tenes 133
+
+Függelék . . eee ane ee eee tést 136
+
+=== [oldal 10] ===
+1. BEVEZETÉS
+
+4 Videoton TV-Computer BÁSIC-je a programozó számára lehetővé teszi a gép
+összes hardver egységének működtetését, de adódhatnak olyan feladatok,
+amelyeknél a BÁSIC nyelvű programozás nem ad megfelelő eredményt.
+
+A gépi kódú programozáshoz szükséges a gép operációs rendszerének
+ismerete. Az operációs rendszer a felhasználó dolgát nagymértékben
+megkönnyíti azáltal, hogy egységes intertace-t biztosít a gép fizikai és
+logikai eszközeit kezelő programrészekbe (Ceszkizmeghajtdkba) beépitett
+
+alacsony szintű rutinokhoz.
+
+Az operációs rendszer kezeli a megszakításokat és a memérialapozast,
+lehetővé teszi különböző hardver- és szoftver-eszközök hozzárendelését a
+
+logikai ki- és bemenetekhez.
+
+Segítségével a TV-Computerhez fejlesztett interface dramkarok beilleszt-
+hetők a gép szoftver rendszerébe, lehetővé téve az Új hardver-eszközök
+BASIC nyelvű elérését.
+
+Ez a künyv a Gépi kódú programozáshoz szükséges ismereteket tartalmazza,
+de a BASIC lehetőségeinek jobb kihasználásához is segítséget nyújt. Fog-
+lalkozik a memóriaskiosztással, ismerteti a rendszervaltozdkat, az ope-
+rációs rendszer eszkdzmeghajtdit és azok funkcióit, az eszközök hozzá-
+rendelését a különböző I1/0 műveletekhez,
+
+Annak érdekében, hogy a programozó valamennyi szükséges ismeretet egy
+helyen találjon meg, a könyv a hardver egységekkel is foglalkozik.
+Természetesen nem részletes áramköri ismertetésről van szó, elsősorban a
+programozáshoz szükséges tudnivalók találhatók meg ezekben a részekben,
+
+Reméljük, hogy könyvünk segítséget nyújt a TV-Computer gépi kódú
+pBrogramozásához és a gép lehetőségeinek jobb kihasználásához.
+
+=== [oldal 11] ===
+4 leirashan a memoria es az 1/0 port cimeket hexadecimálisan adjuk meg, de
+legtabbszar megadjuk a decimális értéket is. Az [/D műveletek adat-
+bitjeinél a ÚU és 1 mellett a következő jelöléseket alkaimazzuk:
+
+---: nem értelmezett bit, értéke küzömbös,
+x: az sdott kombinációban értéke közömbös,
++: més hardver egységre vonatkozó bit, tehát a korábban kiküldütt
+
+értéket ismételni kell,
+
+Eges esetekben a bitcsoportok bitkombinációinak hexadecimális értékét is
+megadjuk. ezek összeadásával is meghatározható a kiküldendő byte értéke.
+
+10
+
+=== [oldal 12] ===
+2. MIKROPROCESSZOR £S MEMORIA
+
+2.1 Mikroprocesszor
+
+A TV-Computer 780A tipusé mikroprocesszort tartalmaz. Egy 25 MHz-es kvarc-
+oszcilladtorbél szarmazik az dsszes idézitOjel:
+
+12.5, 6.25 és 3.125 MHz-es raszterpont léptetőjel a háromféle grafikus
+üzemmódnak megfelelően
+
+3.125 MHz-es CPU óra
+
+3.125 MHz a harggenerátorhoz
+
+1
+
+A 3.125 Míz-ből 320 ns-os ütemidő adódik. Lassú memória esetén lehetőség
+van WAIT állspot beiktatására, ez külön-külön köthető be az alábbi egy-
+segekre:
+
+- rendszer ROM
+- programmodul ROM
+~ az interface kártyákon található ROM
+
+Az alkalmazott ROM áramkörök általában nem igénylik a WAIT allapot
+beiktatását.
+
+A Tv-Computer é4 k- típusú továbbfejlesztett gépnél a rendszer és a prog-
+rammodul ROM nem tud WAIT állapotot kérni.
+
+A képinformációt tartalmazó videomemGria kettős hozzáférésű. A képmeg-
+
+jelenítő áramkör meghatározott ütemben olvas a videomemáriából, ezért a
+CPU hozzáférést a videomemóriához szinkronizálni kell. £z valamelyik óra-
+
+11
+
+=== [oldal 13] ===
+jelfázis kinyújtásával van megoldva, tehát viceomemdria frds/olvasds ese-
+
+tén nem igaz a 320 ns-os ütemidő,
+
+Á mikroprocesszor
+
+az 1-es megszakítás módban dolgozik. A TY-Computer nem
+
+tartalmaz clyan áramköröket, amelyek más megszakítási mód használatát meg-
+
+engednek ,
+
+2.2 Memória
+
+Memóriakiépítettség szempont jánól a TY-Computer többféle lehet:
+
+1. TV-Computer 37 k:
+
+‘2. TV-Computer 64 k:
+
+3. T¥-Computer k+:
+
+A felhasználói RAM mérete 32 kbyte, ez külső modullal
+bővíthető 64 kbyte-ra. A videomemdria 16 kbyte.
+
+A felhasznd4ldi RAM 64 kbyte, a videomemdria 16 kbyte.
+
+EZ a valtozat a kdnyv megirdsakor fejlesztés alatt
+lesztés alatt állt. A felhasználói RAM 64 kbyte, a
+videomeméria is 64 kbyte, amihez 16 kbyte-os egyse-
+gekben lehet hozzáférni, ez 4 kép egyidejű tárolását
+jelenti.
+
+A felhasználói (USER) RAM-on és a videomemárián kiviil a TV-Computer a
+
+következő memúriákat tartalmazza:
+
+SYS 16 kbyte rendszer RGM
+
+EXT & kbyte rendszer ROM kiegészítés
+
+TOMEM minden interface kártyán elhelyezhető 8 kbyte méretű ROM/RAM I/O
+memória
+
+CART max. 16 kbyte ROM, amely a kívülről csatlakoztatható programmo-
+
+dulban helyezhető el
+
+12
+
+=== [oldal 14] ===
+Látható, hogy a TV-Computer a mikroprocesszor által címezhető 64 kbyte-nál
+jóval több memóriát kezel. A különböző memóriarészek az ún, memória-
+
+Papozással érhetők el.
+
+2.5 Memórialapozás
+
+4 mikroprocesszor címtartománya 4 db lé kbyte-os lapra (LAPO...LAP3) van
+
+oszt a.
+
+A különböző típusú memóriák is lapszervezésűek, egy lap mérete 16 k.
+
+4 memérialapok a kévetkezék;
+
+Az UC, Ul, U2, U3 jelenti a felhasználói (USER) RAM lapjait.
+
+A VID a 156 k-s videomemóriát, ill. a 4xló k videomemória egy lapját je-
+lenti,
+
+A SYS a rendszer a RUM jelölése.
+
+A rendszer ROM kiegészítés és a kiválasztott csatolókártya ICMEM-je egy
+lapnak számít, jele EXI.
+
+A CART a programmodul ROM.
+
+Ezeket a memóriákat a CFU különböző lapokon láthatja:
+
+SYS:  LAPO és LAPS
+
+UO: LAPO
+Ul: LAPL
+U2:  LAP2
+
+U3: LAPS és LAPO (Az U3 —» LAPD lehetőség csak a külső modullal
+bővített 32 k-s gépnél és a TV-Computer óá k- típusú gépnél
+van meg.)
+
+VID: —LAPZ, a TV-Computer 64 k- típusú gépnél LAPI
+
+is
+
+13
+
+=== [oldal 15] ===
+EXT, IOMEM: — LAPJ
+CART: LAPO, LAP3
+
+(Az U3 — LAPO lapozást a fejlesztés alatt álló YT-DOS operációs rendszer
+fogja használni, A TV-Computer 64 k tipusú gépek ezt a lapozást nem tud jak
+
+végrehajtani, de egy kapuáramkör utólagos beépítésével a VT-DÜS rendszer
+futtatására alkalmassá tehetők.)
+
+A lapozási lehetőségeket az 1. Függelék foglalja össze. A lapozás kije-
+löülése a 2-es output port írásával lehetséges, az 1. Függelék a PORTOZH
+
+adatbitjeinek értelmezését is tartalmazza.
+
+A gép bekapcsolásakor a FORTOZH valamennyi bitje 0, tehát a lapozási
+összetétel (LAPO.,.. LAP):
+
+SYS, Ul, VIC, CART
+A BASIC rendszer inicializálása után az alapállapot a következő:
+UO, UL, UZ, SYS
+A ?-es port tartalma 70H.
+Az ettől eltérd lapozdsi dsszetétel bedllitdsdhoz a 2-es portra küldendő
+érték az 1. Függelék segítségével határozható meg. Ehhez segítséget nyúj-
+tanak a zárójelben levő hexadecimális számok, amelyeket egyszerűen Össze
+
+kell adni.
+
+Példaként lapozzuk a videomemóriát a 2-es lapra:
+
+LAPO: Ud (10)
+LAPI : Ul (00)
+LAP2: VID (00)
+LAPJ: sys (40)
+50
+
+14
+
+=== [oldal 16] ===
+Másik példaként rendeljük a teljes memóriához felhasználói RAM-ot:
+
+LAPO: ud (10)
+LAPI ; ul (00)
+LAPZ: U2 (20)
+LAP3: U3 (80)
+BO
+
+A memorialapozashoz nem elég a 2-es port írása. Előfordulhat, hogy a
+megváltoztatott lapozási állapot alatt programmegszakítás jön létre, vagy
+rendszerhívást adunk ki. Mindkét esetben átíróádik a lapozási összetétel, Á
+felhasználónak a visszaállítást a P SAVE memóriarekesz könnyíti meg £címe
+33, A 2-és port írása előtt a lapozási összetételt be kell írni a P GAVE
+rekeszbe, A megszakításból vagy rendszerhívásból való visszatérés esetén
+az operációs rendszer visszaállítja a 2-es portot a P 5ÁAVE értéke szerint.
+
+Ha a PORTO2 a 3-ds lapra az EXT-et lapozta, a 4xB k-s IDMEM megfelelő ré-
+szének kiválasztására a 3-as I/D port B7-es, Bá-os bitje szolgál a meg-
+felelő interface csatlakozdhely (CSTLO...CSTL3) — kijelölésével (1.
+Függelék),
+
+A 3-as port BO...§83-as bitjei más hardver egységekre vonatkoznak. A PORTÓJ
+memóriarekesz [(0811H) lehetővé teszi karábbi értékük figyelembevételét.
+
+Tartalma megegyezik a 3232-as port tartalmával, ezért a 3-as port tükör-
+képérek is nevezzük.
+
+A TV-Computer 64 ki: típusú gépnél a videomemória LAP1-re is lapozható. A
+PORTOFH írásával választható ki, hogy a 4 kép közül
+
+- melyik legyen megjelenítve (B5, Bá: CRT)
+
+- melyiket lássa a CPU a 2-es lapon (B3, B2: LAPZ), ha oda a PORTO? a vi-
+deomemóriát jelölte ki
+
+- melyiket lássa a CPU az l-es lapon (Al, BO: LAP1}, ha oda a PORTOZ a vi-
+deomemóriát jelölte ki.
+
+15
+
+=== [oldal 17] ===
+A memdriakezeléssel kapcsolatban megjegyezzük, hogy a BAZIC rendszer nem
+tudja használni az U3 memórialapot, ezért a 64 k-s gép is csak 48 k-s gép-
+ként viselkedik.
+
+A legnagyobb használható RAM cím a HI MEM rendszerváltozóban (0B19H)
+található, maximális értéke GBFFFH (49151) a 64 k-s gépeknél, 07FFFH
+(32767) a 32 k-s gépeknél. A HI MEM értékét bekapcsoláskor a memáriateszt
+állítja be. A felhasználó ezt kisebb értékűre is átállíthatja a későbbiek-
+ben helyfoglalds céljából.
+
+Az U3 RAM (OC0OO0H...O0FFFFH; gépi kódú programok tárolására használható.
+Bekapcsoláskor ez a memúriaterület is tesztelődik, a P3RAM (0B1BH) tartál-
+mazza a teszt eredményét (0: a memória jó).
+
+A TV-Computer működőképességének az a feltétele, hogy legalább 16 k RAM
+(U0) és a 16 k videomemória hibátlan legyen.
+
+2.3.1 LAPOZÁSI SZABÁLYOK
+
+Áz UD lapon keresztül zajlik a rendszerhívás és -megszakítás, valamint itt
+találhatók a rendszerváltozók és a verem. Ezért a LAPO-án lehetőség
+szerint hagyjuk meg az UG-t. Ha a LAPO-ra mégis mast lapozunk, eldtte
+gondoskodjunk arról, hogy ne történhessen megszakítás. Funkcióhívást ebben
+a lapozási összetételben ne adjunk ki, veremművelet előtt a veremmutatót
+állítsuk át.
+
+A P SAVE irása előzze meg PÜRTOZ írását.
+A program alól ne lapozzuk ki a memóriát. Így a 2.3.3 pontban leirt elsé
+példaprogram nem lehet a S000H,..08FFFH cimtartomaényban (LAP2), hiszen att
+
+a CFU videomemóriát látja. Érdekességként megemlítjük, hogy a példaprogram
+középső (feldolgozás) része elhelyezhető lenne a videcmemóriában is.
+
+16
+
+=== [oldal 18] ===
+2.3.2 LAPOZAS SYS ÉS EXT KÖZÖTT
+
+Az operációs rendszer egy része a rendszer ROM kiegészítésében (EXIT)
+található, ezért a működés során a SYS rendszer ROM-ban és az EXT
+kiegészítő ROM-ban a program váltakozva fut. Az átkapcsolásra mindkét
+memóriarész végén egy hid van kiépítve. Az átkapcsolás előtt a program a
+HL regiszterpdrban helyezi el a folytatási címet. A programrészletek a
+következők:
+
+Rendszer ROM
+
+PUSH AF
+LB A,OFOH ; UO, Ul, U2, EXT
+LD {3),A
+DUT (23,4
+POP AF
+JP CHL}
+Kiegészité ROM
+PUSH AF
+LO A, 70H ; UO, UL, U?, S¥5
+LO (3),A
+OUT (2),A
+POPs AF
+JP CHL)
+
+2,3.3 PROGRAMOZÁSI PÉLDÁK
+
+1. Egy gépi kódú rutin a videomemóriában akar dolgozni:
+
+3E 50 LD A,50H ; UO, Ul, VID, S¥5
+3203 00 LO (3),A ; P SAVE
+D3 02 OUT (2),A ; PORTO? írása
+
+1
+
+; feldolgozás
+
+17
+
+=== [oldal 19] ===
+3E
+32
+BS
+Cc?
+
+70
+03 00
+02
+
+LO
+LO
+OUT
+RET
+
+A, 70H ;
+(37,A ;
+(23, A ;
+
+4 P SAVE beállítása miatt a
+programból kiadott rendszerhívás nem rontja el a lapozási összetételt.
+
+2. Az
+
+látn
+
+3E
+32
+03
+3A
+Eg
+Fé
+32
+
+D3
+
+3E
+32
+C9
+
+UG, Ul, U2, SYS
+P_SAVE
+PORTO? irása
+
+feldolgozás alatti megszakítás vagy a
+
+1-es csatlakozóba helyezett interface kártyán lévő memóriát akarjuk
+
+de
+
+FO
+03 00
+02
+11 0B
+3F
+40
+11 OB
+
+03
+
+70
+03 00
+
+LO
+LD
+OUT
+LD
+AND
+OR
+LD
+
+OUT
+
+LO
+LD
+RET
+
+A, OFOH
+(3) ,A
+(2),A
+
+A, (DB11H) :
+
+3FH
+40H
+(DB11H), A
+
+(3),A
+
+A,70H
+[3], A
+
+,
+
+7
+
+;
+
+;
+
+UO, U1, U2, EXT
+P_SAVE
+
+PORTO? irdsa
+PORTO3 tiuktrképe
+B?, Bé torlése
+
+B?, Bé: CSTLI
+PORTQ3 tükörkép új
+értéke
+
+PORTO írása
+
+feldolgozás
+
+Uo, Ul, U2, SYS
+visszaállítása
+
+18
+
+=== [oldal 20] ===
+2.4 Programmodul használata
+
+a TV-Computer bekapcsolásakor lefutó inicializáló program megvizsgálja a
+programmodul tartalmét felőtte a programmodult) LAP3-ra lapozta, tehát a
+programmodui elsé cime OCQO0H}.
+
+Normál esetben a programmodul elsé 4 byte-ja4n a "MOPS" szónak kell lennie
+(40H, 4FH, SOH, 53H).
+
+Ha a rendszer az első 4 byte-on megtalálta ezt az azonosítót, a OCOD04H
+címre ugrik, A programmodulban levő programnak kell gondoskodnia arról,
+hogy a LAPO-ra a rendszer ROM (SYS) helyére RAM-ot (U0) lapozzen,
+természetesen a P SAVE beállításával együtt. Programmodul használata
+esetén a rendszermegszakítás a szokd4sos médon fut le, rendszerhivdsok a
+programmodulpol kiadhatók. A programmodulban tárolt programnak kell a
+megszakítást engedélyezni és a WARM FLAG-et törölni.
+
+Ha a programozó a programmodulban nem helyezte el a "MOPS" szdcskat, a
+rendszer nem vesz tudomást a programmodulrói, Ebben az esetben a RAM-ban
+elhelyezett gépi kódú programból lehet ugrani a pragrammodulba vagy
+programmodul rutinokat hívni.
+
+Ugrás: LD AJOH ; UD, Ul, U2, CART
+LD (3),4
+GUT (2),A
+JP OCXXXH
+Szubrutinhivas:
+LD A,30H) =; UD, Ul, U2, CART
+LD {3),A
+OUT —/ (2),A
+
+CALL — OCXXXH
+LD — A,ZOH ; UO, Ul, U2, 5Y5
+
+17
+
+=== [oldal 21] ===
+LD (3),A
+OUT (2),A
+
+2.5 Rendszer verem
+
+Az operációs rendszer 2 kbyte-ot foglal le a LÁPD-án (16ABH -» DEADH) a
+
+verem számára,
+
+A nagyméretű veremre a képkitöltés (1.8 fejezet) miatt van sziikség,
+bonyolult alakzatok kitöltése esetén.
+
+A verem alsó határ az ST LIMIT változóban található X0B17H, 2839). Tar-
+talma OFLCH, tehát 100 byte biztonsdgi tartalék van a rendszer-
+
+megszakítások okozta verem mélyítésének fenntartva.
+
+Az operdcids rendszer nem működőképes, ha a verem a 2-es vagy a 3-as lapra
+
+van helyezve.
+
+20
+
+=== [oldal 22] ===
+3, MEGSZAKÍTÁSKEZELÉS
+
+3.1 Megszakításkezelő hardver
+
+A TV-Computerben a programmegszakítás (interrupt, IT2 oka háromféle lehet:
+
+1. A hanokeltésre szolgáló programozott frekvenciaosztó kimenetének 1 — G
+átmenete, tehát a beállított frekvenciából adódó négyszögperiódus vége.
+
+2. A képernyővezérlésre használt 6845-ds tipusd képernyévezér]é CURSOR
+kimenete. (Ez a jel csak megszakítás előállítására szolgál. A képernyőn
+látható cursort szoftver állítja elő, tehát a képernyővezérlő CURSOR
+kimenetéhez nincs köze.)
+
+Ennek a megszakítójelnek a pontos időzítését a képernyővezérlő prog-
+ramozása szabja meg. Alapbeállításban a megszakítást a megjelenített
+kép utalsó képpontjai váltják ki.
+
+Mint később látni fogjuk, a TV-Computer képe 314 sorból áll, tehát a
+megszakítás 314464 ps = 20.098 ms-onként következik be. Ez a meg-
+szakítás adja az időzítést a billentyűzet és a hangídőtartam számára.
+
+A 20.096 ms megváltozhat a képernyővezérlő átprogramozása miatt, ill.
+ha a cursor helyett a hang megszakítást kapcsoljuk be (pl, a kazetta
+SAVE és LOAD parancsok esetén.)
+
+3. Minden interface kártya tartalmazhat megszakítójel-előállító áram-
+kört. Az interface kártyák a TV-Computer bal felső részén található
+csatlakozókba helyezhetők, számozásuk balról jobbra: CSIL3, CS1L2,
+CSTL1, CSTLO.
+
+21
+
+=== [oldal 23] ===
+A hang és cursor megszakítás jeleket logikai VÁGY kapcsolat fogja össze, a
+kétféle menszakítási ok szoftver úton nem különbüztethető meg. Ebből kö-
+vetkezik, hogy a két megszakításforrás egyidejűleg nem használható,
+valamelyiket le kell tiltani.
+
+A hang megszakítás letiltható az 5-ös I/0 cím írásával (B5-0). A meg-
+szakítás — újraengedélyezése hasonlóan lehetséges (B=1). A PORTOS is
+tartalmaz más hardver egységekhez tartozó biteket, tehát azt is a FPORTOS
+memória-tükürkép figyelembevételével kell írni, címe: OB12H (2834), 1. és
+2. Függeléket. Ha a hang megszakításánái egyszeri lefutású, pontos
+időzítést akarunk, az SBH-s I/0 port olvasásával indíthatjuk alap-
+helyzetből a Írekvencisosztót.
+
+A cursor megszakítást többféleképpen is letilthatjuk a képernyővezérlő át-
+Brocramozásával. Egyik lehetőség a cursor kicímzése a megjelenített kép
+területéről. Javasolt módszer az R1i0-es regiszter Bő, 55 bitjének 01
+értékre állítása (l. a 2. Függeléket, ill. a későbbiekben a képernyő-
+
+vezérlő programozását),
+
+A cursor/hang megszakítás törlése (nyugtázása) a PORTO7 írásával lehet-
+séges, az írt adat értéke közömbös.
+
+Az interface kártyák megszakításának engedélyezése a 0...3 csatlakozó-
+számnak megfelelően a PORT5S8H...PORTS5BH outputok 7-es bitjének i-be
+írásával történik. A megszakítások törlését (nyugtázását) az előbbi
+outputok B7-D írása végzi, ez le is tiltja a megszakításokat addig, amíg
+B7-1-et nem írunk,
+
+Az 59H-s PORT olvasásával megállapítható a megszakítási ok forrása (B4-0
+cursot/hang, B3...80=0 interface kértya 3...0).
+
+Az interface kértyd4k csatlakozdira a Z80-as CPU busz /INT jele (a / jel a
+negálást jelenti) közvetlenül is ki van vezetve, tehát olyan interface
+kártya is készíthető, amelyik közvetlenül kér megszakítást. Ebben az
+esetben a TYV-Computer mnormél megszakitaskérd jeleit le kell tiltani, az
+operációs rendszer megszakításkezelő programját le kell cserélni (ez
+
+22
+
+=== [oldal 24] ===
+elérhető a 3J8H-s RÁM cím tartalmának átírásával). Természetesen ez súlyos
+következményekkel járhat.
+
+3.2 Megszakításkezelő szoftver
+
+A megszakításkezelő szoftver tudnivalóit a 3. Függelék foglalja össze.
+
+A Z80-as CPU 1-es megszakítás módban dolgozik. Ez azt jelenti, hogy a
+megszakítás egy RST 38H-s szubrutinhívást vált ki és letiltja a további
+megszakításokat.
+
+A 384-s címen található program UO, Ul, U2, SYS lapozást állít be és a
+rendszer RDM-ba ugrik, aha] a tényleges megszakításalprogram található.
+
+A megszakításalprogram a OB41H-s RAM címen (INT EXIT) fejeződik be (fel-
+használói lapozás visszaállítása a P SAVE-ből, megszakítás engedélyezése,
+majd visszatérés RET-tel a megszakított programba),
+
+A — felhasználónak lehetősége van az operációs rendszer megszakítás-
+alprogramja előtt speciális megszakításkezelő alprogramot végrehajtatni a
+38H-n található programrészek módosításával, de gondoskodni kell a saját
+megszakításkezelő alprogram után a visszatérésről, ill. a visszaugrásról
+az operációs rendszer megszakításalprogramjába fügyelve a lapozásra és a
+
+regisztermentésekre).
+
+Az operációs rendszer megszakításalprogramja gondoskodik arról, hogy az
+eszközök kiszolgálása a megszakítást kiváltó oknak megfelelő legyen.
+
+1. A megszakításprogram az 59H-s port civasásával megállapítja a megszaki-
+tás okát (1. 2. Függelék).
+A különböző — megszakításokok kiszolgálási sorrendje: cursor/hang,
+CSTLO...CSIL3.
+
+23
+
+=== [oldal 25] ===
+Ha a megszakítást interface kártya váltotta ki, a megszakításalprogram
+az interface kártya IŰMEM-jében található megszakiításkiszolgáló rutint
+
+hívja meg.
+
+ral
+
+. Cursor-“hang megszakitas esetén az INT DES rendszerváltozó szabja meg,
+hog, mely eszközük legyenek kiszolgálva (3. Függelék), Alapbeállítás:
+OFCH, tehdt @ video és billentyGzet meghajtó kiszolgálása történik meg.
+A kiszolgálás sorrendje megfelel a bitsorrendnek (video -» CSTL3}.
+
+Az eszközmegszakítást kiszolgáló rutinok hívása normál rendszerhivast
+jelent (D. funkció). A memórialapozást és a megszakításkérések nyugtázását
+az operdcids rendszer kernel ímag) része végzi.
+
+Az operacids rendszer —megszakításalprogramja a kérések törlése
+inyugtázása) után az IRO STAT rendszerváltozó értékének megfelelően újra
+engedélyezi a — megszakításokat. Tényleges engedélyezés/tiltás csak az
+interface kártyákra (CSTLO...CSTL3) történik, a cursor/hangra nem. Az
+IRG STAT alapértéke 1 (cursor).
+
+Az operdcids rendszer által kiszolgált minden egyes cursor/hang meg-
+szakítás alatt eggyel növekszik az INTINC két byte-os számláló, tehát az
+INTINC óraként használható. Utemideje - a korábban tárgyalt korláto-
+zásokkal - 20.096 ms.
+
+Az INT FLAG rendszerváltozó belső használatra van fenntartva.
+
+24
+
+=== [oldal 26] ===
+4. INPUT-OUTPUT RENDSZER
+
+A TV-Computer hardver-eszkoizeit kezel6 alacsony szintd rutinok egy megha-
+tározott interface-en keresztül érhetők el. Ezek a rutinok az un, eszkd2-
+meghajtdkba vannak szervezve. Az eszkizmeghajtok az operációs rendszer
+hívásával, másnéven funkcióhívásokkal érhetők el.
+
+4.1 Hardver struktúra
+
+A T¥-Computer input/output hardver-eszközei két csoportba oszthatók:
+1. Az alapkártyára felépített hardver-eszközök:
+
+képernyővezérlő (video)
+billentyűzet
+hanggenerátor
+
+nyomtató interface
+kazetta interface
+
+2. Csatolókártyák (külső interface-ek):
+soros vonal
+floppy disk csatoló
+általános célú párhuzamos interface
+
+stb.
+
+Mint korábban már szó volt róla, az interface kártyák tartalmazhatnak
+ROM/RAM memóriát. Az operációs rendszer csak akkor kezeli a csato-
+
+25
+
+=== [oldal 27] ===
+lokartyat. ha azon ROM memoria van, és a ROM memória meghatározott
+szabályok szerint tartalmazza az illető kártyát kezelő eszközmeghajtót .
+kivételt kepez a soros vonal, amelynek működtető programja a rendszer RUM
+kiegészítésben található. Az előbb felsorolt csatalókártyák közül a floppy
+disk csatoló tartalmaz ROM-ot, igy a floppy csatoló behelyezése
+automatikusan átrendeli a kazettas ki-bemenetet a floppy diskre (1. 4.
+
+Rendszer-inicializdlds fejezet).
+
+Minden Ccsatolókártya számára le van foglalva egy 1/0 cimtartomany (a,
+Függelék). A már korábban megismert I/D meméria lapozason es a megszaki-
+táskezelő input.’outputokon kivill még az 3AH-s inputról kell beszélni.
+tehetőség van minden csatolókártyán két bites azonosító bekötésére, ezek
+az azonosítók olvashatók be az 5AH-s inputról tf. Függelék).
+
+1 kártyaazonosítók:
+
+00: — Soros vonal {R5232;.
+
+Ül: — Eredetileg ez a videojáték modul (Video Game Board, VGB) számára
+volt lefoglalva. A VGB nem fog RDM-ot tartalmazni, ezért azonosi-
+tóbitjeit azonosítatlan kártya értékre (11) kell állítani.
+
+10: — Floppy disk csatoló,
+
+ll: tres kartyahely vagy azonosítatlan kártya.
+
+A rendszer-inicializdl4s sordm az inicializáló program megvizsgalja a
+wartyaazonositdkat. Ha azonosított kártyát talál, feltölti a D04KH, . . 00FFH
+címeken található csatolókártya táblázatot a kártyákat azonosító nevekkel,
+és meghívja a kártyák RUM-jában található inicializáló rutint. (Kivétel az
+RS232, amelynek inicializáló rutinja a rendszer ROM kiegészítésében talál-
+ható, ) Ezért a megfelelő ROM tartalom nélküli azonosított kártyák
+behelyezése a rendszer működőképtelenségét eredményezi.
+
+A kártyák azonosíthatók a ROM tartalommal is, a ROM tartalomnak meg kell
+felelnie a később leírt formátumnak.
+
+A Q040H kezdőcímen található csatolókártya táblázat felépítése az 2.
+Függelékben látható.
+
+26
+
+=== [oldal 28] ===
+A OQ, 1, 2, 3j-as csatlakozónak megfelelően 40H, 70H, OADH és OOGH cimen
+kezdődik az adott kártyára vonatkozó táblázat:
+
+0. byte: azonositonéy hossza
+1-6, byte: azonosító (max. 6 karakter)
+7. byte: egységszám
+
+Áz azonosító string után 40 byte-os puffer van lefoglalva az egyes kártyák
+számára. Csatoldkartyd4ra vonatkozó funkcióhívás esetén az IX regiszter
+erre a pufferre mutat.
+
+Az azonosító 7, byte-ján található egységszám normál esetben 0. Eltérő (1,
+2, 3) értéket akkor vesz fel, ha több azonos típusú kártya (pl. soros
+vonal) van a TV-Computerbe csatlakoztatva.
+
+Az eddig lefoglalt azonosítószavak:
+
+RSZ3Z - soros vonal
+DISK — - floppy disk csatoló
+
+21
+
+=== [oldal 29] ===
+4.2 Funkcióhívások
+
+A fizikai és logikai eszközök (logikai eszküz a képernyőszerkesztő
+- screen editor -, amely lehetővé teszi a programgépelést) funkciói
+egységesen az RST 30H utasítással hívhatók. Az RST 30H CDF7H, 247)
+utasítást követő byte-on kell elhelyezni a funkcidkddot. Pl. a printerre 1
+byte-ot kiküldő hívás a következő alakú:
+
+RST 30H
+DEFB 41H + funkcidked
+
+(A kiküldendő byte-ot előzetesen el kell helyezni a C regiszterben.)
+
+A funkcióhivások osztályokba vannak sorolva. Ezeket az osztályokat a
+funkcidkéd Bé, 85, B4 bitje jelöli ki:
+
+0 (000) : video osztdly
+
+1 (001) : — billentyűzet osztály
+2 (010) : editor osztdly
+
+3 (011) : hang csztály
+
+4 (€100) : nyomtató osztály
+
+5 (101) : kazetta osztály
+
+á (110) : csatolékdrtya osztály
+7 €111) : kernel osztály
+
+Az osztályok a sorszámmal (0,..7) vagy megnevezésiikkel azonosithatok. A
+megnevezés (pl. nyomtatd osztdly) azt jelenti, hogy normal esetben az
+adott osztályra kiadott I1/0 műveletek a nevezett eszközön kerülnek
+végrehajtásra, Tehát a §-es osztályra küldött adat alapesetben a
+nyomtatóra kerül.
+
+Az átvitel irányát a funkciókáód B7 bitje határozza meg: B7-0 esetén output
+(kimeneti), 87-1 esetén input (bemeneti) műveletről van szó.
+
+28
+
+=== [oldal 30] ===
+A B3, B2, Bl, B0 bitek jelölik a ténylegesen végrehajtándó funkciót. Az
+első 3 funkció minden eszközre kötelezően azonos:
+
+0 (0000) : Megszakítást kiszolgáló rutin, £zt a rutint hívja mag
+az — operációs rendszer a megszakítás kiszolgálása
+céljából. Ezt a funkciót nem tanácsos a felhasználónak
+
+hívnia.
+1 (0001) +: Karakter (byte) 1/0. A B7 bit jelöli ki az átvitel i-
+rányát, A kiküldendő karak- tert a "C" regiszter-
+
+ben kell elhelyezni, ill. a beolvasott karakter a C
+regiszterbe kerül.
+
+2 (0010) : Blokk I/O. Itt is a 27 bit mutatja meg, hogy inputról
+szól vagy outputról van-e szó. Az átvitel a memória egy
+kijelölt részének átvitelét jelenti. A DE regiszterpár
+tartalmazza a kiviendő memóriarész, ill. input esetén
+az input adatokkal feltöltendő memóriarész kezdőcímét.
+Az átviendő blokk hosszát a BC regiszterpdr tartel-
+mazza. Hármekkora memériatartomany átvitele lehetséges
+a 0, 1, 2 memórialapról (0000...BFFF), de HI_MEM értéke
+nem léphető túl. (A HI MEM korlát nem minden eszközre
+áll fenn. Az 1.3 verziótól kezdve a HI MEM átlépés
+ellenőrzése elmarad.) A blokk I/0 a karakter I/O
+ismételt hívását jelenti.
+
+A BASIC programbetöltő és -kimentő utasításai (LOAD, SAVE) a karater- és
+blokk 1/0-n kívül OPEN, CREATE ([(3-as funkció) és CLÜSE (4-es funkció)
+hívásokat is kiadnak az operációs rendszer felé, ezért a LUAD és SAVE csak
+olyan eszközre adható ki, amely a fenti hívásokat tartalmazza (kazetta,
+soros vonal, floppy disk).
+
+Az eszközmeghajtók a funkcióhívásokat RDM-ban tárolt ugrási táblák alapján
+hajtják végre.
+
+27
+
+=== [oldal 31] ===
+4 rendszer ROM-ban, ill. kiegészítésében található Eszközök (video,
+billentyűzet. editor, hang, nyomtató, kazetta, soros vonal) ugrdsi tdblaja
+
+a közetkező:
+
+DEPB — [az eszközhöz tartozó funkciók száma)
+DEF — [megszakításkiszolgáló rutin címel
+DEFW — [karakter 1/0 funkcidk cima
+
+DEFW = fblokk I/0 funkciók címel
+
+DEFW
+
+pEFW
+
+DEFY...
+
+[inicializáló rutin)
+
+Ha a csatolókártya ROM-ot tartalmaz, akkor az ugrdsi tabla ebben a ROM-ban
+helyezkedik el, Az IOMEM a 3-as lapra (OCOO0H) lapozhaté. A ROM els6 byte-
+jain található a kdrtyaazonosité és az ugrdtdbla:
+
+Co00 — DEFM — "MOPS"
+
+COO4 — DEFB — [az azonosító név hossza)
+
+C0053 DEFM — jazonosítónév, max. 6 karakterj
+CobOoB — DEFW — [dnícializáló rutin címéjl
+
+CooD — DEFB — [funkciók száma]
+
+COOE §=DEFW — j[megszakításkiszolgáló rutin cime]
+COl0  DEFW — [karakter I/0 funkciók címe]
+
+C012 DEFW — [Dlokk I/0 funkciók címe]
+
+COl4 DEFWM ....
+Cúi6 DEFW....
+Cole DEFW
+
+A funkcidhivasok sordn a paraméterek dtaddsa a BC és DE regisztereken ke-
+resztul történik, a végrehajtáskor észlelt hiba kódját az A regiszterben,
+a hívás eredményét a DE, BC regiszterekben kapja meg a hívó. A HL, IX, IY,
+AFP" És a második regiszterkészlet tartalma megőrződik. Hibátlan lefutás
+esetén Az-O. A DE és a HC regiszterek tartalma csak akkor értelmezhető, ha
+AzD (nincs hiba). Az A-ban visszaadott hibakód DFFH (255), ha nemlétező
+funkciókóddal hívta meg az operációs rendszert az alkalmazói program.
+
+30
+
+=== [oldal 32] ===
+Az operációs rendszer a funkciókódokat az A regiszterben adja át az
+eszközmeghajtónak, az előjel (SIGN) jelző megfelel B7-nek (input vagy
+output művelet).
+
+A funkcióhívások kezdő és befejező programrésze 2 RAM-ban, a LAPQ-an
+található (1. 5. Függelék).
+
+4.2.1 PROGRAMOZÁSI PÉLDA
+
+A funkcióhívások BASIC-ből történő kiadására, esetleg a funciók kipró-
+bálására javaslunk egy rövid gépi kódú rutint. A rutin számára LOMEM-mel
+foglalunk fhelyet, a VLOMEM átírásával biztosítjuk, hogy a gépi kódú prog-
+ram NEW és LOAD hatására se vesszen el.
+
+A rutin £XI0-val hívható:
+
+EXTO, funkciókád, DE, BC
+
+A hívás utáni regiszterértékek a memóriából PEEK-kei olvashatók:
+
+E regiszter : 19F0H (6640)
+D regiszter : I19F1H (6641)
+C regiszter : I19F2H (6642)
+B regiszter : 19F3H (6643)
+A regiszter : 19F4H (6644), itt található az esetleges hibakód.
+
+A gépi kódú program:
+
+1A00 70 LD A,L
+1A01 32 05 1A LD (FC) , A ; A funkcidkdd lerakdsa.
+1AN4 F7 RST 30H
+FC:
+LAOS DEFS 1 ; A funkcidkdd
+helye (L)
+1AG6 ED 53 FO 19 LD (19F0H},OE ; DE - 19F0QH
+
+31
+
+=== [oldal 33] ===
+140A ED 43 F2 19 LO (19F2H),BC ; BC =<» 19F2H
+1AQE 32 Fa 19 LD C19F4H), A ; A =» 19FGH
+14il C9 RET
+
+A gépi kódot betöltő BASIC program:
+
+10 LOMEM 6674:POKE 5920,18:POKE 5921,26 ! VLDMEM
+20 FOR 1=6656 TO 6673:READ A:POKE I,A;:NEXT
+
+30 POKE 33,0:POKE 34,26 ! EXTO
+100 DATA 125,50,5,26,247,0,237,83, 240,25
+
+110 DATA 237,67, 242, 25,50, 244,25, 201
+
+RUN után ez a program akár ki is tordlheté. Ezutdan az EXTG-val barmelyik
+operdcids rendszer funkció meghívható.
+
+32
+
+=== [oldal 34] ===
+4.3 I/0 hozzérendelések
+
+A T¥-Computer fizikai eszközeivel az adatforgalom az operációs rendszer
+karakter és blokk 1I/0 funkcióinak segítségével bonyolódik le. Ezeknek a
+funkcióhívásoknak az átirányításával (a hívások másik eszközhöz történő
+hozzárendelésével) elérhető, hogy a műveletet más eszköz hajtsa végre. Az
+átírányításra két példát mutatunk be.
+
+1. A felhasználó egy olyan BASIC programot fejleszt, amelyik a futás ered-
+ményét nyomtatóra fogja kiírni, ehhez az LPRINT utasítást használja. Ha
+a programfejlesztés során nem akar sok papírt elhasználni vagy éppen
+nincs nyomtatéja, valamennyi LPRINT utasítást át kellene írni PRINT
+utasítássá, majd később visszasírni. Ehelyett elegendő a 4-es (nyomtató)
+osztályhoz az editor outputot rendelni, és az LFPRINT már a képernyőre
+dolgozik, A későbbiekben látni fogjuk, hogy az átrendeléshez elegendő a
+következő BAZIC utasítás:
+
+POKE 2828, 2
+Visszarendelés;:
+POKE 2826,4
+
+2. A TV-Eomputer tulajdonosnak soros interface-szel rendelkező nyomtatéja
+van, ezért vásárolt egy soros vonalat. A
+
+POKE 2827B,6
+utasítás eredményeként az LPRINT, LLIST, PRINTS: utasitdsok a sores vo-
+
+nalra fognak dolgezni.
+
+Az 1/0 hozzárendelés két táblázat segítségével történik, a táblázatok az
+Operációs rendszer munkaterületén találhatók a DBGOH 65 CBOBH cimen (1. 6.
+
+Függelék).
+
+33
+
+=== [oldal 35] ===
+OBO00H : IN TABLE ; input hozzdrendelések
+OBO8H : QUT TABLE ; output hozzarendeiések
+
+A 7-es funkeigosztaly (kernel) ném irdnyithatd át, ezért a táblázatok a
+
+O...4-05 osztályok átrendelését teszik lehetővé.
+
+is
+
+táblázatok felépítése a következő:
+
+a kezdőcímre vonatkoztatott relatív cím jelöli ki a funkcióosztályt,
+
+az adott cím tartalma jelenti az osztályhoz rendelt eszközt.
+
+Alap-thozzárendelésben az osztálynak megfelelő eszköz van kijelölve, azaz
+
+- a 2-es (editor) osztályhoz a 2-es eszköz (editor),
+- az 5-ös (kazetta) osztályhoz az 5-ös eszköz (kazetta) stb.
+
+A nem értelmezett hozzárendeléseknél (pl. nyomtató input, billentyűzet
+output) a táblázat OFFH-t tartalmaz. CA nem értelmezett megjegyzés a ka-
+rakteres és hlokk input/outputra vonatkozik, más funkciók ezekben az ese-
+
+tekben is értelmezettek.;
+
+A táblázat §. (7-es relatív című) eleme azt jelöli ki, hogy 4 6-o5
+‘esataldkdrtya) osztály melyik konkrét kártyára vonatkozik. Értéke lehet
+0, 1, 2, 3 a négy interface csatlakozdnak megfelel6en, ill. OFFH, ha nincs
+csatolókártya vagy nincs kijelölve. (Inícializáláskor a TV-Computer
+automatikusan kijelöli a soros vonalat a 6-os funkcióhoz, ha van soros
+
+vonali interface.)
+A hozzárendelésnek 3 típusa van:
+1. I/0 hozzárendelés, pl. a 4-es osztályhoz (nyomtató) hozzárendeljük a 2-
+
+es eszközt (editor). Ez a hozzárendelés az 1-es és 2Z-es funkcióra
+(karakter- és blokk 1/0) vonatkazik.
+
+24
+
+=== [oldal 36] ===
+Ha az átvitel során hiba lép fel, automatikusan visszaáll az alap-
+hozzárendelés.
+
+2. I/0 hozzárendelés csatolókártyához
+
+Ez a 6-os osztály hívását jelenti, a 6-os nsztályhoz a táblázat utolsó
+hyte-ja segítségével rendeljük hozzá a kívánt csatolókártyát. (A 6-os
+osztály hívása egy másik osztály átrendeléséből is adódhat.)
+
+3. Közvetlen hozzárendelés az interface csatlakozdhoz.
+
+A hozzárendelési tábláta a csatlakozdszémot kell beírni úgy, hogy 87-1]
+legyen, tehát a 06, 1, 2, 3-as csatlakozónak BOH, BLH, 82H, 83H felel
+meg (decimdélisan 12B, 129, 130, 131). Ez a hozzárendelés az tisszes
+funkcidt atrendeli a csatlakozdhoz, hiba esetén sem 411 vissza az alap-
+hozzárendelés,
+
+{Mint már említettük a csatlakozók számozása balról jobbra: 3, 2, 1,
+0.)
+
+Nem lchet a hozzdrendeléseket láncolni, nem fog működni a következő
+hozzárendelés:
+
+4, (nyomtató) osztály, 28289: — 05 (kazetta)
+5. (kazetta) osztály, 29829: 131 (a 3-as csatlakozóban lévő floppy
+
+csatoló)
+
+Ebben az esetben a nyomtató osztályhoz ténylegesen a kazetta fog
+hozzarendelédni .
+
+32
+
+=== [oldal 37] ===
+Mikddéképes floppy hozzárendelés a printer osztályhoz:
+
+4. ényomtatól osztály, 2828: 131
+
+4, nyomtató) osztály, 27828: 06 (csatolókártya)
+Csatolókártya-kijelülés, 2831: 03
+
+Ha a hozzárendelési táblázat valamelyik osztályához tartozó címén OFFH
+van, az 1-es 2-es funkciók hibát jeleznek és a 3...15-ös funkciók az osz-
+
+tályhoz tartozó eszközön lesznek vénrehajtva,
+
+A funkcióhiívások során a kernel a hozzárendelést a következő lépésekben
+
+hajtja végre:
+
+1. A felhasználói memáórialapozás és a megőrzött regiszterek mentése, az
+UC, Ul, U2, SYS lapozás beállítása és a funkciókód beolvasása.
+
+2. A B7 bitnek (Cinput/output) megfelelően a kernel megciímzi a megfelelő
+hazzarendelési tablat CIN_TABLE, OUT TABLE).
+
+3, A funkcidosztaly és a funkcidszdm kiolvasdsa a funkciskddbdl.
+
+4. Ha 7-es osztály tkernel hívás) van, akkor nincs átirányítás, a prog-
+ram a rendszer ROM ugrótábla kezelőjére ugrik. (10)
+
+A zárójelben levő 10-es azt jelenti, hogy a program a 10. pontnál
+folytatódik.
+
+5. A 0...6-os osztály esetén a hozzárendelési táblázat megfelelő elemé-
+nek kiolvasása. Ha értéke DFFH, és 0, 1, 2-es a funkciószám, akkor
+
+nem megengedett a hozzárendelés, visszatérés hibakóddal. (12)
+
+A 3...15-05 funkcidkéd és OFFH esetén mincs dtrendelés. (10)
+
+36
+
+=== [oldal 38] ===
+. Ha az eszközszám értéke (a B7-es bitet figyelmen kívül hagyva) na-
+
+gyobb é-nál, akkor visszatérés hibakóddal. (12)
+
+. Ha a kiolvasott eszkizszd4mban B7-1, akkor közvetlen hozzárendelés
+
+van a csatlakozdéhoz, a rendszer ROM unrótábla kezelője megállapítja
+a kijelölt csatlakozóba elhelyezett kártya tipusát.
+
+Ha a tipus RS232, akkor a funkciószám szerinti ugrátábla a rendszer
+ROM kiegészítésben van, egyébként a kijelölt csatolókártyán, (10)
+
+B. Ha a furnkciószám nagyobb 2-nél, nincs átrendelés. (107
+
+9. A funkciókód osztályszámának kicserélése a táblázatból a felvett ér-
+tékkel.
+
+10. A kiválasztott ugrótábla szerint a funkciószám valódiságának ellen-
+őrzése. Nem létező funkciószám esetén visszatérés hibakóddal. (12)
+
+ll. Elugrás a funkciószám szerint és a tényleges funkció végrehajtása.
+
+1Z. A jelzők heállítása a hibakód szerint,
+
+13. Hiba esetén az alap-hozzárendelés visszaállítása tkivéve a közvetlen
+csatlakozóhoz rendelést).
+
+14, Visszatérés a hivdhoz (felhasználói memórialapozás visszaállítása,
+megőrzött regiszterek visszaállítása).
+
+Hibakezelés:
+
+Ha az I/D hozzárendelés vagy a funkciók végrehajtása során a program hihát
+
+észlel, az alap-hnzzárendelés áll vissza.
+
+Az
+
+alapérték visszaállítása nem történik meg közvetlen csatlakozóhoz
+
+rendelés esetén,
+
+21
+
+=== [oldal 39] ===
+A rendszer nem vizsgálja a hozzárendelések során a rekurzív funkció-
+hívásokat. kivétel ez alól az editor input hozzárendelése a billentyűzet
+osztályhoz (a biilentyűzet meghívja az editort, amely billentyűzet hívást
+tartalmaz sth.). Ebben az esethen yvisszaall az alap-hozzdrendelés.
+
+4.3.1 PROGRAMOZÁSI PÉLDA
+
+3 hozzárendelések alkalmazását két BASIC program összefésülésén mutatjuk
+he.
+
+Fiéfordulhat, hogy egy BASIC programba be kellene szúrni egy masik BASIC
+programrészt. Mivel MERGE utasítás nincs, ez közvetlenül nem oldható meg.
+
+íz összefésülésre mégis van lehetőség;
+
+ASCII formában írt listát készítünk kazettára az egyik (célszerűen a
+rösidebb) programból úgy, hogy a programlistát az 5-ös osztályra (kazetta)
+küldjik :
+
+OPEN QUTPUT "NEV": LIST dk5:; CLOSE OUTPUT
+
+(Ez nem jar a hozzárendelési tábla átírásával, mert a LIST ilyenkor köz-
+vetlenül a kazettakezelét hivja.)
+
+Mivel a felírás 256 hyte-os blokkokban történik, ez a kiírás hosszabb,
+mint a normál SAVE.
+
+Toltsuk be ezután a másik programot a LOAD parancesal, majd az editor
+inputtal olvassuk be az ASCII formátumú szalagot:
+
+OPEN "NÉV": POKE 2818,5
+Az editor - mintha most gépelnénk - heolvassa a programlistát úgy, hogy az
+
+azonos sorszámú sorokkal felülírja a régi sorokat, az eltérő sorszámú
+
+sorokat kozbeszurja.
+
+3B
+
+=== [oldal 40] ===
+Nagyobb programok összefésülésénél a közbeszúrás időigényes, ezért ilyen-
+kor a hilokkok után rövid időre célszerű leállítani a pillanat-stop (pause;
+kapcsolóval a magnót (nincs gond, ha olyan magndnk van, amely tudja fogad-
+
+ni a motorvezérlő jelet),
+Amikor a teljes program beolvasása befejeződik, a kazettakezelő file-vén
+hibaét fog jelezni. A hibajelzésre visszeáll az alap-hozzárendelés (a kép-
+
+ernyőn két ok látszik), Ezután ki kell még adni egy CLOSE parancsot,
+
+Floppy disk esetén a kiírás ugyanúgy történhet, a beolvasás viszont el-
+
+térő:
+
+DPEN "NÉV": PÜKE 2818,128- [floppy csatoló kártyahelyéj
+Mivel ez küzvetlen hozzárendelés, a filevég hibára nem áll vissza az alap-
+hozzárendelés. Ahhoz, hogy a hillentyűzetről folytatni lehessen a munkát,
+a REZET gombot kell egyszer megnyomni ,
+
+Persze lehetséges nem közvetlen hozzárendelés is:
+
+POKE 2823, [floppy csatoló kártyahelyél
+OPEN "NEV": PGKE 2818,6
+
+A beolvasds utan ne felejtsük el a CLOSE-t kiadni.
+
+39
+
+=== [oldal 41] ===
+
+=== [oldal 42] ===
+5. RENDSZERVÁLTOZÓK
+
+4 TV-Computer rendszerváltozói a 90-ás memórialapon helyezkednek el.
+
+42 egyes rendszerváltozók értelmezése a vonatkozó hardver- és szaftver-
+
+eszközök tárgyalásánál található meg, de ettől függetlenül a 23, Függelék-
+
+ben egy összefoglaló táblázatban is felsoroljuk az üsszes változót. Most
+csak globális áttekintést adunk a LAPO felhasználásárói. A felsoralásban
+
+megadott értékek: cím hexadecimálisan, utána zárójelben a decimális cím és
+
+a decimális hossz.
+
+1. 00004 (0,48)
+
+2. OD30H (48,8)
+
+3, OD38H (56,8)
+
+4, O640H (64,192)
+
+5. O1OGH £256,1600)
+
+: A BASIC által használt terület, ahol pl. a hibake-
+
+zelő rutin És az EXT utasítás címtáblája
+található. Kivétel a 3-as cím, ahol a P GAVE vál-
+
+tozó van,
+
+Vigyázat! A TV-Computerhez vásárolható program-
+modul debugger az RST 28H utasitdst hasznd4lja a
+töréspontok kezelésére, ezért a debugger alkalma-
+zása esetén az EXT3, ExT4 nem használható, BASIC
+hiba miatt a SOUND utasítás elrontja az EXTS, EXT6é
+utasítások címeit.
+
+: Az operációs rendszer hívások [(fünkcióhívások) be-
+
+lépési pontja.
+
+: A megszakítások belépési pontja.
+
+: A csatolókártyák azonosító táblázata és munkaterüi-
+
+te.
+
+: A képernyőn térolt szöveg ASCII kódú képe az edi-
+
+tor miveletekhez. Hossza 25 sor + 64 karakter =
+1600, a 25. sor nincs haszndiva.
+
+4l
+
+=== [oldal 43] ===
+G. D740H (1856,960) : A 128...223 kódú definiálható karakterek pontmát-
+Tixa (96 karakter - 10 byte).
+
+7, OBOOH (7816,114} : Az operációs rendszer változói.
+
+§. OB72H (2930,135) : Video munkaterület.
+
+9. OBAlH (2945,100) : I/0 munkaterület.
+
+10. OBESH C3045,10) : Billentyűzet munkaterület,
+
+11. OBEFH C3055,1) : Hang munkaterület,
+
+12. OBFOH (3056,600)} : Kazetta munkaterület.
+
+13. OE48H (3656,80) +: Editor munkaterület.
+
+14, O&98H (3736,20) : Programazonosító név (csak 1.3 verziótól).
+
+15. OEACH (3756, 2048) : Rendszer verem.
+
+lé, 16ACH (5804,835) +: BASIC munkaterület.
+
+17. 19EFH (6639) : BASIC programok kezdete.
+
+Az 1.3 verziótól kezdődően a GE9BH címen egy 20 byte-os terület van
+lefoglalva a futó Drogram azonosítására. Az azonosító Ű-val van lezárva.
+Reset hatására (meleg reset hatására is) az azonosító törlődik, majd a
+BASIC a "TV COMPUTER BASIC" azonosítót írja he,
+
+Megjegyezzük, hogy a rendszerváltozó területen található lyukakat (pl. az
+ASCII képernyő 25. sorát) csak korlátozott mértékben célszerű gépi kódú
+rutinok tárolására használni, mivel ezeket a szahad címeket a gép későbbi
+bővítései felhasználhatják,
+
+4?
+
+=== [oldal 44] ===
+6. RENDSZER-INICIALIZÁLÁS
+
+A Tv-Computer mikraprocesszordt és hardver regisztereit alaphelyzetbe
+
+állító ún. reset impulzus kétféleképpen keletkezhet;
+- Bekapcsoláskor a 45 V-os tápfeszültség felfutásából, késleltetéssel;
+
+- A reset nyomógomb megnyomásából, szinkronízálva a processzor /ML jelé-
+hez. (A szinkronizálással a memóriatartalom esetleges megsérülését
+lehet elkerülni. Előfordulhat, hogy erős külső, pi. a hálózaton érkező
+zavar a CPU-t nlyan állapotba viszi, amelyben nincs utasításlehívás,
+tehát nincs /Ml jel. Ebben az esetben a reset nyomógomb hatástalan,
+csak a ki- bekapcsolás segít.)
+
+A reset impulzus háromféle programáliapotban keletkezhet:
+
+- Bekapcsoláskor: ebben az esethen a RAM tartalma határozatlan, a különbö-
+
+ző tesztelések miatt hideg reset fog végrehajtódni.
+
+- Programfutás közhen; ilyenkor a rendszervaltozdk értékétől függően haj-
+
+tódik végre hideg vagy meleg reset.
+
+- Inicializálás alatt: ez a reset gomb ismételt megnyomását jelenti, tehát
+a meleg resetből hideg reset lesz.
+
+Ezek figyelembevételével az inicializálási folyamat a köve tkező:
+
+1. A reset impulzus letiltja a CPU megszakításokat, 3a programszámlálót
+0-ra állítja. A TV-Computer meghatározott regisztereit alaphelyzetbe
+állítja, pl. a PORTO? lapozdsi regiszter 00 értéket vesz fel, ami 5Y5,
+UL, ¥IO, CART lapozdst jelent. Emiatt a programfutds a 0 címről indul,
+ahol a rendszer ROM található,
+
+43
+
+=== [oldal 45] ===
+ra
+
+A nrocesszor inicializdlja a képernyővezérlőt.
+
+4 COLD FLAG (0622H,2850) és a WARM FLAG (0621H,2?849) rendszervaltozdk
+vizsgálata:
+
+Ha a COLO FLAG értéke OFFH, a "meleg" RESET le van tiltva, a program a
+WARM FLAG-be 0-át ír és "hideg" RESET hajtódik végre (7).
+
+Ha a WARM FLAG értéke nem D, akkor meleg reset van végrehajtás alatt
+(a reset nyomógombot rövid időr belül másodszor is megnyomták), tehát
+hideg resetet kell végrehajtani. A WARM FLAG O értéket vesz fel. A
+program a 7, pontnál folytatódik.
+
+. AZ inicializáló program megvizsgálja, hogy a korábbi inicializáláskor
+
+a ROM-bol RAM-ba töltött program megsérült-e. Ha a RAM és ROM tartalom
+nem azonos, akkor hideg reset lesz és a program a 7, pontnál foly-
+tatódik, (Előfordulhat, hogy a vizsgált memóriatartalom ép, de a RAM
+tartalom valahol másutt megsérült, Elyenkor a meleg reset végrehajtása
+közben a rendszer beragadhat, azaz csak a kettős megnyomással
+kiváltott hideg reset segít.)
+
+. Meleg reset hajtódik végre, a program a WARM FLAG-et ÜFFH-ra írja át.
+
+Az eszközmeghajtó inicializáló rutinck a WARM FLAG-et tesztelhetik,
+ennek megfelelően hajtják végre az eszközinicializálást,
+
+. Az inicializáló program fél másodpercig vár, ezzel lehetővé teszi a
+
+reset nyomógomb kettős megnyomását, A várakozásra azért van szükség,
+mert a meleg reset nem hajt végre memóriatesztet és memóriatörlést. A
+gyorsabb lefutás miatt nem lehetne a reset gombot másodszor megnyomni
+az inicislizálás alatt.
+
+A HI MEM változó értéke a meleg reset alatt megőrződik.
+
+A meleg reset a memóriatesztet átugorja, ezért folytatás a 9. pontnál.
+
+44
+
+=== [oldal 46] ===
+7. Az inicializáló program a rendszer RÖM-ot a hármas lapra lapozza és
+teszteli a Q-as lapon az UO memdéridt: 55H irasa/olvasdsa, OAAH
+íráss/alvasása, olvasás előtt memáóriadekrementálás (csökkentés).
+
+A jó memóriarekeszeket a tesztelés után törli a program. Ha az UD bár-
+mely címe hibás, a képkeret (BORDER) villogni fog és a rendszer-
+inicializáiás nem folytatódik.
+
+Ezután a video RAM-ot teszteli a program. (A TVC 64 k+ típusnál csak
+az első 16 kbyte-ot.} Hiba esetén néhány másodpercre vörös lesz a
+képkeret És az inicializálás leáll.
+
+B. A program teszteli az Ul, U2, U3 RAM memóriát. Az U3 tesz eredménye
+beirddik P3RAM változóba (0: jó, FF: hibás az U3). Az Ul, U2 teszt
+eredményétől függőer beállítódik a HI MEM rendszerváltozó. Hibátlan 32
+k-s gép esetén értéke 7FFFH, 64 k-s gép esetén DBFFFH,
+
+2. A rendszer-kiegészítő ROM a 3-as lapra lapozódik és megtörténik a 0-ás
+RAM lap feltöltése:
+
+- A 32 újradefiniálható karakter pontmátrixa átmásolódik a ROM-bdl a
+a RAM-ba, a fennmaradó 64 definiálható karakter betűközzel töltődik
+fel.
+
+- A RESTART utasitdsokhoz tartozó programrészek és a további, RAM-ban
+tarolt programrészek átmásolódnak ,
+
+- A rendszerváltozókat, az [I/D hozzárendelési táblázatokat a program
+feltölti a kezdőértékekkel.
+
+10. A FPORTSAH-t beolvasva az inicializáló program megvizsgálja a hardver-
+azonosítók alapján, hogy az egyes interface kártyahelyek milyen
+
+bővítő kártyákat tartalmaznak.
+
+Ha a hardverazonosító üres kártyahelyet, ill. az ezzel egyenértékű
+ismeretlen kártyát jelez, az inicializáló program teszteli az inter-
+
+45
+
+=== [oldal 47] ===
+11.
+
+12,
+
+face kártyákon található ITOMEM-et ("MOPS”" azonosító, kártya-
+azonosítót. A tesztelések eredményét elhelyezi az operációs rendszer
+
+munkaterületén.
+
+4 rendszer meghívja az Összes eszköz inicializáló rutinját, beleértve
+az interface kártyák inicializáló rutinjsit is. Az inicializáló ruti-
+nok a WARM FLAG figyelembevetelével futnak le.
+
+Ha floppy disk inmterface-t tartalmaz a rendszer, a kazetta hívások
+atirámitódnak a floppy csatolóhoz (közvetlen hozzárendelés a csatla-
+kozdhelyhez, azaz valamennyi kazetta funkció a floppy diskre fog vao-
+
+natkozni },
+
+A 0-ás lapra a rendszer ROM, a 3-as lapra a programmodul (CART) lapo-
+zodik. Az inicializáló program megvizsgélja, hogy a programmodul ele-
+jén megtalálható-e a MOPS azonositd. Ha igen, a vezérlés atadddik a
+
+programmoadutnak,
+
+Ha nincs programmodul ROM, ill. nincs MOPS azonosító, a vezérlést a
+BASIC kapja meg.
+
+A programmadulban tárolt program ill. a BASIC a WARM FLAG-bé1 meg-
+állapíthatja, hogy induláskor milyen inicializaldst kell végrehaj-
+
+tania. (Pl. meleg resetnél a BASIC nem hajt végre automatikus NEW-t.}
+
+4 WARM FLAG törlését és a megszakítás engedélyezését a BASIC végzi,
+ill. a programmodulban tárolt programnak kell végrehajtania.
+
+46
+
+=== [oldal 48] ===
+7. KERNEL HÍVÁSOK
+
+A felhasználó által hívható kernel funkciók input/output hozzárendelési és
+memáriahelyfoglalási műveleteket jelentenek. A kernel funkciók csak a 7-es
+osztály hivasdval érhetők el, atrendelésre nincs lehetőség, ezért itt az
+l-es és 2-es funkciók sem a szokásos karakteres, iil. blokkátviteit je-
+lentik. Nincs megkülönböztetve az átvitel iránya sem, a funkciókódban a §B7
+bit értéke közömbös.
+
+Megjegyezzük, hogy a kernel hívások kiadása helyett általában elegendő az
+operációs rendszer változóinak átírása. Programokból mégis célszerűbb a
+funkcióhívásokat használni a változók átirása helyett, mert
+
+- a funkcióhiívások a megfelelő ellenőrzések révén csökkentik a hibás ki je-
+
+jelölések, hibás tárfogiaslások valószínűségét;
+
+- hozzárendeléseknél nem szükséges a csatlakozóhelyet megadni, a csatoló
+nevére lehet hivatkozni ítehát mindegy, hogy hova van dugva a csatold-
+kártya, a program működni fog).
+
+, A funkcióhívások ismertetésénél megadjuk a funkció nevét, kódját, a hívási
+paramétereket, a hívás után visszaadott értékeket, a lehetséges hiba-
+kódokat. A kernel funkcióknál adjuk meg az általánosan előforduló hiba-
+kódokat (hibás blokk I/0 paraméterek, 3T0P). Ezeket a konkrét eszküz-
+meghajtóknál nem mindig tüntetjük fel.
+
+47
+
+=== [oldal 49] ===
+7.1 HI MEM SET
+
+Memótiafoglalás a legmagasabb használható RAM-ciím csökkentésével.
+
+Kód: 71H vagy OF1H (113 vagy Zál)
+Input: OBE = a lefoglalni kívánt memóriaterület mérete
+Qutput: DBE = a lefoglalt puffer kezcécime
+
+Hibakód: OFBH ¢€251): nincs elég memória
+
+A HI MEM SET rutin csökkenti a HI MEM rendszerváltozó értékét a DE-ben
+megadott értékkel. DE-ben visszaadja a lefoglalt memóriapuffer kezdőcímét.
+Hibát jelez a rutin akkor, ha a lefoglaiás után nem marad legalább 2 khyte
+memória a rendszer verem után. (Tehát a HI MEM 5ET-tel nem csökkenthető a
+HI MEM értéke 1EACH, 7852 alá.) A HE-9 nem változtatja a HI MEM értékét.
+
+itt jegyezzük meg, hogy a HI MEM nem BASIC, hanem operációs rendszer
+változó, értékét a BASIC csak bizonyos parancsoknál (91. NEW, RUN) veszi
+figyelembe. Ezért a BASIC programból kiadott HI MEM SET hívást vagy a
+HI MEM átírását célszerű egy RUN sorral folytatni.
+
+Példa:
+
+A 7O00H (32000) címtől akarjuk lefoglalni a memóriát, azaz HI MEM-et
+7CFFH-ra kell állítani.
+
+POKE 2841,255 : POKE 2842,124
+
+A 28H4l-es címet általában nem kell átírni, hiszen 34 memdridndl 255-ot
+tartalmaz (7FFFH, ill. BFFFH az alapérték).
+
+48
+
+=== [oldal 50] ===
+A fenti sorok után HI MEM már felvette az új értéket, erről meg is
+győződhetünk :
+
+PRINT PEEK(2B41)-256kPEEK(2B42)
+31999
+
+A FREE változó azonban még a régi értéket mutatja, NEWN vagy RUN hatására
+fog a csökkentett érték beállítódni. Ezért a BASIC programot a következő-
+képpen célszerü kezdeni:
+
+1 POKE 2841,255 : POKE 2842,124
+2 RUN 10
+
+A 1l0-es sortól a BASIC program a 7DOOH-val kezdéc6 memoriarészt már
+szabadon használhatja. A memória feltölthető gépi kódú rutinnal, vagy más
+tetszőleges tartalommal.
+
+49
+
+=== [oldal 51] ===
+7.2 EXP_DIRECT
+
+Csatolókártya kijelölése a 6-os osztályhoz.
+Kód: 72H vagy 0F2H (114 vagy 242)
+
+Input: B = OFFH : input kartya kijelölés
+<> OFFH : output kártya kijelölés
+
+C - egységszám (több azonos típusú kártya megkülönböztetése,
+egy kártya esetén 0)
+DE - a kártyaazonosító memóriaciíme
+
+Hibakód: OFDH (253) : nemlétező kártya
+
+Bármelyik szabad memóriaterületen elhelyezhető a kijelölendő kártya azono-
+sítója hossz-név formában, DE-nek az azonosítóra kell mutatnia. Ha a
+megadott azonosítójú kártya nem létezik, a rutin hihakóddal tér vissza.
+
+Az EXP DIRECT hívása helyett átírható az IN TABLE, ill. az OLT TABLE 7,
+
+eleme is. Természetesen ebben az esetben tudni kell, hogy a kijelölendő
+kdrtya melyik csatlakozdba van dugva (0...3).
+
+20
+
+=== [oldal 52] ===
+7.3 1/0_DIRECT
+
+I/0 hozzárendelés
+Kód: 73H vagy OF3H (135 vagy 243)
+
+Input ; D - OFFH ; input hozzárendelés
+¢>OFFH : output hozzárendelés
+
+a funkcióosztály száma
+
+az eszküz száma
+
+Hibakéd: OFEH (254) : hozzdrendelési hiba
+Ag regiszter értéke szerint a rutin átírja az IN TABLE vegy az OUT TABLE
+
+megfelelő elemét, a B regiszterben kijelült osztályhoz hozzárendelve a [
+regiszterben megadott sorszámú eszközt,
+
+Ha az osztály vagy az eszközszám nagyobb 6-nál, vagy a megfelelő táblaelem
+értéke OFFH, a rutin hibával tér vissza.
+
+Példa:
+Ha az I/0 DIRECT hívása előtt D-00, B-D4, C-O02 értékre állítjuk a re-
+
+gisztereket, a rutin a 4-es output (nyomtató) osztályhoz hozzárendeli a 2-
+es eszközt (editor):
+
+LD — B,0
+
+LD B,4
+LD C,2
+RST 30H
+
+21
+
+=== [oldal 53] ===
+DEFB 73H
+
+Ez a hívás helyettesíthető a következő BASIC utasítással:
+
+POKE 2828,4
+
+7.4 SLOT_NUM
+
+Csatoldkdrtya pozíciójának meghatározása.
+
+Kód : 74H vagy ÜFáH (lló vagy 244)
+
+Input: DE - a kártyazonosító memóriscíme
+C - egységszám
+
+Output: C = csatlakozdszam
+
+Hibakód: — OFDH (253) : nemlétező kártya
+
+A kártyaszonosítót és az egységszámot ugyanúgy kell megadni, mint az
+EXP_DIRECT-nél.
+
+Ez a rutin a C regiszterben visszaadja a keresett kártya csatlakozószámát.
+
+52
+
+=== [oldal 54] ===
+B. KÉPMEGJELENÍTÉS
+
+A képmegjelenítésre szolgáló hardver és az azt működtető szoftver, a video
+eszküzmeghajtó a TV-Computer legfontosabb és egyben legbonyolultabb része.
+A video eszközmeghajtóra épül a BASIC kényelmes, júl kezelhető, egyszerű,
+de mégis hatékony arafikája. A BASIC-ben használható grafikus funkciók
+gépi kódból is hívhatók, ezért gépi kódban sem nehéz látványos grafikat
+tartalmazó programokat frni. A videc eszközmeghajtó megismerése a BASIC
+programozás lehetőségeit is kibővíti.
+
+Szokásunkhoz híven a video eszközmeghajtó ismertetése előtt áttekintjük a
+képmegjelenítő hardvert.
+
+8.1 Képmegjelenítő hardver
+
+8.1.1 VIDEC MEMÓRTA ÉS KÉPERNYŐVEZÉRLŐ
+
+A képmegjelenítő hardver programozási szempontból a következő fontosabb
+egységeket tartalmazza:
+
+1
+
+16 k vagy 4wló k (TV-Computer 64 k+) videomemdria
+6845 típusú képernyűővezérlő
+
+képpont léptető shift regiszter
+
+paletta regiszterek
+
+1
+
+border (keret szin) regiszter
+Megjegyzés: A képernyővezérlő a számítástechnikai szakirodalomban a
+
+következő  szinonímákkal is szerepel: CRT controller (ahol a CRT = Cathode
+RAY Tube, magyarul katódsugárcső, képernyő), CRT vezérlő, display vezérlő.
+
+23
+
+=== [oldal 55] ===
+A TV-Computer az ábrázolt grafikus vagy szöveges információt a tv
+technikabol ismert módon jeleníti meg: a képernyőn soronként fut végig az
+elektronsugár, a sugár intenzitásának vezérlésével (színes televízió
+esetén a három elektronsugár intenzitásának vezérlésével) állíthatók elő a
+kiilönböző színű, különböző fényességű képpontok.
+
+Az elektronsugár egyszeri végigfutásának nyomát nevezzük a továbbiakban TV
+sornak vagy rasztersornak, Egy-egy betű vagy írásjel felrajzolásánoz több
+TV sorra van szükség.
+
+3 sorközüket is beszámítva, az egy betűú- (karakter-) sorhoz tartozó tv
+sorokat együtt karaktersornak nevezzük, A karakter d betűk, számok, {ras-
+jelek, szimbólumok gyűjtőneve. A TV-Computernél 24 karaktersor fér el 3
+képernyőn, egy karaktersor 10 tv sorból áll, tehát a képernyő hasznos fe-
+lülete 240 sort tartalmaz.
+
+A képmegjelenítést tekintve szokás grafikus és alfanumerikus megjeleni-
+tésről beszélni. [(Alfnumerikus: betűk és számok megjelenítésére szolgáló
+eszköz, berendezés.} Alfanumerikus megjelenítés esetén a képmemdridban a
+megjelenített karakterek kódja van tárolva, Di. egy A betG a meméridban 1
+byte-ot foglal el, a byte tartalma 41H (65). Az A betGhiz tartozd kép-
+pontokat egy kiüülün memória, az un. karaktergenerdtor tartalmazza. A karak-
+tergenerdtor cimbemeneteire rá kell adni a megjelenített karakter kódját
+és azt, hogy hányadik tv sornál tart a megjelenítés, Ezek hatására a ka-
+raktergenerátor kimenetén megjelennek a kiválasztott karakter megfelelő tv
+sorához tartozó képpontok.
+
+Grafikus megjelenítés esetén a képmemóriában a képernyőn megjelenő kép-
+pontokat tároljuk. A TV-Computerben orafikus megjelenítés van, egy A betű
+10, 20 vagy 40 byte-ot foglal el a képmemóriában a grafikus üzemmódtól
+függően.
+
+A grafikus megjelenítőkben a szoftver végzi a karaktergenerálást: a memó-
+riában bárhol eltárolt karaktergenerátor alapján a szoftver tölti fel a
+képmemóriát az "A" betű képpontjaival.
+
+54
+
+=== [oldal 56] ===
+Megjegyezzük, hogy az előbbi rövid fejtegetés korántsem nyújt teljes átte-
+kintést a megjelenítő rendszerekről, léteznek egészen más elven működő be-
+rendezések is.
+
+A TV-Computerben a megjelenítést egy 68B45-ös típusú képernyővezérlő irá-
+nyítja, ez az áramkör alapvetően alfanumerikus megjelenítésre szolgál.
+
+A É845-ös fontosabb funkciói:
+
+- Az egy tv soron belüli karaktermegjelenítési időt meghatározó őórajelből
+(a TV-Computernél ez 3.125 MHz, azaz 640 ns) előállítja a tv eltériítő
+dramkoreit vezérlő vízszintes és függőleges szinkronjelet (HS, VS),
+valamint a képernyőn a hasznos képet kijelölő DE (más néven DISFPTMG) je-
+let.
+
+- Kiadja a karakterek kódjait tartalmazó memória címét (MÁO.,.MAL3) lehe-
+tövé téve az éppen megjelenített karakter kiolvasását.
+
+- Kiadja a karaktergenerátor vezérléséhez a karaktersoron belüli ty sor
+sorszámát (RÁD, , , RA4),
+
+~ Előállít egy cursormegjelenítő jelet, amelyet a TV-Computer csak prog-
+rammegszakításra használ.
+
+Egy alfanumerikus megjelenítő memóriájában a karakterek kódjai folya-
+matosan vannak tárolva, Az alfanumerikus megjelenítési rendszert végig-
+gondolva adódik, hogy az egy karaktersorhoz tartozó karakterek kódjait
+annyiszor kell ismételten kiolvasni, ahány tv sorból áll a karaktersor.
+
+Egy karaktersor kiolvasása alatt tv soronként nő a képernyővezérlő által
+kiadott ty sor számláló érték (RAD, ..RA4).
+
+A 6845-ös képernyővezérlőt grafikus megjelenítésre használva a kézenfekvő
+
+megoldás az lenne, hogy a "karaktersor" 1 tv sorból álljon, Ebben az eset-
+Den ugyanis a grafikus megjelenítésnek megfelelően a képmemória kiolvasása
+
+35
+
+=== [oldal 57] ===
+folyamatos lenne, egy byte csak egyszer kerülne kiclvasásra. Sajnos ezt a
+6845-35 korlátai nem teszik lehetővé, ugyanis nincs lehetőség 240 hasznos
+"karaktersor" programozására. (A "karaktersort" most azért tesszük idéző-
+jelbe, mert nem a képernyőn iátható tényleges, a fV-Computeren 10 rasz-
+tersorból álló karaktersorról van szó. Itt a "karaktersor" azt a raszter-
+sor mennyiséget jelenti, amelyen belül ugyanaz a címtartomány ismételten
+van kiadva.)
+
+A TV-Computerben alkalmazott megoldás a következő:
+
+- 4 6845-65 képernyővezérlő 4 tv sorból álló logikai "karaksorral" dolgo-
+zik;
+
+- A videomemória címzésére az MA jeleken kiviil az RA rasztersor-kijelölő
+vezetékeket is felhasználjuk úgy, hogy a képmemória címvezetékei növekvő
+sarrendben:
+
+MAD. . .MAS : kijelölik az egy tív soron belüli logikai "karaktereket"
+RAD. , .RAL : kijelölik az egy "karaktersorhoz" tartozó tv sorokat
+MAé...MAL1: kijelölnek á0 logikai "karaktesort"
+
+Mint ismeretes, a TV-Computer 3 grafikus üzemmódban dolgozhat. Kétszínű
+
+üzemmódban 1 bit, négyszínű módban 2 bit, tizenhatsziínű módban 4 bit tar-
+
+tozik egy képponthoz a képmemdridban. Ebből az is következik, hogy egy tv
+sorhoz mindig 64 byte tartozik:
+
+517 pont # 1 bit = 64 byte
+256 pont * 2 bit = 64 byte
+126 pont * 4 bit = 64 byte
+
+A képmemóriában tárolt 1 byte a képernyőn B, 4 vagy 2 képpontot jelent,
+ezt az 1 byte-ot a képernyővezérlő 1 "karakternek" érzi, ezért beszélünk
+logikai karakterről. A 8. Függelékben látható, hogy a LAP2-re lapozva a
+videomemóriát, a logikai "karakterek" és "karaktersorok" milyen címeken
+
+26
+
+=== [oldal 58] ===
+érhetők el. Látható, hogy az utolsó használt cím OBBFFH, tehát a OBEODH-
+
+tól a DBFFH-ig tartó 1 kbyte nincs kihasználva.
+
+8.1.2 A MEGJELENÍTÉS FOLYAMATA
+
+A megjelenítés folyamata a következő:
+
+A képernyővezérlő végigfut az MAO...MA5 cimeken, kiolvasva ezdltal 64
+kbyte-ot ("karaktert"),
+
+RAD, RAl eggyel nő, {gy MAO...MAS Gjboli végigfutasa mar a kOvetkezG 64
+byte olvasását jelenti.
+
+Ez ismétlődik amíg RAX, RAl sorra föl nem veszi a 0, 1, 2, 3 értéket.
+
+Ezután MAZ, , .MAl11 értéke eggyel nő, kezdődik a következő karaktersar.
+
+1
+
+Ez ismétlődik, amíg MAG, , .MALI végig nem fut mind a 60 "karaktersoron”.
+
+A memóriából kiolvasott byte-ok egy shift regiszterbe irddnak, majd
+grafikus üzemmógdtól függően:
+
+- Kétszínű üzemmódban a shift regiszterből 12.5 MHz-es árával (B80 ns) lép-
+nek ki a bitek, az először kilépő bit a B7, tehát az 1 byte-hoz tartozó
+8 képpont közül a halszélsőt a B7, a jobbszélsőt a 80 bit értéke hatá-
+rozza meg. (Az elektronsugár balról jobbra halad,)
+
+A kilépő bitek értéküktől függően a 0-ás, ill. 1-es palettaregiszteri
+választják ki. Tehát a Q értékű bit esetén (háttér) a 0-ás paletta-
+regiszter, 1 értékű bit esetén az 1-es palettaregiszter kapcsolódik egy
+pillanatra a videojelet előállító szín kódolóra. Így a képpont a megfe-
+lelő palettaregiszterben tárolt színű lesz.
+
+21
+
+=== [oldal 59] ===
+- Négysziínű üzemmódban a shift regiszter B. bitjén kívül a 4, bit is a pa-
+lettaregis7terek cimzésére van felhasználva. A léptető dra 6.25 MHz (160
+ms‘. az egy byte-hoz tartozd 640 ns alatt csak 4 léptetés (4 képpont)
+van, Ebből kovetkezik, hogy B7 és B63 meghatározza a 4 pont küzül a
+
+halszélső színét, B4 és BŰ a jobbszélső színét (1, B, Függelék).
+
+4z em képponthoz tartozó 2-2 bit értékétől (0.,..3) függően van kivá-
+lasztva a képpont idejére a 4 palettaregiszter egyike.
+
+- Fizenhatszinű üzemmódban a léptetőírekvencia 3.125 MHz (320 ns), a shift
+regiszter §.. 4., 4. és 2. bitje van felhasználva. Egy byte-hoz csak ?
+léptetés tartozik. Az egy képponthoz tartozó bitek nem a Da-
+lettaregisztert címzik, hanem közvetlenül a szírkódoló áramkörre jutnak,
+tehát magát a színt határozzák meg (1. a 8. Függeléket). I jelenti a
+fémnes-sötét szín kiválasztást (intenzitás), a G, R és 8 magát a színt
+jelenti IG: zöld, R: vörös, B: kék).
+
+íz előbbiekben emlitett palettaregiszterek egy 4e4 bites regisztermezét
+jelentenek. 23 4 regiszter közül íráskor a CPU választ, olvasdskor a shift
+regiszterből kilépő bitek (a 8, Függelékben CO, Cl) választanak.
+
+4 CPU a regisztereket a következő 1/0 cimeken éri el:
+
+PALO: 60H (96)
+PALL: 41H (97)
+PALZ: 62H (9B)
+PAL3: 63H (99)
+
+\ Tegiszterekbe a CPU Bé, Há, BZ, 80-as adatbitjei irtdnak:
+
+Bá:
+Bá :
+B?:
+BO:
+
+ao 72 83 MH
+
+A képkeret "horder) színét a borderregiszter határozza meg, írási címe 0.
+
+28
+
+=== [oldal 60] ===
+A CPU 87, BS, 83, Bi-es adatbitje íródik a borderregiszterbe:
+
+B?:
+BS:
+BS:
+Bl:
+
+nm 2a ae
+
+Megjegyezzük, hogy a rendszer (cursor) megszakításalprogram mindig beírja
+a BORDER (OB4FH, 2895) rendszervdltozé értékét a horderregiszterbe, Ezért
+a PORTO megirdsa csak egy pillanatra villantja fel a képkeretet (a megiras
+pillanatától a képvisszafutdsig). Ha a képkeretet változtatni akarjuk,
+akkor a BORDER változót kell átírnunk.
+
+Az I, G, R, 8 értékétől (Cami (0 vagy 1 lehet) függően a képpontokhoz
+tartozó alapszínek intenzitása a következőképpen számítható ki:
+
+zöld : Gel4/7 - Ie3/7)
+vörös: Rel4/77 - [e3/7)
+kék : Bel[4/7 - I23/7)
+
+A képponthoz tartozó világosságérték (fekete-fehér tv-n a képpont fényes-
+sége):
+
+Y - (4/7 + [43/730(0.59eG + O.3eR + 0. 11*8)
+A video üzemmódot a é6-os I/D port B1, 80 bitje jelöli ki:
+00: GRAPHICS 2
+0l: GRAPHICS 4
+
+1X: GRAPHICS 16
+
+ó programozó a beállított video módot a PORTDÉS rendszerváltozóból tudhatja
+meg (ÚB13H, 2835), ez a §-os port tükörképe.
+
+A képmegjelenítő hardver regisztereit a ?. Függelék foglalja össze.
+
+39
+
+=== [oldal 61] ===
+A TV-Computer hátoldalán található szinkikapcsol6 egyrészt letiltja a
+színsegédvivőt (színes tv-n is fekete-fehér lesz a kép), másrészt
+állapotát a program is érzékeli az 59H-s port Bá-os bitjén. Állapotát a
+VMODE grafikus üzemmód beállító rendszerfunkció veszi figyelembe,
+
+8.2 A 6845-is képernyővezérlő programozása
+
+A TV-Computeren a kép felépítését az eddig elmondottak szerinti a képernyő-
+vezérlő végzi az inicializálás során megadott jellemzők alapján. A kép tu-
+lajdonságainak beállítására, az információcserére a képernyővezérlőben 13
+regiszter található, számozásuk: RO...R17. A CPU és a CRT kontroller re-
+Qiszterei közötti adatcseréhez elésztir ki kell választani a regisztert
+(70H,112-es 1/0 cim), majd a 71H-s (113-as) I/0 cim irésdval/olvasdsaval
+végrehajtható az adatcsere (10. Függelék).
+
+Az R5-ös regiszterbe a következő BASIC utasításokkal lehet például 1-et
+
+irni;
+ÖLT 112,5:0UT 113,1
+
+Gépi kódban:
+
+LD A,
+DUT — (70H),A
+LD  A,Ll
+
+QUT — (71H),A
+
+Van néhány olyan funkciója a 6845-ös képernyővezérlőnek, amelyeket bi-
+zonyos szállítók bizonyos típusváltozata nem tartalmaz, ezeket a 10.
+Függelékben s-gal jelöltük. A TV-Computerbe épített 6845-ösök általában az
+összes funkciót tudják, de a programozás során a 4-gal jelölt funkciók
+nincsenek kihasználva.
+
+60
+
+=== [oldal 62] ===
+A 10. Függelék a regiszterekbe inicializáláskor írt alapértékeket hexa-
+deciímálisan és decimálisan is tartalmazza.
+
+A következőkben áttekintjük az egyes regiszterek funkcióit:
+
+RO : Megszabja, hogy a teljes, tehát a sorvisszafutást is tartalmazó tv
+sor hány "karakter" iitemnyi legyen. A beprogramozott érték 99,
+Mivel a kívánt érték ---1 a beírandó adat, a TYV-Computerben a tv
+soridő 100 karakterütemet jelent. A korábban elmondottak szerint a
+karakteriitem 640 ns, tehdt a soridé 100«D.64=64 ps. Ez megfelel a
+tv-technikáhan szabványos 15625 Hz-nek,
+
+Ri : Értéke megszabja, hogy mennyi "karakter" látható soronként. (Logi-
+kai "karakter"-ről van szó.) A beírt érték 64. Ebből következően a
+jelmegjelenítés ideje 40.96 ps.
+
+R2 : A vízszintes szinkronjel pozícióját szabja meg. A TV-Computer nem
+közvetlenül a képernyővezérlő vizszintes szinkronjelét használ ja
+fel a tv vezérlésére. A tényleges szinkronjel pozíciója a progra-
+mozott szinkronjel-pozíció és a programozott szinkronjel szélesség
+összegéből adódik. Az R2-be programozott érték 76---1,
+
+83 : A két szinkronjel szélességét szabja meg. A valóságban a vízszintes
+szinkronjel szélessége a TV-Computernél a szinkronjel előtti s0r-
+kioltás időtartamát határozza meg. A függőleges szinkronjel széles-
+ségét monostabil multivibrátor állítja be, tehát a programozott
+érték (3) közömbös,
+
+Rá :; Az egy képperiddusra jutó "karaktersorok" számát határozza meg, a
+beírt érték 7H---I,
+
+R5 : Kiegészítő tv sorok száma, A beírt érték 2. Ez az Rá-gyel és az R7-
+cel együtt azt jelenti, hogy a TV-Computernél 1 kép elatt a tv so-
+
+rok száma:
+
+78 karaktersor w 4 tv sor + ? tv sor = 314 ty sor
+
+él
+
+=== [oldal 63] ===
+Kő :
+
+R?
+
+RB:
+
+R? :
+
+R10:
+
+Rll:
+
+(A szabványos tv kép két, 312.5 tv sorból álló félképet tartalmaz,
+ez jelenti az 50 Hz-es félképfrekvencidt. A TY-Computer ettől
+kismértékben eltér, a képidő 3l4ásé4 45 - 20.096 ms, ami 47.76 Hz-
+nek felel meg.)
+
+A megjelenített "karaktersorok" száma. A beirt érték 60, tehát
+6004=240 tv sor a hasznos képfelület a TV-Computernél.
+
+: Függőleges szinkron pozició, a beírt érték 67---1.
+
+A cursor elcsúsztatására, a hasznos képet kijelölő DISPIMG elcsúsz-
+tatására és a váltottsoros letapogatásra ad lehetőséget. Nem rész-
+letezzük a beállítható lehetőségeket, csupán a váltottsoros lekép-
+zéshez adjuk meg a beírandó értéket: D helyett 1. (A váltottsoros
+leképzés azt jelenti, hogy a tv képet alkotó tv sorok száma nem
+egész szám, hanem pl. 312.5, emiatt minden második képszinkronjel a
+tv sor közepére fog esni, az egymást követő két kép fél tv sorral
+elcsúszik. Így minden második kép alatt más információt lehet
+megjeleníteni, tehát kétszeresére növelhető a tv sorok száma,
+persze a képminőség romlása árán: váltottsoros leképzés esetén a
+kép villog. TV-Computernél a két kép tartalma ugyanaz, a váltott-
+soros leképzés csak sorremegést okoz.)
+
+Megszabja, hogy a logikai "karaktersor" hány tv sorból álljon. A
+beírt érték 4---1, tehát a "karaktersor" 4 tv sorból áll.
+
+Cursorra vonatkozó információk. 84, B5 engedélyezi ill. letiltja a
+cursort (00, 01), de lehetne villogtatni is (10, 11). Mivel itt a
+cursor megszakítás kérésre szolgál, villogtatni nem nagyon cél-
+szerű. A Bá...BO jelöli ki, hogy a karaktersor melyik tv sorában
+kezdődjön a cursor. A beirt érték 3.
+
+A cursor befejező tv sorának kijelölése a kareaktersorban, Annak
+
+érdekében, hogy a képernyővezérlő képenként csak egyszer kérjen
+megszakítást, R10-be és Rll-be azonos értéket kell írnunk.
+
+62
+
+=== [oldal 64] ===
+R12
+
+R13:
+
+R14
+
+R1S:
+
+R16:
+
+Rl?:
+
+A képkezdé memdriacim H része, a beírt érték 0.
+
+A képkezdő memóriaciím L része, a beírt érték 2.
+
+A cursorpozíció H része, a beirt érték 134.
+
+A cursorpozíció L része, értéke 255. A cursorpozíció a "karakte-
+Tek" címével (MAD...MAll1) jelent egyezőséget. Az utolsó "karakter"
+
+cime:
+
+60«64--~]
+
+3839
+
+A cursorpozíció:
+
+1442564255
+
+3939.
+
+Mivel R9 és R10 értéke 3, az utolsó tv sor utolsó "karaktere"
+váltja ki a megszakítást.
+
+Fényceruzapozíció H rész.
+
+Fényceruzapozíció L rész.
+
+Ezek csak olvashaté regiszterek. Az "LPEN" buszcsatlakozópontra
+impulzust adva, a pillanatnyi MAD...MA1] érték Rl6-ba és R1l7-be
+íródik, innen kiolvasható, (Tehát, ha lenne fényceruza a TV-Compu-
+terhez, "karakter" felhontásban lehetne képpontot kijelölni, ez 6Ú
+sort és 64 oszlopot jelent, )
+
+8.2.1 PÉLDÁK A KÉPERNYŰŐVEZÉRLŐ ÁTPROGRAMOZÁSÁRA
+
+1. A képenkénti tv sorok számának átállítása 314-ről 312-re.
+
+63
+
+=== [oldal 65] ===
+Ehhez a kiegészitő tv sorszámot (R7) kell átírni:
+OUT 112,5:0U7 113,0
+
+Hatására a képernyőn apró mozgó pontok formájában iátható szinsegédvivé
+mozgása leáll, a színes karakterek függőleges vonalai összetörnek.
+
+visszaállítás:
+OUT 112,5:DUT 113,2
+. Szabványos, 312.5 sorból álló kép előállítása:
+
+Át kell írni a kiegészítő tv sorszámot £R5) és a váltottsoros leképzést
+CRA):
+
+OUT 112,5:QUT 113,0
+OUT 112,8:0UT 113,1
+
+Hatására a vízszintes vonalak enyhén remegnek, de a képfrekvencia pon-
+tosan 50 Hz lesz.
+. Cursor (megszakitds) pozicid dtiras:
+
+Legyen a kívánt tv sor sorszáma X (0...239), a kívánt oszloppozíció Y
+(0. ..63).
+
+Először meg kell határozni a karaktersorszámot:
+KS = INT (X/4)
+A karaktersoron belüli tv sorszám;
+
+TVS = X =-~ 4eK5
+
+64
+
+=== [oldal 66] ===
+A cursorhoz tartozó memóriacim (MAG... MALI) :
+
+CP = KS#64 + ¥
+
+Ezt H és L részre kell bontani:
+
+CPH - INT(CP/256)
+ÚPL - CP --- 25ésCPH
+
+A regiszterekbe írandó értékek:
+
+Rid: CPH
+Rid: CPL
+
+R10: TV¥5
+Rll: TV
+
+A 239. rasztersor 63. oszlopára az ellenőrző számítást elvégezve:
+
+KS = INT(239/4) = 959
+TVS = 239 --- 4459 = 3
+CP = 59 » 64 + 63 - 3839
+CPH = INT(3839/256) = 14
+CPL = 3839 --- 275484 = 255
+
+soha ne programozzuk a cursort a karaktersar elsé pozfcidjéba (Y ne
+legyen 0, azaz az R1l5-ös regiszter ne legyen 0, é4, 128, 192). Ilyenkor
+ugyanis a CRT vezérlő cursor kimenetén "tüske" jelentkezhet, ami
+kétszeri megszakításkérést jelentene,
+
+. A teljes 16 k viceomemória megjelenítése:
+Mint már említettük, a 16 k videomemóriából csak 15 k van kihasználva.
+
+A képernyővezérlő átprogramozásával megjeleníthető az utolsó 1 k-hoz
+tartozó 16 rasztersor is. Ehhez át kell írni az Ré-os regisztert (meg-
+
+65
+
+=== [oldal 67] ===
+jelenített karaktersork száma) és a függőleges szinkron pozíciót (R7).
+Utóbbit azért, hogy a kép függőleges irányban középre kerüljön. Célszerű
+valamilyen kerettel ÍBORDER) láthatóvá tenni a hasznos képmezőt. Tehát:
+
+SET SORDER 20
+OUT 112,6:0U7 113,64
+OUT 112,7:0U7 ilj,67
+
+Az R7-es regiszterbe a tv-készüléktől függően kell 68-at vagy 67-et írni,
+megkeresve a — legkedvezőbb függőleges képhelyzetet, A ty-készüléken
+beállított függőleges képmérettől függ, hogy nem csúszik-e egy kicsit ki a
+kép alsó vagy felső széle. Normál esetben azért van 240 sor megjelenítve a
+lehetséges 256 sor helyett, hogy képkicsúszás ne álljon elő,
+
+Az R6-os átírása után a kép lefelé kinyúlik, az R7-es átírása után középre
+áll. A képernyő utolsó TV sorának jobb szélén néhány színes port látható,
+ez annak az eredménye, hogy a bekapcsolás utáni memóriatesztelés alatt a
+verem egy ideig a videomemóriában volt.
+
+Természetesen irni vagy rajzolni továbbra sem lehet az utolsó sorba.
+Hasznos információt a legegyszerűbben úgy lehet itt megjeleníteni, ha
+azt a képernyő más területéről másoljuk át,
+
+Ez megtehető BASIC orogrammal (egy kicsit lassú) vagy gépi kódú programmal
+(LDIR utasítás). A következő BASIC program bemutatja a 25 (pontosabban
+25.6) soros képmegjelenítést:
+
+10 GRAPHICS 4
+
+20 SET BORDER 20
+
+30 SET PALETTE ©, @4, 68, 81
+40 QUT 112,6:0UT 115,64
+
+50 OWT 112,7:0UT 115,69
+100 SET INK 2
+
+110 PRINT AT 1,1:"25. sor”;
+120 SET INK 3
+
+130 PLOT 256,956-604
+
+66
+
+=== [oldal 68] ===
+140 PRINT #0:"Ez még lejjebb van."
+
+150 SET INK 1
+
+200 KEZDOCiM=49152
+
+210 HOSS7=16464
+
+230 TAV=24064
+
+250 FOR I-KEZDŐCÍM TO KEZDŐCÍM-HOSSZ---1
+260 POKE I.TAV,PEEK(I)
+
+270 NEXT
+
+300 CLS
+
+310 FOR 1-1 TO 24
+
+320 PRINT AT I,1:;
+
+330 PRINT USING “#a":1;:PRINT ". sor’;
+340 NEXT
+
+400 GET:PRINT
+
+A képen lathatd 6 rasztersoros szivegelcsisztatdst a video eszkGzmegha jton
+keresztüli kiírással értük el (PRINT $k0:), előtte a szöveg bal felső sar-
+kát FPLÚT-tal pozicionáltuk. Ezekről később lesz még szó,
+
+A továbbiakban egy USR rutint ismertetünk. Ez a rutin a következőképpen
+hívható:
+
+X = USR¢3760,VARPTRCAB))
+Hatása:
+- elmenti a képmemória első 12 rasztersornyi tartalmát, azaz l2.64-768
+byte-ot
+- ezt a területet törli
+- az ASZJ-t kiírja a képernyő első sorába
+- az első 12 sort átmásolja a 240...251. rasztersorba
+
+- visszaállítja az első 12 sort.
+
+Természetesen AS helyett tetszőleges stringyáltozót használhatunk.
+
+67
+
+=== [oldal 69] ===
+A rutin a grafikus üzemmódnak megfelelően AS-bdl csak 16, 32 vagy 64
+karaktert ir ki {ha 55 hosszabb lenne). Üres string törli a 240...251.
+rasztersort.
+
+A cépi kódú program:
+
+0EBO E5 PUSH HL
+
+OEB1 3€ 50 LD A,S0H » UO,U1,VID,SYS
+0EB3 32 03 00 LO (3),A
+
+OEB6 D3 02 OUT (2),A
+
+OEBA 21 00 860 LD HL,BOOOH ; 12 sor mentés
+OFBB 11 20 OF LD DE,OF20H
+
+DEBE 01 00 03 LD — BC, 300H
+
+OECI ED BO LOIR
+
+OEC3 21 00 62 LD HL,8000H ; 12 sor törlés
+OFCé 1101 80 LO OE,8001H
+
+0ECS 01 FF 02 LO BC,2FFH
+
+DECC 36 00 LD (HL) , 0
+
+DECE ED BO LDIR
+
+JEDO 06 01 LD Bi ; BTEXT: pozicionálás
+GED2 OE 01 LD C,l
+
+DED4 F7 RST 30H
+
+OFS 03 DEFB 3
+
+OFD6 El POP HL
+
+OED? 23 INC HL
+
+DEDB 4E LD C,(H)
+
+0E09 06 41 LD. 8,é5
+OEDB 3A 13 0B LD A,{0B13H) ; PORT6, VMODE
+DEDE £6 03 AND 3
+
+DOEEG 28 OF IR  Z,COMP ; 2-es mód, max. 64
+
+OFE2 06 21 LD  B,33
+
+SEE4 30 DEC A
+
+OEES 28 02 JR 2,€0MP ; 4-és mód, max. 32
+
+OEE? 06 11 LD  8,17 ; 16-os mód, max. 16
+COMP :
+
+0EE? 79 LD AL
+
+68
+
+=== [oldal 70] ===
+QEEA
+OEEB
+OEED
+OFEE
+
+OEEF
+OEF1
+OEF2
+OEF4
+OEFS
+DEF é
+DEF?
+
+DEFB
+OEFB
+QEFE
+OFO1
+OFO3
+OF OS
+OFO9
+OFOC
+OFOE
+OF 10
+OF13
+OF15
+
+Ba
+36
+05
+48
+
+06
+B7
+28
+23
+EB
+F7
+02
+
+21
+11
+01
+ED
+21
+11
+01
+ED
+3E
+32
+D3
+C9
+
+02
+
+00
+
+04
+
+00
+00
+00
+BO
+20
+00
+00
+BG
+70
+03
+O2
+
+JO:
+
+NIR:
+
+BO
+BC
+04
+
+OF
+
+80
+03
+
+00
+
+cP
+JR
+DEC
+LO
+
+LD
+OR
+JR
+INC
+EX
+RST
+DEFB
+
+LO
+LD
+LD
+LOIR
+LD
+LO
+LO
+LDIR
+LD
+LO
+OUT
+RET
+
+C, 30
+
+C,B
+
+B,0
+
+Z, NIR
+HL
+DE , HL
+30H
+
+HL , 8000H
+DE , OBCODH
+BC, 300H
+
+HL , OF 20H
+DE , 8000H
+BC , 300H
+
+A , 70H
+(3), A
+(2), A
+
+7
+
+7
+
+;
+
+Nagyobb-e?
+
+: O-e a hossz?
+
+; VID_BKOUT
+
+; Másolás
+
+: 12 sor visszaállítás
+
+UO, U1, U2, SYS
+
+A programban található rendszerhívásokról később lesz szó.
+
+A gépi kód a következő BASIC program segítségével vihető be:
+
+10 POKE 2839,192 ! ST LIMIT OFICH —» OFCOH
+20 FOR I=3760 TO 3863
+30 READ A:POKE I,A
+
+40 NEXT
+50 OUT 112,6:0UT 113,43
+60 OUT 112,7:0UT 113,68
+
+69
+
+=== [oldal 71] ===
+100 END
+1000 DATA 229,62,80,50,3,0,211,2
+1010 DATA 33,0,128,17,32,15,1,0
+1020 DATA 3,237,176,33,0,128,17,1
+1030 DATA 128,1,255,2,54,0,237, 176
+1040 DATA 6,1,14,1,247,3,225, 35
+1050 DATA 78,6,65 58,19,11,230,3
+1060 CATA 40,7,6,33,61,40,2,6
+1070 DATA 17,121,184,56,2,5,72,6
+1080 DATA 0,183,40,4,35,235,247,2
+1090 DATA 33,0,128,17,0,188,1,0
+1100 DATA 3,237,176,33,32,15,17,0
+1110 DATA 128,1,0,3,237,176,62,112
+1120 DATA 50,3,0,211,2,201,0,0
+
+Ez a BASIC program a képernyővezérlőt is átírja úgy, hogy a 240...251.
+rasztersor látható legyen, A BASIC program a lefuttatds után akár ki is
+törülhető. A 3760-as címen levő USR rutin híváséval tetszőleges üzenetet
+tudunk elhelyezni a 25. sorban. A képernyőtartalom első sora nem romlik
+el, Csak egy rövid igőtartamra villan fel a kép tetején a 25. sorba írandó
+szöveg, "Meleg" RESET után elég az 50-es és a 60-as sor utasításait
+begépelni, hogy a 25. sor újra látható legyen.
+
+A programot a CPU számára lefoglalt verem alján helyeztük el, ezért az
+97 LIMIT változót átírtuk. Az első 12 sort is ide mentjük el, Mivel a
+kiírás alatt nincs képkitöltés, biztos, hogy a verem nem mélyül le
+veszélyes mértékben, hiszen még közel 1 kbyte verem marad meg.
+
+Megjegyzés: Az 5. fejezetben (rendszer-inicializd4ids) elmondottak szerint
+a meleg reset is inicializálja a képernyővezérlőt, ezért bármit változ-
+tattunk, reset hatására visszaáll az alapállapot, Ha sikerülne a cursort
+letiltanunk, vagy a szinkronjeleket úgy elallitani, hogy a kép fut, és
+emiatt nem tudunk gépelni, "“meleg” RESET~tel még megmenthetjiik a beirt
+programot. . !
+
+70
+
+=== [oldal 72] ===
+8.3 Vides rendszerváltozók
+
+A video eszközmeghajtó a következő, a felhasználó számára is hozzáférhető
+rendszerváltozókat tartalmazza;
+
+{ MODE (OB4BH, 2891)
+
+A vonalkeresztezési módot szabja meg, összhangban a BASIC-ből ismert "SET
+MODE" utasítással:
+
+felülírás
+OR
+
+AND
+
+XOR
+
+WwW Bo OS
+
+4 logikai miveletek a videomemiria tartalmára vonatkoznak, tehát kétszínű
+és négyszínű üzemmódban a palettasorszámra, 16 színű üzemmódban magukra a
+színekre. (1. a "Kezelési útmutató" 4.3.4 pontját.)
+
+L_STYLE (OB4CH, 2892)
+
+A vonaltipust jelenti, 1. a "Kezelési útmutató" 4,3,3 pontját. A vonal-
+típusok ismétlődő elemei a 11. Függelékben is megtalálhatók,
+
+INK COBADH, 2893)
+
+Az aktuális tintaszínt adja meg. Tartalma két- és négyszírű módban a
+palettaregiszter sorszámot, ló színű módban magát a színt jelenti. (A
+színekre vönatkozóan 1. a "Kezelési útmutató"-t és a 9. Függeléket.)
+
+PAPER C(OBAEH, 24724)
+
+Az aktuális papirszint jelenti, az INK-hez hasonlóan.
+
+7i
+
+=== [oldal 73] ===
+BORDER (OB4FH, 2895)
+
+Az Operációs rendszer megszakításalprogram a 0-ás portot (border-regisz—
+tert) a BORDER változónak megfelelően állítja be, ezért a keretszín meg-
+változtatásához ezt a változót keli átírni.
+
+Bitjei:
+
+B7:
+a5:
+HG:
+Bl:
+
+Oo MH
+
+V FLAG C0B50H, 2896)
+Karakter felülírási flag.
+
+A video eszküzneghajtón keresztül történő nyomtatás ítehát PRINTAO:, ill.
+a 0-ás osztályra vonatkozó 1-es és 2-es funkcióhívás) esetén hatásos.
+
+A Bl bit vonatkozik a karaktermező hátterének (papír) felülírására, B1-1
+esetén nincs felülírás (mintha egy a képre helyezett átlátszó papírra
+
+írnánk).
+
+A BO bit vonatkozik a karaktermező hasznos pontjainak (tinta)
+felülírására, B0-1 esetén nincs felülírás. (Szintelen tintánk van, )
+
+Tehát egy karaktert írva, 81, BD értékétől függően;
+
+00 (0) esetén a karaktermező teljes 8elű-es pontmátrixa felülírőódik a pa-
+pír és tintaszínnek megfelelően;
+
+01 (1) esetén nem változnak azok a képpontok, ahová a tinta színével kije-
+lölt pontok esnének, (A tinta színtelen.)
+
+72
+
+=== [oldal 74] ===
+10 (2) esetén nem változnak az új karakter hátteréhez tartozó pontok, te-
+hát ebben az esetben két karaktert egymásra lehet írni. (A papír
+"Tátlátszó".)
+
+11 (3) esetén nem változik az írt karaktermező. ("Szintelen" tinta, átlát-
+szó" papír.)
+
+Ha a VFLAG értelmezése nem egészen érthető, írjuk be a következő BASIC
+programot :
+
+10 GRAPHICS 16:SET INK 12
+20 PLOT 320,480
+30 SET PAPER 9:PRINT 4#0:" — ";
+40 SET PAPER 10
+50 PLOT 320,480
+60 FOR 1-0 70 3
+70 POKE 2896,I ! V FLAG
+80 PRINT 4F0:"T";
+90 NEXT
+100 SET PAPER D
+
+A 10...30-as sorok eredményeként a képernyő közepén megjelenik egy 4
+betűhelynyi kék mező. Ezután vörös papírsziínt jelölünk ki (40), a tinta
+
+zöld (l0-es sor). Az 50-es sor a sugarat a 4 betűhely első betűjére
+
+poziciondl ja.
+
+A 60...90-es sorokból álló ciklus a V_FLAG-be rendre 0,1,2,5-at, a
+kijelélt 4 karakterhely 1...4 karakterébe egy T betdt ir.’
+
+A futtatás után:
+
+- Az 1. karakter vörös háttéren zöld T, tehát a karaktermező teljesen fe-
+liilirddott,
+
+- A 2. karakter vörös háttéren kék T betű, tehát ahová a T betű pontjai
+estek volna, a mező színe nem változott (s tinta "színtelen".)
+
+73
+
+=== [oldal 75] ===
+- 4 3. karakter kék háttéren zöld T betű, tehát csak a T betűhöz tartozó
+pontok változtak (a papir "átlátszó").
+
+- A 4, karakternél megmaradt a kék háttér, tehát "átlátszó" papírra "sziín-
+telen" tintával írtunk.
+
+A video rendszervéltozóknál a nem értelmezett biteket nem veszi figyelembe
+a rendszer, tehát pi. GRÁPHICS 2-ben a 3-as szín 1-nek, a 2-es szin O-nak
+felel meg. Ez nem teljesen igaz, Pl.: parancsállapotba visszatéréskor nem
+lehet azonos a tinta és papirszín, a rendszer ilyenkor automatikusan nö-
+veli a tintaszín sorszámát, tehát a
+
+SET PAPER 2:SET INK 2
+
+eredménye ?-es papír és 3-as tintaszín lesz (csak a BASIC parancs-
+
+módjában! ?, De a
+SET PAPER 2:SET INK 6
+
+eredménye vörös papírra vörös tinta, tehát nem olvasható írás.
+
+74
+
+=== [oldal 76] ===
+8.4 Video funkciók
+
+A video eszközmeghajtó 240 rasztersorban 512, 256 vagy 128 fizikai képpont
+ábrázolását teszi lehetővé, ami a grafikus üzemmódok egységes kezelése
+érdekében 960 függőleges és 1024 vízszintes logikai pontnak felel meg. A
+fizikai koordináták meghatározására végzett osztás során az 1.23 verziójú
+rendszer kerekít, az 1.2 verzió elhagyja a maradékot,
+
+A video eszközmeghajtó egy képzeletbeli sugárral vagy tollal dolgozik. A
+toll lehet letett állapotban (bekapcsolt sugár) vagy felemelt állapotban
+
+(kikapcsolt sugár). A toll letett állapotában mozgása közben vonalat húz.
+
+A sugarat vagy tollat tetszőleges pontba mozgatva, oda karaktereket lehet
+írni. Egy karakter 10 rasztersorban 8 fizikai pontot foglal el,
+
+A video funkciókat a 12. Függelék foglalja össze.
+
+8.4.1 VID CHOUT
+
+Karakterkiírás a képernyőre
+
+Kód: 1H (1)
+
+Input: — C - a kiírandó karakter kódja
+
+Hibakód: -
+
+A VID CHOUT kirajzol egy karaktert az aktuális sugár (toll) pozícióba, ez
+a. pozíció a karaktermező bal felső képpontját jelöli ki. (BASIC-ből a ki-
+jelölés a PLOT utasítás segítségével történhet.)
+
+Nemcsak a megszokott karakterpozíciókat lehet kijelölni, hanem tetszőleges
+
+képponthél lehet a karaktert indítani. (Lehetséges például index vagy ki-
+tevő írása.)
+
+73
+
+=== [oldal 77] ===
+Ha a kijelült pozíció túl közel van a képernyő jobb széléhez tnincs 8
+raszterpont), akkor a karakter 10 rasztérsorral lejjebb, a képernyő bal
+
+szélére iródik.
+
+Ha a pozíció túl közel van a kép alsó széléhez (nincs 10 tv sor), nem
+íródik ki a karakter. Ezért CLS után a "PRINT 40:" hatástalan (az aktuális
+pozíció 0,0). Előbb PLOT-tal a sugarat pozicionálni kell.
+
+A video eszkizmeghajté a 20H (32)-nél kisebb és a ODFH (233)-nál nagyobb
+karaktereket nem veszi figyelembe. Kivétel a RETURN (ODH, 13) és a LINE
+FEED (0AH, 10) karakter. A RETURN hatására a sugár ugyarabban a sorban a
+képernyő bal szélére pozicionálódik. A LINE FEED hatására a sugár 10
+rasztersorral lejjebb mozdui, de hatástalan a képernyő alján.
+
+A VID CHOUT az L_MODE, az INK, a PAPER és a V FLAG változók figye-
+lembevételével rajzolja ki a karaktert a képernyűre. A karaktergenerátor
+"1" értékű bitjei tinta színnel, a "0" értékű bitek papír színnel raj-
+zolódnak ,
+
+Képernyő rollozás (felfelé mozgás) VID CHOUT hatására nem történik.
+
+A video rutincsomaggal kirajzolt karakterek a képernyőszerkesztő (editor)
+számára nem látszanak, az így beírt szöveg nem olvasható be az editor
+segítségével. (A karakterek kódja nem kerül be az ASCII képmemóriába,
+erről a képernyőszerkesztő leírásánál lesz szó.)
+
+8.4.2 VID BKOUT
+
+SzGvegirds a képernyőre.
+
+Kód: 2H (2)
+
+Input; OF - a kiírandó memóriaterület kezdőcíme
+
+BC - a kiírandó karakterek száma
+
+76
+
+=== [oldal 78] ===
+Hibakód; -
+
+A VIO BKOUT a memóriából sorra olvassa a karaktereket és a karakteres
+output segítségével kiírja a képernyőre.
+
+8.4,3 BIEXT
+
+Sugároozicionálás normál karakterpozícióba,
+
+Kód: 3H (3)
+
+Input: B
+
+oszlop pozíció (1 ... 16, 32. 64)
+karaktersor pozíció (1 ... 24)
+
+Hibakód: OF9H £249): nem megengedett pozíció
+
+A BTEXT a BASIC-ből ismert PRINT AT-hez hesonlóan a sugarat a kijelölt ka-
+rakterpozícióba mozgatja. A kezdő (bal felső) pozíció 1.1. Ha hiváskor 0
+értékű koordinátát adunk meg, a megfelelő koordináta nem változik. Ez a
+funkció soha nem húz vonalat.
+B.4.4 VMODE
+
+Grafikus üzemmód beállítás.
+Kód: 4H (4)
+
+Input: — C - grafikus mód (0
+
+(1
+(2
+
+kétszínű mód)
+négyszínű mód)
+tizenhatsziínű mód)
+
+i
+
+Hibakéd: OF7H (247): nemiétez6 grafikus méd
+
+77
+
+=== [oldal 79] ===
+A VMŰDE hívás beállítja a kívánt grafikus üzemmódot. Törli a képernyőt, a
+video eszküzmeghajtót és a képernyőszerkesztőt alapállapotba hozza. Két-
+és négyszínű módban beállítja a színpalettát a színkikagcsoló állásától
+függően:
+
+Kétszínű mód, fekete-fehér állás: fekete, fehér
+
+kétszínű mód, színes állás: fekete, zöld
+
+Négyszínű mód, fekete-fehér állás: fekete, fehér, zöld, vörös
+
+Négyszínű mód, színes állás: fekete, zöld, vörös, kék
+
+Két- és négyszínű módban a papirszin O-ra, a tintaszin 1-re állítódik.
+GRAPHICS lé-ban a papirszin 0, a tintaszin a színkikapcsolótól függően
+fehér (15) vagy zöld (12).
+
+8.4.5 CLS
+
+Képernydétérles
+
+Kód: 5H (3)
+Input: = -
+
+Hibakód: -
+A képernyő kitöltődik az aktuális papírszínnel, a grafikus koordináta
+(sugar, toll} a 0,0 pozícióra áll (a képernyő bal alsó sarka), a sugár
+
+kikapcsolt állapotba kerül (felemelt toll), Az ASCII képmemória kitör-
+lődik, az editor cursor az 1,1 pozícióba áll (bal felső sarok),
+
+78
+
+=== [oldal 80] ===
+8.4.6 BABS
+
+Sugármozgatás a megadott koardinátákba
+
+Kód: 6H (4)
+
+Input: BC
+DE
+
+X koordináta
+Y koordináta
+
+Hibakód: OF9H (249): nem megengedett pozíció
+
+Az X, Y koordinátákkal megadott abszolút pozícióba mozgatja a rajzoló
+sugarat.
+
+tH
+aa
+
+. 1023
+Y- 0... 959
+
+A bal alsó sarok kocrdinátái: 0,0.
+Ha a sugár be van kapcsolva (a toll letéve), akkor mozgás közben vonalat
+
+húz a korábbi sugárpozícióból az új pozícióba. Tehát adott pontból adott
+pontba a következőképpen lehet vonalat húzni:
+
+1
+
+sugárkikapcsolás
+pozicionálás a kezdőpontba
+
+sugárbekapcsolás
+
+pozicionálás a végpontba
+
+Több szakaszból álló törtvonal rajzolása:
+
+sugárkikapcsolás
+
+1
+
+pozicionálás a kezdőpontba
+
+1
+
+sugárbekapcsolás
+
+nozicionálás az első töréspontha
+
+pozicionálás a második töréspontba
+- stb.
+
+79
+
+=== [oldal 81] ===
+4 vonalhúzás az (MODE, az L STYLE az INK és a PAPER változókat veszi
+figvelembe. (4 PAPER változónak a nem folyamatos vonalaknál van szerepe, a
+
+"kihagyott" vonaldarabkák a papír színével rajzolódnak.)
+
+8.4.7 BREL
+
+Sugárpozicionálás relatív elmozduldsokkal
+
+Kód: TH (7)
+
+Input: BC = X elmozdulás
+
+DE
+
+Y elmozdulás
+
+11
+
+Hibakód: ÚF9SH (249): az elmozdulás eredménye nem megengedett pozició
+
+A EREL hatása hasonló a BABS-hoz. Különbség: BC és DE nem abszolút
+koordinátákat jelentenek, hanem az aktuális ponthoz képest relatív el-
+mozdulást.
+
+8.4.8 BON
+
+Suga rbekapcsolas
+
+Kód; BH (8)
+
+Input: = -
+
+Hibakód: -
+
+A sugarat bekapcsolt állapotba hozza (leteszi a tollat) és rajzol egy
+
+pontot az INK és az L MODE változók figyelembevételével az aktuális
+pozícióba. Ezután a BABS, BREL hívások vonalhúzást eredményeznek.
+
+80
+
+=== [oldal 82] ===
+8.4.9 BOFF
+
+Sugarkikapcsolas
+Kód: 9H (9)
+Input : -
+Hibakód: -
+
+Kikapcsolja a sugarat, Ezután a BABS, BREL nem fog vonalat húzni.
+
+8.4.10 FILL
+Képkitültés
+
+Kód: 0AH (10)
+Input: -
+Hibakód: -
+
+A FILL az aktuális sugárpozícióból kiindulva az aktudlis tintaszinnel
+4tfesti a képernyő azon pontjait, amelyeknek színe megegyezik az aktuális
+sugérpozicié szinével mindaddig, amíg más színű pontokba nem ütközik.
+Tehát kikapcsolt állapotban a sugarat egy zárt görbe belsejébe pozi-
+cionálva, FILL hívással a zárt alakzat kifesthető. A kitöltés "özönvíz"
+algoritmussal történik. Maga a kitöltő rutin rekurzív, ezért bonyolult
+alakzatoknál erősen mélyíti a vermet. A rutin a veremmélyítés előtt ellen-
+őrzi, hogy elérte-e az 51 LIMIT által megszabott határt, nehogy az operá-
+Ciós rendszer változói, adatterülete megsérüljön. Ha a verem nem elég, nem
+garantált a hibátlan kifestés. A képernyön lefelé haladó képkitöltés ke-
+vesebb vermet használ, mint a felfelé haladó.
+
+81
+
+=== [oldal 83] ===
+B.4,11 DEFC
+
+Karakterdefinidlas
+Kód: OBH (11)
+Input: 0 = karakterkdod
+DE - a karakter mátrixot meghatározó 10 byte címe
+
+Hibakéd: OF8H (248): nem definiálható karakter
+
+A definiálható, ill. újradefiniálható karakterek definiálására szolgál.
+Definiálás után a megadott kódú karaktert nyomtatva az új karakter jelenik
+meg a képernyőn, de nem változnak a képernyőre korábban kiírt, azonos
+
+kódú, más formájú karakterek.
+
+Nem definiálhatók a 9SOH-ndl (128)-ndl kisebb és a ODFH-nal (223)-nál
+nagyobb kódú karakterek.
+
+Ne feledjük el, hogy a definiálható karaktereket 3 meleg reset is újra
+tölti, tehát az általunk definiált karakter meleg reset hatására átíródik.
+
+A DEFC hívás helyett elegendő a megfelelő RAM teriilet átírása is (a 740H-
+5, azaz 1856-os címtől kezdődő Jésl0 byte).
+
+8.4.12 PAL
+
+Szinpaletta-definidlds
+
+Kód: OCH (12>
+
+Input: — CE - a palettaszíneket tartalmazó 4 byte-os string
+Címe
+
+Hibakód: -
+
+82
+
+=== [oldal 84] ===
+Két- és négyszínű módhan lehet a Q,1 ill, a 0,1,2,3 szinsorszdmokhoz
+tartozó színeket definiálni. Hívása helyett közvetlenül is írhatók a
+60H, . .43H-s portok,
+
+8.5 Programozási példák
+
+1. Folyamatos szövegmozgatás
+
+Az eddigiekből kiderült, hogy a video eszkizmeghajtéval tetszéleges
+képpontpoz{cidba lehet írni. Ezzel folyamatosan mozgathatunk szöveget,
+BASIC srogrambdl is:
+
+10 GRAPHICS 4
+
+20 FOR I=1 TO 916 STEP 4
+30 PLOT 1, 3641
+
+40 PRINT #0;"TVC"
+
+50 NEXT
+
+60 GET:CLS
+
+2. Képpontpozíció meghatározása karakterrajzoláshoz
+
+Ha a képernyő Y. sorába és X. oszlopába egy B betűt akarunk írni, akkor
+a PRINT AT-et használjuk:
+
+PRINT AT ¥,X:"B";
+Ha az X karaktersorhoz képest DY rasztersorral lejjebb, az X. oszlophoz
+képest OX ponttal jobbra akarjuk a karaktert rajzolni, akkor a video
+
+eszközmeghajtón keresztül kell nyomtatni:
+
+PX z fe((X---1j2B8-4DX):PY-999---ás ( 104 Y-DY)
+PLOY PX,PY: PRINT #0:"B" |
+
+83
+
+=== [oldal 85] ===
+Py-nél a 4-es szorzó csak GRAPHICS 4 esetén igaz, GRAPHICS 2-ben 2,
+
+tizenhatszinű módban B a szorzószám,
+Ha csak függőleges irányú eltolást akarunk (GRAPHICS §-ben) :
+
+PX = 32eX---32:PY=999--—40#Y --—4eDYV
+PLOT PX,PY:PRINT #0: "RB"
+
+Nyomtassunk tört kifejezést vízszintes törtvonallal (pl. a C = A/B-t):
+
+10 PRINT AT 2,1:"C=";CHR$(155)
+
+20 PX=32e3---32: P¥=999---4042+406
+30 PLOT PX,PY: PRINT 460; "A"
+
+40 PY=PY---4a15
+
+50 PLOT PX,PY¥: PRINT 40;"8"
+
+60 PRINT
+
+Ba
+
+=== [oldal 86] ===
+9, A BILLENTYŰZET
+
+9.1 Billentyűzet hardver
+
+A TV-Computer billentyűzetéhez funkcionálisan hozzátartozik a beépített
+botkormány és kívülről csatlakoztatható két külső botkormány is.
+
+A billentyűzet nyomégombjai métrixba vannak rendezve, a matrix (beleértve
+a botkormányokat is) 10 sorból és 8 oszlopból áll. A működteteti nyomógomb
+összeköti azt a sor- és oszlopvezetéke1, amelyek keresztezési pontjában a
+gomb található.
+
+A sorvezetékek egy 10 kimenetű dekőderre vannak kötve, az oszlopvezetékek
+jelei buszmeghajtón keresztül a CPU adatbuszára kapcsolódnak. A PORTO3
+alsó 4 bitje vezérli a tízkimenetű dekddert, ezért a PORTO3-ba irt 0...9
+számnak megfelelően valamelyik sorvezeték logikai 0 állapotba kerül. Ha
+lenyomunk egy, a kiválasztott sorban levő nyomógombot, a megfelelő
+oszlopvezetéken is D lesz a jelszint. Ezért a CPU a OFFH-től eltérő
+értéket fog beolvasni. A billentyűzet oszlopvezetékeinek állapota az 56H-s
+
+portról olvasható Be.
+
+A billentyűzet mátrix elrendezése a 13. Függelékben látható. A B-as számú
+sorvezeték a beépített botkormányt és az ezzel párhuzamosan kapcsolódó
+jobb oldali külső botkormányt választja ki. (Ez az elülső csatlakozó, a
+"Kezelési útmutató"-ban 13-as számmal van jelölve.) A 9-es sor választja
+ki a másik külső botkormányt.
+
+Bo
+
+=== [oldal 87] ===
+A tideoton gyártmányú botkormányon a 4 irány kijelölésen kívül még az
+alábbi vezetékek találhatók:
+
+- normál tűz (FIRE): a kar tetején levő és a vele egyező színű további 2
+tűzgombra van kötve,
+
+- második tűz: a maradék két tűzgombra van kötve, A botkormány oldalán ta-
+lálható kapcsolóval ezek a tűzgombok összeköthetők egy ún, gyorsító
+gyűrűvel. Ebben az állásban a második tüzet a botkormány bármilyen
+irányú erősebb nyomása is kiváltja, tehát ez a jel az irányított figura
+gyorsabb mozgatására használható. A továbbiakban ez a vezeték az ACC
+(gyorsítás) néven szerepel.
+
+Felhívjuk a figyelmet, hogy az egyes nyomógombok nincsenek diódávai szét-
+választva, ezért 2-nél több nyomógomb egyidejű lenyomása hibás működést
+válthat kí;
+
+ty
+
+- nyomjuk le az "A"-t, eredménye: "a ;
+
+- miközben "4A"-t lenyomva tartjuk, nyomjuk le a "D"-t is, eredménye: "d";
+- nyomjuk még le az "E"-t is, eredménye: "e" és "4".
+
+(Célszerű előtte SET DELAY 255-öt begépelni.)
+
+Magyarázat: az "A" és "D" egy sorban (4), a "9" és "E" egy oszlopban (B1)
+van, Amikor a processzor a 2727-es sort vitte 0-ba, a Bl oszlopvezetéken
+keresztül az "E" és "D" össze voit kitve, a 2-vel egyiitt a 4-es sorvezeték
+is 0 lett, ezért a lenyomott "A" betűn keresztül a Hó-os bit is 0 ál-
+lapotba került. Tehát a processzor a 2-es vezeték aktiválásakor Bl-et és
+Bé-ot érezte 0-nak, ez pedig az "e" és "79" betűnek felel meg, Kedvezőbb
+elrendezésben több gomb egyidejű lenyomása sem fog hibát eredményezni.
+
+Bé
+
+=== [oldal 88] ===
+9.2 Billentyűzet szoftver
+
+A — billentyűzet szoftver legnagyobb része a rendszer megszakítás-
+alorogramban fut. Minden 20 ms-ban letapogatja a teljes billentyűzet
+mátrixot, a letapogatás eredménye a PILTURE nevü, I0 hyte-os változóba ke-
+rül. A 10 byte jelenti a billentyűzet 10 sorát. A lenyomott állapotban
+levő nyomógombokhoz tartozó bitek értéke 1 lesz, Pl, az "E" betűt le-
+nyomva, a 2-es sor Bi-es oszlopának megfelelően a 0B52H-s cím tartalma 2
+lesz. A kódváltásra szolgáló ÁLT, SHIFT, CTRL és LOCK nyomógombok nem
+állítanak be bitet a PICTURE-be, hatásukat más változókon keresztül
+érvényesítik.
+
+A billentyűzet szoftver minden nyomógombhoz hozzárendel egy kódot, amely
+kód a SHIFT, CTRi és az ALT nyomógombtól, ill. a LOCK állapottól függ. Az
+egyes nyomógombokhoz tartozó kódokat a 14. Függelék tartalmazza. Tartós
+nagybetű vagy ALT karakter gépelésére szolgálnak a LÜCK állapotok:
+
+- SHIFT:LOCK benyomása: SHIFT LOCK állapot, inverz "S" cursorral. SHIFT
+LOCK-ban a kisbetűk helyett a nagybetűk, számok helyett az írásjelek
+kódját állítja elő a billentyűzet.
+
+- C7RL-LDEK benyomása: CAPS LOCK állapot, inverz "C" cursor. Hasonlé a ha-
+tása a SHIFT LOCK-hoz, de csak kisbetű-nagybetú váltás következik he,
+szám-írásjei váltás nem.
+
+- ALT-LOCK benyomása: ÁLT LÖCK állapot, inverz "A" cursor. A definiálható
+(160-nál ragyobb) kódú karakterek megjelenítésére szolgál.
+
+LOCK állapotból a LOCK nyomógomb önmagában történő benyomásával lehet
+kihozni a billentyűzetet.
+
+SHIFT és CAPS LOCK-ban a SHIFT nyomógomb, ALT LOCK-ban az ALT nyomdgomb
+
+visszaváltó hatású. Ez azt jelenti, hogy a SHIFT nyomógombot benyomva pl.
+a nagy "A" betű helyett a kis "A" betű áll elő SHIFT vagy CAPS LOCK-ban.
+
+97
+
+=== [oldal 89] ===
+A CTR. kódok előállítása a LOCK állapotoktól függetlenül helyesen tör-
+ténik.
+
+Speciális szerepe van CTRL:P-nek, ill. a ETRL-ESC-nek,
+
+CTRL+P;: Ha a HOLD méd engedélyezve van (HOLD BIS=0), akkor a CTRL+P az
+ún HÜLD módba viszi a gépet. Ez azt jelenti, hogy a gép a bil-
+lentyűzet megszakításalprogramba "beragad" addig, amig vale-
+milyen gombot meg nem nyomnak, tehát leáll pl. a kiírás, Ilyen-
+kor még az INTINC számláló értéke sem növekszik.
+
+CTRL+ESC: A két billentyű egyidejű lenyomása a STOP FLÁG nevű változót
+ÜFFH-ba írja, ill. egyes operációs rendszer funkciók STOP hiha-
+jelzéssel £0F5H, 245) térnek vissza. A CTRL-ESC a BASIC prog-
+ramok megszakítására szolgál, de gépi kódú programok is figyel-
+hetik a STOP_FLAG változót, ill. a STOP hibajelzést.
+
+Figyelem! Az 03 funkciók mindaddig visszaadják a STOP hibajelzést amíg a
+gy J
+STOP FLAG változót nem töröltük. A türlést a BASIC elvégzi, de
+gépi kódú programok esetén erről a programozónak keli gondos-
+kodnia.
+
+A billentyGzet rendszervdltozdit a 15. Függelék foglalja össze. Eddig már
+volt szó a PICTURE, a GSTOP FLAG és a HOLD DIS nevű változókról.
+
+Az ÜLDPICT a megelőző billentyűzetmátrix letapogatás eredményét tárolja,
+ezt az AUTO-REPEAT-hoz használja a szoftver. Az AUTO-REPEAT funkcid
+lényege: egy nyomógombot tartósan lenyomva, bizonyos késleltetés után a
+billentyűzet folyamatosan adja a lenyomott gomb kódját. A DELAY KEY nevil
+változó szabja meg az AUTO-REPEAT indulési késleltetését, a RATE KEY az
+ismétlés szaporaságát, mindkettő 20 ms-os egységekben programozható. Az
+AUTO-REPEAT specidlisan mik6dik a botkormányoknál. Amíg normál esetben két
+gomb lenyomásakor az utolsó kódja ismétlődik, a botkormányokrál az
+irányokhoz tartozó kódok váltakozva ismétlődnek.
+
+88
+
+=== [oldal 90] ===
+A LOCK KEY változó a LOCK állapotokat tárolja:
+
+BO = i : CAPS LOCK
+Bl = 1 : SHIFT LOCK
+B3 = 1; ALT LOCK
+
+(A LDCK állapot programból a LOCK KEY változó átírásával is kiváltható.)
+
+?.3 Billentyűzet funkciók
+
+i
+
+billentyGzetmeghajtohoz két funkció tartozik (15. Függelék):
+
+t
+
+karakter input
+
+állapotolvasás
+
+?.3.1 KBO CHIN
+
+Karakterbeolvasas
+Kód: 91H (145)
+Inout: -
+
+Qutput: C = a beolvasott karakter
+Hibakéd: DFSH (245): CTRL+ESC-t CSTOP) nyomtak,
+
+FZ a rutin megvizsgálja a hillentyüzet állapotát jelző belsé flaget,
+"kész" esetén a "C" regiszterben átadja a lenyomott nyomógombhoz tartozó
+kódot, A CTRL:ESC a OF5H-s hibajelzés mellett a STUP FLÁG változót is
+GFFH-ba írja.
+
+Ez a rutin nem villogtatja a cursort, amíg a karakter leütésére vár.
+
+89
+
+=== [oldal 91] ===
+9.3.2 KBD_STATUS
+
+Billentydzetallapot olvasés
+
+Kod: 93H (148)
+Input: = -
+Qutput: C - FF : karakter becivasható a billentyűzetről
+
+ÚD : még nem nyomtak l1e nyomógombot
+
+Ezzel a rutinnal oldható meg, hogy a program ne "ragadjon" be a KBD CHIN
+rutinba a nyomógombok lenyomására várva. A KBD CHIN-t elég akkor meghívni,
+ha a KBD STATUS "kész" állapotot jelez.
+
+9.4 Programozási példa
+
+BASIC grogramokbél a figurák mozgatásához a billentyűzet vizsgálatára a
+GET utasítás és az INKEY$ függvény helyett célszerűbb a PICTURE elemeinek
+. vizsgálata, ez több gomb egyidejű lenyomása esetén kedvezőbb eredményt ad.
+
+Ha GET A$-ral olvassuk be a lenyomott karaktert, az irányok vizsgálatával
+ferde irányban csak "lépcsős" mozgás érhető el, pl, 1 lépés jobbra, 1
+lépés fölfelé. A PICTURE vizsgálatával ferde irányban is elérhető
+folyamatos mozgás, A következő BASIC program egy képpontot mozgat a
+képernyőn, a képpont mindig otthagyja a nyomát, tehát vonalat húz. Figye-
+lembe veszi a Videoton botkormány oyorsftds jelét is, gyorsításkor a
+lépésköz két pont lesz.
+
+10 GRAPHICS 4
+20 X-512 :Y-428 : PLOT X,¥ ! A kezdőpont középen van.
+
+100 A=PEEK(2905) ! A botkormény sora PICTURE-ban.
+
+90
+
+=== [oldal 92] ===
+110 OX=0 ; DY-0 ! Elmozdulások
+
+120 IF A AND 16 THEN LEPES=8:ELSE LEPES=4
+1271 ! A 120-as sor a gyorsítást vizsgálja
+130 IF A AND 2 THEN DY=LEPES ! UP
+
+140 IF A AND 4 THEN DY=-LEPES ! OOWN
+
+150 IF A AND 32 THEN OX=LEPES ! RIGHT
+
+160 IF A AND 64 THEN DX=LEPES ! LEFT
+
+200 ! X,Y növelés, átgöürdítés a képhatáron
+210 X-X-DX
+
+220 IF X<O THEN X=1020
+
+230 IF X>1020 THEN X=D
+
+240 Y-Y-OY
+
+250 IF v£40 THEN Y-956
+
+260 IF ¥>956 THEN Y=0
+
+300 PLOT X,Y
+310 GOTO 100
+
+Ha nincs Videoton botkormányunk, a gyorsítás hatását helyettesithetjiik a
+tűzzei:
+
+120 IF A AND 8 THEN .
+vagy az INS nyomógombbal:
+
+120 IF A AND 1 THEN ...
+Ez a program csak 4 PICTURE használatához szolgál illusztrációként,
+Játékprogramoknál próbáljuk meg az irányító nyomógombakat úgy kivá-
+
+lasztani, hogy a korábban említett vezeték-összekapcsoládás ne jöhessen
+létre.
+
+71
+
+=== [oldal 93] ===
+
+=== [oldal 94] ===
+10. KEPERNYOSZERKESZTO
+
+A képernyőszerkesztő (a továbbiakban röviden editor) kényelmessé teszi a
+TV-Computeren a programbegépelést, biztosítja a programok nagyon egyszerű
+javítását, módosítását.
+
+Az editor logikai eszkiz, a video- és a bi Llentydzetmeghajtdval
+együttműködve dolgozik: a PAPER és az INK változót az editor és a video-
+meghajtó közösen hasznélja, a CLS és a VMODE funkcid az editort 15
+alaphelyzetbe állítja, kiizés a karaktergenerator sth.
+
+A Tv-Computerben nincs megkiilénbtztetve a szOvegmad és a rajzoló múd.
+
+Az editor a videomeméria-írást nem a videomeghajtdn keresztül, hanem
+közvetlenül végzi, a képernyőn levő grafikus információt felülírja. Nem
+veszi figyelembe a videomeghajtó V_FLAG nevi változóáját sem. A billen-
+tyűzet elérése szabványos operációs rendszer hívással történik (KBD CHIN),
+Hozzárendeléssel más input forrás is kijelölhető,
+
+A szerkesztési műveletekhez a képmemóriába írt képpontbiteken kívül az
+editor a megjelenített karakterek kódját (az ún. ASCII kódot) is eltárol-
+ja. Erre a célra a 100H (256) cimtHl kezdve 25%64=1600 byte van
+lefoglalva. A 25. sor nincs kihasználva, itt elhelyezhetők kisebb gépi
+kódú rutinok.
+
+A képernyészerkeszté 16, 32 vagy 64 karakteres módban dolgozik a grafikus
+módnak megfelelően (14 szín, 4 Szín, 2 szín). A grafikus mód váltás (VMODE
+hívás vagy a GRAPHICS parancs) az editort is alaphelyzetbe állítja és
+beállítja a belső változókat az üzemmódnak megfelelően,
+
+73
+
+=== [oldal 95] ===
+Ha az editor karakter inputra vár, akkor az ED INT megszakítás rutin vil-
+logtatja a cursort. A cursor tfpusa megfelel a LOCK mdédnak, ill. a
+LOCK KEY változónak:
+
+- normál mód —: 7FH (téglalap)
+
+- CAPS LOCK : 9FK (inverz "C"}
+- SHIFT LOCK =: 9FH Cinverz "S"}
+- ALT LOCK : BFH Cinverz "A")
+
+Az inverz "C", "3" és "A" karaktereket újra lehet definiálni, így a há-
+romféle LOCK cursor módosítható. A cursor villogási üteme nem vál-
+toztatható, a cursor nem tiltható le. A villogtatás során az editor a
+cursor alatti területhez tartozó képmemáriarészt menti és állítja vissza
+(10, 20, 40 byte), ezért a cursor a grafikus ábrát sem rontja el.
+
+Az editor a képernyőn több összetartozó fizikai sort logikai sornak,
+"bekezdésnek "-nek tekint. A bekezdésen belül a cursorral mozogva különböző
+szerkesztő műveletek hajthatók végre mirdaddig, amíg a bevitelt a RETURN
+karakterrel le nem zártuk. A szerkesztési műveletek tbeszúrás, kiejtés)
+során a módosítási helytől a bekezdés végéig megtörténik a sormaradék iga-
+zítása. Tehát nemcsak a fizikai sorvég mozog, hanem a mozgás több fizikai
+soron keresztül is tarthat. Ha a beírás vagy beszúrás során a fizikai sor
+betelik, automatikusan egy új, üres fizikai sor adódik a bekezdéshez. Ha a
+fizikai sor utolsó pozíciójában levő karaktert töröltük, a Következő üres
+fizikai sor - amely a bekezdéshez tartozik - felszabadul.
+
+Az editorral a képerny6n levő akármelyik sor módosítható és újra be-
+olvasható, függetlenül attól, hogy a kezelő vagy a processzor írta-e azt a
+
+képernyőre. (Ez nem igaz a videomeghajtó által kiírt sorokra.)
+
+Az editorhoz nem tartoznak a felhasználó számára is hozzáférhető
+rendszerváltozók.
+
+94
+
+=== [oldal 96] ===
+10.1 Editor funkciók
+
+Az editor funkciókat a 16. Függelék foglalja össze.
+
+10.1.1 ED INT
+
+Editor megszakítás (interrupt) rutin
+
+Kód: 20H vagy AGH (32 vagy 160)
+
+Input: -
+
+Output: -
+
+Az editor megszakítás rutin villogtatja a cursort, amig az editor karak-
+terbegépelésre vár. A felhasználó az ED INI-et ne hívja!
+
+10.1.2 ED CHIN
+
+Karakterbeolvasó rutin
+
+Kód: QA1H (161}
+
+Input: -
+
+Output: -
+
+Az ED CHIN meghívásával az editor a karakterbeolvasd-szerkeszté
+
+programhurokba lép: a leütött karaktereket beolvassa a billentyűzetről és
+kiírja a képernyőre. Közben végrehajthatók a BASIC-ből ismert szerkesztési
+
+25
+
+=== [oldal 97] ===
+műveletek, Az editor mindaddig a szerkesztő hurokban marad, amig a
+billentyűzeten ném nyomnak:
+
+- ESC-et,
+- CTRL+ESC-et,
+
+- RETURN-t.
+
+ESC hatására kilép a szerkesztő hurokból és visszaadja az ESC kdd jdt (1BH,
+27).
+
+CETRL:ESC hatására visszaadja az ESC kódját és "STOP" hibajelzést állít be.
+RETURN hatására az ED CHIN visszaadja a "bekezdés" első karakterét.
+Ismételt hívás esetén a "bekezdés" további karaktereit adja át a hívónak
+egészen addig, amíg a bekezdés utolsó karakterét, a RETURN-t is meg nem
+kapja a hívó. További ED CHIN hívásra az editor ismét a beolvasdé-szerkesz-
+tö hurokba lép.
+
+A RETURN beolvasása (a teljes bekezdés átadása) után a cursor a következő
+bekezdés első karakterére áll, ha nincs tübb bekezdés, a következő üres
+sor elejére. A képernyő alján rollozás történik, tehát alulról belép. egy
+üres sor, a legfelső sor elveszik.
+
+10.1.2 ED CHOUT
+
+Karakterkikiildés
+
+Kód: , 21H (33)
+
+Input: C = karakterkdd
+
+Output: -
+
+A nyomtatható karaktereket (20H...ODFH, 32...223) kiirja a képernyfre és a
+cursort eggyel jobbra lépteti (sor végén a következő sor elejére). A
+
+96
+
+=== [oldal 98] ===
+képernyőn levő karaktereket felülírja mindaddig, amíg a Cursor egy
+bekezdés belsejében van. Ha a kiírás eléri a bekezdés utolsó sorának az
+utolsó pozícióját, egy új üres sort szúr be és az alatta levő sorok lefelé
+mozognak (kivéve, ha a bekezdés után üres sor van). Ha a cursor az utolsó
+sorban van, a sor megtelése rollozást vált ki.
+
+A kiírás az aktuális _INK és PAPER színnek megfelelően történik. A
+beszúrás, kiejtés, rollozás során a papír- és tintaszin megmarad,
+
+Á 20H-nál kisebb (CTRL) karakterekre az editor ugyanúgy végrehajtja a
+szerkesztési műveleteket, mintha azokat a billentyűzetről vittük volna be
+a programbegépelés során.
+
+Kivételek;
+
+RETURN C0D0H, 123, CTRL:M) : a cursort a sor elejére mozgatja,
+
+LINE FEED (0AH, 10, CTRL-J) : a cursort lefelé mozgatja a bekezdés utáni
+sorba, il. a következő üres sorba, változatlan oszloppozicidval. A
+képernyő alján rollozást vált ki.
+
+Tehát az EN CHOUT-tel úgy lehet új sort kezdeni, hogy a OOH és a OAH
+karaktert kell kiküldeni.
+
+10.1.4 ED BKIN
+
+Biokkbeolvasds
+
+Kód: 0A2H (152)
+
+Enput: DE
+BC
+
+pufferterllet kezddcime
+
+a beolvasanddé karakterek sz4ma
+
+Output; ~
+
+97
+
+=== [oldal 99] ===
+Az ED BKIN a karakteres input ismételt meghívásával dolgozik. Beolvas egy
+vagy több bekezdést a képernyőről (a bekezdés bevitelét RETURN-nel le kell
+zárni) mindaddig, amíg a RC-ben megadott értéket a beolvasott karakterek
+száma el nem éri. Több bekezdés beolvasása esetén a bekezdések között a
+RETURN karaktert ís tárolja. A beolvasott karakterek a DE-ben megadott
+címtől kezdve találhatók meg a memóriában.
+
+Tehát ha 6 karaktert akarunk beolvasni:
+
+1. 5 karakter + RETURN begépelése esetém a memóriában az 2 karakter -
+RETURN lesz található.
+
+2. 10 karakter - RETURN begépelése esetén a memóriában az elsső 6 karakter
+
+lesz.
+
+3. ? karakter : RETURN - 10 karakter begépelése esetén a memóriában az el-
+ső 2 karakter + RETURN + a 10-ből az első 3 karakter lesz.
+
+Ha több karaktert gépeltiink be, az ED BKIN ismételt hívása folytatja a
+beolvasást az előzőleg begépelt karakterekkel.
+
+10.1.5 ED BKOUT
+
+Blokk-kifras
+
+Kód: 22H (34)
+
+input: OE
+BC
+
+pufferteriilet kezdicim
+
+u
+
+kiírandó karakterek száma
+Butput: -
+
+Az ED BKOUT a karakteres outout ismételt hívásával kiírja a DE-vel címzett
+pufferben tárolt karaktereket. A kiírt karakterek számát BC határozza meg.
+
+98
+
+=== [oldal 100] ===
+10.1.6 CPOS
+
+Cursor pozicionálás
+
+Kód: 23H vagy OA3H (35 vagy 163)
+
+karaktersor-pozicid (1..,24)
+oszioppozicid (1...16, 32, 64)
+
+Input:
+
+mo [1
+I
+
+Output: -
+
+Hibakéd: OF6H (246) : rossz cursorpozicid
+
+A cursort poziciondlja a4 és C-ben megadott oszlop és sorpozícióba, Ha
+valamelyik érték 0, a megfelelő pozíció változatlan marad.
+
+10.1.7 CFIX
+
+Cursorpozíció megjegyzés
+
+Kod: 24H vagy OA4H (36 vagy 164)
+
+Input: -
+
+Output: -
+
+A CFIX hivdst az EO CHIN vagy az ED BKIN előtt kiadva, az editor megjegyzi
+a Cursor pozícióját. Ezután az editor input rutinok a RETURN hatására a
+karakterbeolvasást a megjegyzett cursorpozíciótól kezdik, tehát a sor ele-
+
+jén levő szöveg nem kerül beolvasásra (1. az INPUT PROMPT BASIC utasi-
+tást.)
+
+99
+
+=== [oldal 101] ===
+10.2 Szerkesztési parancsok
+
+A következőkben üsszefoglaljuk a BASIC-ből már ismert szerkesztési pa-
+
+rancsokat;
+
+RIGHT, CTRL+0 (04H,4) cursor jobbra
+
+LEFT, CTRL+S (13H,i9) cursor balra
+
+UP, CTRL+E (05H,5) cursor föl
+
+DOWN, CTRL-X (18H,24) cursor le
+
+CTRL+I (09H, 7) cursormozgatás a következő TÁB pozícióba
+CTRL+K (OBH,11) sormaradék tirlés
+
+CTRL+N (DEH, 14) sorbeszúrás
+
+CTRL+¥ (19H, 25) sorkiejtés
+
+INS (16H, 22) karakterbeszuras
+
+DEL (08H, 4) a cursortól halra álló karakter kiejtése
+SHIF T+DEL (07H, 7) a cursor pozíciójában levő karakter kiejtése
+
+Az editor input funkcióhívásoknál:
+
+ESC ( 1BH, 27) a begépelés megszakítása
+RETURN KÖDH, 13) a hegépelés befejezése
+
+Az editor outout funkcidhivasoknal:
+
+RETURN CODH, 13> cursor mozgatása a sor elejére
+
+CTRL-3 (OAH, 10) cursor mozgatás lefelé, a képernyő alján rol-
+lozás
+
+ido
+
+=== [oldal 102] ===
+10.3 Programozási példák
+
+Előfordulhat, hogy a TYV-Computer által valamilyen módon kiszámítható
+adathalmazt akarunk DATA sorekba lerakni, pl.:
+
+~ debugerrel vagy assemblerrel bevitt gépi kódú programból kell DATA soro-
+
+kat csinálni
+- a zenei skálához tartozó FPITCH értékeket kell tárolni
+- a nyomógombokhoz tartozó kódokat kell tárolni stb.
+
+Tlyenkor a sok, kénnyen eltéveszthet6 szdm begépelése helyett programmal
+íratjuk ki a képernyőre a DATA sorokat, Kihasználva az editornak azt a
+tulajdonságát, hogy a képernyőn megjelenített iniormáció később input adat
+is lehet, a programfutás után csak a RETURN-t kell megfelelő számban le-
+nyomni, és máris program lesz a kiírt sorokból.
+
+Az első feladatnál legyen a gépi kódú programrész a 6639...6705 címeken
+elhelyezve, A DATA sorok sorszámozása kezdődjön 8000-rel. A BASIC program:
+
+9000 KSOR=8000
+
+9010 GRAPHICS 2
+
+9020 DB=0
+
+9030 FOR I[=6639 TO. 6705
+
+9040 IF OB=0 THEN PRINT KSOR; "DATA"; :KSOR=KSOR+10
+9050 A=PEEK(I}
+
+S060 PRINT STR${A};","; :OB=DB+1
+
+9070 IF D8-B THEN SH=0:PRINT CHRS(8)
+
+9080 NEXT
+
+9090 PRINT CHR$(a)
+
+A pragram lefuttatdsa utdn a cursort a képernyé tetejére kell vinni, és a
+RETURN-t kell lenyomni annyiszor, ahány sor van a képernyőn.
+
+101
+
+=== [oldal 103] ===
+A zenei skála a PITCH értékeihez ugyanez a program kell, csak a FOR ciklus
+határait (9030-as sor) és az értékmeghatározást (3050) kell átirni. Pl. a
+normál "A" hanghoz képest lefelé és fölfelé 2-2 oktáv terjedelem esetén:
+
+9030 FOR [=---24 IO 24
+9050 F=4400"2*(1/12):OA=INTCO, 5+195312,5/F) :A=4096-~-~OA
+
+Ha 20 nyomógomb kódját skarjuk megfelelő sorrendben tárolni:
+
+9030 FOR I=1 T0 20
+9650 GET A$; A=DRDCAG)
+
+A program elindítása után a kívánt sorrendben le kell nyomni a 20
+
+nyomdgombot, mire a DATA sorok megjelennek a képernyőn, Ezután már csak a
+RETURN-ök lenyomása van hátra.
+
+102
+
+=== [oldal 104] ===
+11. HANG
+
+11.1 A hangkezelő hardver
+
+A TYV-Computerben a hang előállítására egy 12 hites programozható számlánc
+szolgál, a számlánc bemenetére 3.125 MHz-es órajel van vezetve. Az osz~
+tásarány beállítására szolgáló 12 bites PITCH értéket a PORTO4-be (alsd 8
+bit) és a PORTOS-be (felsd 4 bit; BO...B3) kell beírni.
+
+A szamldnc osztdsardnya: 4096 --- PITCH
+A PITCH=4095 nem állít elő hangot.
+A frekvenciaosztó kimenete frekvenciafelezés után adja a soros vonal adási
+és vételi őráját, ennek megfelelően az adatátviteli órajel-frekvencia
+(kHz-ben);
+
+1562.5/7(4096---PITCH)
+Ne feledjük, hogy a tényleges átviteli sebességet az USART is befo-
+ly4solja, a fenti értéket 16-tal vagy 64-gyel el kell osztani, hogy a baud
+
+értéket megkapjuk.)
+
+A hangjel frekvenciája további 8§-as osztással adódik, így a kimenő hang-
+frekvencia (Hz-ben):
+
+195312 ,5/(4096---PITCH)
+A 8-as osztás után egy kapuzó áramkörön keresztül jut a hang az
+
+amplitdddszabdlyozd áramkörre, Az amplitúdószabályzás 4 bites, tehat a
+beállítható hangerő 0...15.
+
+103
+
+=== [oldal 105] ===
+Ha a hangot letiltjuk (a PORTOS-be írt B4-D-val), akkor az ampli-
+túdóértéknek megfelelő egyenszint jelenik meg a TV¥-Computer hangkimeneten.
+Ily médon az amplitúcdószabályzó áramkör durva, 4 bítes dígital/analóg
+konverterként működhet. Az amplitúdó beállítására a PORTO6 regiszter
+§?...B5 bitjei szolgálnak. A PORTOS és a PORTOS más egységekre vonatkozó
+biteket is tartalmaz, ezért a két port csak a tikorkép memoriarekesz fi-
+gyelembevételével irható.
+
+A B-as osztás után a hangjei @ PORTOS regiszter 85 bitjével kapuzva szol-
+gál a megszakítás generálására.
+
+Az SEH-s (9]1-es) port olvasásával a frekvenciaosztó alapállapotból
+indítható, ez a pontos időzítéshez használható.
+
+A hangra vonatkozó tudnivalókat a 17. Függelék foglalja össze.
+
+11.2 Hangkezelő szoftver
+
+A hangkeltő áramkör vezérlésére egyetlen operációs rendszer funkció
+(TONE SET) szolgál, amellyel beállítható a hang frekvenciája és ampli-
+túdója, valamint időtartama. Az idétartam bedllitas a cursormegszakitas
+segítségével történik, 20 ms-os lépésekben.
+
+A hanghoz tartozó rendszerváltozók:
+
+SND ACTIVE (OB14H, 2834):
+
+Ha értéke OFFH, az előzőekben kiadott hang még nem fejeződőtt be.
+Nincs hang folyamatban, ha értéke 0.
+
+SND_IRQ (OB15H, 2837):
+
+DFFH esetén az újabb TONE SET hívás megszakítja a megelőzőt.
+D esetén az újabb hívás megvárja, hogy az előző hang befejeződjön.
+
+104
+
+=== [oldal 106] ===
+SER_OK (OB71H, 2929}:
+Ez a változó inkább a soros vonalhoz tartozik. Ha értéke OFFH, akkor
+hangkeltéssel elrontottuk a soros vonal órajel-frekvenciáját. A 0
+
+érték azt jelzi, hogy a frekvenciaosztó a soros vonal által meg-
+kívánt értékre van beállítva.
+
+11.3 TONE SET
+
+Hangkeltés
+Kod: 33H (51)
+
+Input: B
+
+időtartam (20 ms-os egységekben)
+amplitudé (0.,.15)
+PITCH érték (0...4095)
+
+It
+
+DE
+Output: -
+
+A TONE SET az aND IRÓ értékétől függően vagy azonnal, vagy az előző hang
+befejeződését megvárva hangot szólaltat meg.
+
+Á DE regiszterpár értéke szabja meg a hangírekvenciát:
+F = 195312.5/(4096 - DE)
+DE = 4095 esetén nincs hang.
+A B regiszterben kell megadni az időtartamot 20 ms-os egységekben, a tény-
+
+leges időtartamban 20 ms bizonytalanság van. Tehát B=3 esetén az időtartam
+
+40 és 6Ű ms közütt lesz.
+
+105
+
+=== [oldal 107] ===
+
+=== [oldal 108] ===
+12. NYOMTATÓKEZELÉS
+
+12.1 Nyomtatócsatoló hardver
+
+A TV-Computerbe épített nyomtató interface párhuzamos Centronics típusú,
+amely a lehető legkevesebb vezetékkel dolgozik:
+
+8 adatvezeték
+
+föld
+
+adatérvényesítő jel [/5ST7ROBE)
+
+a nyomtató nyugtázó jele [/ACK)
+
+Az adatokat az 1-es I/D címen levő B bites adatregiszterbe irja a
+processzor. Ezután a 6-os cím 87-es bitjét 0-ba, majd néhány ps múlva 1-be
+írva, a /STROBE kimeneten megjelenik az aktív D szintű adatérvényesítő
+impulzus. Ez az impulzus törli az esetleg bebillent állapotban levő ACK
+fiip-flop-ot is. A /STROBE impulzust érzékelve a nyomtató az /ACK
+vezetéken egy 0 szintű impulzussal jelzi az adat elfogadását és fel-
+dalgozésdt. Ez az impulzus bebillenti az ACK flip-flop-ot, amelyet a
+processzor az 59H-s port B7 bitjén tud beclvasni. Az /ACK jel alap-
+helyzetbe állítja a STROBE flip-flop-ot. (ha a D szint túl hosszú ideig
+lenne kiadva).
+
+A PORTO6 irdsakor (/S7ROREÉ) a PORTOS tükörképet figyelembe kell venni.
+
+107
+
+=== [oldal 109] ===
+12.2 Nyomtató szoftver
+
+A nyomtatómeghajtóhoz rendszerváltozó nem tartozik. Két operációs rendszer
+funkció szolgál az adatkiküldésre (1. a 18. Függeléket).
+
+12.2.1 PAR CHOUT
+
+Karakterkiküldés a nyomtatóra
+
+Kód: 41H (65)
+
+Input: — [ - karakterkód
+
+Output: -
+
+Hibakdd: OFSH (245) : STOP-ot nyamtak
+
+Nyomtatéhiba (OFF LINE állapot, papírhiány, stb.) esetén a PAR CHOUT "be-
+ragad", vár a hiba elhárítására, Ha a nyomtatást nem kívánjuk folytatni,
+STOP-pal a nyomtatás megszakítható.
+
+12,2.2 PAR BKOUT
+
+karaktersorozat kiküldése a nyomtatóra
+
+Kad: 42H (66)
+
+Input: DE: a kiküldendő adatsor kezdőcíme
+BC: a nyomtatandó karakterek száma
+
+üutput: BC: STOP esetén a ki nem küldött karakterek száma
+
+A PAR BKOUT a karakteres output ismételt hívását jelenti.
+
+108
+
+=== [oldal 110] ===
+13. KAZETTAKEZELÉS
+
+13.1 Kazettakezelő hardver
+
+A TVv-Computer az adatokat, programokat a legegyszerűbb esetben magnó-
+kazettán tudja tárolni. Ehhez igen egyszerű hardver tartozik:
+
+- A PORTSOH irdsa (az írt adat közömbös) ellenkező állapotba billent egy
+flip-flop-ot, a flip-flop kimerőjele amplitúdóosztás után szolgáltatja a
+magnó számára a felveendő jeliet.
+
+- A magnóról jövő jel jelformálás után az 59H-s port B5-ös bitjén olvasha-
+tó be, a jelátmenetek érzékelését a szoftver végzi .
+
+- Az 5-Gs port B6, B? bitje adja a két magnócsatlakozá motorvezérlő je-
+lét.
+
+Az információt a szalagra írt jelsorozat periódusideje hordozza. A felírás
+tömbökben történik.
+
+Egy file egy "fej" (header) és 0, 1 vagy több adattömbhől áll. A tömbök
+szektorokat tartalmaznak, egy tömb 1...256 szektort. (Nem lehet 0 szektort
+
+tartalmazó tömbüt írni.)
+
+A visszaolvasás szinkronizálásához, a szalagsebesség megállapításához a
+tömbök elején egy speciális jelsorozat található:
+
+1. Bevezető hang, a header tömb elején 10240 periódus, az adattömb elején
+5120 periódus.
+
+Periódusidő: 470 ys
+
+109
+
+=== [oldal 111] ===
+Frekvencia: 7178 Hz
+Időtartam: 4.8/7.4 5
+
+2. Szinkronperiddus (1 db), olvasásakor a jel fázisának a megállapítására
+szolgál,
+
+Periódusidő: 736 ys
+Frekvencia: 1359 Hz
+
+A továbbiakban már byte strukturaju a felirt informdcid, a bitek "0" vagy
+"1" értéke a periddusidét hatérozza meg:
+
+"0" bit: 552 ps, 1812 Hz
+"1" bit: 388 ps, 2577 Hz
+
+Ennek megfelelően a felírási sebesség;
+00H-s byte-ok esetén: 226.5 byte/s
+OFFH-s byte-ok esetén: 322.2 byte/s
+25H-s byte-ok esetén: 266.0 byte/s
+A tömb felírása 5 periódus 470 A5-os bevezető hanggal fejeződik he,
+A motorvezérlő jel bekapcsolása és ennek megfelelőer a motorindítás kb, 1
+másodperccel a bevezető hang előtt van, Az 1 másodperc a szalagsebesség
+
+stabilizálódásához szükséges.
+
+A kazettakezelő hardvert a 17. Függelék foglalja össze.
+
+110
+
+=== [oldal 112] ===
+13.2 Adatstruktúra a szalagon
+
+A szinkronperiódust 6 byte követi, ez a 6 byte határozza meg a tömböt:
+
+1. Üres byte: a hosszú szinkronperiódus által a bemenő erősítőben akozott
+zavar hatásának a kiküszöbölésére szolgál.
+
+2. Szinkronbyte: 6AH (01101010), a szinkronizálás korrektségének további
+ellenőrzését teszi lehetővé.
+
+3. Tömbtipus-azonosítá: — 00 - adattömb
+OFFH - fejtömb
+
+4. File-típus: 1: pufferelt file
+17: nem pufferelt file
+
+5. Írásvédelem-byte, értéke 0 a nem védett f£ile-oknál.
+
+6. Szektorszám: hány szektor van a tömbben.
+
+A szektorok felépítése a következő:
+
+1. Szektorsorszám (1 byte), az első szektor sorszáma 0. Ha az olvasás s0o-
+rán a beolvasott szektorszám eltér a várt értéktől, akkor az olvasás
+
+hibaüzenettel megszakad.
+
+2. A szektorban levő adatbyte-ok száma (1 byte), a nulla 236 byte-ot ] je-
+lent. (Nem lehet 0 hosszúságú a szektor.)
+
+3. Adatbyte-ok (1...256 db)
+
+111
+
+=== [oldal 113] ===
+4, File-vég jelzés: Ú az összes szektorban, kivéve az utolsót.
+
+5. CRC (Cyclic Redundancy Check): 2 byte-os ellenérzészam.
+
+Először
+
+a magasabb, utána az alacsonyabb helyi értékű byte-at irja fel
+
+a TV-Computer.
+
+A kazettakezelő szoftver 1-1] írásra és olvasásra a megnyitott file egy-
+idejű kezelését teszi lehetővé.
+
+Az olvasas-
+
+Oem .
+
+írás során a tömbök között a szalag leállítható, a tömbök alatt
+
+Két fogalmat kell még megmagyarázni: .
+
+Pufferelt/nem pufferelt file: A pufferelt file írása során a kazettakezelő
+
+Írásvédett
+
+szoftver egy átmeneti pufferbe gyűjti az információt, a tény-
+leges felírás akkor történik, amikor a puffer megtelik vagy
+CLDSE-zai az írást befejezzük. Nem pufferelt file-ról akkor
+beszéltünk, amikor egy nagyobb memóriarészt közvetlenül a memó-
+riából írunk ki (pl. programmentés).
+
+file: írásvédett file-t nem lehet megnyitni olvasásra, ha ko-
+rábban írásra már nyitottunk file-t. Írásvédett file olvasási
+megnyitása után nem lehet file-t írásra megnyitni. Másszóval
+nem lehet egyidejűleg nyitva írásvédett file olvasásra és egy
+másik file írásra, bármilyen sorrendben akarjuk is a file-ckat
+
+megnyitni.
+
+112
+
+=== [oldal 114] ===
+13.3 Pufferelt file-ok
+
+A pufferelt file-ok egy fejtömböt és nulla vagy több adattömböt tar-
+talmaznak, Áz adattömbök mindig egy szektorból állnak, A BASIC OPEN OUTPUT
+utasítása pufferelt file-t nyit meg.
+
+A fejtömb adatként csak a file-nevet tartalmazza, az adatok a második
+tömbtőil kezdődően helyezkednek el. Ha a megnyitást adatírás nélkül a file
+lezárása követi, a file csak fejtömbből fog állni, a fejtömb fogja tartal-
+
+mazni a file-vég jelzést.
+
+A pufferelt file-ok írása/olvasása a LAPO-on található állandó helyű
+pufferen keresztül zajlik.
+
+Két tömb között a motarvezérelt magnó leáll, az adatforgalmazás a magnóval
+tetszőleges sebességű lehet. Fizikai írás a puffer megtelése után követ-
+kezik csak be, pontosabban a megtelés után küldött első karakter hatására.
+A fizikai írást a CLDSE is kiváltja.
+
+13.4 Nem pufferelt file-ok
+
+A mem pufferelt file-ok egy egyszektoros fejtümbből és 0 vagy 1
+adattömbből állnak. Az adattomb 1...256 szektort tartalmazhat,
+
+A fejtöőmb a file-nevet tartalmazza és tartalmazhat még maximálisan lé
+adatbyte-ot. Ezek az adatbyte-ok karakter írás/olvasással kezelhetők. A
+
+tényleges felírást a fejinformációkat követő blokkírási parancs fogja ki-
+váltani.
+
+A fejtömb lé byte-ja az adattömb jellemzésére szolgál.
+
+113
+
+=== [oldal 115] ===
+Programfile-ok esetén:
+
+1. byte: 0
+
+2. byte: típus: 1 = programfile, 0 = ASCII file stb.
+
+3.-4. byte: hossz
+
+2. byte: auto-run územmód nem nulla esetén betöltés után a program
+
+azonnal indul
+5.-15. byte: — nem használt, értéke 0
+lé. byte: változatszám
+
+13.5 Kazetta rendszerváltozók
+
+BUFFER (OB&BH, 2923)
+
+A file-típus kijelölésére szolgál: 0 - nem pufferelt file
+<>O - pufferelt file
+
+A BUFFER változó értékét az írásra megnyitás előtt kell beállítani, a
+megnyitott file a BUFFER változó szerint lesz pufferelt vagy nem
+pufferelt. Az olvasásra nyitás után a BUFFER-ből kiolvasható, hogy a meg-
+nyított file milyen típusú. A BUFFER értéke csak közvetlenül az írási meg-
+nyitás előtt ill. az olvasási megnyitás után számít, ezért az írásra és
+olvasásra egyidőben különböző típusú file-ok is megnyithatok.
+
+REMRED (OB6CH, 2924)
+A motorvezérlés kijelölésére szolgál, megszabja, hogy a két magnú-
+csatlakozó közül melyik motorvezérlő jel lesz az aktív az írási és melyik
+
+az olvasási műveleteknél. Jelöljük B-vel a bal oldali, a tápfeszültség
+csatlakozó melletti magnócsatlakozót, J-vel a jobb oldalit.
+
+114
+
+=== [oldal 116] ===
+A REMRED 87, Bé bitjétől függően:
+
+00 £00H,0) olvasás: B, — írás:
+O1 (40H,64) olvasás: J, irds:
+1G ¢80H,128) olvasés: B, {rds:
+ji (OCOH,192) olvasds: J, ítás:
+
+am & 4
+
+Az alapkijelilés B7=l1, Bé=0, tehát íráskor is és olvasáskor is a bal olda-
+li magnéesatlakoz6 motorvezérlé jele lesz aktiv.
+
+Megjegyezzük, hogy a ki- és bemenetek a két magnócsatlakozón párhuzamosan
+vannak kötve. Tehát ha a magnó motorja nem vezérelhető kívülről, közömbös,
+hogy melyik csatlakozót használjuk felvételre és melyiket lejátszásra.
+
+PROTECT (OB6DH, 2925)
+
+Ha értéke nem nulia, az irdsi megnyitds eredménye védett file lesz. A ka-
+zettakezelő szoftver ezután törli a PROTECT változót.
+
+FOF COB6EH, 2926)
+
+Ez a változó nullától eltérő értékű lesz, ha a file-ból az utolsó karak-
+tert is kiolvastuk. Vizsgálatával elkerülhető, hogy az utolsó karakter
+után file-vég hibát váltson ki az olvasási parancs, Ezt a lehetőséget nem
+használja a BASIC INPUT utasitds.
+
+MUDDLE COB4FH, 2927)
+
+Ezt a kétbyte-os változót közvetlenül a file-megnyitás előtt lehet be-
+állítani. Tartalma a CRC számítás gyöke lesz az összes írási és olvasási
+művelethez a file lezárásáig. Ha értékét átírjuk az írási megnyitás előtt,
+
+akkor olvasáskor is át kell írni a MUDDLE változót ugyanarra az értékre,
+különben a rendszer CRC hibát jelez.
+
+A kazetts rendszervéltozdkat a 19. Függelék foglalja össze.
+
+115
+
+=== [oldal 117] ===
+13.6 Kazettafunkcidk
+4A kazettakezelinél egy-egy hibakód több funkciónál is felléphet, ezért a
+hibakódokat csak a végén adjuk meg.
+
+Á kazettafunkciókat a 20. Függelék foglalja össze.
+
+13.6.1 CAS CHIN
+
+karakterbeolvasás
+
+Kód: — ÜDIH (209)
+
+Input: -
+
+Output: f = karakter
+
+A CAS CHIN egy karaktert olvas a kazettás Ííile-ból, elsősorban pufferelt
+file-oknál célszerű használni. Nem pufferelt file esetén maximum 16
+karaktert tud olvasni, ill. annyit, amennyit az írási megnyitás után
+CAS CHOUT-tal felírtunk. Ha több karaktert akarunk olvasni, belső hiba
+(OE7H, 231) lép fel. A felírtnál kevesebb karakter olvasása nem vált ki
+hibaüzenetet. Nem pufferelt file esetén az adattömb beolvasását a biokk
+input funkció (CAS BKIN) meghívása váltja ki.
+
+13.6.2 CAS CHOUT
+
+Karakter kiírása kazettára
+
+Kód: 51H (81)
+
+Input; C€ = karakterkdéd
+
+116
+
+=== [oldal 118] ===
+Output: -
+
+A CAS CHOUT karaktert ir a kazettás file-ba, elsősorban pufferelt file-
+aknál célszerű használni. Nem pufferelt file esetén maximum 15 karakter
+írható a CAS CHOUT-tal. A 17. karakter írása híbát okoz. A teljes file
+
+fizikai felírását nem pufferelt file-nál a blokk output funkciohivas
+(CAS BKOLT) váltja ki.
+
+13.6.5 CAS_BKIN
+Blokk beolvasása a kazettáról
+
+Köd: 002H (210)
+
+Input: BE - memóriapuffer kezdőciíme
+BC - a beolvasandó byte-ok száma
+Qutput: BC = a be nem oivasott byte-ok száma (hiba esetén)
+
+A CAS BKIN blokkok beolvasására szalgél. Nem pufferelt fiie esetén pon-
+tosan kell tudni a kazettán levő byte-számot, ellenkező esetben a kazetta-
+kezelő hibát fog jelezni. A kazettakezelő sohasem olvas be a kívántnál
+több karaktert.
+
+Pufferelt file-nál a blokk nem a kazettára írt tömböt jelenti, hanem az
+eddig megismert blokkinputokhoz hasonlóan tetszőleges mennyiségű adatot,
+
+13.6.4 CAS_BKOUT
+Alokk-kiirds a kazettara
+
+Kód: 52H (82)
+
+117
+
+=== [oldal 119] ===
+Input: DE - memóriapuffer kezdőcíme
+BC - a kiírandó byte-ok száma
+Output: AC - a ki nem küldött byte-ok száma (hiba esetén)
+
+Memóriatartalom kiírására szolgál. Ne felejtsük el, hogy nem pufferelt
+file esetén csak egy ilyen blokkírás parancs adható ki.
+
+Pufferelt file-oknál a hossz nem a magnóra írt tömb hosszát fogja jelen-
+teni, a felírás 256 byte-os (egyszektoros? tömbökben történik.
+
+13.6.5 CAS OPEN
+
+File-megnyitás olvasásra
+
+Kód : DO3H (211)
+
+Input: DE - file-név kezdőcím
+
+Output: DE = a megtal4lt file nevének kezdécime
+
+A CAS OPEN megnyitja a file-t olvasásra a megadott névspecifikáció
+szerint. A név megaddsa: hossz+NEV. Ha a hossz=0, akkor a CAS_OPEN a ka-
+zettán talált első file-t nyitja meg, egyébként az adott nevű file-t. A
+hosszabb file-név 16 byte-ra csonkul, a kisbetűk nagybetűkre cserélődnek.
+Sikeres megnyitás esetén DE az átalakított, ill. a megtalált file nevére
+fog mutatni. A CAS OPEN a megnyitott file típusától függően beállítja a
+BUFFER változót.
+
+A CAS OPEN alatt a kazettakezelő a BASIC-ből ismert üzenetekkel jelent-
+kezik ki:
+
+searching
+
+Found: <file-név>
+Reading: <file-néy>
+
+118
+
+=== [oldal 120] ===
+13.6.6 CAS CRTE
+File-megnyitás írásra
+Kód: 0 53H (B3)
+
+Input: DE - file-név kezdőciím
+
+Output; DE - az átkonvertált file-név kezdőciíme
+
+A CAS CRTE írásra nyit file-t a megadott névvel, a nevet hossz-NÉV alakban
+kell a memóriába letenni. A nevet 16 karakterre csonkítja és a kisbetűket
+nagybetűkké alakítja (konvertálja), az átalakított file-névre mutat
+visszatéréskor a OE.
+
+A CAS CRTE a BUFFER és a PROTECT változók figyelembevételével nyitja meg a
+file-t.
+
+13.6.7 CAS CLDSE
+
+File-lezárás
+
+Kód: DD44 (212): olvasásra megnyitott file esetén
+54H (84): frásra megnyitott file esetén
+
+Input: -
+Output: -
+A CAS CLOSE a file-ok lezárására szolgál. Az olvasásra megnyitott file-
+oknál ez csak az input csatorna lezárását jelenti, ezáltal lehetővé teszi
+
+újabb CAS OPEN kiadását, Sokkal fontosabb a hatása írásnál: felírja az
+utolsó, tört tömböt és lezárja a csatornát.
+
+119
+
+=== [oldal 121] ===
+13.6.8 CAS VERIFY
+kazettás file és memóriatartalom összehasonlítás
+Kód: OD5H, 213
+
+Input: BE = meméria-kezdécim
+
+BC
+
+hossz
+
+Output: -
+
+A DE regiszterben megadott kezdőcímtől összehasonlítja a memóriatartalmat
+
+és a magnószalag tartalmát,
+
+Ellenérzési (OE9H, 232) hiba keletkezik, ha
+
+- nem pufferelt file-nál a BC-ben megadott hossz nem egyezik a beclvasott
+blokk hosszával,
+
+- a beolyasott adat és a memóriatartalom eltér egymástói.
+Pufferelt file esetén a nem egyező byte memériacime a DE-ben, a még ellen-
+
+érizendé hossz (beleértve a hibás karaktert) a BC-ben van. Az eltérő byte-
+ot a kazettáról nem lehet újra beolvasni.
+
+120
+
+=== [oldal 122] ===
+13.7 Kazettahibák
+
+A kazettakezelő a következő hibakódokat adhatja vissza a KÉRNEL-nél meg-
+ismert általános hibákon kívül:
+
+DECH, 236:
+
+OFBH, 235:
+
+DEAH, 234:
+
+DESH, 233:
+
+QEBH, 232:
+
+OE7H, 231:
+
+File-vég hiba (EDF): a file vége után kiadott olvasáskor lép
+fel.
+
+File-megnyitási kísérlet már megnyitott file esetén, tehát
+ÜLDSE nélkül újra kiadott OPEN vagy CRITE.
+
+£RC hiba: olvasáskor a szektor után felírt ellenőrző szám nem
+egyezik a Sszámítottai, a szalag tartalma sérült vagy rosszul
+
+olvasható.
+
+Nincs nyitott file, ennek ellenére írási, olvasási vagy OLOSE
+
+parancsot adtunk ki.
+Ellenőrzési hiba:
+
+- Nem pufferelt file-nál a kazettán levő blokkhossz és az el-
+lenőrzési hossz nem egyezik.
+
+- Eltérés van a memóriatartalom és a szalagon levő adatok Kkö-
+zött (mindkét file-típusnál).
+
+Belső hiba:
+
+- Nem pufferelt file-nál több hyte-ot akartunk kiolvasni a
+fejből, mint amennyi fel lett írva.
+
+- Rossz hbyte-szám beolvasás.
+
+121
+
+=== [oldal 123] ===
+ÚESH, 230: A védelem megsértése:
+
+- Védett file olvasásra nyitása után file-nyitási kísérlet
+
+írásra.
+
+- Írási megnyitás után kísérlet védett file megnyitására olyva-
+sásra.
+
+0£5H, 227: Hibás blokkszám:
+
+- A beolvasott szektor sorszáma nem egyezik a folyamatosan  nd-
+vekvő sorszám alapján várt értékkel.
+
+- Fejtömb jött a várt adattömb helyett.
+
+13.8 Programozási példa
+Egy gépi kódú orogramot írtunk, amely 2000H-tdi 2FFFH-ig tart. Hogyan
+lehet ezt a programot BASIC programként kimenteni?
+Először is kell egy indító BASIC program:
+1D X-USR(8192)
+
+vagy
+
+10 PRINT USR(B192)
+(A 8192 a 2000H-nak felel meg.)
+
+A BASIC programok mentése (SAVE) a memóriatartalom kiírását jelenti a
+19EFH címtől a program végéig. Ezt kell leutánoznunk azzal az eltéréssel,
+
+122
+
+=== [oldal 124] ===
+hogy a kimentés 2FFFH-ig tartson, A részletes mentőprogram helyett csak a
+programozási lépéseket soroljuk föl:
+
+1. Le kell tenni valahová a memóriába a program nevét hossz-NÉV alakban,
+2, A PUFFER változóba írjunk D-t (nem pufferelt file),
+3. CAS CRTE hívás, előtte DE-t állítsuk be úgy, hogy a névre mutasson.
+4, A kiküldendő memóriatartomány hossza
+
+3000H---19EFH = 1611H
+
+5. 16 byte adat frdsa a fejtimbbe CAS CHOUT-tal. AC regiszterbe irandd
+adatok:
+
+- OOH
+
+- O1H (programfile)
+
+- 114 (hossz L része)
+
+- 16H (hossz H része)
+
+- D vagy OFFH — Cutábbi esetben autoindítás)
+- OOH ( tizenegyszer)
+
+A lé byte természetesen letehető a memóriába is és programciklussal is
+kiküldhető.
+
+6. CAS _BKOUT hívás az alábbi paraméterekkel
+
+DE
+BC
+
+19EFH
+1611H
+
+7. CAS CLOSE hivds (kéd: 54H)
+Az elmondottak szerint egy kis gépi kódú programot írva és lefuttatva, az
+
+így kimentett program normál BASIC programként betölthető lesz. RUN-nal
+indítható, ill. autcindítás esetén a betöltés után rögtön elindul, Az egy-
+
+123
+
+=== [oldal 125] ===
+soros BASIC program és a gépi kódú rész között nem kell feltétlenül 600H
+byte-ot hagyni, de valamekkora távolságra szükség van, nehogy a BASIC vál-
+toözók elrontsak a gépi kódú program elejét.
+
+Ne feledjük el, hogy a 19£FH kezdőciím csak akkor igaz, fa a LOMEM-et,
+VLOMEM-et nem állítottuk át. Az ily módon kimentett programok csak akkor
+töltődnek a helyükre, ha a VLOMEM nincs átírva. Ezért gépi kódú játék-
+programok betöltése előtt célszerű kettds RESET-et nyomni.
+
+124
+
+=== [oldal 126] ===
+14. A SOROS VONAL
+
+Bár a TV-Computerhez vásárolható soros vonal kiilső bővítőkártya, mégis itt
+kell vele foglalkoznunk: a kártyát működtető eszközmeghajtó szoftver nem a
+kártyára épített ROM-ban található, hanem az alapkésziilék EXT ROM-jaban.
+
+14.1 Hardverfelépités
+
+A TV-Computer soros vonala egy 8251A típusú USÁRT-ot tartalmaz, amelynek
+
+ki- és bemenetei V.24 adó-vevő áramkörökön keresztül kapcsolódnak a vonali
+
+csatlakozóhoz ,
+
+A V.24 interface jelekből a soros kártya a következőket kezeli zárójelben
+a 25 pálusú csatlakozó kivezetés számai):
+
+102
+103
+104
+
+105
+
+106
+107
+
+108 (20):
+
+109
+
+(7):
+
+C2):
+
+(3):
+
+(4):
+
+(5):
+(6):
+
+(8):
+
+Föld.
+
+Adási adatvezeték, az USART TxD kimenete.
+
+Vételi adatvezeték, az USART RxD bemenete, A l104-es jelet a
+109-es jel kapuzza.
+
+Az USART /RTS kimenete, belső átkütéssel tartósan "BE" állapot-
+ba köthető. A TV-Computer az ellenál-
+
+lomás adását engedélyezi a 105-ös jellel.
+
+Az USART /CTS bemenete, adáshoz "BE" állapotba kell kötni.
+Az USART /DSR bemenete. A TV-Computer ezen a vezetéken érzéke-
+1i, hogy az ellenállomás a küldendő adatot fogadni tudja.
+
+"BE" állapotú jel, az USART /DTR kimenete is ráköthető. Nincs
+használva.
+
+A TV-Computernél a 1904-es jelet kapuzza, ezért vétel csak ak-
+kor lehetséges, ha "BE" állapotban va.
+
+125
+
+=== [oldal 127] ===
+111 í237: "8E" állapotra van kötve, átköthető "KI" állapotra is.
+
+Modem nélküli összeköttetést feltételezve, két TV-Computer közötti össze-
+kötő kábel bekötése az alábbi:
+
+102 (7) <---> 102 (7)
+103 (2) --— 104 (3)
+
+104 (3) <--- — 103 (2)
+105 (4) ---> 107 (6)
+107 (6) <€--- 105 (4)
+
+Mindkét csatlakozón belül össze kell kötni a 111, 109 és 106-os jeleket
+(23, 8, 5), ez biztosítja a 109-es és a 106-os jel "BE" állapotát.
+
+Az előbbiekből kitűnik, hogy a modemkezelő jelek nem az eredeti célra
+vannak felhasználva, hanem handshake vezetékeknek. A handshake kézfogdst
+jelent; az adó TV-Computer csak akkor küldheti az adatot, ha a vevő TV-
+Computer az /RST (105) vezetékét "BE" állapotba hozta, ezt az adó TV-
+Comauter a /OSR (107) bemeneten érzékeli. Ezzel elérhető, hogy nem lép fel
+karaktervesztés nagyobb átviteli sehesség esetén akkor sem, ha a vett
+karakter — feldolgozása — hosszabb időt vesz igénybe. Természetesen a
+handshake csak akkor működik, ha erre az ellenállomás is fel van készítve.
+Ha az ellenállomás nem kezeli a handshake jeleket, az átviteli sebességet
+kell csökkenteni.
+
+A soros vonali kártya USART-ja az alábbi I1/0 címeken érhető el.
+
+XOH: adat írás/adat olvasás
+XIH: parancs írás/állapot olvasás
+
+(Az X értéke 1, 2, 3 vagy 4 lehet a 0, 1, 2, 3 csatlakozóhelynek meg-
+felelően.)
+
+126
+
+=== [oldal 128] ===
+Az I/D címek decimálisan:
+
+(n+l)wl6: — adat írás/adat olvasás
+(n+l)*l6+1: parancs irés/dllapot olvasás
+
+(Az “n" a csatlakozéhely szdma: 0, 1, 2, 3)
+
+14.2 A 82514 típusú USART programozása
+
+Az USART közvetlen programozására általában nincs szükség, az adatfor-
+galmazás a soros vonallal a funkcióhívások segítségével lebonyolítható.
+Ennek ellenére célszerű összefoglalni a 8B251A programozási tudnivalóit.
+
+Az USART két I/0 címet foglai le, az X0H-s címen keresztül az adat-
+forgalmazás, az XlH-s cimen keresztiil a parancskikiildés, ill. az allapot-
+olvasás bonyolítható.
+
+Bekapcsoláskor vagy az ún. "belső RESET" parancs hatására az USART alap-
+állapotba kerül, ilyenkor a parancscímre küldött byte-ot üzemmód-kívá-
+lasztó utasításnak értelmezi. Az üzemmód-kiválasztással érhető el, hogy az
+USART szinkron vagy aszinkron üzemmódban dolgozzon-e. Csak az aszinkron
+üzemmádot tekintjük át.
+
+Az üzemmód-kiválasztó utasítás bitjei:
+
+87, Bő : a STOP bitek száma
+00; nem megengedett
+Ol: 1 bit
+10: masfél bit
+ll; 2 bit
+
+127
+
+=== [oldal 129] ===
+B5: paritás
+
+0: páratlan
+
+Ll: páros
+
+Bá : paritás engedélyezése
+0: adásnál nem küld paritásbitet, vételnél nincs ellenőrzés
+
+1:
+
+adásnál küld paritásbitet, vételnél ellenőrzés van
+
+B3, B2: karakterhossz
+
+00:
+Ol:
+10:
+ll:
+
+> dit
+6 bit
+7 hit
+g hit
+
+Bl, BO: üzemmód-kiválasztás, órajel
+
+00:
+Ol:
+10:
+il:
+
+szinkron üzemnód kijelölés lenne
+
+egyszeres órafrekvencia, nem megengedett
+
+lá-szoros drafrekvencia
+
+64-szeres dérafrekvencia
+
+A TV¥-Computerben haszndlt alapbedllitds OEEH (238):
+
+2 STOP bit
+nincs paritás kiküldés/paritás
+
+8 bit
+
+lé-szoros óra
+
+Ez azt jelenti, hogy a soros vonalon kiküldütt adat 11 ütemből áll:
+
+1 START bit (logikai "0")
+8 acdatbit
+2 STOP bit
+
+(BO, . .87)
+(logikai "1")
+
+128
+
+=== [oldal 130] ===
+A "HANG"
+
+fejezetben elmondottak szerint előállított órajel frekvenciáját
+
+156-tal kell osztani, tehát a "baud" érték:
+
+97656 .25/(4096-~-PITCH)
+
+Az iizemmod-kivalasztd utasitds kiaddsa utan az X1H-s (parancs-) cimre ki-
+
+küldött byte-okat az USART parancsnak értelmezi, a parancsbyte bitjei
+
+külön-külön hatásosak:
+
+A}:
+
+Bé=1:
+
+B5=]:
+
+Csak szinkron üzemmódban értelmezett, ezért A7-0 legyen a ki-
+küldött érték.
+
+Belső reset, az ezután küldött parancs üzemmódkiválasztó uta-
+
+sitas lesz.
+
+Aktiv dllapatba teszi az /RTS kimenetet, tehdt a 105-ts jel
+"BE" állapotba kerül.
+
+Hibatérlés, a vétel során fellépő. paritás-, túlfutás- és
+kerethibákat törli.
+
+Az ún. BREAK" kiküldése a vonalra (a "BREAK" 1 karakternél
+hosszabb "START" állapotot jelent).
+
+A vétel engedélyezése.
+A ZIHR kimenetet aktív állapotba teszi.
+
+Az adás engedélyezése.
+
+A könyv megírása idején forgalmazott TV-Computerek (BASIC 1.2 verzid)
+
+soros vonalának inicializálásából hiányzik egy adás/vétel engedélyezés
+
+parancs, ezért ezt a TV-Computer bekapcsolása után egyetlenegyszer ki kell
+
+adni (a csatlakozószámtól függően);
+
+123
+
+=== [oldal 131] ===
+OUT 17,5 (0-ás csatlakozó)
+OUT 33,5 (1-es csatlakozó)
+OUT 49.5 (2-es csatlakozd)
+OUT 65,5 (3-as csatlakozd)
+
+Az USART állapotáról az XIH-s cím olvasásával lehet tájékozódni:
+
+B7-l:
+
+Bé-1:
+
+B5=1:
+
+B4-1i:
+
+B3-1:
+
+B2=1:
+
+Bl=1:
+
+BO=1:
+
+A /D&8 (107-es) vezeték "BE" állapotban van,
+A vevő BREAK-et (tartós START) érzékelt.
+
+Kerethiba (FE, Framing Error), azt jelenti, hogy az adat-
+biteket nem követte legalább 1 STOP bit.
+
+Vevő túlfutás (DE, Overrun Erron), a vett karaktert nem ol-
+vasta be idejében a CPU, a vonalról jövő újabb karakter ezt
+
+felülírta.
+
+Paritáshiba (PE, Farity Error): paritásellenőrzés volt kije-
+lölve, a vett karakter paritásbitje nem megfelelő.
+
+Az adópuffer üres, karakter küldhető.
+Az USART karaktert vett, a karakter kiolvasható.
+
+Az USART addsra kész,
+
+A hardver tudnivalókat a 21. Függelék foglalja össze,
+
+130
+
+=== [oldal 132] ===
+14.3 A soros vonalat működtető szoftver
+
+A soros vonalat működtető szoftver 4 soros vonalat tud kezelni.
+
+Az USART-ot inicializáló rutin két rendszerváltozó figyelembevételével
+dolgozik:
+
+BAUD (OB69H, 2921):
+
+A BAUD-ban tárolt érték szabja meg a soros vonal sebességét:
+
+= 110 baud
+= 150 "
+= 300 "
+= 600 "
+1299 "
+= 2400 baud
+= 4900 "
+= 9600 "
+19200 ”
+
+Mma Hm Ww FF ww Me ©
+ii
+
+Az alapbeállítás: 4 = 1200 baud
+
+FORMAT {OB6AH, 2922):
+
+Ebbe a változóba kell az _ iizemméd-kivdlaszt6 utasitdsndl elmondottak
+szerint a karakterhosszt, a paritást és a STOP biteket meghatározó érté-
+
+keket letenni.
+
+Megjegyezzük, hogy a soros vonalat inicializáló rutin a FÜRMÁT-ból csak a
+B2, B4, B5, 87 biteket veszi figyelembe, A FORMAT értékétől függetlenül
+
+131
+
+=== [oldal 133] ===
+BO-0, B1-1, B3-1, Bó-i lesz az USART-ba írva. A FORMAT-ból figyelemhe vett
+bitek jelentése:
+
+B2=1/0 : 8/7 adatbit
+
+Bá-l/D : van/nincs paritásképzés és -ellenőrzés
+B5-1/D : páros/páratlar paritás
+
+B7=1/0 : 2/1 STOP bit
+
+A FORMAT alapértéke: OFFH, 238: 8 bit, 2 STOP, nincs paritás.
+
+A BAUO és a FORMAT változók a "meleg" RESET-re is felveszik az alap-
+értéküket, ezek figyelembevételével történik meg az USÁRT inicializálása.
+Ha valamit módosítani akarunk;
+
+- Írjuk át a BAUD, ill. a FORMAT változót a kívánt értékre.
+
+- Gépi kódú programból hívjuk meg az RS232 SET funkciót, vagy írjuk át
+a SER ÜK változót (0B71K, 2929) OFFH-ra POKE-kal. A POKE helyett egy
+SOUND utasítás kiadása is elég, a SOUND is OFFH-ra irja a SER OK vál-
+tozdt.
+
+A Soros vonal input/output funkciói mindig megvizsgálják a 5ER OK vál-
+
+tozót. Ha értéke nem 0, a tényleges I/D0 művelet előtt végrehajtódik az
+
+USART és a hanggenerátor újrainicializáiása.
+
+A soros vonal a karakteres 4s blokkos I/O funkciókon kívül üres CLOSE
+funkciót is tartalmaz abból a célból, hogy a SAVEFÓ:, ill. a LOADHS: ne
+okozza nemlétező funkciók meghívását. A kazetta OPEN funkcióknak (3) az
+RSZ32 SET felel meg. A soros vonal funckióhívásai alatt is felléphetnek a
+szokásos KERNEL hibák (pl. CTRL-ESC). A lehetséges funkcióhívások a
+következők:
+
+14.3.1 SER_CHOUT
+
+Karakterkikiildés
+
+132
+
+=== [oldal 134] ===
+Kód: 61H (77)
+
+Input: C = karakterkód
+
+Qutput: -
+
+A SER_CHOUT megvizsgálja a OSR bitet: ha az 1, akkor az ellenéllomás kész
+fogadni a következő karaktert. Ezután teszteli, hogy az USART kész-e az
+adásra (BO bit). Ha igen, kiküldi a karaktert a vonalra.
+
+14.3.2 SER CHIN
+
+Karakterbeolyasás
+
+Kód: QEiH (225)
+
+Input: -
+
+Dutput: C = a vett karakter kddja
+
+A SER CHIN megvizsgálja, hogy nincs-e vett karakter az USART vételi
+pufferjében [(£B1-1 az állapotszóban). Ha van, akkor beolvassa az USART-bdl
+és visszatér a hivdhoz.
+
+Ha nincs vett karakter, akkor a /RTS kimenetet "BE" állapotba teszi, ezzel
+jelezve az ellenállomásnak, hogy küldheti a következő karaktert. Ezután a
+Bi bit állandó vizsgálatával figyeli, hogy az USART vett-e karaktert. Ha a
+karakter megérkezett, az /RTS-t kikapcsolja és a karakter beolvasása után
+visszatér a hívóhoz. A SER CHIN vizsgálja az állapotszó beolvasásával,
+hogy nincs-e vételi hiba (FE, DE, PE).
+
+Hiba esetén a megfelelő hibakódot adja vissza:
+
+OF4H (244) : paritashiba,
+OF3H (243) ; kerethiba (nines STOP bit),
+
+133
+
+=== [oldal 135] ===
+QF2H (242) : túlfutás (nem tortént meg a kiclvasds a következő karakter
+vétele előtt).
+
+A SER CHIN várakozó állapota alatt a megszakítás le van tiltva, nehogy egy
+hosszabb megszakításalprogram alatt karaktervesztés következzen be.
+
+14.3.3 SER_BKOUT
+
+Blokkkikildés a soros vonalra
+
+Kod: 62H (98)
+
+Input: DE
+BC
+
+a memoriapuffer kezdficime
+a kiküldendő hyte-ok száma
+
+11
+
+Output: -
+
+14.3.4 SER_@KIN
+Alokkbeolvasds a soros vonalrdl
+Kód: DEZH (226)
+
+Input: DE
+BC
+
+H
+
+a memériapuffer kezdőcíme
+
+11
+
+az olvasandó byte-ok száma
+
+Output: -
+
+14,3.5 R5232_SET
+A saros vonal inicializálása
+
+Kód: 063H vagy DE3H (99 vagy 227)
+
+134
+
+=== [oldal 136] ===
+Input: -
+
+Qutput: -
+
+Hibakdd: -
+
+Ez a funkcid inicializdlja az USART-ot a FORMAT rendszerváltozó alapján,
+és beállítja a hanggenerátort a BAUD változó szerint. A soros vonal
+input/output funkciói automatikusan meghívják, ha a SER_OK nem egyenlő O-
+val (hangkeltés vagy kazettahívás elrontotta a hanggenerator frekven-
+ciáját).
+
+14.3.6 RSZ32 ELŐSE
+
+Üres funkció, nem csinál semmit
+
+Kód: O64H vagy OE4H (100 vagy 228)
+
+Input: = -
+
+Output: -
+
+Hibakód: -
+
+A soros vonali rendszerváltozók, rendszerhivasok összefoglalása a 22.
+Függelékben található.
+
+135
+
+=== [oldal 137] ===
+FÜGGELÉK
+
+=== [oldal 138] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+1. Memorialapozas
+(“eee t TT 7 TT — — 4
+! 0000 0 j i | I ey
+| LAPO i ' | SYS (00)1 UO (190)1 CART (O08)1 US (18)!
+I 3FFF 16383 | I ! ] I
+fs —————————0 +~ s s ej eed eee eel
+i 4000 16384 | t *|
+I LAP i ; ! 41 (O0)71 VIG (ús)!
+f FFF 32767 [ i t
+F : + wpe end
+[ B00G 327628 | I
+| LAP2 i ; 1 VID (00)! U2 (20) 1
+I BFFF 49151 | ! 1
+F > + seo} pee ers
+I co00 49152 | I | | 1
+I i , 1 t ! ] IÖMEM !
+| DFFF 57343 | 1 I
+1 LAPS --~+------~ | CART (O00)! SYS (40) | ua (80) f------- (co) |
+1 E00O 57344 | I 1 t I
+I i ; 1 1 i ij EXT I
+! FFFF 65535 | t I ! 1
+Has az app =e eee om al. al aoe ails a ae es es ed
+PORTO2H {2} irás
+Pasa ee eee —T T - T ree
+I B7 | B6 I BS | B4 | B3. 1 B2 ! Bi [I BO |
+k ak += ——— + kon + t a=
+LAPS LAP2 1 LAPO bo. LAP1 - | - I
+I 1 I
+100: CART (0G)10: VIB {GG)100: SYS (00110: Ul (00) ] f I
+101: SYS (40)f1: UZ (20)l101: CART (08)11: MID *(04)! I I
+110: U3 (80) 1 116: Ud {10}! [ i t
+Jit; EXT (CO)1 iii: US **(1218)1 1 ! I
+| o00G3H 3 P SAVE DEFS 1 ; Aktuális lapozasi 6sszetétel I
+PORTO3H (3) irás
+eV T - q TF -. T a ee a ee ee el
+! B? | B6 | BS l H4 I B3 { B2 1 Bi | Bo I
+ane el + + + map -—08 kon —-—91
+| TOMEM 1 - | - ! + j t I + 1 + I
+! I í 1 i I | t
+1 00: CSTLO (00)1 i ! ! I I 1
+t 01: CSTLi (40)1 1 I I 1 ! 1
+f 10: CSTL2 (89) 1 i I I I ! I
+1 t1: CSTL3 (co)! I 1 | I 1 I
++ a. dobás man male mmm am mm am agy ed ús ő a. a aid aa 4
+1 OBL1H 2833 PORTG3 DEFS 1 ; A 3-as E/0 port tükörképe 1
+PORTOFH (15) iras *
+r Ft F TT F EEE
+! 6? i Bs | BS [| Bá | B3 [ B2 { B1 | Bo I
+F + 4 ke + ek fee dnd
+- ! - CRT LAPZ LAPL
+! ] ] 00: VIDO (00) 1 00: VIDO (00) | OO: VIDO (00) |
+I I ] 01: VIDi (10) [I O1: VIDL (04) J OL: VIDI (01) !
+I I I 10: VID2 (20) | 1G: VID2 (08) | tO: VID2 (92) |
+I ! { 11: VIDS (30) 1 211: VID3 (OC) 1 11: VID3 (03) !
+na ce ee ee ale ik ae a. a ee all
+OB19H 2841 HI_MEM OFFS 2 ; A legnagyobb használható RAM cim
+OBiBH 2843 P3RÁM DEFS 1 ; 0: U3 jó; FF: U3 hibáz
+Megjegyzések :
+* Caak T¥-Computer 64 k+
+** COsak TV-Computer 64 k+ és TV-Computer 32 k {32 k bévitesael }
+
+=== [oldal 139] ===
+=. Mesastrakitaskezelids nardver
+
+PORTOSH (5) iras
+
+ 
+
+ 
+
+ee ———— [ou eee =
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+T 7 T T Tr T —
+! B? 1] BS i BS il BA | E3 FDoORZ | 81 | BO 1
+boa} + + +--~ + += | 1
+! + I + [Hang IT! + | + 1 + I + I + I
+i i 1 ! ! i | ! i
+I I IO: t£itl 1 I I ! |
+| I I1: eng 1 ] I 1 ! !
+bem ma vm a ala e A d ak a al. _ af
+1 OB12H 2834 PORTOS DÉFS 1 : Az 5-ös I/0 port tükörképe |
+A s mas e an am mm mom am mm es ee | mma
+Képernydvezerld R10 iras
+! BE? | B6 I BE I Bá { B3 | B2 i Bi I BU I
+jaso———S——k ; + + oe ep mm mén
+| 0 [00: cursor eng.! 0 | 0 I 0 1 1 ! 1 |
+1 I01: cursor tilt Cursor kezdösor a karaktersorban j
+Jam am ee a am am ala maa am a = — ik ses en rn i |
+PORTO?H (7) irás
+Pe eee LN ™ T F F i a Fk
+| B? ] ES | BS E 84 1 B3 i 62 | 81 | BO I
+pose pee eee fee + + $e f eee
+; - 1 - | - I — 1 - 1 - I - 1 - I
+1 Cursor/hang IT törlés j
+PORTSSH (88) irás: CSTLO
+PORTSSH (89) tras: CSTLi
+PORTSAH (90) tras: CSTL2
+PORTSBH (91) tras: CSTLS
+F -— -—. + T T er T i 3
+| 87 | Bé I BE | B4 ij B3 | EZ | Bt t BO |
+F =—+ aa}= af — + -— ps s s ej ——
+ICSTL ITI - I - i - ! ~ ! — I - t - |
+I 1 i I F ! | t |
+JO: törlj F j { I I i !
+I tilt! ! i | | I I I
+11: eng | I I ! ! I I |
+L ak — a —- L ak ala a. en oe ols al
+PORTSSH (89) olvasás
+tf ai -p——0 Y mai YT T eee
+| B? | Bé I BS | Bá il 83 i B2 | B81 i BO !
+dooAu + -$--= + + t $ + 4
+i + 1 + F + ! Függőbéen tévő TT kérések (0: aktiv) i
+1 i I
+F t ! ICU/HANG! CSTL3 1 CSTL2 | CSTL1 1 CSTLO |!
+La FH a woes ems tend es me A. ak AA me mm a —- al
+PORTSBH (91) olvasas
+ps T —_ T T T - "4
+| B7 | BS ]I B65 | B4 | B3 | B2 Bi I Bo |
+t= 4 H -- 1 + + st nl
+
+I - ! - - i - - ! - - I - |
+1 Hanggenerator frekvenciaosztdé törlése (pontos idözitéshez) 1
+
+n—+—4
+
+ 
+
+Megjegyzes: az IT a megszakitas szó angol megfelelőjének
+(interrupt) röviditése.
+
+=== [oldal 140] ===
+0038
+
+0038
+0039
+0035
+oc3D
+
+wee ae Ever ne ee
++]
+Fe
+o
+
+wee ee me meee ce ay ee eee ee ee we ae ae we
+
+0841
+
+0OB41
+OB44
+OB46
+OB47
+0B48
+
+Merszakitáskezelöd szoftver
+
+0056
+0G56
+0057
+
+0059
+acél
+
+2832
+
+2845
+
+2847
+
+2848
+
+2881
+
+2881
+2884
+2886
+2887
+2888
+
+F5
+
+D3
+ca
+
+FC
+
+01
+
+32 03 00
+D3 02
+
+Fi
+FB
+cs
+
+IT_ENTRY
+
+INT_DES
+
+IRG STAT
+
+INT FLAG
+
+INT EXIT
+
+PUSH
+LD
+OUT
+JP
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+oo
+"H LJ-
+e
+- Ls
+bed
+
+:
+
+.
+
+rk
+
+RST 38H
+
+UO, Ul, U2, SYS lapozaa
+
+SYSTEM ROM
+Nem garantalt cim
+
+A cursor/hang IT altai
+kiszolgált eszközök
+BOzO: VIDEO
+Bi=O: BILLENTYUZET
+B2°0: EBITOR
+B3=0; HANG
+Ba=0: CSTLO
+B520: CSTLi1
+B6=0: CSTL2
+B7=0: CSTL3
+
+16 bit azamiaid (O58 IT)
+(20.096 ms)
+
+IT engedélyezes az O5
+IT kiszolgálása után
+
+BO=1: CURSOR
+
+Bizi: HANG
+
+B2=1: CSTLO
+
+B4=1: CSTLi
+
+B4=1: CSTL2
+
+BS21: CSTL3
+
+FF: IT kiszolgalas
+alatt
+
+Kilépés az IT-bül
+
+Felhasználói men.
+lapozás visszaállitás
+
+IT engedélyezés
+
+=== [oldal 141] ===
+e . Ccsatoloókaártvák
+
+A csatolokártyák 1/0 cimntartomanya :
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ÜŰ. csatlakozo: 10H ... 1FH (16 ... 21)
+
+1. csatlakozó: 20H ... 2FH (32 ... 47)
+
+2. csatlakozó: 30H ... 3FH (48 _.. 63)
+
+3. csatlakoze: 40H ... 4FH (64 ... 749)
+
+PORTO3H (3) irás
+eS e 5 apa 2 e tom " + YT YT |
+I B? 1 BE I AS { Ba | B3 i B2 I Bi I Bo !
+Fe ame ame ee a ————k + + poss sss peer ee} eee ead
+IOMEM lapozas | - i - I + 1 + + | +
+I | 1 I I
+
+I @d: CSTLO (006) | i I i I | I
+{ O1: CSTL1 (40)! j 1 I 1 f 1
+' 10: ¢STL2 (80)! | i I i I I
+i 11: @STL3 (co)! I f I ] F I
+Sh ts te the et i. i, ewe dee ee eee de eed eed
+| OB12H 2833 PORTOS ODEFS 1 ; A 3-as 1/0 port tükörképe I
+
+e van vm mm om s ap A A dh a es sz lm mm ss s s als ms s az b zo mos az ln s s s em TT]
+
+PORTSSH (88) irás: CSTLO
+PORTE9H (89) irás: CSTLIi
+PORTSAH (30) irás: CSTL2
+PORTSBH (91) irás: CSTL3
+
+PS ey ee ee oe pee eee
+
+| B? 1 B6 | 85 t Bá | B3 i B2 l Bi i BO I
+
+hm pn peep sa a a ag a sms aes sz sm sa ja zó tú all ká ml jel lsd mm e mt
+ICSTL IT} — ! - 1 - I - 1 - I - 1 - I
+I ! | ! I 1 ! | I
+0: törli i { 1 F 1 I |
+1 tiltl | I I I | 1 |
+li: eng ! ] I I I I I |
+
+PORTS9H (89) olvasás
+
+ee eee e sp s ———— {ee eee ee,
+
+' B? tf EG i 8S i Bá | B63 | B2 i Bi I BO
+
+I +
+
+; + 1 + i Fugeztben lévő IT kérések (0: aktiv}
+1 |
+t | ICU/SHANG! CSTL3S | CSTL2 1 CSTLi | CSTLO
+
+Mh —— TT be oe ev ak
+
+ 
+
+ 
+
+MH — — — A
+bh — — — AL —
+
+PORTSAH {30) olvasás
+
+ 
+
+ee a ep mázselezelmmelezelozlmzelomi oe —-—— = _
+
+ 
+
+ 
+
+wv TT 7 F t
+F  B7 I B6 I BS | Bá f B83 i B2 i El J BO I
+l 2. csatlakozó 1 2. csatlakozó [ 1. csatlakozó [I 0. csatlakozó 1
+ht a kártyvaaáazonosiító . . . . s... |
+! I
+] 00: sorcs vonal (RSZ222) 01: nem használt t
+{ 10: floppy csatoló 11: üres csati. v. nem specifikált |
+L ad
+
+ 
+
+ 
+
+ 
+
+=== [oldal 142] ===
+0048
+
+6070
+0078
+00A0
+0048
+
+oobe
+
+v00D08
+
+ABGO
+OBOS
+
+OB1C
+
+óBZ3
+
+OB23
+ÜBZ4
+0B25
+oB26
+OB2?
+OB2E
+OoB2o
+0B2C
+OB2D
+ÜBZF
+0632
+O0B34
+
+0B37
+OB37
+0838
+CB39
+ÖB3C
+OB3E
+
+CBSF
+OB40
+
+TnputYvoutput rendesezer
+
+0048
+0048
+
+0064
+
+0072
+
+0112
+0120
+
+0160
+0166
+
+0208
+0216
+
+2816
+2624
+
+2844
+
+2851
+
+2651
+2852
+2853
+2854
+2855
+2856
+2857
+2860
+2861
+2863
+2866
+2868
+
+2871
+
+2871
+2872
+2873
+2876
+2876
+2879
+2880
+
+ÖS ENTRY
+C3 23 OB
+IN TABLE
+OUT. TABLE
+EX DEF
+
+INFUNC
+
+E3
+
+7E
+
+23
+
+E3
+
+08
+
+FS
+
+3A 03 00
+FS
+3E 70
+
+32 03 00
+
+D3 02
+
+C3 63 C3
+
+OUTFUNC
+
+08
+
+F1
+
+32 03 00
+D3 02
+
+Fi
+
+08
+
+cg
+
+JP
+
+DEFS
+
+DEFS
+
+DEFS
+DEFS
+
+DEFS
+DEFS
+
+DEFS
+DEFS
+
+DEFS
+DEFS
+
+DEFS
+
+EX
+
+INC
+EX
+EX
+PUSH
+
+PUSH
+LD
+LD
+OUT
+JP
+
+EX
+POP
+LD
+OUT
+POP
+EX
+RET
+
+INFUNC
+a
+
+40
+
+a
+
+40
+
+8
+
+40
+
+8
+
+40
+
+1
+
+( SF) , HL
+A, (HL)
+HL
+(SF) , HL
+AP AF‘
+AF
+4,(3)
+AF
+
+A, 70H
+(3) A
+(2), A
+0C363H
+AF,AF"
+AF
+(3) , A
+(2), A
+AF
+
+AF, AF‘
+
+1
+r
+
+Www WH Fe S
+
+RST 30H
+
+O. csatoló azonosító
+9. byte: nevhoss2
+1-4. byte: nev
+7. byte: egységszám
+azonos tipusú
+csatoléknal
+csatoló RÁM terület
+
+azonosító
+RAM terület
+
+csatoló
+csatoló
+
+azonositó
+RAM terület
+
+csatoló
+csatoló
+
+azonosító
+RAM terület
+
+csatoló
+csatoló
+
+Input hozzárendelési
+táblázat (1. 6. Függelék)
+Output hozzárendelési
+táblázat (1. 6. Függelék)
+
+Bövitö kártya alaphozzá-
+rendelés (RSZ32, ha van)
+
+oS hivas RAM része
+
+A verem tartalma a funkció-
+kódra mutat, £.kód olvasás
+
+Visszatérési cím -> verem
+
+AF" mentése
+
+P SAVE
+
+P SAVE mentése
+
+UÚ, U1,U2,SYS iapozás
+
+SYS ROM, nem garantált cim
+OS hivás befejezbdő rész
+
+AF: híbakód
+
+P SAVE és felhasználói
+lapozás visszaállítás
+
+AF' visszaaAllitas
+
+“AF: hibakdd
+
+=== [oldal 143] ===
+e. InprPuTt/COuLLrTtTpDPut hozzárecendeleeéess
+
+ 
+
+= eee - = -—-.
+
+! Funkció osztaly I Memóriacim
+
+k ee —— a + = -
+
+= ee ee ey
+
+Eszköz 1
+
+-+~4
+
+me ae a ee a le ee a
+
+1 input táblázat I
+
+ke e sm mm sm ee ne eee eee eee et
+
+me ek ek a ed de ee —c— SS -—2 ene ee eee eee eee eed
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+! Q. Video input 1 GB00 2816 [/ FF: Nem értelmezett !
+ft 1. Billentvüzet input i OBOE 2617 1 01: Billentyüzet |
+; 2. Editor input I 0BO02 2818 1 02: Editor 1
+f 3. Hang input i OBO3 2819 1 FF: Nem értelmezett i
+!t 4, Nyomtató input I OBO4 2820 j FF: Nem értelmezett 1
+fee eee +. = mee 1
+I 5. Kazetta input i 0B05 2821 / O05: Kazetta i
+' 6. Csatolokartya input i OB06& 2822 H 06: Csatolokartya !
+ha ms az az em te te te —— e mm mm om ee ee ee ee ee a a ee = 7 a
+i Csatolókártya input [ 0RB07 2823 ! FF: Nincs kijelölés !
+f kijelölés 1 | OX: X. csatoló (9..3) I
+ke --—-———— ey ee ages ead a le et
+! Cutput tabiazat I
+fe om oe -.. T nils nin pg am a eel
+| 0. Video output ] OBOB 28624 1 00: Video 1
+| 1. Bililentytizet output 7? O8O09 2825 1 FF: Nem értelmezett i
+1 2, Editor output i OBGA 2826 1 02: Editor !
+k Co = -—af = =
+; 3. Hang output i OBOB 2827 1 FF: Nem értelmezett !
+I 4. Nyomtató output H OBOC 2828 | Ú4: Nyomtató j
+ld = er] i Ye
+
+| 5. Kazetta output | OBOD 2829 O05: Kazetta i
+
+ 
+
+ 
+
+ne oe oe oe
+
+06: Csatoldkartya I
+
+-----4
+
+a he oe m
+
+1 6, Csatolékartya output | OBOE 2830
+
+pee ee eee ween at
+
+ 
+
+h — e Fo fe kFK
+
+ 
+
+! Csatolokartya output [| GBOF 2831 FF: Nincs kijelölés I
+i kijelölés i : OX: X. csatoló {6..3) I
+Példák:
+
+1. Az edítor hozzárendelése a nyomtató osztályhoz (az LPRIÍNT,
+LLIST BASIC utasitás a képernyöre fog dolgozni):
+
+OBOC (2828) nyomtató output: O2H (editor)
+
+2. AZ 1. interface csatlakozéban soros vonal, RSZ32 van, a nyomtató
+funkciók a soros vonalhoz kétféleképpen rendelhettk :
+
+2.1. OBGC (2828) nyomtató output: O6H (cs. kártya)
+OBOF (2831) ca. kártya output kijelölés: ÜlH (RS 232)
+
+2.2. OBGC (2828) nyomtató output: B1H (01+80H, 129)
+
+=== [oldal 144] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+7. Kernel funkciók
+
+| Funkcio 1 Köd I Input 1 Output iHibal
+( thexidec | 1 |hex. |
+| HILMEM SET | 71$113IDE= lefoglalandé [DE= eld lefoglalt! FB |
+{ memoria | Fil2dz| mem. méret. | cin I !
+) foglalás 1 ) 1 ; —_
+| EXP DIRECT | 721114{DE= azonositécim i I FDI
+| caat. kartyal F21242| Be FF: input kij.| I |
+{| kijelölést T 1 1 C- agyséágszaám | I I
+[ 176 DIRECT |{ 731115] D= FF: input h.r.! 1] FE
+! I70 hozzá- 1 F3lzá3t S= osztály ! 1 I
+f rendelés 1 l | C- eszköz f I I
+| SLOT_NUM | 741116{DE= azonositecin | { FD |
+] csat. kartyal F41244| C= egysegszan !
+[I I !
+
+pozició olv.
+
+ 
+
+Hibakoödoök :
+OFFH (255) : nem létező hivási kód
+OFEH (254) : 1/0 hozzarendelési hiba
+OFDH (253) : nem létező kártya
+OFBH (251) nincs elég memória
+Blokk I/O hibák:
+OFCH (252) : hibás paraméterezés (LAPJ kijelölése)
+OFAH (250) : hibás paraméterezés (HI MEM átlépése)
+
+Billentyüzet hiba:
+ÖFSH (2459) CTRL+ESC-et (STOP-ot)} nyomtak
+Megjegyzés :
+
+A HI MEM átlépést csak az 1.2 verziójú rendszer ellentrzi.
+
+=== [oldal 145] ===
+Sa. VTLS omemeoeriad
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+tv 1 "Karakter" "Kar."
+sar! 9 1 i ot z 1 3 '!---~ [I 61 I 62 I! 63 47 gor
+Ol 8000 1 8001 | 8002 | 8003 1 - - - 1 803D | BO3E | S03F 1
+} af } + kom maf epee ee fee we
+11] 8040 1 8042 | 8042 1 8043 [| - ~ ~ | 8G7D | BO7E [ 807F J
+2) 8980 1 8081 [ 8082 1 8083 | - - - | @GBD | BOBE |] aORF |
+3f 80CO | 80C1 1 BOC2 | 80C3 | - - - | BOFD 1 80FE 1 SOFF |
+one 1 ja a. aja 1 fea ae ee ae ft ee eh
+4f 8100 | 8101 1 8102 | 8103 [ - - - 1 813D i 813E | 813F 1
+51 8140 1 8141 | 8142 | 8143 I - - - | 817D | 817E | B1i7F |!
+: + 4 4 ~-}-==---+ + 1 4
+61 6180 | 8181 | 8182 | 8183 | - - - | 81BD | S1BE | S1iBF |
+71 eicü | BiCi1 | 81C2 H 8103 1 ~- - - 1 B1FD | S1FE 1 81FF |
+81 8200 | 6201 [ 8202 1 8203 | - - - | 823D | 823E ! g23F |
+91 8246 | 8241 | 6242 | 82435 1 - - - T 827D 1 S27E | S27F |
+101 8280 { 8281 | 8282 | 8283 | - ~- - 1 82BD 1 SZBE [| 82BF 1
+ek + t ten aad 4 4 4
+111 8200 1 Bact | S2C2 | s2C3 I - - - I SZzFD | SZFE 1 82FF |
+a si 4 rem Honi kocog
+lsz teen penn pee | epee penne ee pence en penne nn
+232| BAOO | BAO! | BAO2 | BAO3 | - - - 1 BAZD | BASE | BASF !
+i A ak ak 1 rl abe. L al
+TT 7 TT F TT F TT T oF
+2331 BA4D } BA4i | BA42 | BA43 | - - - | BA7D | BAVE | BATFE |
++ + + + + + teso 58
+234) BASO {| BASi | BAS2 {+ BA&3 | - - - | BABD | BABE | BABF 1
+235 BACO | BACLT | BAC? | BAC 1 - - - | BAFD | BAFE 1 BAFF |
+2361 BBCO | BBO1 | BBOZ 1 BBO3 | - - - ! BE3D ! BB3JE | BBSF |
+2371 BB40 | BB41 | BB42 | BB43 | - - - | BB7D | BB7E | BB7F |
+4 + ; + ‘ =-+ mt + i 59
+2381 BBS¢ ! BBS1 | BBS2 | BBS3 i - - - | BBEBD 1 BERE | HEBF |
+239! BBCY | BBct | BBC2 | BBC3 | - - - | BBFD | BBFE [| BBFF }
+al al L I al
+TT T a E
+
+ 
+
+ 
+
+meet + +
+
+F
+
+GRAPHICS 2 (8 pont/byte, pontsorrend: 12345678 }
+
+tt tevagy am
+
+ 
+
+ 
+
+T I ,
+
+7
+B? ! Rö i. BS | B4 | B3 | B82 Bi BO
+
++ + je ej
+
+FH
+
+í
+1.p. COIZ.p. COI3.p. COlé.p. COIS.p. Col6é.p. COI7.p. COl8.p. CO
+ll Ci ll.
+
+Pe ge —
+
+ 
+
+ 
+
+GRAPHICS 4 {4 pont/byte, pontsorrend: i123 4 )
+
+ 
+
+87 Il 86 BS ' Ba t B3 1 Bz
+
+a TT if
+I { BO !
++ - 4 uja + of he q
+i.p. Col2.p. COI3.p. Cola. Pp. Coit. p. C112. Pp. cits, Pp. Cila. p. Cil
+
+on te ll
+
+T T F
+
+ot
+~
++ — 4
+
+Pe ye ae oy
+
+ 
+
+GRAPHICS 16 (2 pont/byte, pontsorrend: 1 2 )
+BE? Bá
+
+ 
+
+a. ——————-—————9
+
+B2 | Bt | BO 1
+
+ooo
+
+2.p. R !1.p. B í2.p. B !
+
+FR F
+
+BE !
+ale
++
+F
+
+I
+1.pP. I I2.p. I 2.p. C
+ala
+
+ 
+
+=== [oldal 146] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+S. Video hardvenr
+
+PORTOOH {0) iras: borderszin
+F 7 = s s ee eee ee gy mm 7 = 4
+tl B? il 86 i BS | BA | #83 | B2 l Bi | BO I
+k + + s+ fone eee} -—k + -—0 =4
+I I i - I G ! - i R I - i B 1 - !
+k A. i, ee i. - ahs A A —|
+| OB4FH 2895 BORDER DEFS 1 ; Borderszin !
+t ——- - eee
+
+PORTOGH (56) irás: grafikus mod
+p———0 a - a á TT —_— T F -— TT — a úm Al ej Az d emg en 7 ——
+il B7 i BE Il BS il B4 [ B3 1 3582 i Bi | BO I
+bo + maa kes + o ———— ————[ ———5
+I + ! - ! + I + i + i + j 00 2 szin |
+{ ! i | I 1 I 01 á szin I
+1 ! I 1 I | ! 1k i16 szin I
+Joss —— a ell mg 7 am ad. -- ak. elb a eb ————————090
+I OB13H 26835 PORTOG DEFS 1 ; A 6-os I/9 port tükörképe !
+ee ie alo | ee ee ee Ea ell ends ee ee ees 2 ee ee ee egyy egy!
+PORTSSH (89) olvasas: szinkikapcsoló
+
+Pp T - T e ——0—-—— qe Tse sae )
+I B? i 5S I BS 1 B4 | B3 ! EZ | Bi i BO !
+k= * — do ope eee fee ee eee e eee eee eee
+I + 10:F/F I + i + 1 + I + I + f + !
+j li:szin. | i ! 1 | { |
+L. 1 ak ek i vee ede al _ a Fi
+
+PORT60H (96) irás: 0. paletta
+
+PORT61H (97} iras: 1. paletta
+
+PORT62H 198) irás: 2. paletta
+
+PORT63H (99) írás: 3. paletta
+r T 7 _ == “+ ee er
+i 3B? | 386 i BS | B4 | B3 i 62 1 381 | Ba |
+F— je -—§ aj am ms los sms en fe + -— 4
+! - 1 I I - ! G | - ! R I - I B !
+an cc ly me my egy ay az allo ei sd slr mm ay ab A, al. = A. wee od
+
+Szinek
+
+} ! GRAPHICS 16 | GR. 2, 4 | Border |
+[| IGRB!I Szin ! tinta I paletta | I
+! 1 I papir beg ses s o ap
+I i I lhex.1 dec. fhex.! dec.i
+bem on =a posse fee eee} oeee feed
+{0000 | Fekete ! 0 i oo | oF 901 01
+109001 1 Sötétkék 1 1 l 01 [| 1 1 92 i 2 1
+I 0 0 1 9 [ Sötétvörös 1 2 1 04 | á | o8 | 8 !
+10011 1 Süötétlila I 3 } os | &§ 10a - 10 fT
+1 0 1 0 0 } Sététzéld 1 4 110 | 16 1 20 | 32 ft
+Il 0 1 090 1 [1 Sötét kékeszöld | 5 l 111 17 [221 34 ]
+i Ü 1 1 0 [ Sötétsárga 1 6 114 —f 20 128 I! 46 T
+I 0 1 1 1 1 Szürke 1 7 115 | 21 ! 2A 1 421
+I 104090 {| Fekete I 8 140 1 64 1 60 | 128 !
+I1001 1 Kék 1 9 i411 65 | 62 ! 130 [
+[10410 ! Vérés t 10 If 44 1 68 | 6B [ 135 1
+I 1 9 1 1 | Lila | 11 145 | 69 | BA ft 138 ]
+t 1 1 0 0 1 Zöld { 12 I 50 i 8O | AD I 160 |
+111041 { Kekeszdld | 13 1 St | 81 ? ad | 162 1
+tft 1110 (| Sárga 1 14 | 54 |] 84 [ AB ! 168 1
+] 1 1 1 1 1 Fehér | 15 f 58 | 85 t AA | 170 }
+L A A vl
+
+ 
+
+=== [oldal 147] ===
+10. A keéepernyövezérlő regiszterel
+
+ 
+
+ 
+
+See elle já lle lk EE Ea E E eg ly om mm ge + am = —— a a. =F
+
+7 4
+' Reg. |R/WiEgysee!| B7 I! B6 ! BS i Ba 1 B3 [ E2 ] Bi ! BÜ [Hex.[Deci
+
+Hold e — fp szaj s sp lms mm sg ey feslett
+
+ja alk ml ela oe he ae ae he = eee ede em e ly de bee eden ed eee doen fees} —=4
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+! RO of W | kar. 1] iSaszes karakter}/sor - 1 1 63 1 931
+fe em fs se mm mo —e ~~ aan penn f= 4
+RL {| Wo! kar. | (Megjelenített karakter)/sor E 40 1 64]
+beeen bee ss ms pee eee -—— oe eee pont
+! Ro { Wo! kar. | Vizszintes szinkron pozició - 1 1 4B | 75)
+Yo a me a me ee ee of ee a lá ém — r — eee pee fon af
+! RS 7 W tty sor! *Figg. azinkron [| Vigaz. szinkron [ 32 1 501
+! i I kar. I! szélesség (tv sor}j azelesség {kar.) | - J [
+fs sg ej mm 3 fee eee qeess === ek + pod
+! Ra § Wik, sorl - I {Qsszee karaktersor)/kép - t | 4D ji 77]
+pone ee hb eee ee ——0 fond
+fe RS + W itv sor! - I - 1- ht Kiegészítő tv sorszám [ 02 | 2)
+ba fp na fe pen feet eee anon food
+t+ B6 | Wtk. sor! - |! iMegjelenitett karaktersor)/kep [| 3c | GO}
+be ee} 4} ee fee $e eee en má - + poo 4
++R? ! KN ik. sor] -—- 1 Függöüleges szinkron pozició - 1 [ 42 | 66Il
+baw ea a fe eh em ms gos eet e he pad
+i RE [ 4 15 Cursor [* DISPTMGE - |! - 1 Váltott 1! 00 t[ Ot
+i ( ! | eltolási eltolási ] | sor t 1 I
+1 I ! i ! ! I IXÖ: nincsi | i
+! I 1 I ! i I 101: van 1 i j
+fo e eg sm ee i ef me ce ge lf a of mn 4
+{i RO JWitv sort - + - 1 - {tv sorj}/(kar. sor) - 17471 03 t 31
+He cn fi eu a emma lr fl ——— joe he — 4
+i R10 | W ity sort - {| Cursor J Cursor kezdö tv sor 1 03 1 31
+i ! I I fOG: eng. | a karaktersorban I 1 |
+I 1 I | 1Gi: tilt. | I l I
+ber poe ee +- + 7 fo =e + oon
+' Rit ! W itv sor! - [| - 1 - | Cursor befejezté tv gor | 03 j 3i
+ff fe a re oh nae a eof cs ew of cw ee oh - — + + 4
+f Riz IR/W! 10 ! G@ {| KépkezdS memdriacim (HI) | 00 1 01
+foe a mm a fl a a ae hh ss s s ——— - t + 4
+! R13 IRZ/HI F Képkezdő memoriacim ILY 1 GO [ Oi
+he ms s see mm des mm s fel sen e 7 == - + 4
+t Ria | R/S! to 1 0 | Cursorpozició (H) | GE | 24]
+fp mere os af —— e e Á ek —— —0 $ 4
+1 Ri5 !IR/WI ! Cursorpozició (L} ] FF I255]1
+fm sss jos mem sent " - - lm as ———————Ó6
+I RlS6 ! R i to | 0 | Fényceruzapozicic (H) i ! I
+fe jos e ss eh ss sm sm os ek - -— + + 4
+} Ri? | RE 1 Fényceruzapozicié {L) I I j
+Me ce ee es ee ee ee he Tr - ete ie ala ale al
+Szallitote] és tipusváltozattól függöen
+- a * jelü funkciók hiányozhatnak
+- Ri2 es Ri3 csak irható (4)
+PORT7OH (112) irás
+
+r= == T —— -" T " ———
+
+| B? | B6 { B65 | Bá | B3 I! B2 i 381 f Bd I
+
+rh + Sf eerie + A k ek =
+
+I - 1 - | - | Kepernydévezer 1d regiazter cin !
+
+Él epp an e — ada i al — al
+
+PORT?7LH (113) iras/olvagas
+
+pace - Y " FF T 7” r 4
+
+! B7 il ES Il BS 1 Eá4 { 853 f B2 I Bi I BO. 1
+
+o ———hk ak: aie ele ee A al ak d
+
+! Képernyövezérlü regiszter adata I
+
+ 
+
+A
+
+=== [oldal 148] ===
+11
+
+0740
+
+OBL3
+
+mee ee ee we te we ee Se ee ee ge
+
+‘ar at ot
+
+Video rendsszervaltozek
+
+1656
+
+2835
+
+2891
+
+2892
+
+2893
+
+2694
+
+2895
+
+2896
+
+RAM FONT
+
+PORTOS
+
+L MODE
+
+L STYLE
+
+INK
+
+PAPER
+
+BORDER
+
+V FLAG
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+DEFS
+
+960
+
+A 128-223 kédu karak-
+terek pontmatrixa
+
+A 6-o8 port tükörképe
+Bi,BG: grafikus mod
+
+O: 2 szin
+1: 4 szin
+2: 15 szin
+3: 16 szin
+
+Vonalkeresztezési mód
+O: feliiliras
+
+Lt: OR
+
+2: AND
+
+3: XOR
+Vonaltipus
+
+fae pk pk eh pe
+CUR WHE OOD EWE
+
+Aktuális tintaszin
+GR 2, GR 4: paletta
+sorszam
+GR 16: szinsorszám
+
+Aktualis papirszin
+GR 2, GR 4: paletta
+sorszám
+GR 16: szinsorszám
+
+Képkeretszin: PORTOUO
+irága IT alatt
+
+B7: I
+BS: G
+B3: R
+Bi: B
+
+Karakter felülirás Flag
+O: teljes fFfelüliráis
+1: "azintelern" tinta
+2: "átlátszó" papir
+3: mince feliiliras
+
+=== [oldal 149] ===
+12. Video funkciók
+
+eee eee ee ee a salt E all lel S E EE TE TE E FE AE E E E o mm lg mm sm mm lm em ll lm ll mm mm s en lm mm e ke ae hey
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+t Funkció I Kod I input I output |IHibal
+! lhex!deci 1 lhex.i
+ee See ll lb do a lja sz s je s mm sms a e ml s ls s ———ss em ——
+[ VID_CHOUT 1 Gt! Lil C= karakterkéd | I —- &§
+! karakter- ! | | I 1 |
+i kiiras ! ! t I I !
+ho s s s ai sas s s a se ey ea en s ff -— + —= —————0
+! VID BEROUT I O2] 2] DE- kezdöcim I ! i
+b o szövegblokk-)] 1 | BO= hossz 1 ! 1
+i Kiiras i I 1 I | i
+He peepee pee + - toed
+
+BIEXT f O3] 21 B= oszlop (1-16, | | Fa |
+It Sugar poz. i F 1-32,1-64)1 I 1
+I kar. poz.-bai I | C= gor (1-24) | 1 I
+Je ss e sm ma s eg gp s mém mm mmm ee ees s s esse ——— e ———0
+i YMODE 104] 4! ts OO: 2 szin | | F? I
+I grafikus módi I I 1: 4 gs2zin | I I
+? beállítása i [ I 2 : 16 szin | I I
+ha ae a ee cee re er af oe ee +4 a ko ——0
+? CLS { OSf S| I I - Í[
+f képernyo- ! 1 1 I ! I
+I törlés I I F | i I
+bone eee pena peepee anna mm ho = 4
++ BABS i 06! 61 DE= ¥Y koordinata } | Fo I
+' sugar moze. } | I BC= X keordinata | I |
+! abez. koord. | I | I I j
+fn ef lh esz lsd lak az mál s s on ám én
+! BREL ! avi 7] DE- Y elmozdulás | I FO |
+| Sugar moze. | ! i BCz X elmozdulás I | |
+t rel. koord. ! i t ! I I
+elemento a —0 kese —— + Hoe
++ BON | O81 I i ! - t
+i sugar 1 1 i F i |
+! bekapcsolás | 1 ! I i {
+He b em of + —— + — to
+! BOFF ! agi gi! } ! - |
+I sugar t I i ! j I
+! kikapcsolás } i j I 1 I
+s sms ef a peepee += ca a ee erence ers a
+|! FILL ! OA1 idk 1 I - J
+j képkitöltés | | | ! 1 I
+! t | 1 t 1 I
+Je sz s s eee fb fhe + epee
+| DEFC i 081 111 DE= kar. matrix ! i Fe |
+| karakter- j 1 j 10 byte cime | I I
+I definiálás ! l ] C- karakterkód 1 1 I
+b= - + + + vom + + =
+| PAL 1 OC} 121 DE= szinpaletta | I !
+! szinpaletta-f I | 4 byte cime I 1 1
+| -beallitas I 1 1 I | I
+hae ere —— a a a mm vm a e —- i. _ ad all
+Hibakadok:
+
+CFSH (249) : nem létezdé képpontpozicis
+
+OFSH (248) : nem definiálható karakter
+
+GE7H (247] : nem létező grafikus mód (szinmód)
+
+=== [oldal 150] ===
+13. Billentyűzet
+
+PORTO3SH (3) irás
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+r= Tr T — T 7 T T -.
+{ B? | 286 | BS | Ba 1 583 | B82 ! 81 | BO J
+be + + ep oh 1 oe 4
+1 + I + I - | - I Rillentyüzetsor kiválasztása I
+| OB11H 2833 PORTO3 DEFS 1 ; A 3-as I/0 port tikGrkepe 1
+i oe i d. = a
+PORTSSH (88) olvasás
+i 8? | B6 l BS i 64 { BS if BZ | Bt l BO {
+
+ae ails whe ae os ae a a a ws alk am — ale
+
+ 
+
+! Billentyüzetadat (oszlop) beolvasása: aktiv 0 !
+
+-- e ee] [tt] i a ell ör an am am all
+
+Biilentyüzet mátrix
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+pe —— Mell kel la am eltel kg ep a AA i lm s
+iSorl PICTURE | B? 1 B6 | BS 1 B4 | BB 1 B2 | Bi 1 BŐ 1
+k ] hex.!h dec.i I ! i ! f | i I
+kost + + + —— + ém + + a 4
+? 0 | OBEL1! 28971 ! [ " 1 fF ff Ff & TI " I 4 EF A !
+i I 1 Il 4 1 1 tt 1 1 G&G TF 0 ! 2 t 3B 1 S i
+fm ee eh pe pe} + —— + e ——
+t 1 ! OB52/ 28981 = 1 I 1 # 1 ) i ( LA :
+I I I i? IL 3 1 0 I * 1 ü t 9 1 8 IT " J
+bune 4 + pop ee ah : foo oso 4 4
+t 2 | OBS3i 28991 I i " | i $$ | j I |
+t I 1 i rR [ 9 t| AG 1 Z Ft i { W 1 E 1 T If
+- ap ef ee pe pe eee a peer person pee fer e specs ==
+It 3 | 0B541 29001 ! ! l 41 I ! | i } 1
+| ! 1 fu J FP i UY} { f B ii 9 tf I J ] I
+b ? + + pen wep eee nan coon pow en pee ssefe seen
+! 4 1 OBSSI 29011 I i + ; i ! ! | i
+i ! i 1 F t A 1 « | H | N t+ S 4 D t G
+k + -+ pe hh pt tt pater nnn
+| 5 | OBS6E 29021 I 1 ! ! 1 1 1 I
+! I i I FJ t EF 1 GO ! RET |] A ¢t L Gd Kt DEL 1
+freee mera of of re wr rfl sf ef tf fi ef a
+| 6&6 | OBS7I 2903! I 1 I | ! i I I
+t I I I V I Y I LOCKI N JSHIFTI X I C F B
+poe penne e }seeen fen ==+ += + + ma fe hee eh eed
+| 7 | OBSSt 2904fF i _ 1 I i I | 7 FT |
+1 ! I E M ! - (FSPACE! CTRLI ESC ! I \ 1 ALT }
+fo pee fe eect ero vr dja + + + += fone} ———4
+| § | OBS9] 2905] J I t | ! I 1 i
+I 1 t I { LEFTIRIGHTI acc ! FIRE] DOWNI UP [ INS 1
+fe s os s s em tja sze em sm ej em em + + + pees se pre cee foe t+—- Ff
+| 9 } OBSAi 29061 1 ! f i ! F I 1
+
+1 t f ] LEFTIRIGHT! Acc {| FIRE! DOWN! UP | I
+TA TT] al er A. Ae te sds se ls ke es yo sic yy ll
+
+ 
+
+Megjegyzések :
+
+1. A 8-as sor a beépitett botkormány és az elülső botkormány-
+csatlakozó. (A "Kezelési útmnutató"-ban a 13-as.)
+
+2. A 2-es sor a hátsó botkormánycsatlakozó. [A "Kezelési
+útmutató"-ban a 12-esg.)
+
+3. AZ ALT, SHIFT, CTRL és LOCK nem állit be bitet a PICTURE-ben.
+
+=== [oldal 151] ===
+14
+
+Baidilientyurzret kodok
+
+ALTE
+
+T=
+ALTIINy. gombiAlapISHFT|CTRL{
+
+ 
+
+pp ————
+
+ 
+
+gomb! AlapiSHIFT!CTRL!
+
+eee ee
+
+Pt NY.
+
+e-t
+
+AA
+
+i
+uj.
+
+ 
+
+ 
+
+ee ee ep re ee ee ee
+
+emp el ee ee t ee ae = + —— ee ee + ee ee ee -
+
+QANM TD Oe POsecHOVUUGOhAA PP OogDgo
+
+seco catea es INTO COONS eS POON
+
+ee ee ml dog]
+
+AM ctMOOoVoAo OmMHeOVUUMOVUAB I MAgDgYpa
+
+DADAVDADAMAPODAAMAHANA TS PAO ae
+
+ee ce ee qe ee a e e ee e wma Nn
+‘1 1 oxnfiO7
+
+We ADAM hADMA POM? RUdohda | OOK ed
+
+AACA A AN OT ! WP CAP P- P-n ! OCR
+
+—— = a ee e — — QT rr Ba me
+
+Ona OO Pee OUNmMoaAbVwWaA aoaapso
+
+ame aa I SOUND AS 1 Om i
+
+s s ee ee ee oe ee ee ee eee ee
+I | an i
+1 jos i ‘
+
+o- Fre BN Hee de tt He eee ee Pee Gy xx EA
+1 E 2 DADA LL H
+t FOHADGdATIUT So ty
+
+OANA TOM Oo Bae ee re!) Pe Poo LOR
+i boiawoen | o 74 a4 +4
+I I 1m
+
+ce ee ee ee —— el di mm me ee ee —-
+
+me mm és ll s lk ee ee ee ap
+
+SHAT OOM UOMROHNMN TOP OAt POnnantnnwt@
+
+QOD OMODMOMOMGVVOCUOUOUODL PaAaAnaAAaAnAG
+
+— PO ed i ee ee
+
+ál
+
+meee a pm ám s re ee ee ed áá
+
+61
+62
+63
+o
+
+65
+66
+67
+6&
+69
+5A
+6B
+6c
+6D
+
+vm ee ee ee ee ee e ——
+
+LOUOWEO THOS HEZOLOGMR DS ax aN
+
+cm me me meme me mee ee
+
+me eee ee ee
+
+ 
+
+am ee ee ee
+
+ee ee o o a —
+
+— e e s — — e —-
+
+— a E ee —
+
+a s ee ee
+
+ 
+
+a eee 9
+
+ks ee 4
+
+I 1
+
+} 1
+
+] 1
+
+! 1
+i
+
+i i
+
+i I
+
+i 1
+
+i 1
+
+J UO TD HAI
+
+I BIE GE: EE
+
+I E
+
+I I
+
+I L
+
+I E
+
+I I
+
+i I
+
+i I
+
+Wp ie ee ee e uj
+
+1
+
+1
+
+il 0- H
+
+{met a a El
+
+I+ a Umm
+
+I 0 oF 0. Gere
+
+PG DAG kz
+
+ee ee ee al
+
+ee eee al
+
+I
+
+1
+
+I
+
+I
+
+4 1
+
+I I
+
+I I
+
+!
+
+4 ng
+
+! Or-sDAdOT
+
+1
+
+1
+
+1 I
+
+4 I
+
+rt
+
+k
+
+E
+
+I
+
+tow rte +
+
+I
+
+1 Ő
+
+Par H
+
+Peay = eid I
+
+[E] TOLE
+
+Pan &BOon aD
+
+140 DAatIh-a
+
+Fk Le ee — 4
+
+a ee ee all
+
+Meg jegyzések :
+
+A ködök hexadecimálisan vannak megadva.
+
+=O.
+
+OFFH-ra.
+
+CTRL @s LOCK Gnmagaban nem generál ködöt.
+
+ha a HOLD DÍS változó
+S. A botkormány tartós müködtetése által kíváltott auto-
+
+ALT,
+eat váltakozva adja az egyidejüleg működtetett
+
+TRL:ESC beaállitja aá STOP FLAG változót
+írányokhoz tartozó kódokat.
+
+SHIFT,
+
+A CTRL+P leallitja a TV-Computert,
+3. A Ss
+
+A
+
+rep
+
+i
+2.
+ú .
+
+=== [oldal 152] ===
+15. Billientyuzwetkezelt szoftver
+
+Rendazervaltozaok
+6816 2838 STOP FLAG DEFS 1 ; FF: STOP-ot nyomtak
+3 00: nem volt STOP
+OB51 2897 PICTURE DEFS 10 : A billentytizetmatrix leker-
+; dezése (1. 13. Függelék)
+ÖBEB 2907 OLDPICT DEFS 10 : A billentyüzetmátrix előzö
+: lekérdezése
+OB65 2917 DELAY KEY DEFS 1 : Auto-repeát késleltetés
+
+20 ms-os egységekben
+
+ÖBSS 2918 LOCK KEY DEFS 1 ; CAPS/SHIFT/ALT LOCK állapot
+: BO=1: CAPS LOCK
+
+Bi=1: SHIFT LOCK
+
+B3=1: ALT LOCK
+
+OB67 2919 RATE_KEY DEFS 1 - Auto-repeat item
+; 20 mas-os egységekben
+
+OBée 2920 HOLD DIS DEFS 1 : HOLD mód tiltás
+; FF: CTRL-P hatástalan
+; O00: CTRL+P leailitia a
+i T¥-Ceamputert
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Funkciók
+
+; Funkció + Kód ! Input I Output [Hiba |
+! lhegtdedci I lhex.!
+i KBD_CHIN i 9111455 | C= karakterkod l F5 1
+I karakter I { I 1 ] !
+I beolvasas 4 ! I ! I |
+i KBD STATUS | 9341471 | G= FF: karakter | - |
+| bill. allapot} I i | var beol- | |
+i beolvasas I 1 I I Vasasra I i
+L = ee ke al k mh allj ell ak ala aa
+Hibakód:
+
+ÓFSH (245) : CTRL+ESC-et (STOP-ot) nyomtak
+
+=== [oldal 153] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+16. Editor fumkeoidk
+p——————— T T - - 9 —— — 9 a a 9 19 ag ha ea sag 9 reg gs Tag eg ls a Sem S A
+i Funkció | Kod | Input I Output }Hiba |
+1 fnex| dec} | fhe. !
+-—— + + $e ee ep eee newer eseeret crn =7
+{ ED INT |} 20] 321 i F !
+I IT rutin ] AUÜIJ 1601 ! 1 I
+! (cursor vil-l I | | 1 I
+{ logtatas} | t j I i I
+pence re a ee ee $m + — oe eee ete
+| ED_CHIN f ALI1611 | C= Karakterkod | t
+j karakter I ! 1 | 1 i
+I beolvasas i I 1 I ! i
+kae — + + : —— a ee ee ee ee et
+f ED CHOUT | 21! 33t Cs karakterkéd | ! t
+I karakter | I ! { i i
+i kKitras j I i i 1 i
+k - + da + poco es essen sere fee
+| ED_BKIN | AZI162! DE= kezddcim I i |
+i szévegblokk | ! | BC= hossz I 1 |
+| beolvasas I ] I I I |
+} -— + 4 + faces eee eee eee feed
+t ED_BKOUT I 221162] DE- kezdöcim I | f
+| szdévegblokk | ! ] BO- hossz 1 i |
+| KLiras ! ] i I [ i
+F - + o> Sneed
+I] CPOS } 231 353 B- oszlop (1-16, | ; Fe |
+{ cursor 1 A3t1463] 1-32,1-64}] 1 |
+{ pozicionalas| t j C= sor (i-24) | i t
+foe eee eee een fer Ht - + ee eee ee ed
+! CFIX | 24! 36) i ! |
+] cursor poz. 1 Adllé4l { I I
+{| megjegyzés | ! l { I I
+du min ai ai. - ak ai. er ee ee ee eee ee a
+Hibakód:
+ÜFEH (246) nem létező cursorpozició
+Szerkesztési parancsok:
+RIGHT, CTRL+D (04H, 4): cursor jobbra
+LEFT. CTRL+5 (13H, 19): cursor balra
+UF, CTRLt+E (OSH, 5): cursor föl
+DOWN, CTRL+% (18H, 24): cursor le
+CTRL+I (O9H, 9): tabulalas
+CTRL+K (OBH, 11): sormaradektérilas
+CTRL+N (QEH, 14): sorbeszuras
+CTRL+Y¥ (19H, 25): sorkiejtés
+INS (16H, 22): Karakterbeszuras
+DEL (O8H, 8): karakterkiejtes a cursortél baira
+SHIFT+DEL (O7H, 7}: Karakterkiejtes a cursor alatt
+
+Csak input funkcioéhivagoknal :
+
+ESC
+RETURN
+
+(1BH, 27):
+(ODH, 13):
+
+4 begépelés megszakitasa
+a begépelés lezárása
+
+Csak output funkcióhivásoknál:
+
+RETURN (ÜDH, 13):
+
+CTRL:J (0AH! 10):
+
+cursormozgatás a sor elejére
+cursor le, a kep alján rollozás
+
+=== [oldal 154] ===
+17. Hamszkeltes
+
+PORTO4H (4) irás: PITCH alsó B bit
+
+PORTOSH (5) irae
+
+{eee ee a -—= ee ee eee LS SS a el EY AS eS ke em mmm mm
+! B? ! Bs I ES I Ba Il B3 | #82 I Bi i BŐ i
+Md la a ae a fe ee in ee i a i a a ee en ee A |
+
++ ! + tHang ITfHangjel | PITCH felsd 4 bit 1
+1 t I t I I
+! i jö: tiiltia: tilt! I
+; F 1: eng ki: eng I I
+
+a egg ep mmm alk ml ie kr ss ll re a A mm ey ee el EE o_o of
+
+| OB12H 2834 PORTOS DEFS 1 =; Az 5-6s I/O port tiikérkepe j
+
+e TT TT TT TT TT A A e o zo e kizíoznlni =
+
+ 
+
+PORTOGH (6) irás
+
+ee lee ee ee
+
+ 
+
+; ee eg
+
+ 
+
+ 
+
+87 ! BS I BS i Ba | B3 i B2 t Bl 1 BO i
++ I - i Hang amplitúdó | + | + i
+he ml sk ee a re le i ln eg a B B a A, ss aj
+' OS13H 2835 PORTO6 DEFS 1 : A 6-os I/0 port tükörképe t
+
+sue me ma lS i a
+
+PORTSBEH (91) olvasás
+
+fs. pe A i a SS nf SS SS FH
+
+' B? + 8 B6 I BS I 34 i B3 i BZ b BL | BU 1
+
+: - - ! - - - 1 - - ~
+:  Hanggenerátor frekvenciaosztó törlés (pontos idözitéshez) J
+
+kh ee ak "e e -—-lt-—-—.—-————— de a a mom sm a]
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Rendszerváltozók
+OB14 2836 SND_ACTIVE DEFS 1. ; FF: az elöző hang nem
+: fejeződött be
+OB15 2837 SND_IR@ DEFS 1 ; FF: TONE_SET megezakitja
+‘ a folyamatban lévő hangot
+0571 2929 SER OK DEFS 1 ; FF: a hangkeltés elrontotta
+: a soros vonal orajelet
+Funkcióhíivás
+! Funkció I Kód ! Input I Sutput }Hibal
+1 lhexldec! I [hex.l
+pee ee ee a fl ee a E TT a le a aj am sm mm mó
+' TONE SET i 33] S1| GE= PIICH érték ! ! Í
+
+1
+I
+I
+
+' hang meg-
+
+I C= ampl. (0-15) } I 1
+t szólaltatás !
+I
+
+1
+I B= iddétartam ! ! j
+i !
+
+Ae mm lh EN ún a e e em
+
+(20 ms egys.)] ! I
+
+ 
+
+f=195312.5/(4096-PITCH)
+PITCH=O ... 4095 (4095: nincs hang)
+
+=== [oldal 155] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+183 . Nyomtatokezetes
+PORTOLH (1) irás: nyomtató adat
+
+PORTOSH (6) irás
+i B7 1 Be | BS | Bá {| B3 | B2 | Br | BO |
+{Nyomtatol - ! + F + 1 + I + ! + | + !
+|/STROBE t { I | I I I 1
+F al da aka als hw wae i. ak f
+ij OB13H 2835 PORTO6 DEFS 1 =; A G-os I/O port tikérkéepe 1
+L ee |
+
+PORTSSH (B9) olvasás
+F 7 T T ~ 7 T — — ep — —— A il —-——
+I B7 I Bő 1 BS ! Ba i B3 l BZ I B1 ' . BO |
+L d ak ala ala + + .---.--.-. L.L d 1 LL 1 h
+INyontatól + 1 + | + I + I + I + 1 + |
+| ACK 1 I | I 1 I | 1
+L a kk L 7 d. A co i ce oe os mm al
+
+Nyomtató funkciók
+F e. T - - F -—
+f Funkció ili Kód ! Input i Output |Hibal
+! Fhexldeci | lhex. |
+F + + + + === —4
+| FAR_CHOUT 1} 411 651 C= karakterked | 1 I
+| karakter I 1 I 1 t j
+| kiirds I I | { j |
+F je + = + + 1
+| PAR_BROUT [ 42] 661 DE- kezdücin I I I
+| szHvegblokk | | l BC- hossz t | I
+[ kiiras I t 1 ! l I
+
+ 
+
+=== [oldal 156] ===
+1a. cKavrtzettrakezeles:
+
+PORTOSH (5) irás: motorvezáarlét
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+f T T T T T T — e a e— 9 e e— ——c—c—]
+
+t #8? f B86 I] 85 t BA t B3 ! 82 | Bi i BO |
+
+| Jobb- tBal- 1 + | + ! + 1 + 1 + I + |
+
+foldali ioldaii {| j I I | t I
+
+lcegatl. jcsatl. i ! t 1 ! ! 1
+
+| OB12H 2834 PORTOS DEFS 1 : Az 5-ös I/0 port tükörképe |
+PORTSOH (BÓ0) irás: magnó kimenet
+
+F --- T + ¥ T T 7 1
+
+| B? i B6 i BS I B4 i B3 i 52 1 Bl ! BO !
+
+Po d - I - b ee
+
+b al al a a. al A A d
+PORTS9H (89) olvasás
+
+t By {| Be |! BS {| B4 | B3 {| B2 f B1 | BO |
+
+I 4 E + iMagne 1 + t + ! + | + 1 + 1
+
+! ] adat ! ! i ! i
+
+Rendszervaltozok
+
+OB6B 2923 BUFFER DEFS 1 ; =0: nem pufferelt file
+
+; (50: pufferelt file
+
+OB6C 2924 REMRED DEFS i ; Motorvezérlée:
+
+; OOH, 0: olvasás: B, irás: J
+
+; 40H, 64: olvasás: J, irás: J
+
+; 80H, 128: olvasás: B, irás: B
+
+; OCOH, 4192: olvasás: J, irás: B
+
+QB6D 2925 PROTECT DEFS 1 ; =G: nem irasvadett file
+
+; ( 0: irásvédett file
+
+OB6E 2926 EOF DEFS 1 ; «90: file-vég, nincs több byte
+
+OBGF 2927 MUDDLE DEFS 2 ; A CRC számítás kiinduló ertéke
+
+=== [oldal 157] ===
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+20. MKaxrtettafunkcidk
+F 7 rT —— SS Ee a ay
+i Funkcid | Köd I Input i Output {Hiba{
+] {hex Idec | 1 | hex. [
+F $e} i be eee eee eee + 1
+] CAS CHIN ] D1I209I 1 C= a beoclvasott | I
+I byte- ! I 1 t byte I !
+I beclvazás i J ! J i 1
+pe rc ————— s s sz mmm a ae s mmm afa sm sas sm ja ke - + 4
+| CaS _CHOUT j 511 411 C= a kiküldendö I | I
+tj byte- I ! I byte I ] 1
+i kiiras 1 I I ! 1 !
+i +} + + fond
+| ©AS BRIN 1 D2)210] DE- kezdöcim i 1 I
+i biokk- 1 i ] BC= hosaz i i i
+] beolvasás i I I ! i I
+me —————"— — F + tk + =|
+I CAS EKOUT I SZ! 821 DE= kezdécim f ! I
+Il bBlokk- 1 | | BC= hossz 1 t I
+| kiiras ! I 1 F i |
+F — + fot t an pe —8
+i CAS OPEN I D3I2111 DE- a file-nev | DE= a modogitott | 1
+I megnyitás | ! ! kezdtc ime I (megtalált) 1 |
+ij olvasásra ! 1 ] {hossz+NEV) I file-név cimel !
+b= + $e b —t =
+i CAS_CRTE I] 531 831 DE= a file-nev 1 DE= a médositott f 1
+ft megnyitás ! | 1 kezdicine ! file-név cimel
+| irágra 1 1 i (hossz-NEV) 1 I F
++ + + + += pone
+| CAS CLOSE í i f I | I
+{ olv. file: } DA121271 I I |
+] irt file: t 541 841 1 I |
+} + + + tem torne
+| CAS VERIFY I 251/2131 DE- kezdüöcim I 1 f
+| blokk i I | BC= hossz 1 i 1
+| komparalas | 1 i I ! F
+E A 1 sgt J. ee ee ee ly ee a ee ad
+Hibakédok :
+
+QECH (236) file-vég jelzés
+
+OEBH (235) : nyitott file esetén újabb file nyitás kisérlete
+
+OEAH (234) : CRC hiba
+
+OEGH (233) : nines nyitott file
+
+OESH (232) : ellenörzési (komparálási) hiba
+
+OEVH (221) : belsö hiba ítúl sok karaktert akartunk kiolvasni)
+
+OESH (230) á védelem megsértése
+
+CESH (229) hibás blokk sorszam (szektorazam)
+
+=== [oldal 158] ===
+21
+
+Adatkiküldés (USART):
+
+USART üzemmöd-kiválasztó utaszitás
+
+FORT10H
+PORT 20H
+PORT30H
+PORT40H
+
+(16)
+(32)
+(48)
+{64}
+
+soros vonal
+
+irása
+irása
+iraga
+irása
+
+a “belsé reget"
+
+csatlakozó)
+csatlakozó)
+csatiakozó)
+csatlakozó)
+
+parancs után:
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+PORT1iH (17) iráza (0. csatlakozó)
+
+PORTZ1H (33) irása (1. csatlakozó)
+
+PORT31H (49) irása (2. csatlakozó)
+
+PORT41H (65) irása (3. csatlakozó)
+
+TT " TT ol 7 T Y -
+
+fe? 1 Be | BS | B& | BS | B2 [1 Bi 1 80 [I
+! STOP bitek sz. Paritag ! Karakterhozsz ! Orafrekvencia |
+b 00: - I XO0: nincs par.1 00: 5 bit 1 00: - F
+1 91: 1 STOP i I 01: 6 bit {7 O1: Ix {tilos)]
+110: 1.5 STOP | O1: páratlan ] 10: 7 bit |} 10: 16x I
+I 11: 2 STOP ! 11: paros 1 LL: 8 bit I 11: 64% I
+USART parancsok:
+
+PORT11H (17) irása (90. csatiakozó)
+
+PORTZ1H (33) irása (1. csatlakozó)
+
+PORT31H (49) irása (2. csatlakozó)
+
+PORT41H (65) irása (3. csatlakozó)
+Tr T =" Tt T T T T 1
+1 B7 1 Be T BS 1 B4 1 B3 T B2 {| #81 | BO 1
+ro” . 1 Belat | RTS {Hiba- IBRFAK IVétel [! DTR ladas |!
+I I RESET ! "BE" [ törlésikiküld.i eng. ! "BE" ! eng. |
+L e A als ms vam ee oe ie A I ee ee ee ee eel
+Adatbeclvasag (USART):
+
+PORTLOH (16) olvasása (0. csatlakozd)
+
+PORT2Z0H (32) olvasása (1. csatlakozó)
+
+PORT3OH (48) olvasása (2. csatlakozó]
+
+PORT40H (64) olvasása (3. csatlakozó]
+Allapotbeolvasd4s (USART) :
+
+PORTLLH (17) olvasása (0. csatlakozó)
+
+PORT21IH (33) olvasása (1. csatlakozó)
+
+PORT31H (49) olvasása (2. csatlakozó)
+
+PORT41H (65) olvasága (3. csatlakozó)
+i py i see | BS { BA 1 83 | Bo | BL i BO I
+, A + + jos ——0 + t 4
+I DSR BREAK [Keret- FTúlfu- iFaritás-l[Adópuf . [Karakt. lAdásra I
+! j vételet hiba | tas | hiba l üres 1 jött 1 kész I
+L A A. all. ole ‘| pm pr om, rm i a yy: a ey va sm ma!
+
+ 
+
+Csatlakozó jelek:
+
+102
+103
+104
+105
+106
+107
+108
+109
+111
+
+e,
+BO boos oe en ee ee
+
+_
+
+WOON S lhl
+eel nae eet eet nee Tee ee ve er
+
+föld
+
+adott adat {kimenet)
+vett adat (bemenet)
+
+az ellenállomás karaktert küldhet (RTS, kimenet)
+CTS bemenet, "BE" állapotba kell kötni
+az ellenallomas karakter fogadására képes (DSR, bemenet)
+"BE" állapotú kimenet, nem hasznalt
+
+a 104-et kapuzó bemenet,
+
+"BE" állapotó kimenet
+
+"BE" állapotba kell kötni
+
+=== [oldal 159] ===
+wo. A szoros vonal kezelése
+
+van inicialízálva
+OFFH: a hangfrekvencia nem jó
+
+OB69 2921 BAUD DEFS 1 ; Vonali sebesseg
+
+; Ö: 116 baud
+
+: 1: 150 baud
+
+; 2: 300 baud
+
+; 3: 600 baud
+
+: 4: 1200 baud
+
+; 5: 2400 baud
+
+; 9: 4800 baud
+
+; 7: 9600 baud-
+
+; 8: 19200 baud
+
+F
+
+GOB6A 2922 FORMAT DEFS 1 ; USART üzemmód
+
+; ÖFEH (238): 8 bit, 2 STOP, nincs p.
+; OFEH (254): 8 bit, 2 STOP, paros p.
+; ÜDEH (222): 8 bit, 2 STOP, ptlan p.
+: OSEH (110}: 8 bit, 1 STOP, nincs p.
+; OVEH {126): 38 bit, 1 STOP, páros Pp.
+; OSEH (94): 8 bít, 1 STOP, ptlan p.
+; OEAH (234): 7 bit, 2 STOP, nincs p.
+; OFAH (250): 7 bit, 2 STOP, páros oc.
+: ODAH (218): 7 bit, 2 STOP, ptlan p.
+; 06ÁH (106): 7 bit, 1 STOP, nincs p.
+; O7AH {122}: 7 bit, 1 STOP, paros p.
+; OSAH (90): 7? Bit, 1 STOP, ptlan p.
+OB7i1H 2929 SER OK ODEFS 1 ; 0: a hanggenerator a soros vonalhoz
+t
+
+1
+
+;
+
+A soros vonal funkciói
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+foo T " to T 1
+It Funkcis | Kod | Input i Output {Hibal
+1 jhexlideci I lhex.lt
+| SER_CHIN i E1!225! | C= karakterkéd | !
+| karakter 1 ! I | 1 ]
+J beolvasás | I t | 1 I
+b a al em cr a mén ma 4
+! SER_CHOUT I 611 97{ C= karakterkod | J !
+| karakter | ! I | { |
+| kilras i I I | I i
+| SER_BKIN { E21226) DE= kezdécim 1 i !
+{ blokk i l | BC= hossz I 1 i
+| beolvasás 1 1 t ! H |
+| SER_BKOUT i 621 98] DE= kezd&cim 1 I J
+I blokk | t I BC- hossz | | 1
+| kiiras 1 1 1 1 I |
+F + fee + oe} =f
+| RS232 SET 1 E312271 1 1 - |
+i seb. és USARTI 631 991 | j t
+[ inicialízálási | I 1 I :
+| RS232 CLOSE | E4f 226! 1 j - |
+I nincs i 641106001 I | !
+I hatása  [ 1 I ! ll
+Hibakdédok:
+OF4H (244) : aritaAshiba
+OF3H {2433 : kerethiba (nince STOP bit}
+
+OF2H (242) : thlfutas {nem tértént meg a kioclvasd4s a kévetkezt
+karakter vétele elttt)
+
+=== [oldal 160] ===
+2.
+
+A rendsszerváltozásílk
+
+összefrfogslalaása
+
+Operációs rendszer:
+
+0003 0003 (1)
+BASIC:
+
+000£ 0008 (25)
+
+0021 0033 {t4)
+
+Operációs rendszer:
+
+0030 0048 (8)
+0036 a056 (8)
+0040 0064 (192)
+0100 0256 (1600)
+O740 1856 (960)
+Rendazervaltozor:
+OBO0 2816 (8)
+CBO0B 2824 {8)
+DBLO 2832 (1)
+GB1ii 28233 (1)
+OB12 2834 (1)
+ÚR13 2835 {1)
+OB14 2836 (1)
+OB1S 2837 {1)
+OB16 2838 {1)
+OB17 2839 {2)
+OB19 2841 (2)
+OBIE 26843 {4)
+OB1C 2844 {i}
+OB1D 2845 {2)
+OB1F 2847 (1)
+OB20 2848 (1)
+OB2ZL 2849 (1)
+OB22 2850 (1)
+OB23 2851 (20)
+OB37 2871 {10)
+OB4t 2881 (8)
+0B45 2889 (2)
+Video:
+OB4B 2891 (1)
+OB4C 2892 (1)
+BAD 2893 (1)
+OB4E 2894 (1)
+OB4F 2895 (1)
+OBS0 2896 (1)
+Billentyüzet:
+OBS1 2897 (19)
+OBSB 2907 (10)
+OBES 2917 (1)
+OB66 2914 {1)
+OB67 2919 (1)
+OoB68 2920 (1)
+
+P_SAVE
+
+USRTAB
+
+ÖS ENTRY
+IT ENTRY
+
+IN TABLE
+OUT TABLE
+INT DES
+PORTO3
+PORTOS
+PORTOG
+SND_ACTIVE
+SND_IRG
+STOP FLAG
+ST_LIMIT
+HI MEM
+PRAM
+
+EX DEF
+INTINC
+IRÓ STAT
+INT FLAG
+WARM FLAG
+COLD FLAG
+INFUNC
+OUTFUNC
+INT_EXIT
+STACKT
+
+L_MODE
+L_STYLE
+INK
+PAPER
+BORDER
+V FLAG
+
+PICTURE
+OLDPICT
+DELAY_KEY
+LOCK KEY
+RATE KEY
+HOLD DIS
+
+Memórialapozás
+
+BASIC hibakezelt rutinok
+
+EXT utasitasok cimtablazata
+
+A funkcidhivasok belépési pontja
+IT beliepési pont
+
+A csatolókártyák azonosítói
+
+ASCII képernyü
+
+A definiálható karakterek mátrixa
+
+Input hozzárendelési tábla
+
+Output hozzarendelési tábla
+Cursor ÍT általi kiszolgált eszközök
+A 3-ag I1/7/0 port tükörképe
+
+Az 5-ös I/O port tükörképe
+
+A 6-os 170 port tükörképe
+
+FF: hang van folyamatban
+
+FF: az új hang megszakitja a régit
+FF: CTRL+ES¢C-et nyomtak
+
+A verem aisd hatara képkitdltésnél
+A legmagasabb hasznalinato RAM cim
+O/FF: az U3 RAM jé/hibas
+
+Bévith kartya ailaphozz4rendelés
+
+-IT szamialo (20 ms)
+
+Csatolókártya IT engedélyezés
+
+IT kiszolgálás alatt
+
+FF: "meleg" RESET van folyamatban
+FF: a "meleg" RESET tiltott
+
+A funkcióhivások kezdö programrésze
+A Funkcióhivások befejező része
+
+Az IT alprogram befejező része
+Verem-mutató ideiglenes tárolás
+
+‘Vonalkeresztezési mod
+
+Vonaltipus
+
+Tintaszin
+
+Papirazin
+
+KRépkeretszin
+
+Karakter felülirási flag
+
+A billentyüzet mátrix letapozgatáza
+A billentyűzet előző letapogatása
+Autaq-repeat késieltetés (20 ms}
+CAPS/SHIFT/ALT lock Allapot
+Auto-repeat ismétlési ütem (20 ms)
+FF: CTRL:P hatástalan
+
+=== [oldal 161] ===
+Soros vonal:
+
+OB69 2921 (1)
+ÜBSA 2922 (1)
+Kazetta:
+ÖBEB 2923 (1)
+GESC 2924 (1)
+GBESD 2925 (1)
+OBGE 2926 {1)
+OB6F 2927 {2}
+Soree vonal/hane:
+OB7E 2929 (1)
+Munkaterületek :
+OB72 2930 (15)
+OBBL 2945 [100)
+OBES 3045 (19)
+OBEF 3055 (1)
+OBFO 3056 (606)
+OC£Z48 3656 (B0)
+CESS 3736 (20)
+QEAC 3756 (2648)
+16AC S804 (835)
+BASIC:
+1703 58291 (1)
+1707 5865 (1)
+1708 5896 (1)
+1700 53900 (2)
+1720 5920 (2)
+1722 5922 (2)
+i/Z4 5924 (2)
+1726 5926 (2)
+1732 5938 (255)
+1831 6193 (255)
+1900 6592 (7)
+isc? 6599 (7)
+iSCE 6606 (17)
+19EF 6639
+
+BAUD
+FORMAT
+
+BUFFER
+REMRED
+PROTECT
+EOF
+MUBDLE
+
+SER_OK
+
+PROGID
+
+NEW
+
+AUTO
+TYPE
+START
+VLOMEM
+TEXT
+CHAIN
+
+TOP
+
+COMMAND
+BUFFER
+hi
+
+Y
+FILENAME
+
+A soros vonal sebessépe
+USART üzemmód
+
+O/FF: nem pufferelt/pufferelt file
+A motorvezérlés kijelölése
+
+O/FF: nem védett/védett file
+
+FF: file-vaág
+
+CRC alapérték
+
+0/FF: az órafrekvencia jó/nem jó
+
+Video munkaterület
+
+I/O munkaterület
+
+Billentyüzet munkaterület
+Hang munkaterület
+
+Kazetta munkaterület
+
+Editor munkaterület
+Programazonositó, "TV COMPUTER
+BASIC™ (csak az 1.3 verziótól)
+Rendszer veremn
+
+BASIC munkaterület
+
+Ha értéke FF, parancs módban
+torlédik a BASIC brogram.
+
+4utoinditas
+A szimbolumtabla aktudlis elemének
+tipusa
+
+AZ aktuális BASIC sor kezdtcima
+
+A BASIC terület kezdete
+
+A BASIC program kezdöcime
+
+A szimbólumtábla utolsó elemének
+cime
+
+A szimbólumtáblia következő
+szabad byte-janak cime
+
+AZ aktualis BASIC utasitassort
+tartalmazó puffer
+Puffer az INPUT utasitas számára
+
+Lebegüpontos aritmetikai regiszter
+LebegSpontos aritmetikai regiszter
+A név nélkiili LOAD, SAVE, OPEN atb.
+innen veszi a file nevet
+
+(normal esetben tres string).
+
+A BASÍC terület kezdete
+
+=== [oldal 162] ===
+mete ABA Nhibpakoodok Sessa 7rvefozF=lialaAsa
+KERNEL-hibak :
+
+QOFFH (255) Nem létez6 funkcioszam hivagsa
+
+OFEH (254) Ifo hozzarendelesi hiba
+
+OFDH (253) Nem létezé kartya
+
+OFCH (252) Hibas biokk I/0 paraméterezeéese (LAP)
+
+OFBH (251} Nincs elég memoria
+
+OFAH (250) Hibas blekk I/O paraméterezése (HI_MEM átlépés)
+Videohibak:
+
+OFOH (249) Nem létezö zugárpozició
+
+ÜFSH (248) Nem (ujrajdefiniadalhaté karakter
+
+OF7H (247) Nem létező grafikus mód (azinméd}
+Editorhiba:
+
+OFGH (246) Nem létező cursorpozició
+Billentyüzethiba:
+
+OFSH (245) CTRL+ESC-et (STOP-ct} nyomtak
+
+Soros vonali hibak:
+
+OF4H
+OF3H
+OF2ZH
+
+(244)
+(243)
+(242)
+
+Paritashiba
+Kerethiba inincs STOP bit)
+Tulfutas: a vett karaktert felülirtai a következt
+
+A kazettakezelés hibái:
+
+OECH
+OEBH
+OEAH
+ÜESH
+OESH
+OE?7H
+
+OE6H
+OESH
+
+(236)
+(235)
+(234)
+(233)
+(232)
+(231)
+
+(230)
+(229)
+
+Megjegyzés:
+
+File-vég hiba, olvasás az utolsó karakter után
+Megnyitási kisérlet nyitott file eseten
+
+CRC hiba, a szalag sérült vagy rosszul olvasható
+Nincs nyitott file
+
+Ellentrzési hiba komparálasnál
+
+Belsö hiba. nem megfelelő számú karakter olvasasi
+kisérlete
+
+A védelem megsértése
+
+Rossz blokksorszam (szektorszam)
+
+A HI MEM átlépést csak az 1.2 verzioju rendszer ellentrzi.
+
+=== [oldal 163] ===
+ 
+

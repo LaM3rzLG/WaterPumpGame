@@ -1,0 +1,430 @@
+# Kos_Geza_assembler_leirasa
+# Forrás: sources/docs/pdf/05_fejlesztoeszkozok_nyelvek/Kos_Geza_assembler_leirasa.pdf (OCR, tesseract hun+eng). A kódlistákban és táblázatokban OCR-hibák lehetnek.
+
+=== [oldal 1] ===
+=e
+
+újra a rendszert a D3FB címen.
+Példa: az 5678h címen akarjuk a forrás-
+programot elhelyezni.
+
+s 1AB8 7B 56
+G O3F8
+
+A töréspontokat a rendszer úgy kezeli,
+hogy RST 28 utasításokat ír a megfelelő
+címekre és átírja az RST 28 ugrótáblát a
+0. lapon. Ha RST 28 utasítást írunk a
+programunkba, az is töréspontként fog
+viselkedni.
+
+CARL
+1. BEVEZETŐ
+
+A TVC-ASSEMBLER a 64 kilobyte-os TV-
+COMPUTER-hez készUlt; 32 k-s gépen a
+futtatásához megfelelő RAM bővítés szük-
+séges. Perifériaként kazettás magnetofon
+és printer használható.
+
+A programot a gép bekapcsolása után a
+LOAD paranccsal tölthetjük be. Sikeres
+betöltés esetén az alábbi üzenetet kap-
+juk: ;
+
+TVC-ASSEMBLER 1.1
+(C) 1987 Kós Géza
+Ok
+
+A továbbiakban ismertetendő utasításo-
+kat a BASIC-ben megszokott full-screen
+editor segítségével gépelhetjük be; 128
+karakternél hosszabb sor esetén a rend-
+szer a fölösleges karaktereket nem veszi
+figyelembe.
+
+Ha valamilyen okból a RESET-et használ-
+juk, a rendszer a RUN paranccsal újrain-
+dítható; ílyenkor nem törli az általunk
+írt assembler forrásszöveget.
+
+=== [oldal 2] ===
+cas
+2, Az ASSEMBLER utasításai
+
+Az ASSEMBLER a szerkesztő és fordító
+utasításokon kívül különféle műnitor- és
+programbelövő funkciókat ís tartalmaz.
+Az utasítások nevében és a (nem decimá-
+
+is) konstansokban nem különbözteti meg
+a kis- és nagybetűket. .
+
+2.1. Szerkesztő és fordító utasítások
+
+Az assembler forrásprogram a BASIC
+programokhoz hasonlóan számozott sorok-
+bál áll, a sorok beírása is teljesen ha-
+sonló a BASIC-hez.
+
+Egy sor három részből áll, amelyek kö-
+zül legfeljebb kettő hiányozhat:
+
+83) CÍMKE: Angol nagybetűkből és
+számjegyekből álló szöveg
+amely a fordítás során az
+aktuális fordítási címet
+jelöli. A végét kötelező-
+en kettőspont (:) jelöli.
+Z80 assembler vagy vala-
+milyen forditésvezérlé
+utasítás (lásd később).
+c) MEGJEGYZÉS Pontosvessző (;) után ál-
+
+b) UTASÍTÁS
+
+aS =
+
+ló szöveg, amelyet a
+rendszer fordítás közben
+nem vesz figyelembe,
+
+Az egyes részek, illetve a 280 utasítá-
+sok és paramétereik között tetszőleges
+számú szóköz helyezhető el azzal a meg-
+kötéssel, hogy paraméter nélküli utasi-
+tás esetén a megjegyzés előtt legalább
+egy szóköznek szerepelnie kell.
+
+2.1.1. Szerkesztő utasítások
+
+A (4)-gal megjelölt utasítások végre-
+hajtása a szóköz leütésével felfüggeszt-
+hető, a RETURN-nel megszakítható, Az n,
+nl,n2,d paraméterek decimélis számokat
+jelentenek, a többi hexadecimális.
+
+L ni-n2 A BASIC LIST utasítás megfele-
+lője; nl és n2, illetve a - jel
+éppúgy hiányozhat, mint BASIC-
+ben, (4)
+
+P nl-n2 Ugyanaz, mint az L utasítás, de
+
+_ printerre nyomtat. (#)
+
+K nl-n2 Törli az nl-n2 sorokat. nl és
+n2 éppúgy hiányozhat, mint az L
+és a P utasításnál (pl. a K
+
+=== [oldal 3] ===
+Pszoveg
+
+ao
+
+aA
+hd
+
+N n,d
+
+2. 1.2.
+
+AP
+
+For
+
+a
+
+utasitds az egés
+törli).
+Kinyomtatja azokat a sorokat,
+amelyek a szöveget tartalmaz-
+zák. (4)
+Automatikus sorszámozás, Több
+sor begépelésekor haszndlhat-
+júk. Hatasdra a rendszer ki-
+nyomtatja az aktuális sorszá-
+mot, amel y- kezdetben n és min-
+den sor után d-vel nő. Hae nem
+frunk be sort (pl. CTRL-Y majd
+RETURN) a sorszámozás abbama-
+rad, n és d hiányozhat, a hi-
+ányzó paraméter értéke 10.
+tszámozza a forrásprograsot.
+Az első sor száma n lesz, a
+sorszámok d-esével ninek.
+
+Zz programct
+
+dító utasítások
+
+Leforditja a forrásprogranot és
+beírja a memóriába, Ha hibá
+talál, abbzhagyja a fordítást.
+Lefor dít ja a forrásszöveget, de
+nem tölti be a memáriába, hanem
+kinyomtatja a képernyőre. (24)
+Ugyanaz, mint az AD utasítás,
+
+ 
+
+   
+
+a
+SP
+
+=(5)=
+
+de printerre nyomtat. (2)
+Fordítás után kilistázza a cím-
+kéket és értékeiket. (4)
+Ugyanaz, mint az S, de printer-
+re nyomtat. (+)
+
+2.2. Monitor funkciék
+
+meet kezdődően beírja a me-
+
+móriába a bl,b2,...bn byte-
+okat. Ha az utasítás rtim-;
+tosvessző és valamilyen szöveg
+áll, ezeket nem veszi figyelem
+ket A rendszer nem ad 0k üzene-
+tet.
+
+A címnél kezdődő .64 byte-ot
+nyomtatja ki 8 sorban, A sorok
+elé ","-ot ír, Így a memóris
+tartalom megváltoztatása leegy-
+szerűsödik. Ha a cím hiányzik,
+a legutóbbi M vagy D utasítás
+végétől kezdi. (34 2
+
+MP ciml-cim2
+
+A ciml és cim2 kézti byte-okat
+nyomtatja ki printerre. (4%)
+
+ml-en kezdődő h db. byte-ot
+
+=== [oldal 4] ===
+Sele
+
+gtmásolja ci{m2-re.
+
+A cím-en található gépi kódú
+utasítást visszafordítja as-
+semblerré.. A szóköz hatására
+fordítja le a következő utasií-
+tást, RETURN hatására leáll. Ha
+a cím hiányzik, a legutóbbi M
+vagy UÚ utasítás végétől kezdi.
+
+BP cimi-cim2
+
+hob
+he
+
+A cími és cím? közti gépi kódú
+utasításokat visszífordítja és
+kinyomtatja printerce. (4)
+
+cím-nél kezdtdő h byte-ot
+feltölti b-vel.
+
+2.3. Programbelüvő utasítások
+
+Az ASSEMBLER segitségével kipróbálhat-
+juk gépi kódú programjainkat; sőt a fu-
+- tést akár lépésenként is nyomon követ-
+Il hetjük, Ha a prodramot nem lépésenként
+l hajtjuk végre, kijelölhetünk maximum §
+töréspontot.
+
+4
+
+Kinyomtatja a 2780 regiszterek
+tartalmát.
+
+dosemeter =
+
+ 
+
+at
+6 cím
+
+T cím
+
+-
+
+A megadott regiszterbe betölti
+t-t.
+
+Kinyomtatja a töréspontokat.
+Kijelöl egy új töréspontot.
+Törli a címen levő törésponnt
+Törli az összes töréspontot.
+Elindítja a cím-nél kezdődő aé-
+pi kódú programot. Ha a cím hi-
+ányzik, a PC regiszterben levő
+címtől indítja.
+
+Lépésenkénti végrehajtás. A cí-
+met (ha nem hiányzik) betölti a
+PC regiszterbe, majd kinyomtat-
+ja a regiszterek tartalmát, a
+Dekapcsolt fiag-eket, lefordít-
+áa a soron következő utasítást
+és vár. Ha lenyomjuk a RETURN-
+t, a rendszer abbanagyja a pa-
+rancs végrehajtását és Ok üze-
+netet ad. Ha a szóközt nyomjuk
+le, végrehajtja a cépi kódú
+utasítást és elölről kezdi. Ha
+a G-t nyonjuk le, a Következő
+utasításig hajtja végre a gépi
+kódú programot (pl. ha egy LDIR
+utasítás vagy egy szubrutin mo-
+ködését nem akarjuk lépésenként
+nyomon követni, ezt használjuk)
+
+=== [oldal 5] ===
+= § =
+2.4. Egyéb utasítások
+
+4 Kinyomtatja a forrdsprogram ha-
+táraít a címketáblázat nélkül.
+
+2.
+ee ni alapú számrendszerben
+felírt p számot kínyomtatja n2
+" " alapú számrendszerben.
+ti a címen levő h byte-ot.
+A név hiányozhat, a filenév
+ilyenkor NÉVTELEN.
+
+whey Kimenti a forraésprogramot. A
+Biba eke
+
+név itt is hidnyozhat.
+
+Betölti a név nevű file-t a
+címre. Ha a név hiányzik, az
+első file-t tölti be. Ha a cím
+hiányzik, oda tölti be, ahonnan
+kimentettük.
+
+Bleu, BetGlti a név nevd forrdésszéve-
+get a már meglevő szöveg végére
+(egyszerű merge). Mivel ezután
+a sorszámok nem megfelelő sor-
+rendben lesznek, célszerű egy N
+utasítást is kiadni.
+
+"..
+
+ile-t ment ki. Az első egy
+
+s 3/-
+
+BASIC program; a második a cí-
+men kezdődő h db. byte. Ha
+BASIC-ben betöltjük az elsőt,
+az automatikusan elindul, be-
+tölti a másodíkat és elindítja
+az ind címen levő gépi kódú
+programot. Ezt- az utasítást
+kész programok kímentésére
+használhatjuk.
+
+3. A forrásprogramban felhasználható
+utasítások
+
+3.0. Az utasítások konstans parszétervi
+
+Paraméterként tetszőleges számokból,
+címkékből és aritmetikai tees (+, -,
++,/) 4116 kifejezés állh a számokat a
+rendszer előjel nélküli egi észként, modu-
+19 65536 értelmezi.
+
+A számok lehetnek:
+
+- decimslisak;
+
+- binárisak, ezek elé X jelet írunk;
+
+- oktálisak, ezek elé 4. jelet írunk;
+
+- hexadecimálisek, ezek elé $ jelet
+írunk;
+
+- valamilyen szöveg első karakterének
+ASCII kódja, a szöveget " vagy " je-
+
+=== [oldal 6] ===
+- 10 -
+lek határolhatják.
+3.1. Fordításvezérlő utasítások
+
+ORG n Az aktuális fordítási címet ál-
+lítja be n-re. A fordítás meg-
+kezdésekor a fordítási cím 0.
+
+END A lefordítandó szöveg végét jel-
+zi, nem hiányozhat.
+
+LOAD n Használata lehetővé teszi, hogy
+a lefordított programot ne az
+ORG által megadott címre töltsük
+be. Az AD és AP utasításokra
+nincs hatással.
+
+3.2. Z80 utasítások
+
+A 780 utasítások szintaktikája megegye-
+zik a megszokottal, kívéve az RST utasi-
+tást, amely után kötelezően egy hexade-
+cimális szám áll ($ nélkül).
+
+3.3. Egyéb utasítások
+
+tö A programban kihagy © byte-ot.
+
+programba beleforditja a bl...
+
+bn byte-okat. A paraméterek kö-
+
+s H1/-
+
+zött lehetnek szövegek is, ezek-
+nek minden karakterét lefordít-
+ja. A szöveget " vagy " jelek
+határolhatják.
+
+A wl,..-Wn kétbyte-os számokat
+fordítja le. Itt is szerepelhet-
+nek szövegek, ezeket Ugyanúgy
+fordítja le, mint a DB utasítás.
+
+at sára a címke értéke nem az
+aktuális fordítási cím, hanem n
+lesz.
+
+4. Az ASSEMBLER felépítése, memúriatérkép
+
+A program a 3. lapon, a ROM helyén van,
+így csaknem a teljes felhasználói memó-
+ria használható:
+
+1A80-1AFF Az ASSEMBLER változói
+1800-BF7E A felhasználható memória
+BF7F-BFFF Input puffer
+
+A forrásprogram kezdete a rendszer el-
+indításakor az 1800 címen van. Ha máshol
+akarjuk elhelyezni, írjuk be az új címet
+az 1AB88-on levő változóba és indítsuk
+
+ 
+

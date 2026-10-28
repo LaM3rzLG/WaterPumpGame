@@ -1,0 +1,55 @@
+                      wc 64K+ TbBBlgrszorcfu,'rnrnsnr
+                            A T\rc &K _ FNZ KEPEST
+
+
+
+l-.,    A n7C 64K + videomem6riS ja 64 Kbvte m6retii, szemben az eI6rS
+v5ltozat     16 Kbyte-os videomem6riS]{val         A 4 x 16 l{:yte rride.oren6ria
+4 tel   jes  k6p eEyide  jij tarolSsat   teszi   letredrie. A k6perndre keriil6
+k6p kivSlaszt{sa      egyszerii,   gyorsan  elGgpzhet6.     n videonem6ria azon
+16sze, amelyet nem a k6pel651litasra           tnsznSlunk, tArolhat adatokat,
+illetve    gepi lodu prcrgranok is futtathat6k     benne
+
+2.,    A 117C64K + vSltozat uj, kidvitett           BASIC q:er6ci6s rendszerrel
+rendelkezik,       verzi6sama    2.O. M az e16zi viltozat        jelent6s to\rattF
+fejleszt6    se . Tartalmaz u1 utasitisbkat,       parancsckat.   be6pitett    fiiqg-
+v6nyeket,      s6t koraLfan is hasznilt    utasitAsokat    bdvitettiink,   uj  ftrnk-
+ci6kkal     lAttunk   el . Jelentds vtitozAs a kaprsol66si         pontok  l6treho-
+zAsa. Ezeken keresztiif       be6pittret6k uj BASIC utasitasok a rendszerbe.
+i 1l etve ktilonbd26 konverzi6kra nyilik        lehredeg.    Ii; rendszervaltozrk
+segitik a Kils5 RCMmeidriabl         a Eepbe Sltott      BASIC pri:qranok indi6-
+s{ t, i 1} " rere rlik a Eep vi selke&s5 t meleqindi ta s eset6n.
+       Az uj BASIC alatt      is bet6lthet6k      6s futtathabk       a korabci I-2
+vAltozat     BASIC proqranjai,     n6deitasokra     t<6t ok miatt letet sziks6q:
+Az uj utasit6sokkal       azorns nevii r,"5ltomt tnsznilturk,      e#-rt a v11toz5
+ne$!    meg kel1 vSltoztatnunk.        A PItrf utasitash.a beepitett kerel<it6s
+miatt a megrajzolt        pontok, vonalak a klpernySn eqy raszterporttal
+elcswznal<. A koordinatlk 6rt6t<eit kel1 meq€ltoztatni.
+
+3.      HasznAthat6        a VT-DOS oper6ci6s rendszer, mely a \IIDEC/ION
+TV-Computer uj fe jlett            florppy-diszkes         6perAci6s rerdszere. A T\C ui
+vSltozatAn      futtathat6,        de eqy kis hardware n6dosit6ssal a T\C 64K
+v{ltozat,   dt rnem6riab6vit6rel            (nSdcitas       relKil)    a }l ldcytgt-cs T\f, is
+alkalmassl    tehetd    a V|-|DS      futtatta   s6 ra  .
+      I'4aga az operAci6s         rendszer eg'y flqpy-csatol6               lcrrtya. €gv dtqa-
+szolhat6    progirammodul 6s egy reidszerlemez forn6fban                         jelenik meg A
+flqcpy-csatol6     lirtya     tartalmazza a lemez fizikai              kezel6et       5s a file-
+szervezbst      szolg5  16  progranr6szeket         i s,   igrT  dr-gaszolhat6      progrannrrdul
+rEIKil alkalnnzva a #p a BASIC-b61 haszrdlhatja                       a flqpy       pri6riAt-
+      A W-DOS :ota1        fejlettebb,       mint   a  T\C    recpbbi    flcppy-diszkes        q:*
+rAci6s    rendszere,      az    UFM,   de   szaknrSnyos     UFM-funkci6kat        hasznA16      fel-
+hasznil6i     progranok       a  tn-mS      al"att  is    futtattntck.      ,:e1ent6s     e16rrye    a
+y1-D66; -nak, hcgy oper6tori           parancsai szinte teljes eq!€z6s mutatnak a
+vi169 legelter jedt.ebb szem6lyi szAmit6geecsalSdja,                             az rBM K 6s a
+vele komp:atibilis        g6pek      (pI.  W110,      V|16O)     parancsaival      . Fb ecnzr6szt
+az oktat6s      szempontjAmf        tea,rez6,    m6sr6szt      akkor,   ha    valakinek     kiilorr
+Wz6 feladatai         kdziil egyeseket WC-n,                misokat    a   naqlobb     6s  dradtb
+PC-kompatibi 1i s g6pen ke11 e1v6€pati .
+      A y1-DOS ugyanolyan lernez-szervezbst haszni 1, mint az TBM-PC-r,el
+kompatibitis       szamit6qepek.          Ez azt jelenti,         hoqy e $pekkel a \tr-DCJS
+adatszinten      kompatibilis.        M egyik #p*r           l6trehozott      file-ck tnsznit-
+hatok 6s m6dosittrat6X           a nuisik rsrdszerst,          najd isn6t hasznAlhatck az
+eredeti geps'r. Igy pl . dokmrendci6k,                \B9y n6s adatfile-ck,            nel1ek eqy
+kozpcnti irodAban K-kompatibilis                g6pen 16sdiltek,         loaretlentil      Stvitre-
+t6k xisseb irodSldoa, alrol az olcs5tb w{ompr.rtert                    tnszn5lj6k.
+

@@ -9,6 +9,25 @@ were downloaded in. Full extraction survey: `../notes/notes_pdf_hardware.md`.
 **Read `extracted/*.txt` instead of the PDF whenever one exists** — it's the same
 content, already grep-able, no `pdftotext` round-trip needed.
 
+## OCR'd 2026-10-19 (tesseract hun+eng, 300 dpi) — plain text in `extracted/`
+
+Page markers `=== [oldal N] ===` match the PDF page numbers. Prose OCRs well; **code
+listings, hex dumps and tables have OCR errors** (1/l/i, 0/O, B/8 swaps, e.g. `CiCE` for
+`C1CE`) — never trust an address or opcode from these without checking the PDF page.
+
+| Extracted `.txt` | Pages | Topic |
+|---|---|---|
+| `TVC_hardver.txt` | 254 | **TVC hardware manual** — memory map/paging, buses, video, ports, timing. Hungarian. |
+| `Operacios_rendszer.txt` | 163 | TVC operating system / ROM services. Hungarian. |
+| `Kaszanyiczki_Laszlo_TVC_ROM_listaja.txt` | 329 | Commented ROM disassembly. Comments searchable; listing columns OCR-noisy. |
+| `Gepi_kodu_programozas_kezdoknek.txt` | 210 | Z80 machine-code primer (TVC). 200 dpi source scan — more accent errors. |
+| `TVC_Assembler_leiras.txt` | 24 | TVC assembler manual. |
+| `Kos_Geza_assembler_leirasa.txt` | 6 | Kós Géza assembler. |
+| `Fast_and_Forces_Soft_gepi_kodu_jegyzetei.txt` | 9 | Machine-code notes — very little recognisable text, mostly figures. |
+| `Memoriabovites_termekismerteto.txt` | 1 | Memory expansion product sheet. |
+| `TVC_64K_plus_tobbletszolgaltatasai.txt` | — | 64K+ extras (had a text layer; pdftotext, no page markers). |
+| `8_vonalas_multiplexer.txt`, `Altalanos_celu_parhuzamos_interfesz.txt`, `EPROM_egeto_rendszer.txt`, `IEC625_csatolo.txt`, `Soros_vonali_interfesz.txt` | 31/18/10/23/17 | Expansion interface cards. |
+
 ## Text-extractable — plain-text copy in `extracted/` (search these first)
 
 | PDF | Extracted `.txt` | Why it matters |
