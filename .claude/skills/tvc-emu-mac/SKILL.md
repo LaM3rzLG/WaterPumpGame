@@ -99,3 +99,22 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
   (the .app double-click does not work for the same reason).
 - `--cas x.cas --autorun`, `--disk`, TAB = turbo, F1 reset, F3 mouse-joystick off, F10 zoom.
 - Its RAM starts zeroed - real-machine-only bugs from uninitialised RAM do not show here.
+
+## Claude sees and types into the EP (2026-10-28, working)
+`resources/emu_mac/ep.sh` (Swift helpers `epkey.swift`, `epwin.swift`, compiled on first use into `$TMPDIR/ep_eszkoz`):
+- `bash resources/emu_mac/ep.sh kep [out.png]` -> `screencapture -l <window id>` of the EP main window, resized to
+  768 px; then Read the PNG. Needs macOS Screen Recording permission for VS Code (granted). Works when the EP window
+  is covered, NOT when it is minimized or on another Space (then exit 2 + message: ask the user to put it on the
+  same desktop). The built-in F12 screenshot opens a file dialog - not usable unattended.
+- `bash resources/emu_mac/ep.sh gepel '<text>'` -> CGEvent `postToPid` straight to the EP process (no focus needed,
+  so the user typing in VS Code does not steal keys). Needs Accessibility permission (granted). Slow key down/up
+  (80 ms) - osascript `keystroke` is too fast for the emulator and its Shift is ignored; Shift must be a real
+  keycode-56 event with `.maskShift` flags. Codes: `"` = Shift+2, `~` = End (Mac Fn+Right = TVC ESC), `|` = Enter,
+  `<` = Backspace. Only lowercase letters, digits, space.
+- Loading the game: from BASIC `load"waterpg"` (`ep.sh gepel 'load"waterpg"|'`). `ext2` = VT-DOS CLI: only for DOS
+  commands (dir etc.), loading does NOT work there; leave with `~` (End). In BASIC load the name may be abbreviated
+  until unique, `*` completes it.
+- Memory inspection (not yet built): ep128emu has a Lua engine (Debug window -> Lua script; `readMemory`,
+  `readMemoryRaw`, `setBreakPoint`, `breakPointCallback(t,a,v)`, `saveMemory`, `getVideoPosition`, Lua `io` lib
+  is open -> can write dump files). Loading the script is GUI-only today; a small patch (auto-run a .lua from the
+  command line) would make it fully unattended.
