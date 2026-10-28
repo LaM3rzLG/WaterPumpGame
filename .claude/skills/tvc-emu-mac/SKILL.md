@@ -100,21 +100,27 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
 - `--cas x.cas --autorun`, `--disk`, TAB = turbo, F1 reset, F3 mouse-joystick off, F10 zoom.
 - Its RAM starts zeroed - real-machine-only bugs from uninitialised RAM do not show here.
 
-## Claude sees and types into the EP (2026-10-28, working)
-`resources/emu_mac/ep.sh` (Swift helpers `epkey.swift`, `epwin.swift`, compiled on first use into `$TMPDIR/ep_eszkoz`):
-- `bash resources/emu_mac/ep.sh kep [out.png]` -> `screencapture -l <window id>` of the EP main window, resized to
-  768 px; then Read the PNG. Needs macOS Screen Recording permission for VS Code (granted). Works when the EP window
-  is covered, NOT when it is minimized or on another Space (then exit 2 + message: ask the user to put it on the
-  same desktop). The built-in F12 screenshot opens a file dialog - not usable unattended.
-- `bash resources/emu_mac/ep.sh gepel '<text>'` -> CGEvent `postToPid` straight to the EP process (no focus needed,
-  so the user typing in VS Code does not steal keys). Needs Accessibility permission (granted). Slow key down/up
-  (80 ms) - osascript `keystroke` is too fast for the emulator and its Shift is ignored; Shift must be a real
-  keycode-56 event with `.maskShift` flags. Codes: `"` = Shift+2, `~` = End (Mac Fn+Right = TVC ESC), `|` = Enter,
-  `<` = Backspace. Only lowercase letters, digits, space.
-- Loading the game: from BASIC `load"waterpg"` (`ep.sh gepel 'load"waterpg"|'`). `ext2` = VT-DOS CLI: only for DOS
-  commands (dir etc.), loading does NOT work there; leave with `~` (End). In BASIC load the name may be abbreviated
-  until unique, `*` completes it.
-- Memory inspection (not yet built): ep128emu has a Lua engine (Debug window -> Lua script; `readMemory`,
-  `readMemoryRaw`, `setBreakPoint`, `breakPointCallback(t,a,v)`, `saveMemory`, `getVideoPosition`, Lua `io` lib
-  is open -> can write dump files). Loading the script is GUI-only today; a small patch (auto-run a .lua from the
-  command line) would make it fully unattended.
+## Claude sees, types and reads memory in the EP (2026-10-28, working)
+Our ep128emu build has a **command-file interface** (patch `patches/ep128emu-claude.patch`, on top of
+`ep128emu-macos.patch`, in `gui/gui.cpp` `fltkCheckCallback`): it polls
+`~/Library/Application Support/ep128emu/claude/parancs.txt` every 50 ms, deletes it, runs its lines, logs each to
+`kesz.txt`. Works whatever desktop (Space) the window is on - the user watches the EP on another desktop.
+Front end: **`bash resources/emu_mac/ep.sh`** (waits for completion, relative names go into the claude folder):
+- `indit [dsk]` - kills the old EP, starts it DETACHED (perl double-fork + setsid). Not `open` (launched that way
+  the command poller never ran - cause unknown) and not `nohup &` (the VS Code task kills it). build_mac.sh uses it.
+- `kep [f.png]` - next frame from the emulator's own frame buffer (768x576), then Read it.
+- `folyam <ms> <db> [name]` - frame series + contact sheet `<name>_lap.png` (`epmontage.swift`), Read the sheet.
+- `mem <U0|U1|U2|U3|VID|CPU|hex seg> <start hex> <len hex> [f.bin]` - raw dump. Segments: U0=F8 U1=F9 U2=FA
+  U3=FB VID=FC (64K TVC); CPU = the current CPU paging view.
+- `gepel '<text>'` - typed INSIDE the emulator (no host events, no focus, no lost keys). `"`=Shift+2, `~`=ESC
+  (host End = Mac Fn+Right), `|`=Enter, `<`=Backspace, capital = Shift+letter.
+- `gomb <name[+name]> [ms]` - hold keys: enter esc fel le bal jobb szokoz shift bs tab ctrl alt F1.. or one char.
+- `ablak [f.png]` - old way, screencapture of the window (only when visible on the same desktop).
+**TVC startup timing (user):** after start WAIT for the emulator + the VIDEOTON logo (~10 s); the logo needs a
+key press (`ep.sh gomb szokoz 150`), then BASIC `ok`. Load from BASIC: `ep.sh gepel 'load"waterpg"|'`, the game
+menu appears ~12-14 s later (yellow border = loading). Check with `kep` before typing. `ext2` = VT-DOS CLI: DOS
+commands only, loading does NOT work there, leave with ESC (`~`). In BASIC LOAD the name may be abbreviated with `*`.
+Lua is NOT available: the build uses `nolua=1`.
+Install after a rebuild: `rm` the old binary, `cp` the new one into `~/Documents/EP128TVCEmu/ep128emu.app/Contents/MacOS/`
+and `codesign --force -s -` it (a binary copied over the old one is refused by launchd: "error 162").
+Old binary kept as `ep128emu.bak_claude`. macOS permissions given to VS Code: Screen Recording, Accessibility.

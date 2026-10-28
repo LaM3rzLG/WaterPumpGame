@@ -44,17 +44,15 @@ pwsh -NoProfile -Command "& ./resources/make_dsk.ps1 -Template '$TEMPLATE' -File
 
 # 4. emulator (TVC 64k+, BASIC 1.2, VT-DOS) - a regi peldanyt bezarja (SIGTERM-re nem all le, ezert -9)
 if [ "${1:-}" != "--no-emu" ]; then
-  pkill -9 -f "MacOS/ep128emu -tvc" 2>/dev/null
-  # "open"-nel indul (a launchd a szulo): a VS Code feladat a vegen a sajat folyamatfajat lelovi, a nohup &-t is.
+  # leválasztva indul (resources/emu_mac/ep.sh indit): a VS Code feladat a vegen a sajat folyamatfajat lelovi
+  # (nohup & is), "open"-nel inditva pedig a Claude-parancsfajl figyelo nem fut.
   EMU_DATA="$HOME/Library/Application Support/ep128emu"
   if [ ! -f "$EMU_DATA/roms/tvc12_sys.rom" ] && [ -d "$EMU_DIR/ep128emu_data" ]; then
     mkdir -p "$EMU_DATA" && rsync -a "$EMU_DIR/ep128emu_data/" "$EMU_DATA/"   # ROM-ok visszaallitasa
   fi
   if [ -d "$EMU_DIR/ep128emu.app" ]; then
-    sleep 0.5
-    open -n "$EMU_DIR/ep128emu.app" --args -tvc -opengl -cfg "$EMU_DATA/config/tvc/TVC_64k+_V12_VTDOS.cfg" \
-      "vm.speedPercentage=100" "sound.latency=0.1" "floppy.a.imageFile=$ROOT/WaterPumpGame.dsk"
-    echo "emulator elinditva - a TVC-n: ext2  majd  load\"WATERPG\""
+    bash "$ROOT/resources/emu_mac/ep.sh" indit "$ROOT/WaterPumpGame.dsk" >/dev/null
+    echo "emulator elinditva - a TVC-n: gomb (logo), majd  load\"WATERPG\""
   else
     echo "nincs emulator: $EMU_DIR/ep128emu.app"
   fi
