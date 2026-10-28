@@ -48,6 +48,11 @@ bundled sources under `sources/` and by real `trse -cli` builds.
   store bug, `ldi`/BC, hand-ASM `class` in a custom unit (symbol prefixing, `global` params), the `.bin`
   sprite format, render order, U3 data, raster IT flicker, proportional text, reading `.asm`/`.sym`.
   Before non-trivial GE work or a custom unit.
+- **`sources/docs/extracted/*.txt`** — searchable text of 17 TVC manuals (index: `sources/docs/INDEX.md`):
+  Programming Guide, ROM book, Bertók; and since 2026-10-28 also 14 Tesseract-OCR'd scans - **TVC hardware
+  manual** (`TVC_hardver.txt`), **commented ROM listing** (`Kaszanyiczki_Laszlo_TVC_ROM_listaja.txt`),
+  operating system, assemblers, 64K+ extras, interface cards. OCR'd code/hex/tables have character
+  errors (1/l, 0/O, B/8) - check addresses/opcodes against the PDF page (`=== [oldal N] ===` markers).
 - **`sources/`** — raw material (`sources/notes/INDEX.md`): all `.tru` units, tutorials, 37 TVC
   manuals (PDF), the SANE TRSE doc site (`sources/sane-trse-docs/`, synced 2026-10-25; it documents the
   C64 fork - its builtin pages and "Fixed" bug marks do NOT apply to TVC).

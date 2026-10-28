@@ -26,7 +26,8 @@ in the FAT file timestamps). VS Code: **Cmd+Shift+B = "Mac: Build + EP emu"**.
   Mac only) and `claude_memory/` (the Claude project memory; on the Mac
   `~/.claude/projects/-Users-lgabor-Documents-TVC-Projects-WaterPumpGame/memory` is a
   symlink to it, on Windows a junction - see `claude_memory/README.md`).
-- NOT in the repo: the 674 MB manual PDFs,
+- NOT in the repo: the 674 MB manual PDFs (Mac: `~/Documents/TVC-TRSE-skill/sources/docs/pdf/` -
+  the only copy on the Mac; Windows: `%USERPROFILE%\Documents\TVC-TRSE-skill\...`),
   the emulators, `*.cas`.
 
 ## TRSE on the Mac

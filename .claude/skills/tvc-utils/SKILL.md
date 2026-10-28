@@ -38,6 +38,18 @@ TVC-hardver) NEM ide tartozik - arra a **tvc-trse** skill és a projekt `CLAUDE.
 | `image2tvc_offline_v4_2.html` | KÜLSŐ fejlesztő konvertere (minifikált React); a képjavító algoritmusai át lettek véve a Sprite16-ba | `references/image-conversion.md` |
 | `resources\*.ps1` | BMP -> Bery .bin, karakterkészlet export/import, digi hangok, `.dsk` lemezkép | `references/other-tools.md` |
 
+## Mac-en (2026-10-28 óta a második gép)
+
+- A HTML-eszközök bármely böngészőben futnak.
+- PowerShell 7: `pwsh` (`brew install powershell`). Macen kipróbálva és működik: `u3_boot_patch.ps1`,
+  `make_dsk.ps1` (a Mac build, `resources/build_mac.sh` hívja; a boot-szektor sablonja Macen
+  `~/Downloads/TVC/TVC_CEmu/roms/Lemmings.dsk`, `-Template`-tel megadva). A többi `make_*_bin`,
+  `palyak_bin`, `memoria_terkep` sima bájtmunka - valószínűleg megy, még nincs kipróbálva.
+- `System.Drawing`-ot használnak, Macen NEM futnak (Windowson csináld, vagy portolni kell):
+  `bmp_to_talaj.ps1`, `charset_export.ps1`, `charset_import.ps1`, `nukebomb_to_bin.ps1`, `palyak_import.ps1`.
+- Szkriptben Macen: `/` útvonal-elválasztó vagy `Join-Path`, `$env:TEMP` helyett `[IO.Path]::GetTempPath()`,
+  `powershell` helyett `pwsh`. A Mac-es build és eszközlánc részletei: **tvc-trse-mac** skill.
+
 ## Fájlformátumok (a legfontosabbak - teljes leírás: `references/formats.md`)
 
 - **Bery GE sprite `.bin`:** 3 byte fejléc `típus, szélesség_byte, magasság_sor`; típus 1 = nem maszkolt
