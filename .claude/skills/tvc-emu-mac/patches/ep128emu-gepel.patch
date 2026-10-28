@@ -1,0 +1,49 @@
+--- a/gui/gui.cpp
++++ b/gui/gui.cpp
+@@ -1449,12 +1449,14 @@
+ static std::vector<ClaudeKey_>  claudeKeys_;
+ static size_t                   claudeKeyPos_ = 0;
+ static std::chrono::steady_clock::time_point claudeKeyNext_;
+-static void claudeTap_(int key, bool shift, int holdMs = 60)
++// Idozites: az emulator a hang miatt ~0.1 s-os darabokban fut, ezert a lenyomas legyen ennel hosszabb,
++// kulonben a le- es felengedes ugyanabba az emulalt pillanatba esik es a TVC nem latja (2026-10-28).
++static void claudeTap_(int key, bool shift, int holdMs = 150)
+ {
+-  if (shift) claudeKeys_.push_back({FL_Shift_L, true, 40});
+-  claudeKeys_.push_back({key, true, shift ? 40 : 60});
++  if (shift) claudeKeys_.push_back({FL_Shift_L, true, 100});
++  claudeKeys_.push_back({key, true, shift ? 60 : 100});
+   claudeKeys_.push_back({key, false, holdMs});
+-  if (shift) claudeKeys_.push_back({FL_Shift_L, false, 30});
++  if (shift) claudeKeys_.push_back({FL_Shift_L, false, 60});
+ }
+ static int claudeNamedKey_(const std::string& n)
+ {
+@@ -1514,7 +1516,8 @@
+   try {
+     ClaudeShot_&  c = claudeShot_;
+     auto  now = std::chrono::steady_clock::now();
+-    while (claudeKeyPos_ < claudeKeys_.size() && now >= claudeKeyNext_) {
++    // koronkent legfeljebb EGY billentyuesemeny: egy akadas utan se menjen ki egyszerre a le- es a felengedes
++    if (claudeKeyPos_ < claudeKeys_.size() && now >= claudeKeyNext_) {
+       const ClaudeKey_& k = claudeKeys_[claudeKeyPos_++];
+       int n = (k.key < 0 ? -1 : gui_.config.convertKeyCode(k.key));
+       if (n >= 0)
+@@ -1633,7 +1636,7 @@
+             // gomb <nev>[+<nev>...] [ms]  - egyszerre nyomva tartja (pl. jobb+szokoz 500); nevek: enter esc fel le bal
+             // jobb szokoz shift bs tab ctrl alt F1.. 0x<FLTK kod> vagy egy karakter
+             std::string names;
+-            int ms = 100;
++            int ms = 150;
+             ls >> names >> ms;
+             std::vector<int> keys;
+             size_t a = 0;
+@@ -1649,7 +1652,7 @@
+             for (size_t i = 0; i < keys.size(); i++)
+               claudeKeys_.push_back({keys[i], true, i == 0 ? 30 : 20});
+             for (size_t i = 0; i < keys.size(); i++)
+-              claudeKeys_.push_back({keys[i], false, i == 0 ? (ms < 20 ? 20 : ms) : 0});
++              claudeKeys_.push_back({keys[i], false, i == 0 ? (ms < 120 ? 120 : ms) : 0});
+             if (wasEmpty) { claudeKeyPos_ = 0; claudeKeyNext_ = now; }
+             claudeLog_(line);
+           }

@@ -104,7 +104,7 @@ earlier statistics version is kept as `src/soundio.cpp.debug` in the build folde
 **MAC ONLY.** It relies on our own patched ep128emu build and macOS tools (swiftc, perl setsid,
 screencapture). On the Windows PC (WinTVC/TMC20) none of this exists - do not try `ep.sh` there; the user
 looks at the screen and reports.
-Our ep128emu build has a **command-file interface** (patch `patches/ep128emu-claude.patch`, on top of
+Our ep128emu build has a **command-file interface** (patch order: macos -> claude -> memmap -> gepel; `patches/ep128emu-claude.patch`, on top of
 `ep128emu-macos.patch`, in `gui/gui.cpp` `fltkCheckCallback`): it polls
 `~/Library/Application Support/ep128emu/claude/parancs.txt` every 50 ms, deletes it, runs its lines, logs each to
 `kesz.txt`. Works whatever desktop (Space) the window is on - the user watches the EP on another desktop.
@@ -126,9 +126,11 @@ commands only, loading does NOT work there, leave with ESC (`~`). In BASIC LOAD 
 Lua is NOT available: the build uses `nolua=1`.
 - `memablak [zar]` / `memkep [f.png]` - the TVC memory-map window (below); `memkep` renders it off-screen, works
   when it is covered or on another desktop.
-- **`gepel` drops keys** (seen 2026-10-28; the pre-memmap binary does it too, so it is older): often the first key,
-  sometimes keys in the middle, worse on repeated commands. Workaround: start with a space and CHECK with `kep`
-  before relying on it. Likely fix (not done): longer key hold/gap in `claudeTap_` (now 60 ms) in gui.cpp.
+- `gepel` used to drop keys (fixed 2026-10-28, patch `patches/ep128emu-gepel.patch`, applied after the memmap patch):
+  the VM runs in ~0.1 s chunks (sound latency), so a 60 ms press and its release landed in the same emulated moment;
+  and after a GUI stall the `while` loop sent down+up at once. Now: 150 ms hold, 100 ms gap, ONE key event per
+  check-callback pass; `gomb` minimum hold 120 ms (default 150). Tested: 4 x 30-char lines + load, no lost key.
+  Typing is slower (~0.25 s / key).
 
 ## TVC memory-map window (2026-10-28, patch `patches/ep128emu-memmap.patch`, on top of the other two)
 Live view of the physical RAM pages, 10 refreshes/s, ~4 % extra CPU, only while open. Open: EP menu
