@@ -614,3 +614,9 @@ Compiler crashes, nightly vs old trse.exe, case vs if, file writing: `references
 `if (GE::Joystick(1,a) or GE::Joystick(1,b) or GE::Joystick(1,c) ...) then` (5 calls, split over two
 lines) -> `Expected 'RPAREN' but found 'OR'`. Two calls with one `or` compile fine. Workaround: a boolean
 flag set by separate `if`s (`Gomb := False; if (..a..) then Gomb := True; ...; if (Gomb) then ...`).
+
+### Comparison with an EXPRESSION on the right side compiles REVERSED (2026-10-29, Ugh, nightly)
+`if (k >= MW * 2) then` (byte vars) generated `a := MW*2; cp k; jr c skip` - i.e. the true block ran when
+`MW*2 >= k` (operands swapped, operator not mirrored). Simple operands (`k >= ny`, `Px < PX_MAX`) are fine.
+Rule: put only a variable or constant on the right of a comparison - compute the expression into a temp first
+(`ny := MW * 2; if (k >= ny)`) - and check the `cp`/`jr` direction in the `.asm` for new conditions.
