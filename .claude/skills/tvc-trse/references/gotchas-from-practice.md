@@ -620,3 +620,13 @@ flag set by separate `if`s (`Gomb := False; if (..a..) then Gomb := True; ...; i
 `MW*2 >= k` (operands swapped, operator not mirrored). Simple operands (`k >= ny`, `Px < PX_MAX`) are fine.
 Rule: put only a variable or constant on the right of a comparison - compute the expression into a temp first
 (`ny := MW * 2; if (k >= ny)`) - and check the `cp`/`jr` direction in the `.asm` for new conditions.
+
+### Integer: `x := x - <const multiple of 256>` becomes an ADDITION (2026-10-29, Ugh, nightly)
+`HV := HV - OLDAL_MAX` (integer var, const 256) compiled to `ld b,$01 / ld a,[HV+1] / add a,b` - the
+high-byte shortcut for constants divisible by 256 adds instead of subtracting. Other constants (`- 32`,
+`- 2688`) use a correct `sbc hl,de`. Workaround: subtract a VARIABLE holding the value (`HAbs := OLDAL_MAX;
+HV := HV - HAbs`). Check every new `- const` in the `.asm`.
+
+### `int := Lo(int)` (same variable) does not truncate (2026-10-29, Ugh, nightly)
+`HAcc := Lo(HAcc)` generated `ld a,[HAcc] / ld [HAcc],hl` - it stores the old full HL back. Workaround: go
+through a byte variable: `LoB := Lo(HAcc); HAcc := LoB;` (verified: `ld l,a / ld h,0`).
