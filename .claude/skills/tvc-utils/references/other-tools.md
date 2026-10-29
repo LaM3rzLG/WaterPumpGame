@@ -229,3 +229,24 @@ edits it; all layout is computed from the font widths):
 black outline + 1 px right/down shadow. Preview PNG via System.Drawing with GR16 pixel aspect ~2:1 (6x3 px per pixel).
 The JSON was patched as TEXT (object substring), not via `ConvertTo-Json`, to keep the editor's format; the old sprite
 was kept as `Cim_C16_WaterPump`. `make_menu16_bin.ps1` then rebuilds `MENU16.BIN` (size unchanged, 6196).
+
+## `palya16_szerkeszto.html` - fix képernyős pályaszerkesztő (Ugh, `!Toooools`, v1: 2026-10-29)
+
+GRAPHICS16 egy képernyős pályák (64 byte x 240 sor = 128x240 pixel, 2:1 pixelarány a rajzon, nagyítás 1-4x), **két réteg**:
+- **Csempe:** rács, mezőméret byte x sor. A szerkesztő a **betöltött képek méretéből ajánl rácsot** (a nem maszkolt képek
+  leggyakoribb mérete; ha nincs ilyen, az összes képé) - első betöltéskor magától beállítja, később "Beállít" gomb.
+  Csak a rácsmérettel egyező képek festhetők csempeként (a többi szürke a listában). Bal gomb = fest (húzással,
+  a kimaradó mezőket kitölti), jobb gomb / Ctrl = töröl. Rácsváltáskor a csempék törlődnek (megerősítés, visszavonható).
+- **Tárgy:** bármely kép, X byte (0-63) / Y sor (0-239) pontossággal, opcionálisan rácsra igazítva. Bal katt üres helyre =
+  lerak (az egér köré középre), tárgyra = kijelöl + húzás; jobb katt = töröl; nyilak 1 byte / 1 sor (Shift: rácsnyi), Delete.
+- **Képek:** "Képek betöltése" - Sprite16 projekt `.json` (minden sprite + animáció; az első fázist mutatja) és/vagy Bery
+  GE `.bin` (1 = nem maszkolt, 2 = maszkolt; a fázisok számát a fájlméretből számolja), több fájl egyszerre. **Azonos
+  nevű kép felülíródik** (a lerakott példányok maradnak) - így a grafika frissíthető. Kép törlése: × (a hivatkozások átszámozódnak).
+  A képek sorszáma (#1, #2, ...) = az exportban használt azonosító.
+- Több pálya egy projektben (új, másol, töröl, sorrend ▲▼, név; PageUp/PageDown). Ctrl+Z / Ctrl+Y (100 lépés), Ctrl+S,
+  1 / 2 = Csempe / Tárgy mód, G = rács ki/be, háttérszín (16 szín).
+- Mentés: `<név>.json` (a képek is benne vannak - önmagában megnyitható), Export: `<név>.bin` (formátum: `formats.md`).
+  Autosave: localStorage `palya16_v1` (csak kényelmi). Teszt-hozzáférés: `window.__p16`.
+- Fejetlen Edge-ben tesztelve a valódi `map_sprites_16.json` + `ugh_sprite_16.bin`-nel: betöltés, rácsajánlat (4x10 -> 16x24),
+  festés/törlés szimulált egérrel, tárgy lerakás + húzás, visszavonás/előre, export, mentés-visszatöltés, rácsváltás + visszavonás.
+  Valódi egérrel és a böngésző letöltés-ablakával NEM. A játék még nem tölti be a pályákat (a `.bin` formátum javaslat).

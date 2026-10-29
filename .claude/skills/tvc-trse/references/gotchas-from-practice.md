@@ -345,6 +345,15 @@ works but the BMP route is faster once the artist iterates.
 In every moving-sprite loop (Restore → Move → Save → Draw) call `UpdateLastPos()`
 right after `Draw`, or the sprite "leaves a trail" (old images never erased).
 
+**Do NOT use `Sprite.Render` for masked sprites (2026-10-29, Ugh):** `Render` calls
+`Draw`, which uses `IXL` as its row counter (`ld IXL,A` ... `dec IXL`) and so leaves IX
+corrupted; `Render` then writes `LastPosition`/`LastX`/`LastY` through the broken IX
+(to a wrong address - memory corruption) and the sprite's own `LastPosition` never
+changes -> a falling sprite left a trail. Write the sequence by hand:
+`RestoreBackground; (change X/Y; SetPosition;) Draw; UpdateLastPos` (each method call
+reloads IX from `GE_Sprite_this`). First appearance: `SetPosition; Draw; UpdateLastPos`.
+`RenderAllSprites` was not checked for the same issue - prefer the manual sequence.
+
 ### Overlapping masked sprites: keep the z-order at EVERY draw site
 Two masked sprites with their own background buffers (cursor + meteor, two
 cursors) only stay clean if each draw follows: top layer Restore → lower layer
@@ -600,3 +609,8 @@ Useful for size analysis, memory maps and checking fixed addresses (the PC tool 
 
 ## Moved out (2026-10-25)
 Compiler crashes, nightly vs old trse.exe, case vs if, file writing: `references/trse-compiler.md`. Reading files on a real machine: `cookbook/multifile-loader-design.md`. Builtins on Z80: `language/builtins.md`. Class-method call with a local-variable argument inside a `.tru` unit fails when `pascal_settings_use_local_variables = 1` (SANE known-bugs; untested on TVC) - pass a unit-level global instead.
+
+### Long `or` chains of function calls in an `if` do not parse (2026-10-29, Ugh, nightly)
+`if (GE::Joystick(1,a) or GE::Joystick(1,b) or GE::Joystick(1,c) ...) then` (5 calls, split over two
+lines) -> `Expected 'RPAREN' but found 'OR'`. Two calls with one `or` compile fine. Workaround: a boolean
+flag set by separate `if`s (`Gomb := False; if (..a..) then Gomb := True; ...; if (Gomb) then ...`).

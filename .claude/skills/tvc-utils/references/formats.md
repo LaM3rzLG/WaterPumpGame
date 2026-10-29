@@ -100,3 +100,14 @@ Bemenet: EGY 8x10 pixeles GRAPHICS16 BMP (keret nem kell; soronként P0..P7). Ki
 `90..99` szomszéd `(-,P0)` soronként; `100..109` 10 nulla byte. Az eltolt képernyőn egy mező utolsó byte-oszlopa =
 saját szél (ha a mező csempe) VAGY a jobb szomszéd mező szomszéd-táblája (ha az csempe) - `Befosas.tru` `Oszlop_Ki_Szel`.
 A pálya `.bin` végén ezért 2026-10-10 óta egy plusz üres oszlop áll (a fejléc szélessége nem számolja bele; 96x10 -> 973 byte).
+
+## Pálya16 (`palya16_szerkeszto.html`, 2026-10-29)
+
+**Projekt `.json`:** `{"format":"palya16-projekt","version":1,"name","grid":{"w":byte,"h":sor},"bg":szín,"cur",
+"kepek":[{name,W (pixel),H,masked,frames:[W*H karakter, '0'-'f' / '.']}], "palyak":[{name,"tiles":[oszlop*sor],"objs":[{i,x,y}]}]}`.
+`tiles` sorfolytonos, 0 = üres, k = `kepek[k-1]`; `objs[].i` = `kepek` index (0-tól), `x` byte, `y` sor.
+
+**Export `.bin` (a játéknak, javaslat - a játék még nem olvassa):**
+`[0]` pályák száma, `[1]` oszlopok, `[2]` sorok, `[3]` mező szélesség (byte), `[4]` mező magasság (sor); utána pályánként:
+oszlop*sor byte csempe (sorfolytonos, 0 = üres, k = a k. kép a szerkesztő listájában), 1 byte tárgyszám, tárgyanként
+3 byte: kép (1-től), X (byte), Y (sor). Egy pálya mérete = oszlop*sor + 1 + 3*tárgyszám (16x24 rácsnál 385 + 3*t).

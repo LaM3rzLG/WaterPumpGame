@@ -25,6 +25,8 @@ TVC-hardver) NEM ide tartozik - arra a **tvc-trse** skill és a projekt `CLAUDE.
 
 ## Eszközök (projektek: a WaterPumpGame repó (Windows: `C:\TVC\TRSE_Projects\WaterPumpGame\`, Mac: `~/Documents/TVC Projects/WaterPumpGame/`) - `tools\` (a HTML-ek 2026-10-22 óta, előtte a gyökérben) és `resources\`; `C:\TVC\TRSE_Projects\Befosas\` - `tools\` és `resources\`)
 
+**Ugh projekt (2026-10-29):** a közös HTML-szerkesztők (sprite16, sprite4, charset, tilemap, dallam, image2tvc, TVCTape.exe) a projekten KÍVÜL vannak: `C:\TVC\TRSE_Projects\!Toooools\` (README.md ott). Az Ugh `tools\` mappájában csak a memóriatérkép-nézetek vannak, a `resources\` szkriptjei a projekt gyökeréhez kötöttek.
+
 | Eszköz | Mire | Részletek |
 |---|---|---|
 | `sprite16_szerkeszto.html` | 16 színű (GRAPHICS16) sprite-ok rajzolása, képernyő-elrendezés, animátor, konténerek, képimport ditheringgel, PNG/.bin export | `references/sprite16-editor.md`, változástörténet: `references/history-sprite16.md` |
@@ -32,6 +34,7 @@ TVC-hardver) NEM ide tartozik - arra a **tvc-trse** skill és a projekt `CLAUDE.
 | `charset_szerkeszto.html` | a játék arányos betűkészlete (`font.bin`: 1 bites, pixelszélességű, 109 karakter = ASCII 32..122 + `ÁÉÍÓÖŐÚÜŰáéíóöőúüű`) | `references/other-tools.md` (UPDATE 2026-10-25/26), formátum: `references/formats.md` |
 | `resources\make_szabaly_bin.ps1` | a többoldalas játékszabály + sztori + ikonos jelmagyarázat (`szabaly.txt` sima szövegből, automatikus tördeléssel) -> `SZABALY.BIN` | `references/other-tools.md` UPDATE 2026-10-26 |
 | `terkep_szerkeszto.html` | a WaterPumpGame pályái (30x18 rács, pályaadatok -> `.ras` blokk / `.json`) | `references/other-tools.md` |
+| `palya16_szerkeszto.html` (`!Toooools`, Ugh, 2026-10-29) | fix képernyős GRAPHICS16 pályák: csempe-rács (a betöltött képekből ajánlott mérettel) + szabadon lerakott tárgyak, több pálya; Sprite16 `.json` / Bery `.bin` képek; `.json` projekt + `.bin` export | `references/other-tools.md`, formátum: `references/formats.md` |
 | `tilemap_szerkeszto.html` (Befosas `tools`) | a Befosas vízszintesen scrollozó pályája: 12 csempe magas, állítható szélességű tilemap -> `.json` (v4: mentés másként, pályarész másolása) | `references/other-tools.md` |
 | `dallam_szerkeszto.html` (Befosas `tools`, v1 2026-10-10) | zene a TVC EGY hangcsatornájára: lépésrács (tempó = képkocka / lépés), 37 hang A1..A4, szünet, lábdob, pergő; WebAudio lejátszás; mentés `.json` projekt + `.bin` a játéknak | `references/other-tools.md` |
 | Memóriatérkép: `resources\memoria_terkep.ps1` -> `tools\memoria_adat.js` -> KÉT nézet: `tools\memory_map_c64.html` (részletes, a felhasználó C64-es eszközének kinézetével) + `tools\memoria_terkep.html` (lapos) (Befosas, 2026-10-12 / 10-16) | a legutóbbi fordításból (`.asm` + `.sym` + `.tru`): a teljes 64 KB, a kód ELJÁRÁSONKÉNT (egységre szűrve, legnagyobb címkék), szabad helyek, rekeszek üres vége, átfedés. `/memoria` parancs = szkript + mindkét oldal. Élő frissítés ELVETVE (F5) | `references/memory-map.md` |
