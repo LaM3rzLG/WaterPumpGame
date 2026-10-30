@@ -5,12 +5,12 @@ napló: **`docs/NAPLO_archiv.md`** (a végén a 2026-10-25-i teljes CLAUDE.md is
 grep-pel keress rá a kulcsszóra. Érdemi változás után ezt a fájlt frissítsd röviden; hosszú indoklás az
 archívum VÉGÉRE. **Projektmemória: a repó `claude_memory/` mappája** (2026-10-28 óta; a Claude memória-mappája
 mindkét gépen erre mutat - Mac: symlink, Windows: junction, bekötés: `claude_memory/README.md`, ha még nincs kész).
-**Skillek a repóban (`.claude/skills/`):** TVC/TRSE tudás **tvc-trse** (mindig töltsd be); PC-s eszközök **tvc-utils**.
+**Skillek: KÖZÖS, egy példány (2026-10-30): `TVC_Kozos/skills`** = privát repó https://github.com/LaM3rzLG/TVC_Skills (Mac: `~/Documents/TVC Projects/TVC_Kozos/skills`, Windows: `C:\TVC\TRSE_Projects\TVC_Kozos\skills`). A projekt `.claude/skills/` mappájában csak linkek vannak (gitignore; bekötés: Mac `bash ../TVC_Kozos/skills/bekot.sh .`, Windows `bekot.ps1` junctionnel). Skill-módosítás: commit + push a TVC_Skills-ben. A gyökérben a közösek (TVC/TRSE tudás **tvc-trse** - mindig töltsd be; PC-s eszközök **tvc-utils**), `Mac/` alatt **tvc-trse-mac** / **tvc-emu-mac**, `Win11/` alatt a csak Windowsosak.
 **KÉT GÉP:** Windows (fő build-gép) és Mac. **Macen** a tvc-trse mellé töltsd be a **tvc-trse-mac**-et (build, útvonalak -
 a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Windowson ez a kettő NEM használandó.
 **Mac build (2026-10-28, működik, a Windows-ossal azonos kimenet):** `bash resources/build_mac.sh` = VS Code Cmd+Shift+B
-("Mac: Build + EP emu": fordítás + u3_boot_patch + .dsk + EP128 emulátor). Windowson a SANE/`build.ps1` változatlan.
-**Claude látja az EP-t - CSAK MACEN (2026-10-28):** `bash resources/emu_mac/ep.sh` kep/folyam/mem/gepel/gomb - parancsfájlon át, bármelyik asztalon (skill tvc-emu-mac). Indítás után várni + gombnyomás a logóra. **Windowson (PC, WinTVC) ez NEM működik** - ott nincs ilyen felület, a képet/állapotot a felhasználó nézi.
+("Mac: Build + EP emu"): a projekt beállításai (`utana()` = u3_boot_patch, lemezfájlok) + a közös mag `TVC_Kozos/mac/build_kozos.sh` (2026-10-30 óta). Windowson a SANE/`build.ps1` változatlan.
+**Claude látja az EP-t - CSAK MACEN (2026-10-28):** `bash ../TVC_Kozos/mac/emu_mac/ep.sh` kep/folyam/mem/gepel/gomb - parancsfájlon át, bármelyik asztalon (skill tvc-emu-mac). Indítás után várni + gombnyomás a logóra. **Windowson (PC, WinTVC) ez NEM működik** - ott nincs ilyen felület, a képet/állapotot a felhasználó nézi.
 **EP memóriatérkép-ablak (Mac, 2026-10-28):** EP menü Debug -> TVC memoriaterkep (vagy `ep.sh memablak`/`memkep`): élő U0/U1/U2/U3 + VID (a képernyő valódi képe), telítettség, lapozás; patchek a skill tvc-emu-mac mellett. Következő lépés: .sym-nevek az egér alatt, aktivitás-hőtérkép, szakasz/eltérés nézet (a memoria_terkep.ps1 Mac-portjával).
 **Munka elején `git pull`, a végén commit + push** (a `claude_memory/` is!), különben a gépek elcsúsznak.
 

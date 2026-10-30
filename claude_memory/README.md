@@ -41,7 +41,8 @@ git add claude_memory && git commit -m "Memoria: Windows-os allapot osszefesulve
 
 ## Skillek
 
-A skillek a repó `.claude/skills/` mappájában vannak (projekt-skillek, maguktól betöltődnek).
+A skillek 2026-10-30 óta a közös `TVC_Kozos/skills` repóban (TVC_Skills) vannak; a projekt `.claude/skills/` mappájában
+csak linkek (Mac: `bash ../TVC_Kozos/skills/bekot.sh .`, Windows: `bekot.ps1`, junction).
 Windowson utána a régi személyes példányokat (`%USERPROFILE%\.claude\skills\TVC-TRSE`,
 `TVC-Utils`) érdemes átnevezni/eltávolítani, különben kétszer szerepelnek - a PDF-ek
 (`TVC-TRSE\sources\docs\pdf`) maradjanak meg valahol, azok nincsenek a repóban.
