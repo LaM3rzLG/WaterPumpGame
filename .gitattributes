@@ -4,6 +4,7 @@
 *.jpg binary
 *.png binary
 *.gif binary
-*.wav binary*.BIN binary
+*.wav binary
+*.BIN binary
 *.dsk binary
 *.cas binary
