@@ -6,6 +6,9 @@ grep-pel keress rá a kulcsszóra. Érdemi változás után ezt a fájlt frissí
 archívum VÉGÉRE. **Projektmemória: a repó `claude_memory/` mappája** (2026-10-28 óta; a Claude memória-mappája
 mindkét gépen erre mutat - Mac: symlink, Windows: junction, bekötés: `claude_memory/README.md`, ha még nincs kész).
 **Skillek: KÖZÖS, egy példány (2026-10-30): `TVC_Kozos/skills`** = privát repó https://github.com/LaM3rzLG/TVC_Skills (Mac: `~/Documents/TVC Projects/TVC_Kozos/skills`, Windows: `C:\TVC\TRSE_Projects\TVC_Kozos\skills`). A projekt `.claude/skills/` mappájában csak linkek vannak (gitignore; bekötés: Mac `bash ../TVC_Kozos/skills/bekot.sh .`, Windows `bekot.ps1` junctionnel). Skill-módosítás: commit + push a TVC_Skills-ben. A gyökérben a közösek (TVC/TRSE tudás **tvc-trse** - mindig töltsd be; PC-s eszközök **tvc-utils**), `Mac/` alatt **tvc-trse-mac** / **tvc-emu-mac**, `Win11/` alatt a csak Windowsosak.
+**KÉT GÉP, KÖZÖS MUNKATERÜLET (2026-10-30):** Windows 11 (fő build-gép, WinTVC) és Mac (ep128emu) ugyanazon a projekten
+dolgozik, GitHubon szinkronban; közös: `TVC_Kozos/skills` (TVC_Skills repó), Mac-only: `TVC_Kozos/mac/`. A teljes leírás
+(útvonalak, mi van gitben, napi rutin) a **tvc-trse** skill "Two machines, one shared workspace" részében.
 **KÉT GÉP:** Windows (fő build-gép) és Mac. **Macen** a tvc-trse mellé töltsd be a **tvc-trse-mac**-et (build, útvonalak -
 a lenti Windows-os parancsok helyett) és emulátorhoz a **tvc-emu-mac**-et; Windowson ez a kettő NEM használandó.
 **Mac build (2026-10-28, működik, a Windows-ossal azonos kimenet):** `bash resources/build_mac.sh` = VS Code Cmd+Shift+B
